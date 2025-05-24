@@ -9,7 +9,8 @@
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test": "vitest"
+    "test": "vitest",
+    "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5"
   },
   "dependencies": {
     "next": "15.1.8",
@@ -36,6 +37,7 @@
     "@vitest/coverage-v8": "^3.1.4",
     "@vitest/ui": "^3.1.4",
     "autoprefixer": "^10.4.21",
+    "chromatic": "^11.29.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.8",
     "eslint-plugin-storybook": "^0.12.0",
