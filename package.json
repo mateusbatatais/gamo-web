@@ -13,6 +13,7 @@
     "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5"
   },
   "dependencies": {
+    "firebase": "^11.8.1",
     "next": "15.1.8",
     "next-intl": "^4.1.0",
     "react": "^19.0.0",
