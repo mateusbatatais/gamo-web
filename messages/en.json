@@ -1,4 +1,15 @@
 {
+  "dashboard": {
+    "title": "User Dashboard",
+    "welcome": "Welcome, {name}!",
+    "email": "Email: {email}",
+    "role": "Role: {role}"
+  },
+  "common": {
+    "logout": "Log out",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  },
   "HomePage": {
     "title": "Hello world!",
     "about": "Go to the about page"

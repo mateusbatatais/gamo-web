@@ -1,4 +1,15 @@
 {
+  "dashboard": {
+    "title": "Painel do Usuário",
+    "welcome": "Bem-vindo, {name}!",
+    "email": "E-mail: {email}",
+    "role": "Perfil: {role}"
+  },
+  "common": {
+    "logout": "Sair",
+    "loading": "Carregando...",
+    "error": "Ocorreu um erro"
+  },
   "HomePage": {
     "title": "Olá",
     "about": "Sobre"
