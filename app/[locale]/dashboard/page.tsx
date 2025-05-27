@@ -1,35 +1,63 @@
+// app/[locale]/dashboard/page.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
+import { apiFetch } from "@/utils/api";
+
+interface UserProfile {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function DashboardPage() {
-  const { token, initialized, user } = useAuth();
+  const t = useTranslations("dashboard");
   const locale = useLocale();
   const router = useRouter();
+  const { token, initialized, logout } = useAuth();
 
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // só redireciona depois de inicializar
   useEffect(() => {
-    // só faz algo quando já inicializamos o token
     if (initialized && !token) {
-      router.replace(
-        `/${locale}/login?from=${encodeURIComponent(`/${locale}/dashboard`)}`
-      );
+      router.replace(`/${locale}/login`);
     }
   }, [initialized, token, locale, router]);
 
-  // enquanto não inicializou, você pode renderizar um loading
-  if (!initialized) {
-    return <div>Carregando...</div>;
+  // busca o perfil
+  useEffect(() => {
+    if (!token) return;
+    apiFetch<UserProfile>("/user/profile", { token })
+      .then((data) => setProfile(data))
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  if (!initialized || loading) {
+    return <div>{t("loading")}</div>;
   }
 
-  // se não tiver token, já mandamos pro login e não chegamos aqui
+  if (!profile) {
+    return <div>{t("error")}</div>;
+  }
+
   return (
-    <main className="p-4">
-      <h1 className="text-2xl font-bold">
-        Bem-vindo, usuário #{user?.userId}!
-      </h1>
+    <main className="p-4 space-y-4">
+      <h1 className="text-3xl font-bold">{t("title")}</h1>
+      <p className="text-xl">{t("welcome", { name: profile.name })}</p>
+      <p>{t("email", { email: profile.email })}</p>
+      <p>{t("role", { role: profile.role })}</p>
+      <button
+        onClick={logout}
+        className="mt-4 px-4 py-2 bg-neutral-200 rounded hover:bg-neutral-300"
+      >
+        {t("common.logout")}
+      </button>
     </main>
   );
 }

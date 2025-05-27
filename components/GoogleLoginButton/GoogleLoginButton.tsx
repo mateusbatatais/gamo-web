@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 import { useLocale } from "next-intl";
+import { apiFetch } from "@/utils/api";
 
 export function GoogleLoginButton() {
   const { login: getIdToken } = useGoogleLogin();
@@ -15,21 +16,20 @@ export function GoogleLoginButton() {
     setError(null);
     setLoading(true);
     try {
+      // 1) Obter o ID Token do Firebase
       const idToken = await getIdToken();
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/social/google`,
+
+      // 2) Enviar ao backend e receber o JWT do Gamo
+      const { token } = await apiFetch<{ token: string }>(
+        "/auth/social/google",
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-            "Content-Type": "application/json",
-          },
+          token: idToken,
         }
       );
-      if (!res.ok) throw new Error(`Erro ${res.status}`);
-      const { token } = await res.json();
+
+      // 3) Armazenar e redirecionar
       localStorage.setItem("gamo_token", token);
-      // redireciona para dashboard no mesmo locale
       window.location.href = `/${locale}/dashboard`;
     } catch (e) {
       console.error(e);
