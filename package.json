@@ -10,6 +10,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest",
+    "test-storybook": "vitest --project=storybook",
     "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5"
   },
   "dependencies": {
@@ -21,15 +22,12 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^3.2.6",
+    "@chromatic-com/storybook": "^4.0.0-next.12",
     "@eslint/eslintrc": "^3",
-    "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/addon-onboarding": "^8.6.14",
-    "@storybook/blocks": "^8.6.14",
-    "@storybook/experimental-addon-test": "^8.6.14",
-    "@storybook/experimental-nextjs-vite": "^8.6.14",
-    "@storybook/react": "^8.6.14",
-    "@storybook/test": "^8.6.14",
+    "@storybook/addon-docs": "^9.0.0-rc.5",
+    "@storybook/addon-onboarding": "^9.0.0-rc.5",
+    "@storybook/addon-vitest": "^9.0.0-rc.5",
+    "@storybook/nextjs-vite": "^9.0.0-rc.5",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
@@ -43,11 +41,11 @@
     "chromatic": "^11.29.0",
     "eslint": "^9",
     "eslint-config-next": "15.1.8",
-    "eslint-plugin-storybook": "^0.12.0",
+    "eslint-plugin-storybook": "^9.0.0-rc.5",
     "playwright": "^1.52.0",
     "postcss": "^8.5.3",
     "sass": "^1.89.0",
-    "storybook": "^8.6.14",
+    "storybook": "^9.0.0-rc.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5",
     "vitest": "^3.1.4"
@@ -56,5 +54,8 @@
     "extends": [
       "plugin:storybook/recommended"
     ]
+  },
+  "overrides": {
+    "storybook": "$storybook"
   }
 }

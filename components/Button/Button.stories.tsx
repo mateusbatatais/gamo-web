@@ -1,14 +1,13 @@
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { Button, ButtonProps } from './Button';
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Button, ButtonProps } from "./Button";
 
 const meta: Meta<ButtonProps> = {
-  title: 'Components/Button',
+  title: "Components/Button",
   component: Button,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    onClick: { action: 'clicked' },
-    disabled: { control: 'boolean' },
+    onClick: { action: "clicked" },
+    disabled: { control: "boolean" },
   },
 };
 
@@ -17,14 +16,14 @@ type Story = StoryObj<ButtonProps>;
 
 export const Default: Story = {
   args: {
-    label: 'Clique aqui',
+    label: "Clique aqui",
     disabled: false,
   },
 };
 
 export const Disabled: Story = {
   args: {
-    label: 'Não clicável',
+    label: "Não clicável",
     disabled: true,
   },
 };

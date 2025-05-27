@@ -1,15 +1,14 @@
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { Input, InputProps } from './Input';
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Input, InputProps } from "./Input";
 
 const meta: Meta<InputProps> = {
-  title: 'Components/Input',
+  title: "Components/Input",
   component: Input,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    label: { control: 'text' },
-    placeholder: { control: 'text' },
-    error: { control: 'text' },
+    label: { control: "text" },
+    placeholder: { control: "text" },
+    error: { control: "text" },
   },
 };
 
@@ -18,15 +17,15 @@ type Story = StoryObj<InputProps>;
 
 export const Default: Story = {
   args: {
-    label: 'Nome',
-    placeholder: 'Digite seu nome',
+    label: "Nome",
+    placeholder: "Digite seu nome",
   },
 };
 
 export const WithError: Story = {
   args: {
-    label: 'Email',
-    placeholder: 'user@example.com',
-    error: 'Email inválido',
+    label: "Email",
+    placeholder: "user@example.com",
+    error: "Email inválido",
   },
 };

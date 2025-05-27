@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { GoogleLoginButton } from "./GoogleLoginButton";
 
 const meta: Meta<typeof GoogleLoginButton> = {

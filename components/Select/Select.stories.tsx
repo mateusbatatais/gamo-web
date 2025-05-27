@@ -1,14 +1,13 @@
-import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
-import { Select, SelectProps } from './Select';
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Select, SelectProps } from "./Select";
 
 const meta: Meta<SelectProps> = {
-  title: 'Components/Select',
+  title: "Components/Select",
   component: Select,
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
-    label: { control: 'text' },
-    error: { control: 'text' },
+    label: { control: "text" },
+    error: { control: "text" },
     options: { control: false },
   },
 };
@@ -17,21 +16,21 @@ export default meta;
 type Story = StoryObj<SelectProps>;
 
 const sampleOptions = [
-  { value: 'ps5', label: 'PlayStation 5' },
-  { value: 'xbox', label: 'Xbox Series X' },
+  { value: "ps5", label: "PlayStation 5" },
+  { value: "xbox", label: "Xbox Series X" },
 ];
 
 export const Default: Story = {
   args: {
-    label: 'Console',
+    label: "Console",
     options: sampleOptions,
   },
 };
 
 export const WithError: Story = {
   args: {
-    label: 'Console',
+    label: "Console",
     options: sampleOptions,
-    error: 'Seleção obrigatória',
+    error: "Seleção obrigatória",
   },
 };
