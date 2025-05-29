@@ -13,5 +13,8 @@
   "HomePage": {
     "title": "Olá",
     "about": "Sobre"
+  },
+  "Footer": {
+    "rights": "Todos os direitos reservados"
   }
 }
