@@ -15,7 +15,7 @@ interface UserProfile {
 }
 
 export default function DashboardPage() {
-  const t = useTranslations("dashboard");
+  const t = useTranslations("");
   const locale = useLocale();
   const router = useRouter();
   const { token, initialized, logout } = useAuth();
@@ -39,11 +39,21 @@ export default function DashboardPage() {
   }, [token]);
 
   if (!initialized || loading) {
-    return <div>{t("loading")}</div>;
+    return <div>{t("common.loading")}</div>;
   }
 
   if (!profile) {
-    return <div>{t("error")}</div>;
+    return (
+      <div>
+        {t("common.error")}{" "}
+        <button
+          onClick={logout}
+          className="mt-4 px-4 py-2 bg-neutral-200 rounded hover:bg-neutral-300"
+        >
+          {t("common.logout")}
+        </button>
+      </div>
+    );
   }
 
   return (
