@@ -14,6 +14,7 @@
     "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
     "firebase": "^11.8.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
