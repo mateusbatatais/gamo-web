@@ -1,4 +1,5 @@
-import React from 'react';
+import { Home } from "lucide-react";
+import React from "react";
 
 export interface ButtonProps {
   label: string;
@@ -17,6 +18,7 @@ export function Button({ label, onClick, disabled = false }: ButtonProps) {
       onClick={onClick}
       disabled={disabled}
     >
+      <Home />
       {label}
     </button>
   );
