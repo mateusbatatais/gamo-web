@@ -3,12 +3,10 @@
 
 import React, { useState } from "react";
 import { useGoogleLogin } from "../../hooks/useGoogleLogin";
-import { useLocale } from "next-intl";
 import { apiFetch } from "@/utils/api";
 
 export function GoogleLoginButton() {
   const { login: getIdToken } = useGoogleLogin();
-  const locale = useLocale();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +28,7 @@ export function GoogleLoginButton() {
 
       // 3) Armazenar e redirecionar
       localStorage.setItem("gamo_token", token);
-      window.location.href = `/${locale}/dashboard`;
+      window.location.href = "/dashboard";
     } catch (e) {
       console.error(e);
       setError("Falha no login. Tente novamente.");
