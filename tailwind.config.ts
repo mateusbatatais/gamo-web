@@ -1,3 +1,4 @@
+// tailwind.config.ts
 import type { Config } from "tailwindcss";
 
 export default {
@@ -9,22 +10,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: "#e3f2ff",
-          100: "#b3daff",
-          200: "#81c2ff",
-          300: "#4ea9ff",
-          400: "#1b91ff",
-          500: "#0077e6", // cor principal
-          600: "#005bb4",
-          700: "#003f82",
-          800: "#002451",
-          900: "#000a21",
-        },
-        secondary: {
-          500: "#ff8800",
-          600: "#e67100",
-        },
+        // Cores semânticas principais
+        primary: "#ee8f0b", // laranja principal
+        secondary: "#2d8eac", // ciano acentuado
+
+        // Estados
+        success: "#22c55e", // verde
+        danger: "#dc2626", // vermelho
+        warning: "#f59e0b", // amarelo / laranja claro
+        info: "#407281", // azul-esverdeado
+
         accent: {
           500: "#00d084",
         },
