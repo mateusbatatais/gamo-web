@@ -1,31 +1,50 @@
-import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Input, InputProps } from "./Input";
+// components/Input/Input.stories.tsx
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Input } from "./Input";
+import { Mail } from "lucide-react";
 
-const meta: Meta<InputProps> = {
+const meta: Meta<typeof Input> = {
   title: "Components/Input",
   component: Input,
   tags: ["autodocs"],
   argTypes: {
-    label: { control: "text" },
-    placeholder: { control: "text" },
-    error: { control: "text" },
+    onChange: { action: "changed" },
+    disabled: { control: "boolean" },
   },
 };
 
 export default meta;
-type Story = StoryObj<InputProps>;
+type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {
   args: {
-    label: "Nome",
-    placeholder: "Digite seu nome",
+    label: "Email",
+    placeholder: "Digite seu email",
   },
 };
 
-export const WithError: Story = {
+export const WithIcon: Story = {
   args: {
     label: "Email",
-    placeholder: "user@example.com",
-    error: "Email inválido",
+    placeholder: "Digite seu email",
+    icon: <Mail className="text-gray-400" />,
   },
+};
+
+export const Error: Story = {
+  args: {
+    label: "Email",
+    placeholder: "Digite seu email",
+    error: "Campo obrigatório",
+  },
+};
+
+export const Sizes: Story = {
+  render: () => (
+    <div className="space-y-4">
+      <Input label="Pequeno" placeholder="sm" inputSize="sm" />
+      <Input label="Médio" placeholder="md" inputSize="md" />
+      <Input label="Grande" placeholder="lg" inputSize="lg" />
+    </div>
+  ),
 };
