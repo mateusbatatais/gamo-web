@@ -6,7 +6,7 @@ import { Button } from "./Button";
 describe("Button component", () => {
   it("renderiza com o label correto", () => {
     render(<Button label="Testar" />);
-    expect(screen.getByRole("button")).toHaveTextContent("Te3star");
+    expect(screen.getByRole("button")).toHaveTextContent("Testar");
   });
 
   it("chama onClick quando clicado", async () => {
