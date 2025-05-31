@@ -59,8 +59,10 @@ export default function LoginPage() {
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          showToggle={true}
           required
         />
+
         {error && <p className="text-red-600 text-sm">{error}</p>}
 
         <Button

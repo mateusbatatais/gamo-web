@@ -24,7 +24,7 @@ export default function SignupPage() {
 
     try {
       // Chama /api/signup
-      const data = await apiFetch<{ token: string }>("/signup", {
+      const data = await apiFetch<{ token: string }>("/auth/signup", {
         method: "POST",
         body: { name, email, password },
       });
@@ -71,6 +71,7 @@ export default function SignupPage() {
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          showToggle={true}
           required
         />
 
