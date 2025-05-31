@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/utils/api";
@@ -16,7 +16,6 @@ interface UserProfile {
 
 export default function DashboardPage() {
   const t = useTranslations("");
-  const locale = useLocale();
   const router = useRouter();
   const { token, initialized, logout } = useAuth();
 
@@ -26,9 +25,9 @@ export default function DashboardPage() {
   // só redireciona depois de inicializar
   useEffect(() => {
     if (initialized && !token) {
-      router.replace(`/${locale}/login`);
+      router.replace(`/login`);
     }
-  }, [initialized, token, locale, router]);
+  }, [initialized, token, router]);
 
   // busca o perfil
   useEffect(() => {
@@ -58,10 +57,12 @@ export default function DashboardPage() {
 
   return (
     <main className="p-4 space-y-4">
-      <h1 className="text-3xl font-bold">{t("title")}</h1>
-      <p className="text-xl">{t("welcome", { name: profile.name })}</p>
-      <p>{t("email", { email: profile.email })}</p>
-      <p>{t("role", { role: profile.role })}</p>
+      <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
+      <p className="text-xl">
+        {t("dashboard.welcome", { name: profile.name })}
+      </p>
+      <p>{t("dashboard.email", { email: profile.email })}</p>
+      <p>{t("dashboard.role", { role: profile.role })}</p>
       <button
         onClick={logout}
         className="mt-4 px-4 py-2 bg-neutral-200 rounded hover:bg-neutral-300"
