@@ -1,6 +1,7 @@
 // components/layout/Header.tsx
 "use client";
 
+import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import { Link } from "@/i18n/navigation";
 
 export default function Header() {
@@ -12,6 +13,7 @@ export default function Header() {
           <Link href={"/"}>Home</Link>
           <Link href={"/catalog"}>Catálogo</Link>
           <Link href={"/dashboard"}>Meu Dashboard</Link>
+          <ThemeToggle></ThemeToggle>
         </nav>
       </div>
     </header>
