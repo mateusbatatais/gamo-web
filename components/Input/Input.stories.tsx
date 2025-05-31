@@ -1,50 +1,82 @@
 // components/Input/Input.stories.tsx
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Input } from "./Input";
+import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Mail } from "lucide-react";
+import { Input, InputProps } from "./Input";
 
-const meta: Meta<typeof Input> = {
+const meta: Meta<InputProps> = {
   title: "Components/Input",
   component: Input,
   tags: ["autodocs"],
   argTypes: {
-    onChange: { action: "changed" },
-    disabled: { control: "boolean" },
+    label: { control: "text" },
+    placeholder: { control: "text" },
+    showToggle: { control: "boolean" },
+    inputSize: {
+      control: { type: "radio" },
+      options: ["sm", "md", "lg"],
+    },
+    error: { control: "text" },
+    icon: { control: false }, // não controlamos o ícone via args
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof Input>;
+type Story = StoryObj<InputProps>;
 
+// 1) Input padrão
 export const Default: Story = {
   args: {
-    label: "Email",
-    placeholder: "Digite seu email",
+    label: "Nome",
+    placeholder: "Digite seu nome",
+    inputSize: "md",
   },
 };
 
+// 2) Input com ícone à esquerda
 export const WithIcon: Story = {
   args: {
     label: "Email",
-    placeholder: "Digite seu email",
-    icon: <Mail className="text-gray-400" />,
+    placeholder: "seu@exemplo.com",
+    icon: <Mail size={18} className="text-gray-400" />,
+    inputSize: "md",
   },
 };
 
-export const Error: Story = {
+// 3) Input de senha com mostrar/ocultar (showToggle)
+export const PasswordToggle: Story = {
   args: {
-    label: "Email",
-    placeholder: "Digite seu email",
-    error: "Campo obrigatório",
+    label: "Senha",
+    placeholder: "••••••••",
+    type: "password",
+    showToggle: true,
+    inputSize: "md",
   },
 };
 
-export const Sizes: Story = {
-  render: () => (
-    <div className="space-y-4">
-      <Input label="Pequeno" placeholder="sm" inputSize="sm" />
-      <Input label="Médio" placeholder="md" inputSize="md" />
-      <Input label="Grande" placeholder="lg" inputSize="lg" />
-    </div>
-  ),
+// 4) Input com mensagem de erro
+export const WithError: Story = {
+  args: {
+    label: "Username",
+    placeholder: "usuario123",
+    error: "Este campo é obrigatório",
+    inputSize: "md",
+  },
+};
+
+// 5) Input em tamanho grande (lg)
+export const LargeSize: Story = {
+  args: {
+    label: "Cidade",
+    placeholder: "Digite sua cidade",
+    inputSize: "lg",
+  },
+};
+
+// 6) Input em tamanho pequeno (sm)
+export const SmallSize: Story = {
+  args: {
+    label: "Telefone",
+    placeholder: "(99) 99999-9999",
+    inputSize: "sm",
+  },
 };
