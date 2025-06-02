@@ -18,14 +18,16 @@
     "rights": "All rights reserved"
   },
   "login": {
-    "title": "Sign In",
+    "title": "Login",
+    "subtitle": "Sign in to continue",
     "emailLabel": "Email",
+    "emailPlaceholder": "your@example.com",
     "passwordLabel": "Password",
     "button": "Sign In",
     "forgot": "Forgot password?",
     "noAccount": "Don't have an account? Sign up",
     "errors": {
-      "required": "Required field",
+      "required": "Field is required",
       "invalid": "Invalid credentials"
     },
     "or": "or",
@@ -33,26 +35,29 @@
   },
   "signup": {
     "title": "Sign Up",
+    "subtitle": "Create an account to get started",
     "nameLabel": "Name",
+    "namePlaceholder": "Your full name",
     "emailLabel": "Email",
+    "emailPlaceholder": "your@example.com",
     "passwordLabel": "Password",
     "confirmPasswordLabel": "Confirm Password",
     "button": "Create Account",
-    "haveAccount": "Already have an account? Sign in",
+    "haveAccount": "Already have an account? Log in",
     "errors": {
-      "required": "Required field",
-      "emailInvalid": "Invalid email",
+      "required": "Field is required",
+      "emailInvalid": "Invalid email address",
       "passwordMismatch": "Passwords do not match"
     }
   },
   "recover": {
     "title": "Recover Password",
     "emailLabel": "Email",
-    "button": "Send Reset Link",
+    "button": "Send Recovery Link",
     "backToLogin": "Back to login",
     "errors": {
-      "required": "Required field",
-      "emailInvalid": "Invalid email",
+      "required": "Field is required",
+      "emailInvalid": "Invalid email address",
       "notFound": "User not found"
     }
   }

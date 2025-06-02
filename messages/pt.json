@@ -19,7 +19,9 @@
   },
   "login": {
     "title": "Entrar",
+    "subtitle": "Faça login para continuar",
     "emailLabel": "E-mail",
+    "emailPlaceholder": "seu@exemplo.com",
     "passwordLabel": "Senha",
     "button": "Entrar",
     "forgot": "Esqueceu a senha?",
@@ -33,8 +35,11 @@
   },
   "signup": {
     "title": "Cadastrar-se",
+    "subtitle": "Crie uma conta para começar",
     "nameLabel": "Nome",
+    "namePlaceholder": "Seu nome completo",
     "emailLabel": "E-mail",
+    "emailPlaceholder": "seu@exemplo.com",
     "passwordLabel": "Senha",
     "confirmPasswordLabel": "Confirmar Senha",
     "button": "Criar Conta",
