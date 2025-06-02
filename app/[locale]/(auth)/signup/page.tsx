@@ -1,7 +1,9 @@
+// app/[locale]/(auth)/signup/page.tsx
 "use client";
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLoginButton";
@@ -9,6 +11,7 @@ import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 
 export default function SignupPage() {
+  const t = useTranslations();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -34,7 +37,7 @@ export default function SignupPage() {
       if (err instanceof Error) {
         setError(err.message);
       } else {
-        setError("Erro ao criar conta");
+        setError(t("common.error"));
       }
     } finally {
       setLoading(false);
@@ -43,27 +46,38 @@ export default function SignupPage() {
 
   return (
     <>
+      <div className="mb-6 text-center">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+          {t("signup.title")}
+        </h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          {t("signup.subtitle")}
+        </p>
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
-          label="Nome"
+          label={t("signup.nameLabel")}
           type="text"
-          placeholder="Seu nome completo"
+          placeholder={
+            t("signup.namePlaceholder") /* ex: "Seu nome completo" */
+          }
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
 
         <Input
-          label="Email"
+          label={t("signup.emailLabel")}
           type="email"
-          placeholder="seu@exemplo.com"
+          placeholder={t("signup.emailPlaceholder") /* ex: "seu@exemplo.com" */}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
 
         <Input
-          label="Senha"
+          label={t("signup.passwordLabel")}
           type="password"
           placeholder="••••••••"
           value={password}
@@ -76,7 +90,7 @@ export default function SignupPage() {
 
         <Button
           type="submit"
-          label={loading ? "Criando..." : "Cadastrar"}
+          label={loading ? t("common.loading") : t("signup.button")}
           variant="primary"
           disabled={loading}
           className="w-full"
@@ -84,19 +98,21 @@ export default function SignupPage() {
       </form>
 
       <div className="my-4 flex items-center">
-        <hr className="flex-1 border-gray-300" />
-        <span className="px-2 text-gray-500 text-sm">ou</span>
-        <hr className="flex-1 border-gray-300" />
+        <hr className="flex-1 border-gray-300 dark:border-gray-700" />
+        <span className="px-2 text-gray-500 text-sm dark:text-gray-400">
+          {t("login.or")}
+        </span>
+        <hr className="flex-1 border-gray-300 dark:border-gray-700" />
       </div>
 
       <GoogleLoginButton />
 
       <div className="mt-6 flex justify-between text-sm">
         <Link href="/login" className="text-primary hover:underline">
-          Já tenho uma conta
+          {t("signup.haveAccount")}
         </Link>
         <Link href="/recover" className="text-primary hover:underline">
-          Esqueceu a senha?
+          {t("recover.backToLogin")}
         </Link>
       </div>
     </>
