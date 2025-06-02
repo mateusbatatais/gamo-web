@@ -4,11 +4,14 @@
 import React, { useState } from "react";
 import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 import { apiFetch } from "@/utils/api";
+import { useTranslations } from "next-intl";
+import { GoogleIcon } from "../Icons/GoogleIcon";
 
 export function GoogleLoginButton() {
   const { login: getIdToken } = useGoogleLogin();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations("login");
 
   const handleClick = async () => {
     setError(null);
@@ -31,7 +34,7 @@ export function GoogleLoginButton() {
       window.location.href = "/dashboard";
     } catch (e) {
       console.error(e);
-      setError("Falha no login. Tente novamente.");
+      setError(t("errors.invalid"));
       setLoading(false);
     }
   };
@@ -39,11 +42,24 @@ export function GoogleLoginButton() {
   return (
     <div>
       <button
+        type="button"
         onClick={handleClick}
         disabled={loading}
-        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50"
+        className={`
+          flex items-center justify-center 
+          w-full h-10 
+          bg-white border border-neutral-300 
+          rounded-md 
+          text-neutral-800 font-medium 
+          hover:bg-neutral-100 
+          dark:bg-neutral-900 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800
+          transition 
+          disabled:opacity-50 disabled:cursor-not-allowed
+        `}
       >
-        {loading ? "Entrando..." : "Entrar com Google"}
+        <GoogleIcon className="h-5 w-5 mr-2" aria-hidden="true" />
+
+        {loading ? t("loading") : t("googleButton")}
       </button>
       {error && <p className="mt-2 text-red-600">{error}</p>}
     </div>
