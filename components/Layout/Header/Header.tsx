@@ -1,19 +1,34 @@
-// components/layout/Header.tsx
+// components/Layout/Header/Header.tsx
 "use client";
 
-import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import React from "react";
 import { Link } from "@/i18n/navigation";
+import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 
 export default function Header() {
   return (
-    <header className="bg-white text-black dark:bg-gray-800 shadow dark:text-white">
+    <header className="bg-white shadow-sm dark:bg-gray-900">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/">GAMO</Link>
-        <nav className="space-x-4">
-          <Link href={"/"}>Home</Link>
-          <Link href={"/catalog"}>Catálogo</Link>
-          <Link href={"/dashboard"}>Meu Dashboard</Link>
-          <ThemeToggle></ThemeToggle>
+        <Link
+          href="/"
+          className="text-2xl font-bold text-gray-800 dark:text-gray-100"
+        >
+          GAMO
+        </Link>
+        <nav className="flex items-center space-x-4">
+          <Link
+            href="/catalogo"
+            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+          >
+            Catálogo
+          </Link>
+          <Link
+            href="/login"
+            className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
+          >
+            Entrar
+          </Link>
+          <ThemeToggle />
         </nav>
       </div>
     </header>
