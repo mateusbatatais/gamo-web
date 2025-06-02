@@ -4,6 +4,8 @@ import enMessages from "../messages/en.json";
 import ptMessages from "../messages/pt.json";
 import "../app/globals.scss";
 
+import { withThemeByClassName } from "@storybook/addon-themes";
+
 export const globalTypes = {
   locale: {
     name: "Locale",
@@ -36,6 +38,14 @@ const preview: Preview = {
         </NextIntlClientProvider>
       );
     },
+    withThemeByClassName({
+      themes: {
+        // nameOfTheme: 'classNameForTheme',
+        light: "",
+        dark: "dark",
+      },
+      defaultTheme: "light",
+    }),
   ],
   parameters: {
     controls: {
