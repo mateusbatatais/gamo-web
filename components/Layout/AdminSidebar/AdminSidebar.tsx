@@ -4,7 +4,7 @@
 import React from "react";
 import { Link } from "@/i18n/navigation";
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ ...props }) {
   return (
     <aside className="w-64 bg-white border-r dark:bg-gray-800 dark:border-gray-700">
       <ul className="space-y-2 p-4">
