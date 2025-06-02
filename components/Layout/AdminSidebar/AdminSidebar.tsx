@@ -4,9 +4,20 @@
 import React from "react";
 import { Link } from "@/i18n/navigation";
 
-export default function AdminSidebar({ ...props }) {
+type AdminSidebarProps = React.HTMLAttributes<HTMLElement>;
+
+export default function AdminSidebar({
+  className,
+  ...rest
+}: AdminSidebarProps) {
   return (
-    <aside className="w-64 bg-white border-r dark:bg-gray-800 dark:border-gray-700">
+    <aside
+      className={`${
+        className ?? ""
+      } bg-white border-r dark:bg-gray-800 dark:border-gray-700`}
+      {...rest}
+    >
+      {" "}
       <ul className="space-y-2 p-4">
         <li>
           <Link
