@@ -23,7 +23,6 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // Chama /api/signup
       const data = await apiFetch<{ token: string }>("/auth/signup", {
         method: "POST",
         body: { name, email, password },
@@ -44,8 +43,6 @@ export default function SignupPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-6 text-center">Criar nova conta</h1>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Nome"

@@ -42,8 +42,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-6 text-center">Entrar na GAMO</h1>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label="Email"
