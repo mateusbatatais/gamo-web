@@ -19,8 +19,13 @@ export async function apiFetch<T>(
     headers,
     body: body != null ? JSON.stringify(body) : undefined,
   });
+  const data = await res.json();
+
   if (!res.ok) {
-    throw new Error(`API error: ${res.status}`);
+    const errorMessage =
+      data?.message || data?.error || `Erro na API (${res.status})`;
+    throw new Error(errorMessage);
   }
-  return (await res.json()) as T;
+
+  return data as T;
 }
