@@ -16,5 +16,44 @@
   },
   "Footer": {
     "rights": "Todos os direitos reservados"
+  },
+  "login": {
+    "title": "Entrar",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "button": "Entrar",
+    "forgot": "Esqueceu a senha?",
+    "noAccount": "Ainda não tem conta? Cadastre-se",
+    "errors": {
+      "required": "Campo obrigatório",
+      "invalid": "Credenciais inválidas"
+    },
+    "or": "ou",
+    "googleButton": "Entrar com Google"
+  },
+  "signup": {
+    "title": "Cadastrar-se",
+    "nameLabel": "Nome",
+    "emailLabel": "E-mail",
+    "passwordLabel": "Senha",
+    "confirmPasswordLabel": "Confirmar Senha",
+    "button": "Criar Conta",
+    "haveAccount": "Já possui conta? Faça login",
+    "errors": {
+      "required": "Campo obrigatório",
+      "emailInvalid": "E-mail inválido",
+      "passwordMismatch": "As senhas não conferem"
+    }
+  },
+  "recover": {
+    "title": "Recuperar Senha",
+    "emailLabel": "E-mail",
+    "button": "Enviar Link de Recuperação",
+    "backToLogin": "Voltar ao login",
+    "errors": {
+      "required": "Campo obrigatório",
+      "emailInvalid": "E-mail inválido",
+      "notFound": "Usuário não encontrado"
+    }
   }
 }

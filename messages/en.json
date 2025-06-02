@@ -6,15 +6,54 @@
     "role": "Role: {role}"
   },
   "common": {
-    "logout": "Log out",
+    "logout": "Logout",
     "loading": "Loading...",
     "error": "An error occurred"
   },
   "HomePage": {
-    "title": "Hello world!",
-    "about": "Go to the about page"
+    "title": "Hello",
+    "about": "About"
   },
   "Footer": {
     "rights": "All rights reserved"
+  },
+  "login": {
+    "title": "Sign In",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "button": "Sign In",
+    "forgot": "Forgot password?",
+    "noAccount": "Don't have an account? Sign up",
+    "errors": {
+      "required": "Required field",
+      "invalid": "Invalid credentials"
+    },
+    "or": "or",
+    "googleButton": "Sign in with Google"
+  },
+  "signup": {
+    "title": "Sign Up",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "button": "Create Account",
+    "haveAccount": "Already have an account? Sign in",
+    "errors": {
+      "required": "Required field",
+      "emailInvalid": "Invalid email",
+      "passwordMismatch": "Passwords do not match"
+    }
+  },
+  "recover": {
+    "title": "Recover Password",
+    "emailLabel": "Email",
+    "button": "Send Reset Link",
+    "backToLogin": "Back to login",
+    "errors": {
+      "required": "Required field",
+      "emailInvalid": "Invalid email",
+      "notFound": "User not found"
+    }
   }
 }
