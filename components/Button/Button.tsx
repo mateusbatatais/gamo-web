@@ -13,6 +13,7 @@ export type ButtonStatus =
 
 export interface ButtonProps {
   label: string;
+  title?: string;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
   disabled?: boolean;
@@ -53,6 +54,7 @@ const statusClasses: Record<ButtonStatus, string> = {
 
 export function Button({
   label,
+  title,
   type,
   onClick,
   disabled = false,
@@ -70,6 +72,7 @@ export function Button({
   return (
     <button
       type={type}
+      title={title}
       onClick={onClick}
       disabled={disabled}
       className={clsx(
