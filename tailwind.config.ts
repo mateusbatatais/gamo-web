@@ -1,8 +1,5 @@
 import type { Config } from "tailwindcss";
-import defaultTheme from "tailwindcss/defaultTheme";
 
-// 1) Declare apenas constantes para o valor “500” de cada cor,
-//   mas chamando-as de <nome>DEFAULT:
 const primaryDEFAULT = "#ee8f0b";
 const secondaryDEFAULT = "#2d8eac";
 const successDEFAULT = "#22c55e";
@@ -12,8 +9,6 @@ const infoDEFAULT = "#407281";
 const accentDEFAULT = "#00d084";
 const neutralDEFAULT = "#737373";
 
-// 2) Defina os objetos de tons numéricos (50–900) normalmente,
-//    usando a constante <nome>DEFAULT para o peso 500:
 const primaryColors = {
   50: "#fff8f1",
   100: "#ffebd5",
@@ -127,8 +122,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", ...(defaultTheme.fontFamily.sans as string[])],
-        mono: ["Roboto Mono", ...(defaultTheme.fontFamily.mono as string[])],
+        sans: ["var(--font-lato)", "sans-serif"],
       },
 
       colors: {

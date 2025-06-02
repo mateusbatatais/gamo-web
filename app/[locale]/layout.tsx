@@ -3,6 +3,14 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.scss";
 import { Providers } from "@/components/Providers";
+import { Lato } from "next/font/google";
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+  variable: "--font-lato",
+});
 
 export default async function LocaleLayout({
   children,
@@ -11,15 +19,14 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  // Ensure that the incoming `locale` is valid
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
   return (
-    <html lang={locale}>
-      <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <html lang={locale} className={lato.variable}>
+      <body className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
         <NextIntlClientProvider>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
