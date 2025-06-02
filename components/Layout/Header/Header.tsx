@@ -4,6 +4,8 @@
 import React from "react";
 import { Link } from "@/i18n/navigation";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import Image from "next/image";
+import LocaleSwitcher from "@/components/LanguageSwitcher/LanguageSwitcher";
 
 export default function Header() {
   return (
@@ -13,7 +15,13 @@ export default function Header() {
           href="/"
           className="text-2xl font-bold text-gray-800 dark:text-gray-100"
         >
-          GAMO
+          <Image
+            src="/images/logo-gamo.svg"
+            alt="Logo Gamo"
+            width={100}
+            height={30}
+            priority={true}
+          />
         </Link>
         <nav className="flex items-center space-x-4">
           <Link
@@ -28,6 +36,7 @@ export default function Header() {
           >
             Entrar
           </Link>
+          <LocaleSwitcher />
           <ThemeToggle />
         </nav>
       </div>
