@@ -1,7 +1,7 @@
 // app/[locale]/(auth)/login/page.tsx
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/Input/Input";
@@ -9,15 +9,26 @@ import { Button } from "@/components/Button/Button";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLoginButton";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
   const t = useTranslations();
   const router = useRouter();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Limpa qualquer token inválido ao montar a página
+  useEffect(() => {
+    try {
+      localStorage.removeItem("gamo_token");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -30,17 +41,19 @@ export default function LoginPage() {
         body: { email, password },
       });
 
-      localStorage.setItem("gamo_token", data.token);
-      router.push(`/dashboard`);
+      // Atualiza o contexto imediatamente com o token
+      login(data.token);
+
+      // Só depois redireciona para o dashboard
+      router.push("/dashboard");
     } catch (err: unknown) {
-      // 1) Se vier código (INVALID_CREDENTIALS, USER_ALREADY_EXISTS, etc.), use t("login.errors.<chave>")
+      // Se vier código (INVALID_CREDENTIALS, etc.), traduzir
       if (
         typeof err === "object" &&
         err !== null &&
         "code" in err &&
         typeof (err as { code: unknown }).code === "string"
       ) {
-        // Transforma "INVALID_CREDENTIALS" em "invalidCredentials"
         const key = (err as { code: string }).code
           .toLowerCase()
           .split("_")
@@ -48,10 +61,11 @@ export default function LoginPage() {
             i > 0 ? word[0].toUpperCase() + word.slice(1) : word
           )
           .join("");
-
         const translated = t(`login.errors.${key}`);
         setError(translated);
-      } else if (
+      }
+      // Se vier apenas mensagem
+      else if (
         typeof err === "object" &&
         err !== null &&
         "message" in err &&

@@ -21,41 +21,65 @@ interface AuthUser {
 interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
-  initialized: boolean; // novo
+  initialized: boolean;
+  login: (newToken: string) => void;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null | undefined>(undefined);
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [initialized, setInitialized] = useState(false);
   const locale = useLocale();
   const router = useRouter();
 
+  // Ao montar, verificamos se já existe token em localStorage
   useEffect(() => {
     const stored = localStorage.getItem("gamo_token");
     if (stored) {
       setToken(stored);
-      setUser(jwtDecode<AuthUser>(stored));
-    } else {
-      setToken(null);
+      try {
+        const decoded = jwtDecode<AuthUser>(stored);
+        setUser(decoded);
+      } catch {
+        // Se o decode falhar, removemos qualquer valor inválido
+        localStorage.removeItem("gamo_token");
+        setToken(null);
+        setUser(null);
+      }
     }
+    setInitialized(true);
   }, []);
 
-  const logout = () => {
+  // Função para login: grava token em localStorage e atualiza estado imediatamente
+  function login(newToken: string) {
+    localStorage.setItem("gamo_token", newToken);
+    setToken(newToken);
+    try {
+      const decoded = jwtDecode<AuthUser>(newToken);
+      setUser(decoded);
+    } catch {
+      setUser(null);
+    }
+  }
+
+  // Função para logout: limpa token e usuário, e redireciona para login
+  function logout() {
     localStorage.removeItem("gamo_token");
     setToken(null);
     setUser(null);
     router.push(`/${locale}/login`);
-  };
+  }
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token: token ?? null,
-        initialized: token !== undefined,
+        token,
+        initialized,
+        login,
         logout,
       }}
     >
