@@ -69,6 +69,10 @@
     "loading": "Confirmando seu e-mail…",
     "successTitle": "E-mail confirmado!",
     "successMessage": "Seu e-mail foi verificado com sucesso. Você já pode fazer login.",
+    "expiredTitle": "Link expirado",
+
+    "redirectingLogin": "Redirecionando para a tela de login…",
+    "expiredMessage": "Este link de verificação expirou. Por favor, solicite um novo e-mail.",
     "goToLogin": "Ir para Login",
     "errorTitle": "Erro ao confirmar o e-mail",
     "errorGeneric": "Não foi possível verificar seu e-mail. Verifique o link ou tente novamente.",
