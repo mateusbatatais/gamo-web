@@ -22,9 +22,13 @@ export async function apiFetch<T>(
   const data = await res.json();
 
   if (!res.ok) {
-    const errorMessage =
-      data?.message || data?.error || `Erro na API (${res.status})`;
-    throw new Error(errorMessage);
+    const code = data.code;
+    const rawMessage = data.message;
+    const fallback = `Erro na API (${res.status})`;
+    const err = new Error(rawMessage || fallback);
+    // @ts-expect-error — adicionamos dinamicamente a prop "code"
+    err.code = code || undefined;
+    throw err;
   }
 
   return data as T;

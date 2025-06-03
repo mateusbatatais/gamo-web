@@ -28,7 +28,9 @@
     "noAccount": "Ainda não tem conta? Cadastre-se",
     "errors": {
       "required": "Campo obrigatório",
-      "invalid": "Credenciais inválidas"
+      "invalid": "Credenciais inválidas",
+      "invalidCredentials": "Credenciais inválidas",
+      "userAlreadyExists": "Usuário já existe"
     },
     "or": "ou",
     "googleButton": "Entrar com Google"
@@ -47,7 +49,8 @@
     "errors": {
       "required": "Campo obrigatório",
       "emailInvalid": "E-mail inválido",
-      "passwordMismatch": "As senhas não conferem"
+      "passwordMismatch": "As senhas não conferem",
+      "userAlreadyExists": "Usuário já existe"
     }
   },
   "recover": {

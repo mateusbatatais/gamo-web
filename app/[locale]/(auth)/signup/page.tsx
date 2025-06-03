@@ -34,8 +34,18 @@ export default function SignupPage() {
       localStorage.setItem("gamo_token", data.token);
       router.push(`/dashboard`);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
+      console.error("[LoginPage] erro capturado:", err);
+      if (typeof err === "object" && err !== null && "code" in err) {
+        const key = String((err as { code: string }).code)
+          .toLowerCase()
+          .split("_")
+          .map((word, i) =>
+            i > 0 ? word[0].toUpperCase() + word.slice(1) : word
+          )
+          .join("");
+        setError(t(`login.errors.${key}`));
+      } else if (typeof err === "object" && err !== null && "message" in err) {
+        setError(String((err as { message: string }).message));
       } else {
         setError(t("common.error"));
       }

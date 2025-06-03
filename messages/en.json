@@ -28,7 +28,9 @@
     "noAccount": "Don't have an account? Sign up",
     "errors": {
       "required": "Field is required",
-      "invalid": "Invalid credentials"
+      "invalid": "Invalid credentials",
+      "invalidCredentials": "Invalid credentials",
+      "userAlreadyExists": "User already exists"
     },
     "or": "or",
     "googleButton": "Sign in with Google"
@@ -47,7 +49,8 @@
     "errors": {
       "required": "Field is required",
       "emailInvalid": "Invalid email address",
-      "passwordMismatch": "Passwords do not match"
+      "passwordMismatch": "Passwords do not match",
+      "userAlreadyExists": "User already exists"
     }
   },
   "recover": {

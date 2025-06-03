@@ -11,7 +11,7 @@ import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 
 export default function LoginPage() {
-  const t = useTranslations(); // -> função para buscar chaves de tradução
+  const t = useTranslations();
   const router = useRouter();
 
   const [email, setEmail] = useState("");
@@ -33,8 +33,31 @@ export default function LoginPage() {
       localStorage.setItem("gamo_token", data.token);
       router.push(`/dashboard`);
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
+      // 1) Se vier código (INVALID_CREDENTIALS, USER_ALREADY_EXISTS, etc.), use t("login.errors.<chave>")
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "code" in err &&
+        typeof (err as { code: unknown }).code === "string"
+      ) {
+        // Transforma "INVALID_CREDENTIALS" em "invalidCredentials"
+        const key = (err as { code: string }).code
+          .toLowerCase()
+          .split("_")
+          .map((word, i) =>
+            i > 0 ? word[0].toUpperCase() + word.slice(1) : word
+          )
+          .join("");
+
+        const translated = t(`login.errors.${key}`);
+        setError(translated);
+      } else if (
+        typeof err === "object" &&
+        err !== null &&
+        "message" in err &&
+        typeof (err as { message: unknown }).message === "string"
+      ) {
+        setError((err as { message: string }).message);
       } else {
         setError(t("common.error"));
       }
@@ -50,7 +73,7 @@ export default function LoginPage() {
           {t("login.title")}
         </h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {t("login.subtitle") /* Se quiser criar uma chave “login.subtitle” */}
+          {t("login.subtitle")}
         </p>
       </div>
 
