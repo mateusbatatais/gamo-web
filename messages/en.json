@@ -50,7 +50,8 @@
       "required": "Field is required",
       "emailInvalid": "Invalid email address",
       "passwordMismatch": "Passwords do not match",
-      "userAlreadyExists": "User already exists"
+      "userAlreadyExists": "User already exists",
+      "emailNotVerified": "Email not verified. Please check your inbox."
     }
   },
   "recover": {

@@ -30,7 +30,8 @@
       "required": "Campo obrigatório",
       "invalid": "Credenciais inválidas",
       "invalidCredentials": "Credenciais inválidas",
-      "userAlreadyExists": "Usuário já existe"
+      "userAlreadyExists": "Usuário já existe",
+      "emailNotVerified": "E-mail não verificado. Por favor, verifique sua caixa de entrada."
     },
     "or": "ou",
     "googleButton": "Entrar com Google"
