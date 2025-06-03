@@ -13,9 +13,18 @@ export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
 
   const [status, setStatus] = useState<
-    "loading" | "success" | "error" | "noToken"
+    "loading" | "success" | "error" | "expired" | "noToken"
   >("loading");
   const [message, setMessage] = useState("");
+
+  // Assim que carregue, limpa token inválido em localStorage
+  useEffect(() => {
+    try {
+      localStorage.removeItem("gamo_token");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     async function verify() {
@@ -33,9 +42,13 @@ export default function VerifyEmailPage() {
         const data = await res.json();
 
         if (!res.ok) {
-          // API retornou um code + message
-          setStatus("error");
-          setMessage(data.message || t("errorGeneric"));
+          if (data.code === "INVALID_OR_EXPIRED_TOKEN") {
+            setStatus("expired");
+            setMessage(t("expiredMessage"));
+          } else {
+            setStatus("error");
+            setMessage(data.message || t("errorGeneric"));
+          }
         } else {
           setStatus("success");
           setMessage(t("successMessage"));
@@ -49,9 +62,24 @@ export default function VerifyEmailPage() {
     verify();
   }, [searchParams, t]);
 
+  // Redireciona para login 2s após sucesso
+  useEffect(() => {
+    if (status === "success") {
+      // Garante que não haja token armazenado
+      try {
+        localStorage.removeItem("gamo_token");
+      } catch {}
+
+      const timeout = setTimeout(() => {
+        router.push(`/login`); // sem locale explícito → Next-Intl encaixa pt/en
+      }, 2000);
+      return () => clearTimeout(timeout);
+    }
+  }, [status, router]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-800 px-4">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg dark:bg-gray-900">
+    <div className="flex items-center justify-center rounded-lg p-6 bg-gray-100 dark:bg-gray-800 px-4">
+      <div className="w-full max-w-md">
         {status === "loading" && (
           <div className="flex flex-col items-center space-y-4">
             <Spinner className="h-8 w-8 text-primary" />
@@ -67,29 +95,26 @@ export default function VerifyEmailPage() {
               {t("successTitle")}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">{message}</p>
-            <Button
-              onClick={() => router.push(`/${t("locale")}/auth/login`)}
-              variant="primary"
-              className="mt-4 w-full"
-              label={t("goToLogin")}
-            ></Button>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {t("redirectingLogin")}
+            </p>
           </div>
         )}
 
-        {status === "error" && (
+        {(status === "expired" || status === "error") && (
           <div className="text-center space-y-6">
             <h1 className="text-2xl font-bold text-red-600">
-              {t("errorTitle")}
+              {status === "expired" ? t("expiredTitle") : t("errorTitle")}
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-center">
               {message}
             </p>
             <Button
-              onClick={() => router.push(`/${t("locale")}/auth/signup`)}
+              onClick={() => router.push(`/signup`)}
               variant="primary"
               className="mt-4 w-full"
               label={t("goToSignup")}
-            ></Button>
+            />
           </div>
         )}
 
@@ -102,11 +127,11 @@ export default function VerifyEmailPage() {
               {message}
             </p>
             <Button
-              onClick={() => router.push(`/${t("locale")}/auth/signup`)}
+              onClick={() => router.push(`/signup`)}
               variant="primary"
               className="mt-4 w-full"
               label={t("goToSignup")}
-            ></Button>
+            />
           </div>
         )}
       </div>
