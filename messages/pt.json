@@ -64,5 +64,15 @@
       "emailInvalid": "E-mail inválido",
       "notFound": "Usuário não encontrado"
     }
+  },
+  "verifyEmail": {
+    "loading": "Confirmando seu e-mail…",
+    "successTitle": "E-mail confirmado!",
+    "successMessage": "Seu e-mail foi verificado com sucesso. Você já pode fazer login.",
+    "goToLogin": "Ir para Login",
+    "errorTitle": "Erro ao confirmar o e-mail",
+    "errorGeneric": "Não foi possível verificar seu e-mail. Verifique o link ou tente novamente.",
+    "noTokenProvided": "Token de verificação ausente.",
+    "goToSignup": "Ir para Cadastro"
   }
 }
