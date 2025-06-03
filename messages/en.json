@@ -33,7 +33,8 @@
       "userAlreadyExists": "User already exists"
     },
     "or": "or",
-    "googleButton": "Sign in with Google"
+    "googleButton": "Sign in with Google",
+    "loading": "Signing in…"
   },
   "signup": {
     "title": "Sign Up",

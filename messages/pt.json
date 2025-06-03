@@ -34,7 +34,8 @@
       "emailNotVerified": "E-mail não verificado. Por favor, verifique sua caixa de entrada."
     },
     "or": "ou",
-    "googleButton": "Entrar com Google"
+    "googleButton": "Entrar com Google",
+    "loading": "Entrando…"
   },
   "signup": {
     "title": "Cadastrar-se",
