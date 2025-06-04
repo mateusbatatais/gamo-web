@@ -11,7 +11,8 @@
     "build-storybook": "storybook build",
     "test": "vitest",
     "test-storybook": "vitest --project=storybook",
-    "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5"
+    "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5",
+    "prepare": "husky install"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -43,12 +44,17 @@
     "@vitest/ui": "^3.1.4",
     "autoprefixer": "^10.4.21",
     "chromatic": "^11.29.0",
-    "eslint": "^9",
+    "eslint": "^9.28.0",
     "eslint-config-next": "15.1.8",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.1",
     "eslint-plugin-storybook": "^9.0.0",
+    "husky": "^8.0.0",
     "jsdom": "^26.1.0",
+    "lint-staged": "^16.1.0",
     "playwright": "^1.52.0",
     "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
     "sass": "^1.89.0",
     "storybook": "^9.0.0",
     "storybook-next-intl": "^2.0.8",
@@ -63,5 +69,14 @@
   },
   "overrides": {
     "storybook": "$storybook"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "next lint --fix",
+      "prettier --write"
+    ],
+    "*.{css,scss,md}": [
+      "prettier --write"
+    ]
   }
 }
