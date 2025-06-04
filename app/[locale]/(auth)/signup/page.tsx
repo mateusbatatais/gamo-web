@@ -3,7 +3,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLoginButton";
@@ -12,7 +12,6 @@ import { apiFetch } from "@/utils/api";
 
 export default function SignupPage() {
   const t = useTranslations();
-  const locale = useLocale();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -34,9 +33,7 @@ export default function SignupPage() {
       });
 
       // Redireciona para a página de sucesso, passando o e-mail na querystring
-      router.push(
-        `/${locale}/signup/success?email=${encodeURIComponent(email)}`
-      );
+      router.push(`/signup/success?email=${encodeURIComponent(email)}`);
     } catch (err: unknown) {
       console.error("[SignupPage] erro capturado:", err);
       if (typeof err === "object" && err !== null && "code" in err) {
@@ -120,16 +117,10 @@ export default function SignupPage() {
       <GoogleLoginButton />
 
       <div className="mt-6 flex justify-between text-sm">
-        <Link
-          href={`/${locale}/login`}
-          className="text-primary hover:underline"
-        >
+        <Link href={`/login`} className="text-primary hover:underline">
           {t("signup.haveAccount")}
         </Link>
-        <Link
-          href={`/${locale}/recover`}
-          className="text-primary hover:underline"
-        >
+        <Link href={`/recover`} className="text-primary hover:underline">
           {t("recover.backToLogin")}
         </Link>
       </div>
