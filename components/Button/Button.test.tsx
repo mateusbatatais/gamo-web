@@ -31,7 +31,7 @@ describe("Button component", () => {
   it("aplica classe de status danger", () => {
     render(<Button label="Erro" status="danger" />);
     const button = screen.getByRole("button");
-    expect(button.className).toContain("bg-danger");
+    expect(button.className).toContain("bg-red-600");
   });
 
   it("aplica classe de tamanho pequeno", () => {
