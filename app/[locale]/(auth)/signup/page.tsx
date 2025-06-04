@@ -3,7 +3,7 @@
 
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Input } from "@/components/Input/Input";
 import { Button } from "@/components/Button/Button";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLoginButton";
@@ -12,6 +12,7 @@ import { apiFetch } from "@/utils/api";
 
 export default function SignupPage() {
   const t = useTranslations();
+  const locale = useLocale();
   const router = useRouter();
 
   const [name, setName] = useState("");
@@ -26,15 +27,18 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const data = await apiFetch<{ token: string }>("/auth/signup", {
+      // Chama a API (ela vai criar o usuário + disparar o e-mail)
+      await apiFetch<{ userId: string }>("/auth/signup", {
         method: "POST",
         body: { name, email, password },
       });
 
-      localStorage.setItem("gamo_token", data.token);
-      router.push(`/dashboard`);
+      // Redireciona para a página de sucesso, passando o e-mail na querystring
+      router.push(
+        `/${locale}/signup/success?email=${encodeURIComponent(email)}`
+      );
     } catch (err: unknown) {
-      console.error("[LoginPage] erro capturado:", err);
+      console.error("[SignupPage] erro capturado:", err);
       if (typeof err === "object" && err !== null && "code" in err) {
         const key = String((err as { code: string }).code)
           .toLowerCase()
@@ -43,7 +47,7 @@ export default function SignupPage() {
             i > 0 ? word[0].toUpperCase() + word.slice(1) : word
           )
           .join("");
-        setError(t(`login.errors.${key}`));
+        setError(t(`signup.errors.${key}`));
       } else if (typeof err === "object" && err !== null && "message" in err) {
         setError(String((err as { message: string }).message));
       } else {
@@ -69,9 +73,7 @@ export default function SignupPage() {
         <Input
           label={t("signup.nameLabel")}
           type="text"
-          placeholder={
-            t("signup.namePlaceholder") /* ex: "Seu nome completo" */
-          }
+          placeholder={t("signup.namePlaceholder")}
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -80,7 +82,7 @@ export default function SignupPage() {
         <Input
           label={t("signup.emailLabel")}
           type="email"
-          placeholder={t("signup.emailPlaceholder") /* ex: "seu@exemplo.com" */}
+          placeholder={t("signup.emailPlaceholder")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -118,10 +120,16 @@ export default function SignupPage() {
       <GoogleLoginButton />
 
       <div className="mt-6 flex justify-between text-sm">
-        <Link href="/login" className="text-primary hover:underline">
+        <Link
+          href={`/${locale}/login`}
+          className="text-primary hover:underline"
+        >
           {t("signup.haveAccount")}
         </Link>
-        <Link href="/recover" className="text-primary hover:underline">
+        <Link
+          href={`/${locale}/recover`}
+          className="text-primary hover:underline"
+        >
           {t("recover.backToLogin")}
         </Link>
       </div>

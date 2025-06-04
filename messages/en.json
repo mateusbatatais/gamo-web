@@ -53,6 +53,16 @@
       "passwordMismatch": "Passwords do not match",
       "userAlreadyExists": "User already exists",
       "emailNotVerified": "Email not verified. Please check your inbox."
+    },
+    "success": {
+      "title": "Registration successful!",
+      "message": "We’ve sent a confirmation email to {email}. Check your inbox (or spam) to activate your account.",
+      "loginButton": "Go to Login",
+      "noEmail": "Didn’t receive the email?",
+      "resendButton": "Resend confirmation email",
+      "resendSuccess": "Email resent successfully! Check your inbox.",
+      "resendError": "Could not resend email. Try again later.",
+      "resendTimer": "You can resend in {seconds} seconds"
     }
   },
   "recover": {

@@ -53,6 +53,16 @@
       "emailInvalid": "E-mail inválido",
       "passwordMismatch": "As senhas não conferem",
       "userAlreadyExists": "Usuário já existe"
+    },
+    "success": {
+      "title": "Cadastro realizado com sucesso!",
+      "message": "Enviamos um e-mail de confirmação para {email}. Verifique sua caixa de entrada (ou spam) para ativar sua conta.",
+      "loginButton": "Ir para Login",
+      "noEmail": "Não recebeu o e-mail?",
+      "resendButton": "Reenviar e-mail de confirmação",
+      "resendSuccess": "E-mail reenviado com sucesso! Verifique sua caixa de entrada.",
+      "resendError": "Não foi possível reenviar. Tente novamente mais tarde.",
+      "resendTimer": "Você poderá reenviar em {seconds} segundos"
     }
   },
   "recover": {
@@ -71,7 +81,6 @@
     "successTitle": "E-mail confirmado!",
     "successMessage": "Seu e-mail foi verificado com sucesso. Você já pode fazer login.",
     "expiredTitle": "Link expirado",
-
     "redirectingLogin": "Redirecionando para a tela de login…",
     "expiredMessage": "Este link de verificação expirou. Por favor, solicite um novo e-mail.",
     "goToLogin": "Ir para Login",
