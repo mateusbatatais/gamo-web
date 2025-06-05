@@ -1,13 +1,7 @@
 // contexts/AuthContext.tsx
 "use client";
 
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useContext,
-  ReactNode,
-} from "react";
+import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -16,6 +10,7 @@ interface AuthUser {
   userId: number;
   name: string;
   role: string;
+  email: string;
 }
 
 interface AuthContextType {
