@@ -57,9 +57,7 @@ export default function LoginPage() {
         const key = (err as { code: string }).code
           .toLowerCase()
           .split("_")
-          .map((word, i) =>
-            i > 0 ? word[0].toUpperCase() + word.slice(1) : word
-          )
+          .map((word, i) => (i > 0 ? word[0].toUpperCase() + word.slice(1) : word))
           .join("");
         const translated = t(`login.errors.${key}`);
         setError(translated);
@@ -83,12 +81,8 @@ export default function LoginPage() {
   return (
     <>
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-          {t("login.title")}
-        </h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {t("login.subtitle")}
-        </p>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">{t("login.title")}</h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t("login.subtitle")}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -124,16 +118,14 @@ export default function LoginPage() {
 
       <div className="my-4 flex items-center">
         <hr className="flex-1 border-gray-300 dark:border-gray-700" />
-        <span className="px-2 text-gray-500 text-sm dark:text-gray-400">
-          {t("login.or")}
-        </span>
+        <span className="px-2 text-gray-500 text-sm dark:text-gray-400">{t("login.or")}</span>
         <hr className="flex-1 border-gray-300 dark:border-gray-700" />
       </div>
 
       <GoogleLoginButton />
 
       <div className="mt-6 flex justify-between text-sm">
-        <Link href="/recover" className="text-primary hover:underline">
+        <Link href="/reset-password" className="text-primary hover:underline">
           {t("login.forgot")}
         </Link>
         <Link href="/signup" className="text-primary hover:underline">

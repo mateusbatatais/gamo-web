@@ -70,13 +70,17 @@
   "recover": {
     "title": "Recuperar Senha",
     "emailLabel": "E-mail",
+    "emailPlaceholder": "seu@exemplo.com",
     "button": "Enviar Link de Recuperação",
     "backToLogin": "Voltar ao login",
     "errors": {
       "required": "Campo obrigatório",
       "emailInvalid": "E-mail inválido",
       "notFound": "Usuário não encontrado"
-    }
+    },
+    "successTitle": "E-mail enviado!",
+    "successMessage": "Enviamos um link de recuperação para {email}. Verifique sua caixa de entrada (ou spam).",
+    "errorGeneric": "Não foi possível enviar o link. Tente novamente mais tarde."
   },
   "verifyEmail": {
     "loading": "Confirmando seu e-mail…",
@@ -90,5 +94,20 @@
     "errorGeneric": "Não foi possível verificar seu e-mail. Verifique o link ou tente novamente.",
     "noTokenProvided": "Token de verificação ausente.",
     "goToSignup": "Ir para Cadastro"
+  },
+  "resetPassword": {
+    "title": "Redefinir Senha",
+    "newPasswordLabel": "Nova senha",
+    "confirmPasswordLabel": "Confirmar Senha",
+    "button": "Redefinir Senha",
+    "errors": {
+      "required": "Campo obrigatório",
+      "passwordMismatch": "As senhas não conferem",
+      "invalidOrExpiredToken": "Token inválido ou expirado"
+    },
+    "successTitle": "Senha redefinida!",
+    "successMessage": "Sua senha foi atualizada com sucesso. Agora você pode fazer login.",
+    "errorGeneric": "Não foi possível redefinir a senha. Tente novamente mais tarde.",
+    "backToLogin": "Ir para Login"
   }
 }

@@ -40,9 +40,7 @@ export default function SignupPage() {
         const key = String((err as { code: string }).code)
           .toLowerCase()
           .split("_")
-          .map((word, i) =>
-            i > 0 ? word[0].toUpperCase() + word.slice(1) : word
-          )
+          .map((word, i) => (i > 0 ? word[0].toUpperCase() + word.slice(1) : word))
           .join("");
         setError(t(`signup.errors.${key}`));
       } else if (typeof err === "object" && err !== null && "message" in err) {
@@ -58,12 +56,8 @@ export default function SignupPage() {
   return (
     <>
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
-          {t("signup.title")}
-        </h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          {t("signup.subtitle")}
-        </p>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">{t("signup.title")}</h1>
+        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{t("signup.subtitle")}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -108,9 +102,7 @@ export default function SignupPage() {
 
       <div className="my-4 flex items-center">
         <hr className="flex-1 border-gray-300 dark:border-gray-700" />
-        <span className="px-2 text-gray-500 text-sm dark:text-gray-400">
-          {t("login.or")}
-        </span>
+        <span className="px-2 text-gray-500 text-sm dark:text-gray-400">{t("login.or")}</span>
         <hr className="flex-1 border-gray-300 dark:border-gray-700" />
       </div>
 
@@ -119,9 +111,6 @@ export default function SignupPage() {
       <div className="mt-6 flex justify-between text-sm">
         <Link href={`/login`} className="text-primary hover:underline">
           {t("signup.haveAccount")}
-        </Link>
-        <Link href={`/recover`} className="text-primary hover:underline">
-          {t("recover.backToLogin")}
         </Link>
       </div>
     </>

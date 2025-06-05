@@ -70,13 +70,17 @@
   "recover": {
     "title": "Recover Password",
     "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
     "button": "Send Recovery Link",
-    "backToLogin": "Back to login",
+    "backToLogin": "Back to Login",
     "errors": {
-      "required": "Field is required",
-      "emailInvalid": "Invalid email address",
+      "required": "Required field",
+      "emailInvalid": "Invalid email",
       "notFound": "User not found"
-    }
+    },
+    "successTitle": "Email sent!",
+    "successMessage": "We’ve sent a recovery link to {email}. Check your inbox (or spam).",
+    "errorGeneric": "Could not send recovery link. Try again later."
   },
   "verifyEmail": {
     "loading": "Confirming your email…",
@@ -91,5 +95,20 @@
     "errorGeneric": "Could not verify your email. Please check the link or try again.",
     "noTokenProvided": "No verification token provided.",
     "goToSignup": "Go to Sign Up"
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Confirm password",
+    "button": "Reset Password",
+    "errors": {
+      "required": "Required field",
+      "passwordMismatch": "Passwords do not match",
+      "invalidOrExpiredToken": "Invalid or expired token"
+    },
+    "successTitle": "Password reset!",
+    "successMessage": "Your password has been updated. You can now log in.",
+    "errorGeneric": "Could not reset password. Try again later.",
+    "backToLogin": "Go to login"
   }
 }
