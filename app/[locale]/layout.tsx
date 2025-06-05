@@ -1,10 +1,12 @@
-import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { Locale, NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.scss";
 import { Providers } from "@/components/Providers";
 import { Lato } from "next/font/google";
 import LogRocketInit from "@/components/LogRocketInit/LogRocketInit";
+import { getTranslations } from "next-intl/server";
+import { ReactNode } from "react";
 
 const lato = Lato({
   subsets: ["latin"],
@@ -12,6 +14,21 @@ const lato = Lato({
   display: "swap",
   variable: "--font-lato",
 });
+
+type Props = {
+  children: ReactNode;
+  params: Promise<{ locale: Locale }>;
+};
+
+export async function generateMetadata(props: Omit<Props, "children">) {
+  const { locale } = await props.params;
+  const t = await getTranslations({ locale, namespace: "common" });
+  return {
+    title: t("siteName"),
+    description: t("siteDescription"),
+    url: `https://gamo.games/`,
+  };
+}
 
 export default async function LocaleLayout({
   children,

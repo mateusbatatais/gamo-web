@@ -6,6 +6,8 @@
     "role": "Perfil: {role}"
   },
   "common": {
+    "siteName": "Gamo",
+    "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles.",
     "logout": "Sair",
     "loading": "Carregando...",
     "error": "Ocorreu um erro"

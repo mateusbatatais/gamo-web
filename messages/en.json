@@ -8,7 +8,9 @@
   "common": {
     "logout": "Logout",
     "loading": "Loading...",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "siteName": "Gamo",
+    "siteDescription": "The Gamo platform helps users manage their gaming consoles."
   },
   "HomePage": {
     "title": "Hello",
