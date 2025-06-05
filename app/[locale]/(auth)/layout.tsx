@@ -28,6 +28,7 @@ export default function AuthLayout({ children }: Props) {
           <Link href="/">
             <Image
               src="/images/logo-gamo.svg"
+              className="h-24 w-auto"
               alt="Logo Gamo"
               width={150}
               height={50}

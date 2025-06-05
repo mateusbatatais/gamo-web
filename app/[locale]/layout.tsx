@@ -20,6 +20,9 @@ type Props = {
   params: Promise<{ locale: Locale }>;
 };
 
+// projeto referencia:https://github.com/amannn/next-intl/blob/main/examples/example-app-router/src/app/%5Blocale%5D/layout.tsx
+// https://next-intl.dev/docs/getting-started/app-router/with-i18n-routing#static-rendering
+
 export async function generateMetadata(props: Omit<Props, "children">) {
   const { locale } = await props.params;
   const t = await getTranslations({ locale, namespace: "common" });

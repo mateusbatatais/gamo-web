@@ -11,13 +11,11 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm dark:bg-gray-900">
       <div className="container mx-auto flex items-center justify-between p-4">
-        <Link
-          href="/"
-          className="text-2xl font-bold text-gray-800 dark:text-gray-100"
-        >
+        <Link href="/" className="text-2xl font-bold text-gray-800 dark:text-gray-100">
           <Image
             src="/images/logo-gamo.svg"
             alt="Logo Gamo"
+            className="h-20 w-auto"
             width={100}
             height={30}
             priority={true}
