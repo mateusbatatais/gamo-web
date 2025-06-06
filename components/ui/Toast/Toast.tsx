@@ -1,10 +1,10 @@
-// components/ui/Toast.tsx
+// components/ui/Toast/Toast.tsx
 "use client";
 
 import React, { useEffect } from "react";
 import { CircleX } from "lucide-react";
 
-type ToastType =
+export type ToastType =
   | "success"
   | "danger"
   | "warning"
@@ -14,10 +14,10 @@ type ToastType =
   | "accent"
   | "neutral";
 
-interface ToastProps {
+export interface ToastProps {
   type?: ToastType;
   message: string;
-  durationMs?: number; // opcional: desaparece após x ms
+  durationMs?: number;
   onClose?: () => void;
 }
 
@@ -33,7 +33,6 @@ const typeVariants: Record<ToastType, string> = {
 };
 
 export default function Toast({ type = "info", message, durationMs = 5000, onClose }: ToastProps) {
-  // Fechar automaticamente após durationMs (se informado)
   useEffect(() => {
     if (durationMs > 0) {
       const timer = setTimeout(() => {

@@ -5,7 +5,6 @@ import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import ProfileImagePlaceholder from "@/components/Account/ProfileImagePlaceholder/ProfileImagePlaceholder";
 import AccountDetailsForm from "@/components/Account/AccountDetailsForm/AccountDetailsForm";
 import ChangePasswordForm from "@/components/Account/ChangePasswordForm/ChangePasswordForm";
@@ -45,13 +44,6 @@ export default function AccountPage() {
 
       <div className="mt-12">
         <ChangePasswordForm />
-      </div>
-
-      <div className="mt-6 text-sm">
-        <Link href="/dashboard" className="text-blue-600 hover:underline">
-          {/** Se desejar traduzir esse texto, adicione algo como account.page.backToDashboard */}
-          Voltar ao Dashboard
-        </Link>
       </div>
     </div>
   );

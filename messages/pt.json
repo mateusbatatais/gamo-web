@@ -112,7 +112,8 @@
   },
   "account": {
     "page": {
-      "title": "Minha Conta"
+      "title": "Minha Conta",
+      "backToDashboard": "Voltar ao Painel"
     },
     "profileImage": {
       "changePhoto": "Alterar foto"
@@ -126,7 +127,8 @@
       "saveChanges": "Salvar alterações",
       "saving": "Salvando...",
       "fetchError": "Falha ao obter dados do usuário.",
-      "updateError": "Falha ao atualizar dados."
+      "updateError": "Falha ao atualizar dados.",
+      "updateSuccess": "Dados atualizados com sucesso!"
     },
     "changePasswordForm": {
       "title": "Alterar Senha",

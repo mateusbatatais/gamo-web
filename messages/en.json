@@ -113,7 +113,8 @@
   },
   "account": {
     "page": {
-      "title": "My Account"
+      "title": "My Account",
+      "backToDashboard": "Back to Dashboard"
     },
     "profileImage": {
       "changePhoto": "Change photo"
@@ -127,7 +128,8 @@
       "saveChanges": "Save Changes",
       "saving": "Saving...",
       "fetchError": "Failed to fetch user details.",
-      "updateError": "Failed to update details."
+      "updateError": "Failed to update details.",
+      "updateSuccess": "Details updated successfully!"
     },
     "changePasswordForm": {
       "title": "Change Password",
