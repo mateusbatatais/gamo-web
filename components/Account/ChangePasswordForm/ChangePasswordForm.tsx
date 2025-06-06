@@ -46,8 +46,8 @@ export default function ChangePasswordForm() {
         confirmNewPassword,
       };
 
-      // PUT /user/password
-      await apiFetch<unknown>("/user/password", {
+      // PUT /user/profile/password
+      await apiFetch<unknown>("/user/profile/password", {
         token,
         method: "PUT",
         body: payload,

@@ -36,12 +36,12 @@ export default function AccountDetailsForm() {
       if (!token) return;
 
       try {
-        // GET /user/me
+        // GET /user/profile
         const data = await apiFetch<{
           name: string;
           email: string;
           description?: string;
-        }>("/user/me", { token });
+        }>("/user/profile", { token });
 
         setName(data.name);
         setEmail(data.email);
@@ -60,7 +60,7 @@ export default function AccountDetailsForm() {
     fetchUserDetails();
   }, [token, logout, t]);
 
-  // Quando o usuário submete o formulário, faz PUT /user/me
+  // Quando o usuário submete o formulário, faz PUT /user/profile
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -73,8 +73,8 @@ export default function AccountDetailsForm() {
     };
 
     try {
-      // PUT /user/me
-      await apiFetch<unknown>("/user/me", {
+      // PUT /user/profile
+      await apiFetch<unknown>("/user/profile", {
         token,
         method: "PUT",
         body: payload,
