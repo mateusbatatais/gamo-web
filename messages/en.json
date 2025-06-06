@@ -110,5 +110,35 @@
     "successMessage": "Your password has been updated. You can now log in.",
     "errorGeneric": "Could not reset password. Try again later.",
     "backToLogin": "Go to login"
+  },
+  "account": {
+    "page": {
+      "title": "My Account"
+    },
+    "profileImage": {
+      "changePhoto": "Change photo"
+    },
+    "detailsForm": {
+      "title": "Account Details",
+      "name": "Name",
+      "email": "Email",
+      "description": "Description",
+      "descriptionPlaceholder": "Tell us a bit about yourself...",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "fetchError": "Failed to fetch user details.",
+      "updateError": "Failed to update details."
+    },
+    "changePasswordForm": {
+      "title": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmNewPassword": "Confirm New Password",
+      "changePassword": "Change Password",
+      "changing": "Changing...",
+      "passwordsDoNotMatch": "Passwords do not match.",
+      "changeError": "Failed to change password.",
+      "passwordChanged": "Password changed successfully!"
+    }
   }
 }

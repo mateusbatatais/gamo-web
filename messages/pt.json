@@ -109,5 +109,35 @@
     "successMessage": "Sua senha foi atualizada com sucesso. Agora você pode fazer login.",
     "errorGeneric": "Não foi possível redefinir a senha. Tente novamente mais tarde.",
     "backToLogin": "Ir para Login"
+  },
+  "account": {
+    "page": {
+      "title": "Minha Conta"
+    },
+    "profileImage": {
+      "changePhoto": "Alterar foto"
+    },
+    "detailsForm": {
+      "title": "Dados da Conta",
+      "name": "Nome",
+      "email": "E-mail",
+      "description": "Descrição",
+      "descriptionPlaceholder": "Conte um pouco sobre você...",
+      "saveChanges": "Salvar alterações",
+      "saving": "Salvando...",
+      "fetchError": "Falha ao obter dados do usuário.",
+      "updateError": "Falha ao atualizar dados."
+    },
+    "changePasswordForm": {
+      "title": "Alterar Senha",
+      "currentPassword": "Senha Atual",
+      "newPassword": "Nova Senha",
+      "confirmNewPassword": "Confirme Nova Senha",
+      "changePassword": "Mudar Senha",
+      "changing": "Alterando...",
+      "passwordsDoNotMatch": "As senhas não coincidem.",
+      "changeError": "Falha ao alterar senha.",
+      "passwordChanged": "Senha alterada com sucesso!"
+    }
   }
 }
