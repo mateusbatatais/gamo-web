@@ -3,9 +3,9 @@
 
 import React from "react";
 import { Link } from "@/i18n/navigation";
-import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import Image from "next/image";
 import LocaleSwitcher from "@/components/LanguageSwitcher/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ui/ThemeToggle/ThemeToggle";
 
 export default function Header() {
   return (
