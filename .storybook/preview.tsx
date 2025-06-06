@@ -1,10 +1,18 @@
+// .storybook/preview.tsx
 import type { Preview } from "@storybook/nextjs-vite";
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "../messages/en.json";
 import ptMessages from "../messages/pt.json";
 import "../app/globals.scss";
-
+import { Lato } from "next/font/google";
 import { withThemeByClassName } from "@storybook/addon-themes";
+
+const lato = Lato({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+  variable: "--font-lato",
+});
 
 export const globalTypes = {
   locale: {
@@ -33,14 +41,15 @@ const preview: Preview = {
       const messagesForLocale = messages[locale as keyof typeof messages];
 
       return (
-        <NextIntlClientProvider locale={locale} messages={messagesForLocale}>
-          <Story />
-        </NextIntlClientProvider>
+        <div className={lato.variable}>
+          <NextIntlClientProvider locale={locale} messages={messagesForLocale}>
+            <Story />
+          </NextIntlClientProvider>
+        </div>
       );
     },
     withThemeByClassName({
       themes: {
-        // nameOfTheme: 'classNameForTheme',
         light: "",
         dark: "dark",
       },
