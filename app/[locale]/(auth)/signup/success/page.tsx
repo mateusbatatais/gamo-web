@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/ui/Button/Button";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 
@@ -113,18 +113,12 @@ export default function SignupSuccessPage() {
                   disabled={resendLoading}
                   className="text-primary hover:underline disabled:opacity-50"
                 >
-                  {resendLoading
-                    ? t("common.loading")
-                    : t("signup.success.resendButton")}
+                  {resendLoading ? t("common.loading") : t("signup.success.resendButton")}
                 </button>
               )}
 
               {/* Se der erro ao reenviar, exibe mensagem de erro */}
-              {resendError && (
-                <p className="text-red-600 dark:text-red-400 mt-2">
-                  {resendError}
-                </p>
-              )}
+              {resendError && <p className="text-red-600 dark:text-red-400 mt-2">{resendError}</p>}
             </>
           )}
         </div>

@@ -11,9 +11,7 @@ describe("Input component", () => {
   });
 
   it("exibe a mensagem de erro corretamente", () => {
-    render(
-      <Input label="Nome" placeholder="Digite aqui" error="Campo obrigatório" />
-    );
+    render(<Input label="Nome" placeholder="Digite aqui" error="Campo obrigatório" />);
     expect(screen.getByText("Campo obrigatório")).toBeInTheDocument();
   });
 
@@ -24,9 +22,7 @@ describe("Input component", () => {
   });
 
   it("renderiza com ícone se a prop `icon` for fornecida", () => {
-    render(
-      <Input label="Com Ícone" icon={<span data-testid="icon">i</span>} />
-    );
+    render(<Input label="Com Ícone" icon={<span data-testid="icon">i</span>} />);
     expect(screen.getByTestId("icon")).toBeInTheDocument();
   });
 
@@ -41,14 +37,7 @@ describe("Input component", () => {
     const user = userEvent.setup();
 
     // Renderiza o Input como senha com toggle habilitado e placeholder específico:
-    render(
-      <Input
-        label="Senha"
-        type="password"
-        placeholder="••••••••"
-        showToggle={true}
-      />
-    );
+    render(<Input label="Senha" type="password" placeholder="••••••••" showToggle={true} />);
 
     // 1) Para encontrar o campo de senha, usamos o placeholder
     const pwdInput = screen.getByPlaceholderText("••••••••");

@@ -1,12 +1,7 @@
 // components/Input/Input.tsx
 "use client";
 
-import React, {
-  InputHTMLAttributes,
-  ReactNode,
-  forwardRef,
-  useState,
-} from "react";
+import React, { InputHTMLAttributes, ReactNode, forwardRef, useState } from "react";
 import clsx from "clsx";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -38,16 +33,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       ...props
     },
-    ref
+    ref,
   ) => {
     const [isVisible, setIsVisible] = useState(false);
 
-    const actualType =
-      showToggle && type === "password"
-        ? isVisible
-          ? "text"
-          : "password"
-        : type;
+    const actualType = showToggle && type === "password" ? (isVisible ? "text" : "password") : type;
 
     const inputClasses = clsx(
       "block w-full border rounded-md transition focus:outline-none",
@@ -74,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         "pl-10": icon,
         "pr-10": showToggle && type === "password",
       },
-      className
+      className,
     );
 
     return (
@@ -92,12 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
 
-          <input
-            ref={ref}
-            type={actualType}
-            className={inputClasses}
-            {...props}
-          />
+          <input ref={ref} type={actualType} className={inputClasses} {...props} />
 
           {showToggle && type === "password" && (
             <button
@@ -112,16 +97,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
 
         {error && (
-          <p
-            className="mt-1 text-sm text-red-500 dark:text-red-400"
-            data-testid="input-error"
-          >
+          <p className="mt-1 text-sm text-red-500 dark:text-red-400" data-testid="input-error">
             {error}
           </p>
         )}
       </div>
     );
-  }
+  },
 );
 
 Input.displayName = "Input";

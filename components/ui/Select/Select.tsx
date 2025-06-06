@@ -1,4 +1,4 @@
-import React, { SelectHTMLAttributes } from 'react';
+import React, { SelectHTMLAttributes } from "react";
 
 export interface SelectOption {
   value: string;
@@ -18,7 +18,7 @@ export function Select({ label, options, error, ...rest }: SelectProps) {
       <select
         className={`
           px-3 py-2 border rounded focus:outline-none 
-          ${error ? 'border-red-500' : 'border-neutral-300 focus:border-primary-500'}
+          ${error ? "border-red-500" : "border-neutral-300 focus:border-primary-500"}
         `}
         {...rest}
       >

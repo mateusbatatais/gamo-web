@@ -4,17 +4,17 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/Button/Button";
-import { Spinner } from "@/components/Spinner/Spinner";
+import { Button } from "@/components/ui/Button/Button";
+import { Spinner } from "@/components/ui/Spinner/Spinner";
 
 export default function VerifyEmailPage() {
   const t = useTranslations("verifyEmail");
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [status, setStatus] = useState<
-    "loading" | "success" | "error" | "expired" | "noToken"
-  >("loading");
+  const [status, setStatus] = useState<"loading" | "success" | "error" | "expired" | "noToken">(
+    "loading",
+  );
   const [message, setMessage] = useState("");
 
   // Assim que carregue, limpa token inválido em localStorage
@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
 
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email?token=${token}`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email?token=${token}`,
         );
         const data = await res.json();
 
@@ -83,9 +83,7 @@ export default function VerifyEmailPage() {
         {status === "loading" && (
           <div className="flex flex-col items-center space-y-4">
             <Spinner className="h-8 w-8 text-primary" />
-            <p className="text-gray-700 dark:text-gray-300 text-center">
-              {t("loading")}
-            </p>
+            <p className="text-gray-700 dark:text-gray-300 text-center">{t("loading")}</p>
           </div>
         )}
 
@@ -95,9 +93,7 @@ export default function VerifyEmailPage() {
               {t("successTitle")}
             </h1>
             <p className="text-gray-600 dark:text-gray-400">{message}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {t("redirectingLogin")}
-            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t("redirectingLogin")}</p>
           </div>
         )}
 
@@ -106,9 +102,7 @@ export default function VerifyEmailPage() {
             <h1 className="text-2xl font-bold text-red-600">
               {status === "expired" ? t("expiredTitle") : t("errorTitle")}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-center">
-              {message}
-            </p>
+            <p className="text-gray-600 dark:text-gray-400 text-center">{message}</p>
             <Button
               onClick={() => router.push(`/signup`)}
               variant="primary"
@@ -120,12 +114,8 @@ export default function VerifyEmailPage() {
 
         {status === "noToken" && (
           <div className="text-center space-y-6">
-            <h1 className="text-2xl font-bold text-red-600">
-              {t("errorTitle")}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-center">
-              {message}
-            </p>
+            <h1 className="text-2xl font-bold text-red-600">{t("errorTitle")}</h1>
+            <p className="text-gray-600 dark:text-gray-400 text-center">{message}</p>
             <Button
               onClick={() => router.push(`/signup`)}
               variant="primary"
