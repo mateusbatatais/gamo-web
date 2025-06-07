@@ -1,10 +1,11 @@
 // stories/Toast.stories.tsx
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Toast from "./Toast";
 
 const meta: Meta<typeof Toast> = {
   title: "UI/Toast",
   component: Toast,
+  tags: ["autodocs"],
   argTypes: {
     type: {
       control: {
