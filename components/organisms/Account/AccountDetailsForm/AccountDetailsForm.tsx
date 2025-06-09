@@ -12,6 +12,7 @@ import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/atoms/Input/Input";
 import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlaceholder";
+import { Textarea } from "@/components/atoms/Textarea/Textarea";
 
 interface UserDetailsPayload {
   name: string;
@@ -125,14 +126,12 @@ export default function AccountDetailsForm() {
 
   return (
     <>
-      {/* Toast */}
       {toast && (
         <div className="fixed top-4 inset-x-0 z-50 flex justify-center">
           <Toast {...toast} durationMs={5000} onClose={closeToast} />
         </div>
       )}
 
-      {/* Crop mode */}
       {fileSrc && !previewUrl && (
         <div className="space-y-4">
           <ImageCropper src={fileSrc} aspect={1} onBlobReady={setCroppedBlob} />
@@ -140,14 +139,11 @@ export default function AccountDetailsForm() {
         </div>
       )}
 
-      {/* Main form */}
       {!fileSrc && (
         <form onSubmit={handleSubmit} className="max-w-lg space-y-6 p-4 border rounded-lg">
           <h2 className="text-xl font-semibold">{t("title")}</h2>
 
-          {/* Profile Image area */}
           <div className="flex flex-col items-center gap-2">
-            <p>{t("profileImage")}</p>
             {previewUrl ? (
               <Image
                 src={previewUrl}
@@ -159,7 +155,6 @@ export default function AccountDetailsForm() {
             ) : (
               <ProfileImagePlaceholder />
             )}
-            {/* Custom upload button */}
             <Button
               type="button"
               label={t("selectPhoto")}
@@ -181,40 +176,36 @@ export default function AccountDetailsForm() {
             />
           </div>
 
-          {/* Text fields */}
-          <div>
-            <label className="block mb-1 text-gray-700">{t("name")}</label>
-            <Input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              error={errorMsg ?? undefined}
-            />
-          </div>
+          <Input
+            type="text"
+            label={t("name")}
+            placeholder={t("name")}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            error={errorMsg ?? undefined}
+          />
+
+          <Input
+            type="email"
+            label={t("email")}
+            disabled
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            error={errorMsg ?? undefined}
+          />
 
           <div>
-            <label className="block mb-1 text-gray-700">{t("email")}</label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              error={errorMsg ?? undefined}
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-700">{t("description")}</label>
-            <textarea
+            <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full border p-2 rounded h-24"
               placeholder={t("descriptionPlaceholder")}
+              label={t("description")}
             />
           </div>
 
-          {/* Submit */}
           <Button
             type="submit"
             disabled={loading}

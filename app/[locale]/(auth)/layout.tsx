@@ -3,11 +3,11 @@
 
 import { ReactNode } from "react";
 import Image from "next/image";
-import LanguageSwitcher from "@/components/molecules/LanguageSwitcher/LanguageSwitcher";
 import "../../globals.scss";
 import { Link } from "@/i18n/navigation";
 import { useClearInvalidToken } from "@/hooks/useClearInvalidToken";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
+import { LocaleSwitcher } from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
 
 type Props = {
   children: ReactNode;
@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: Props) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-800">
       <div className="absolute top-4 right-4 flex items-center space-x-4">
-        <LanguageSwitcher />
+        <LocaleSwitcher />
         <ThemeToggle />
       </div>
 

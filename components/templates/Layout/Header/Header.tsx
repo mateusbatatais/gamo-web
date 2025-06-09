@@ -4,8 +4,8 @@
 import React from "react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
-import LocaleSwitcher from "@/components/molecules/LanguageSwitcher/LanguageSwitcher";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
+import { LocaleSwitcher } from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
 
 export default function Header() {
   return (
