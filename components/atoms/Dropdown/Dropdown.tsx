@@ -44,6 +44,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         label={currentLabel?.toString() ?? placeholder}
         icon={<ChevronDown aria-hidden="true" />}
         variant="transparent"
+        iconPosition="right"
       />
 
       {open && (
