@@ -7,7 +7,7 @@ import "../../globals.scss";
 import { Link } from "@/i18n/navigation";
 import { useClearInvalidToken } from "@/hooks/useClearInvalidToken";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
-import { LocaleSwitcher } from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
+import LocaleSwitcher from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
 
 type Props = {
   children: ReactNode;
