@@ -4,8 +4,8 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Input } from "@/components/ui/Input/Input";
-import { Button } from "@/components/ui/Button/Button";
+import { Input } from "@/components/atoms/Input/Input";
+import { Button } from "@/components/atoms/Button/Button";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 

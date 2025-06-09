@@ -5,9 +5,9 @@ import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
-import { Input } from "@/components/ui/Input/Input";
-import { Button } from "@/components/ui/Button/Button";
-import Toast, { ToastType } from "@/components/ui/Toast/Toast";
+import { Input } from "@/components/atoms/Input/Input";
+import { Button } from "@/components/atoms/Button/Button";
+import Toast, { ToastType } from "@/components/molecules/Toast/Toast";
 
 interface ChangePasswordPayload {
   currentPassword: string;

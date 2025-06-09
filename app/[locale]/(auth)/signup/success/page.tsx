@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button/Button";
+import { Button } from "@/components/atoms/Button/Button";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 

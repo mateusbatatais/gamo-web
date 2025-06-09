@@ -5,8 +5,8 @@ import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import AccountDetailsForm from "@/components/Account/AccountDetailsForm/AccountDetailsForm";
-import ChangePasswordForm from "@/components/Account/ChangePasswordForm/ChangePasswordForm";
+import AccountDetailsForm from "@/components/organisms/Account/AccountDetailsForm/AccountDetailsForm";
+import ChangePasswordForm from "@/components/organisms/Account/ChangePasswordForm/ChangePasswordForm";
 
 export default function AccountPage() {
   const { user, initialized } = useAuth();

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/hooks/useTheme";
-import { Button } from "../Button/Button";
+import { Button } from "../../atoms/Button/Button";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();

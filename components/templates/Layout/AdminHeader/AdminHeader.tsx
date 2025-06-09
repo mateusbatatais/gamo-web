@@ -3,7 +3,7 @@
 
 import React from "react";
 import { Link } from "@/i18n/navigation";
-import { ThemeToggle } from "@/components/ui/ThemeToggle/ThemeToggle";
+import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
 
 export default function AdminHeader() {
   return (

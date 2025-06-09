@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 import "../globals.scss";
 import { Providers } from "@/components/Providers";
 import { Lato } from "next/font/google";
-import LogRocketInit from "@/components/LogRocketInit/LogRocketInit";
+import LogRocketInit from "@/components/atoms/LogRocketInit/LogRocketInit";
 import { getTranslations } from "next-intl/server";
 import { ReactNode } from "react";
 

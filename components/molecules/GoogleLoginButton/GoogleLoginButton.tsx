@@ -2,10 +2,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { useGoogleLogin } from "../../hooks/useGoogleLogin";
 import { apiFetch } from "@/utils/api";
 import { useTranslations } from "next-intl";
-import { GoogleIcon } from "../Icons/GoogleIcon";
+import { useGoogleLogin } from "@/hooks/useGoogleLogin";
+import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
 
 export function GoogleLoginButton() {
   const { login: getIdToken } = useGoogleLogin();
@@ -21,13 +21,10 @@ export function GoogleLoginButton() {
       const idToken = await getIdToken();
 
       // 2) Enviar ao backend e receber o JWT do Gamo
-      const { token } = await apiFetch<{ token: string }>(
-        "/auth/social/google",
-        {
-          method: "POST",
-          token: idToken,
-        }
-      );
+      const { token } = await apiFetch<{ token: string }>("/auth/social/google", {
+        method: "POST",
+        token: idToken,
+      });
 
       // 3) Armazenar e redirecionar
       localStorage.setItem("gamo_token", token);

@@ -2,8 +2,8 @@
 
 import { ReactNode } from "react";
 import "../../globals.scss";
-import AdminSidebar from "@/components/Layout/AdminSidebar/AdminSidebar";
-import AdminHeader from "@/components/Layout/AdminHeader/AdminHeader";
+import AdminSidebar from "@/components/templates/Layout/AdminSidebar/AdminSidebar";
+import AdminHeader from "@/components/templates/Layout/AdminHeader/AdminHeader";
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (

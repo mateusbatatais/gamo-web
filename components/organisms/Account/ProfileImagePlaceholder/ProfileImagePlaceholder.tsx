@@ -3,7 +3,7 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button/Button";
+import { Button } from "@/components/atoms/Button/Button";
 
 export default function ProfileImagePlaceholder() {
   const t = useTranslations("account.profileImage");

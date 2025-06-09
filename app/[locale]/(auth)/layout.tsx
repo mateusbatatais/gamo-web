@@ -3,11 +3,11 @@
 
 import { ReactNode } from "react";
 import Image from "next/image";
-import LanguageSwitcher from "@/components/LanguageSwitcher/LanguageSwitcher";
+import LanguageSwitcher from "@/components/molecules/LanguageSwitcher/LanguageSwitcher";
 import "../../globals.scss";
 import { Link } from "@/i18n/navigation";
 import { useClearInvalidToken } from "@/hooks/useClearInvalidToken";
-import { ThemeToggle } from "@/components/ui/ThemeToggle/ThemeToggle";
+import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
 
 type Props = {
   children: ReactNode;

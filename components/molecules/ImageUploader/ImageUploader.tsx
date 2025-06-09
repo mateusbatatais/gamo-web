@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
-import Toast, { ToastType } from "@/components/ui/Toast/Toast";
+import Toast, { ToastType } from "@/components/molecules/Toast/Toast";
 
 interface ImageUploaderProps {
   blob: Blob;

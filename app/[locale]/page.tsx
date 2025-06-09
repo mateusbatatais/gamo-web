@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
-import Header from "@/components/Layout/Header/Header";
-import Footer from "@/components/Layout/Footer/Footer";
+import Header from "@/components/templates/Layout/Header/Header";
+import Footer from "@/components/templates/Layout/Footer/Footer";
 
 export default function HomePage() {
   const t = useTranslations("HomePage");

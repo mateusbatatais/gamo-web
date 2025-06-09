@@ -6,12 +6,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/utils/api";
-import Toast, { ToastType } from "@/components/ui/Toast/Toast";
-import ImageCropper from "@/components/ui/ImageCropper/ImageCropper";
+import Toast, { ToastType } from "@/components/molecules/Toast/Toast";
+import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import Image from "next/image";
-import ProfileImagePlaceholder from "@/components/Account/ProfileImagePlaceholder/ProfileImagePlaceholder";
-import { Button } from "@/components/ui/Button/Button";
-import { Input } from "@/components/ui/Input/Input";
+import { Button } from "@/components/atoms/Button/Button";
+import { Input } from "@/components/atoms/Input/Input";
+import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlaceholder";
 
 interface UserDetailsPayload {
   name: string;

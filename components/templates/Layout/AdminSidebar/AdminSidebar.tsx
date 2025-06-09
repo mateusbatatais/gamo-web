@@ -6,15 +6,10 @@ import { Link } from "@/i18n/navigation";
 
 type AdminSidebarProps = React.HTMLAttributes<HTMLElement>;
 
-export default function AdminSidebar({
-  className,
-  ...rest
-}: AdminSidebarProps) {
+export default function AdminSidebar({ className, ...rest }: AdminSidebarProps) {
   return (
     <aside
-      className={`${
-        className ?? ""
-      } bg-white border-r dark:bg-gray-800 dark:border-gray-700`}
+      className={`${className ?? ""} bg-white border-r dark:bg-gray-800 dark:border-gray-700`}
       {...rest}
     >
       {" "}

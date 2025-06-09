@@ -4,8 +4,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button/Button";
-import { Spinner } from "@/components/ui/Spinner/Spinner";
+import { Button } from "@/components/atoms/Button/Button";
+import { Spinner } from "@/components/atoms/Spinner/Spinner";
 
 export default function VerifyEmailPage() {
   const t = useTranslations("verifyEmail");

@@ -4,12 +4,12 @@
 import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Input } from "@/components/ui/Input/Input";
-import { Button } from "@/components/ui/Button/Button";
-import { GoogleLoginButton } from "@/components/GoogleLoginButton/GoogleLoginButton";
+import { Input } from "@/components/atoms/Input/Input";
+import { Button } from "@/components/atoms/Button/Button";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { GoogleLoginButton } from "@/components/molecules/GoogleLoginButton/GoogleLoginButton";
 
 export default function LoginPage() {
   const t = useTranslations();

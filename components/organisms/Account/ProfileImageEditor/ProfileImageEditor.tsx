@@ -3,10 +3,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import ImageCropper from "@/components/ui/ImageCropper/ImageCropper";
-import ImageUploader from "@/components/ui/ImageUploader/ImageUploader";
+import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
+import ImageUploader from "@/components/molecules/ImageUploader/ImageUploader";
 import Image from "next/image";
-import { Input } from "@/components/ui/Input/Input";
+import { Input } from "@/components/atoms/Input/Input";
 
 export default function ProfileImageEditor() {
   const { user } = useAuth();
