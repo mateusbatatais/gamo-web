@@ -6,14 +6,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/utils/api";
-import { Input } from "@/components/ui/Input/Input";
-import { Button } from "@/components/ui/Button/Button";
 import Toast, { ToastType } from "@/components/ui/Toast/Toast";
+import ImageCropper from "@/components/ui/ImageCropper/ImageCropper";
+import Image from "next/image";
+import ProfileImagePlaceholder from "@/components/Account/ProfileImagePlaceholder/ProfileImagePlaceholder";
+import { Button } from "@/components/ui/Button/Button";
+import { Input } from "@/components/ui/Input/Input";
 
 interface UserDetailsPayload {
   name: string;
   email: string;
   description: string;
+  profileImage?: string;
 }
 
 interface ApiError extends Error {
@@ -27,85 +31,93 @@ export default function AccountDetailsForm() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // **Estado para mensagem inline de erro no campo**
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: ToastType; message: string } | null>(null);
 
-  // **Estado para exibir toast**
-  const [toastData, setToastData] = useState<{ type: ToastType; message: string } | null>(null);
+  const [fileSrc, setFileSrc] = useState<string | null>(null);
+  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(user?.profileImage || null);
 
   const t = useTranslations("account.detailsForm");
   const router = useRouter();
 
-  // Ao montar, busca os dados atuais do usuário (incluindo description)
+  // fetch profile
   useEffect(() => {
-    async function fetchUserDetails() {
-      if (!token) return;
-
-      try {
-        const data = await apiFetch<{
-          name: string;
-          email: string;
-          description?: string;
-        }>("/user/profile", { token });
-
+    if (!token) return;
+    apiFetch<{ name: string; email: string; description?: string; profileImage?: string }>(
+      "/user/profile",
+      { token },
+    )
+      .then((data) => {
         setName(data.name);
         setEmail(data.email);
         setDescription(data.description ?? "");
-      } catch (err: unknown) {
+        setPreviewUrl(data.profileImage || null);
+      })
+      .catch((err) => {
         const apiErr = err as ApiError;
-        if (apiErr.code === "UNAUTHORIZED") {
-          logout();
-          return;
-        }
-        console.error(apiErr);
-        // Exibe o erro no toast e também no campo name (por exemplo)
+        if (apiErr.code === "UNAUTHORIZED") return void logout();
         setErrorMsg(t("fetchError"));
-        setToastData({ type: "danger", message: t("fetchError") });
-      }
-    }
-
-    fetchUserDetails();
+        setToast({ type: "danger", message: t("fetchError") });
+      });
   }, [token, logout, t]);
 
-  // Fecha o toast
-  function handleCloseToast() {
-    setToastData(null);
+  // when blob ready, set preview
+  useEffect(() => {
+    if (!croppedBlob) return;
+    const url = URL.createObjectURL(croppedBlob);
+    setPreviewUrl(url);
+    setFileSrc(null);
+    return () => URL.revokeObjectURL(url);
+  }, [croppedBlob]);
+
+  function closeToast() {
+    setToast(null);
   }
 
-  // Quando o usuário submete o formulário, faz PUT /user/profile
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    // Limpa mensagem de erro inline antes de enviar nova requisição
     setErrorMsg(null);
-
-    const payload: UserDetailsPayload = {
-      name,
-      email,
-      description,
-    };
+    setToast(null);
+    setLoading(true);
 
     try {
-      await apiFetch<unknown>("/user/profile", {
+      let profileImageUrl = previewUrl;
+      if (croppedBlob) {
+        const formData = new FormData();
+        formData.append("file", croppedBlob, "profile.jpg");
+
+        const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/uploads/profile`, {
+          method: "POST",
+          headers: { Authorization: token ? `Bearer ${token}` : "" },
+          body: formData,
+        });
+        if (!uploadRes.ok) throw new Error("Upload failed");
+        const json = (await uploadRes.json()) as { url: string };
+        profileImageUrl = json.url;
+      }
+
+      const payload: UserDetailsPayload = {
+        name,
+        email,
+        description,
+        ...(profileImageUrl ? { profileImage: profileImageUrl } : {}),
+      };
+
+      await apiFetch("/user/profile", {
         token,
         method: "PUT",
         body: payload,
       });
-      // Ao atualizar com sucesso, mostra toast de sucesso
-      setToastData({ type: "success", message: t("updateSuccess") });
-      // Atualiza dados no contexto / recarrega a página
+
+      setToast({ type: "success", message: t("updateSuccess") });
       router.refresh();
     } catch (err: unknown) {
       const apiErr = err as ApiError;
-      if (apiErr.code === "UNAUTHORIZED") {
-        logout();
-        return;
-      }
-      console.error(apiErr);
-      // Se a API retornar uma mensagem específica, exibimos inline e em toast
-      const message = apiErr.message || t("updateError");
-      setErrorMsg(message);
-      setToastData({ type: "danger", message });
+      if (apiErr.code === "UNAUTHORIZED") return void logout();
+      const msg = apiErr.message || t("updateError");
+      setErrorMsg(msg);
+      setToast({ type: "danger", message: msg });
     } finally {
       setLoading(false);
     }
@@ -113,61 +125,103 @@ export default function AccountDetailsForm() {
 
   return (
     <>
-      {toastData && (
+      {/* Toast */}
+      {toast && (
         <div className="fixed top-4 inset-x-0 z-50 flex justify-center">
-          <Toast
-            type={toastData.type}
-            message={toastData.message}
-            durationMs={5000}
-            onClose={handleCloseToast}
-          />
+          <Toast {...toast} durationMs={5000} onClose={closeToast} />
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="max-w-lg w-full space-y-4 p-4 border rounded-lg">
-        <h2 className="text-xl font-semibold">{t("title")}</h2>
-
-        <div>
-          <label className="block mb-1 text-gray-700">{t("name")}</label>
-          <Input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-            className="w-full"
-          />
+      {/* Crop mode */}
+      {fileSrc && !previewUrl && (
+        <div className="space-y-4">
+          <ImageCropper src={fileSrc} aspect={1} onBlobReady={setCroppedBlob} />
+          <Button variant="secondary" onClick={() => setFileSrc(null)} label={t("cancelCrop")} />
         </div>
+      )}
 
-        <div>
-          <label className="block mb-1 text-gray-700">{t("email")}</label>
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-            className="w-full"
+      {/* Main form */}
+      {!fileSrc && (
+        <form onSubmit={handleSubmit} className="max-w-lg space-y-6 p-4 border rounded-lg">
+          <h2 className="text-xl font-semibold">{t("title")}</h2>
+
+          {/* Profile Image area */}
+          <div className="flex flex-col items-center gap-2">
+            <p>{t("profileImage")}</p>
+            {previewUrl ? (
+              <Image
+                src={previewUrl}
+                alt="Avatar"
+                width={128}
+                height={128}
+                className="rounded-full object-cover"
+              />
+            ) : (
+              <ProfileImagePlaceholder />
+            )}
+            {/* Custom upload button */}
+            <Button
+              type="button"
+              label={t("selectPhoto")}
+              onClick={() => document.getElementById("profileInput")?.click()}
+              className="mt-2"
+            />
+            <input
+              id="profileInput"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setFileSrc(URL.createObjectURL(file));
+                  setPreviewUrl(null);
+                }
+              }}
+            />
+          </div>
+
+          {/* Text fields */}
+          <div>
+            <label className="block mb-1 text-gray-700">{t("name")}</label>
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              error={errorMsg ?? undefined}
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-700">{t("email")}</label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              error={errorMsg ?? undefined}
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-700">{t("description")}</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full border p-2 rounded h-24"
+              placeholder={t("descriptionPlaceholder")}
+            />
+          </div>
+
+          {/* Submit */}
+          <Button
+            type="submit"
+            disabled={loading}
+            label={loading ? t("saving") : t("saveChanges")}
           />
-        </div>
-
-        <div>
-          <label className="block mb-1 text-gray-700">{t("description")}</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border p-2 rounded h-24"
-            placeholder={t("descriptionPlaceholder")}
-          />
-        </div>
-
-        <Button
-          type="submit"
-          disabled={loading}
-          className="mt-2"
-          label={loading ? t("saving") : t("saveChanges")}
-        />
-      </form>
+        </form>
+      )}
     </>
   );
 }

@@ -129,7 +129,10 @@
       "saving": "Saving...",
       "fetchError": "Failed to fetch user details.",
       "updateError": "Failed to update details.",
-      "updateSuccess": "Details updated successfully!"
+      "updateSuccess": "Details updated successfully!",
+      "profileImage": "Profile Image",
+      "selectPhoto": "Select Photo",
+      "cancelCrop": "Cancel Crop"
     },
     "changePasswordForm": {
       "title": "Change Password",

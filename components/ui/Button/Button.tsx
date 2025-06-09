@@ -48,7 +48,7 @@ const statusClasses: Record<ButtonStatus, string> = {
 export function Button({
   label,
   title,
-  type,
+  type = "button",
   onClick,
   disabled = false,
   size = "md",

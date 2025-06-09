@@ -128,7 +128,10 @@
       "saving": "Salvando...",
       "fetchError": "Falha ao obter dados do usuário.",
       "updateError": "Falha ao atualizar dados.",
-      "updateSuccess": "Dados atualizados com sucesso!"
+      "updateSuccess": "Dados atualizados com sucesso!",
+      "profileImage": "Imagem de perfil",
+      "selectPhoto": "Selecionar foto",
+      "cancelCrop": "Cancelar recorte"
     },
     "changePasswordForm": {
       "title": "Alterar Senha",
