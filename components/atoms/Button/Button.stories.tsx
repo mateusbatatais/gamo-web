@@ -20,6 +20,11 @@ const meta: Meta<ButtonProps> = {
       control: { type: "select" },
       options: ["default", "success", "danger", "warning", "info"],
     },
+    iconPosition: {
+      control: { type: "select" },
+      options: ["left", "right"],
+      description: "Position of the icon relative to the label",
+    },
   },
 };
 
@@ -37,7 +42,8 @@ export const WithIcon: Story = {
   args: {
     label: "Com Ícone",
     variant: "primary",
-    icon: <Home className="w-4 h-4 mr-2" />,
+    icon: <Home className="w-4 h-4" />, // spacing handled by component
+    iconPosition: "left",
   },
 };
 
@@ -45,7 +51,8 @@ export const Danger: Story = {
   args: {
     label: "Perigo",
     status: "danger",
-    icon: <AlertTriangle className="w-4 h-4 mr-2" />,
+    icon: <AlertTriangle className="w-4 h-4" />, // spacing handled by component
+    iconPosition: "left",
   },
 };
 
@@ -53,7 +60,8 @@ export const Success: Story = {
   args: {
     label: "Sucesso",
     status: "success",
-    icon: <CheckCircle className="w-4 h-4 mr-2" />,
+    icon: <CheckCircle className="w-4 h-4" />, // spacing handled by component
+    iconPosition: "right",
   },
 };
 

@@ -1,4 +1,3 @@
-// components/Button/Button.tsx
 import React, { ReactNode } from "react";
 import clsx from "clsx";
 
@@ -16,6 +15,7 @@ export interface ButtonProps {
   variant?: ButtonVariant;
   status?: ButtonStatus;
   icon?: ReactNode;
+  iconPosition?: "left" | "right";
   className?: string;
 }
 
@@ -55,11 +55,15 @@ export function Button({
   variant = "primary",
   status = "default",
   icon,
+  iconPosition = "left",
   className,
 }: ButtonProps) {
   const base = "inline-flex items-center justify-center font-medium rounded-md transition";
   const sizeCls = sizeClasses[size];
   const styleCls = status !== "default" ? statusClasses[status] : variantClasses[variant];
+
+  const iconSpacing = icon ? (iconPosition === "right" ? "ml-2" : "mr-2") : undefined;
+
   return (
     <button
       type={type}
@@ -74,8 +78,9 @@ export function Button({
         className,
       )}
     >
-      {icon && <span className="mr-2">{icon}</span>}
+      {icon && iconPosition === "left" && <span className={iconSpacing}>{icon}</span>}
       {label}
+      {icon && iconPosition === "right" && <span className={iconSpacing}>{icon}</span>}
     </button>
   );
 }
