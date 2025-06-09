@@ -3,7 +3,7 @@ import { Button, ButtonProps } from "./Button";
 import { Home, AlertTriangle, CheckCircle } from "lucide-react";
 
 const meta: Meta<ButtonProps> = {
-  title: "Components/Button",
+  title: "Components/Atoms/Button",
   component: Button,
   tags: ["autodocs"],
   argTypes: {

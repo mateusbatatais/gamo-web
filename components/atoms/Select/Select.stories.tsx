@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Select, SelectProps } from "./Select";
 
 const meta: Meta<SelectProps> = {
-  title: "Components/Select",
+  title: "Components/Atoms/Select",
   component: Select,
   tags: ["autodocs"],
   argTypes: {

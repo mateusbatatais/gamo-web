@@ -4,7 +4,7 @@ import AdminSidebar from "./AdminSidebar";
 type Story = StoryObj<typeof AdminSidebar>;
 
 const meta: Meta<typeof AdminSidebar> = {
-  title: "Admin/Sidebar",
+  title: "Components/Templates/Admin/Sidebar",
   component: AdminSidebar,
   tags: ["autodocs"],
 };

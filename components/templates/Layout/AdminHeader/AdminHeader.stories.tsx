@@ -4,7 +4,7 @@ import AdminHeader from "./AdminHeader";
 type Story = StoryObj<typeof AdminHeader>;
 
 const meta: Meta<typeof AdminHeader> = {
-  title: "Admin/Header",
+  title: "Components/Templates/Admin/Header",
   component: AdminHeader,
   tags: ["autodocs"],
 };

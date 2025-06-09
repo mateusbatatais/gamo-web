@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Textarea, TextareaProps } from "./Textarea";
 
 const meta: Meta<TextareaProps> = {
-  title: "Components/Textarea",
+  title: "Components/Atoms/Textarea",
   component: Textarea,
   tags: ["autodocs"],
   argTypes: {

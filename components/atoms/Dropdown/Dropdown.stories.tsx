@@ -8,7 +8,7 @@ const options: DropdownOption[] = [
 ];
 
 const meta: Meta<DropdownProps> = {
-  title: "Components/Dropdown",
+  title: "Components/Atoms/Dropdown",
   component: Dropdown,
   tags: ["autodocs"],
   args: {

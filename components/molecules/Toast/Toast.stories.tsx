@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Toast from "./Toast";
 
 const meta: Meta<typeof Toast> = {
-  title: "UI/Toast",
+  title: "Components/Molecules/Toast",
   component: Toast,
   tags: ["autodocs"],
   argTypes: {

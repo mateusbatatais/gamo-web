@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { GoogleLoginButton } from "./GoogleLoginButton";
 
 const meta: Meta<typeof GoogleLoginButton> = {
-  title: "Components/GoogleLoginButton",
+  title: "Components/Molecules/GoogleLoginButton",
   component: GoogleLoginButton,
   tags: ["autodocs"],
 };

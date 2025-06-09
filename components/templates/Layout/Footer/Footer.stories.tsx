@@ -4,7 +4,7 @@ import Footer from "./Footer";
 type Story = StoryObj<typeof Footer>;
 
 const meta: Meta<typeof Footer> = {
-  title: "Layout/Footer",
+  title: "Components/Templates/Layout/Footer",
   component: Footer,
   tags: ["autodocs"],
 };

@@ -4,7 +4,7 @@ import { Mail } from "lucide-react";
 import { Input, InputProps } from "./Input";
 
 const meta: Meta<InputProps> = {
-  title: "Components/Input",
+  title: "Components/Atoms/Input",
   component: Input,
   tags: ["autodocs"],
   argTypes: {
