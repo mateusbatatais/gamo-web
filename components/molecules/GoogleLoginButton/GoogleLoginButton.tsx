@@ -28,7 +28,7 @@ export function GoogleLoginButton() {
 
       // 3) Armazenar e redirecionar
       localStorage.setItem("gamo_token", token);
-      window.location.href = "/dashboard";
+      window.location.href = "/account";
     } catch (e) {
       console.error(e);
       setError(t("errors.invalid"));
