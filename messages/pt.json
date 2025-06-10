@@ -16,6 +16,12 @@
     "title": "Olá",
     "about": "Sobre"
   },
+  "Header": {
+    "altLogo": "Logo Gamo",
+    "catalog": "Catálogo",
+    "login": "Entrar",
+    "myAccount": "Minha Conta"
+  },
   "Footer": {
     "rights": "Todos os direitos reservados"
   },

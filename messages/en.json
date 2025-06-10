@@ -16,6 +16,12 @@
     "title": "Hello",
     "about": "About"
   },
+  "Header": {
+    "altLogo": "Gamo Logo",
+    "catalog": "Catalog",
+    "login": "Login",
+    "myAccount": "My Account"
+  },
   "Footer": {
     "rights": "All rights reserved"
   },

@@ -1,18 +1,6 @@
-import { useTranslations } from "next-intl";
-import Header from "@/components/templates/Layout/Header/Header";
-import Footer from "@/components/templates/Layout/Footer/Footer";
+import { redirect } from "next/navigation";
 
-export default function HomePage() {
-  const t = useTranslations("HomePage");
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div>
-          <h1>{t("title")}</h1>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
+// This page only renders when the app is built statically (output: 'export')
+export default function RootPage() {
+  redirect("/catalog");
 }

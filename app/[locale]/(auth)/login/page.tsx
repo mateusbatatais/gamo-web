@@ -45,7 +45,7 @@ export default function LoginPage() {
       login(data.token);
 
       // Só depois redireciona para o dashboard
-      router.push("/dashboard");
+      router.push("/account");
     } catch (err: unknown) {
       // Se vier código (INVALID_CREDENTIALS, etc.), traduzir
       if (
