@@ -120,7 +120,8 @@
   "account": {
     "page": {
       "title": "My Account",
-      "backToDashboard": "Back to Dashboard"
+      "backToDashboard": "Back to Dashboard",
+      "logout": "Logout"
     },
     "profileImage": {
       "changePhoto": "Change photo"

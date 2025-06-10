@@ -26,10 +26,8 @@ export default function ChangePasswordForm() {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // **Estado para mensagem inline de erro no campo**
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // **Estado para exibir toast**
   const [toastData, setToastData] = useState<{ type: ToastType; message: string } | null>(null);
 
   const t = useTranslations("account.changePasswordForm");
@@ -40,7 +38,6 @@ export default function ChangePasswordForm() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Limpa mensagens anteriores
     setErrorMsg(null);
     setToastData(null);
 
@@ -105,8 +102,8 @@ export default function ChangePasswordForm() {
         <h2 className="text-xl font-semibold">{t("title")}</h2>
 
         <div>
-          <label className="block mb-1 text-gray-700">{t("currentPassword")}</label>
           <Input
+            label={t("currentPassword")}
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -117,8 +114,8 @@ export default function ChangePasswordForm() {
         </div>
 
         <div>
-          <label className="block mb-1 text-gray-700">{t("newPassword")}</label>
           <Input
+            label={t("newPassword")}
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -129,8 +126,8 @@ export default function ChangePasswordForm() {
         </div>
 
         <div>
-          <label className="block mb-1 text-gray-700">{t("confirmNewPassword")}</label>
           <Input
+            label={t("confirmNewPassword")}
             type="password"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}

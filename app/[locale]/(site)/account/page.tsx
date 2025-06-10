@@ -7,9 +7,10 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import AccountDetailsForm from "@/components/organisms/Account/AccountDetailsForm/AccountDetailsForm";
 import ChangePasswordForm from "@/components/organisms/Account/ChangePasswordForm/ChangePasswordForm";
+import { Button } from "@/components/atoms/Button/Button";
 
 export default function AccountPage() {
-  const { user, initialized } = useAuth();
+  const { user, initialized, logout } = useAuth();
   const t = useTranslations("account.page");
   const router = useRouter();
 
@@ -35,6 +36,13 @@ export default function AccountPage() {
       <div className="mt-12">
         <ChangePasswordForm />
       </div>
+      <Button
+        onClick={() => {
+          logout();
+          router.replace("/login");
+        }}
+        label={t("logout")}
+      />
     </div>
   );
 }

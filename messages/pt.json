@@ -119,7 +119,8 @@
   "account": {
     "page": {
       "title": "Minha Conta",
-      "backToDashboard": "Voltar ao Painel"
+      "backToDashboard": "Voltar ao Painel",
+      "logout": "Sair"
     },
     "profileImage": {
       "changePhoto": "Alterar foto"
