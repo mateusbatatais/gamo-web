@@ -4,121 +4,125 @@
 
 ---
 
-## 📦 Tecnologias Principais
+## ⚙️ Tecnologias e Dependências
 
-- **Next.js** (v15) com **App Router**
-- **React** (v19)
-- **TypeScript**
-- **Tailwind CSS** para estilização
-- **Storybook** (v9) para documentação de componentes
-- **Vitest** + **@storybook/testing-library** para testes unitários e de interface
-- **next-intl** para internacionalização (i18n)
-- **Firebase Authentication** para login social
-- **Axios** (ou Fetch API) para comunicação com a API
+- **Next.js** 15 (App Router, TypeScript)
+- **React** 19
+- **Tailwind CSS** + **SCSS**
+- **next-intl** para internacionalização
+- **next-cloudinary** para upload de imagem
+- **firebase** para autenticação e storage
+- **lucide-react** para ícones
+- **clsx** para composição de classes CSS
+- **react-image-crop** para recorte de imagem
+
+#### Dev Dependencies
+
+- **pnpm**
+- **ESLint** + **Prettier** + **lint-staged** + **Husky**
+- **Vitest** para testes unitários
+- **@testing-library/react** + **@testing-library/jest-dom**
+- **Storybook** 9 com addons de docs e temas
+- **Playwright** para testes E2E
+- **Chromatic** para preview de componentes
 
 ---
 
-## 🎯 Objetivo do Projeto
+## 📁 Estrutura de Pastas
 
-- Consumir a **GAMO API** para autenticação e operações CRUD na coleção do usuário.
-- Oferecer login tradicional (email/senha) e login social (Google via Firebase).
-- Roteamento localizados em `/pt/*` e `/en/*`, com **next-intl**.
-- Documentar componentes em **Storybook**.
-- Estruturar testes com **Vitest** e **@testing-library/react**.
+`app/` principais _routes_ e layouts (Next.js App Router)
 
----
+```
+app/
+  [locale]/
+    auth/
+    site/
+    admin/
+    layout.tsx
+    loading.tsx
+    page.tsx
+  favicon.ico
+  globals.scss
+  layout.tsx
+  not-found.tsx
+  page.tsx
+components/
+  atoms/       # componentes básicos, atômicos
+  molecules/   # grupos de átomos
+  organisms/   # componentes maiores (e.g. Account)
+  templates/   # páginas padrões
+contexts/      # React Contexts
+hooks/         # custom hooks
+i18n/          # configuração internacionalização (next-intl)
+lib/           # helpers e configurações (e.g. api client)
+messages/      # arquivos JSON de tradução (pt.json, en.json)
+public/        # assets estáticos (imagens, ícones)
+styles/        # arquivos SCSS/Tailwind config se houver
+utils/         # funções utilitárias
 
-## 📂 Estrutura de Pastas
-
-```plaintext
-gamo-web/
-├── .next/               # Build do Next.js
-├── components/          # Componentes reutilizáveis
-│   ├── Button/          # Exemplo de componente
-│   └── GoogleLoginButton/
-├── hooks/               # Hooks React (useGoogleLogin, useAuth, etc)
-├── i18n/                # Configuração de roteamento e mensagens
-│   ├── routing.ts       # Definição de rotas por locale
-│   └── messages/        # arquivos pt.json e en.json
-├── pages/ ou app/       # Roteamento do Next.js (App Router)
-│   ├── [locale]/        # Layouts e páginas por idioma
-│   │   ├── login/       # Página de login
-│   │   └── dashboard/   # Dashboard autenticado
-│   └── api/             # Rotas API internas (se necessário)
-├── public/              # Assets estáticos
-├── styles/              # Arquivos CSS/SCSS globais
-├── .storybook/          # Configuração do Storybook
-├── vitest.config.ts     # Configuração de testes
-├── tailwind.config.ts   # Configuração do Tailwind
-├── next.config.js       # Configuração do Next.js
-├── tsconfig.json        # Configuração do TypeScript
-├── package.json         # Scripts e dependências
-└── .env.example         # Variáveis de ambiente de exemplo
+.next/         # build do Next.js (gerado)
+.storybook/    # sandbox Storybook (gerado)
 ```
 
 ---
 
-## 🚀 Setup Local
+## 🔧 Instruções Iniciais
 
-### Pré-requisitos
+**Instalar dependências**
 
-- Node.js v16+ e npm ou yarn
-- Git
+```bash
+pnpm install
+```
 
-### Passos
+**Configurar `.env.local`** com as chaves acima
+**Rodar em dev**
 
-1. **Clone o repositório**
+```bash
+pnpm dev
+```
 
-   ```bash
-   git clone https://github.com/seu-usuario/gamo-web.git
-   cd gamo-web
-   ```
+**Storybook** (componentes)
 
-2. **Instale dependências**
+```bash
+pnpm storybook
+```
 
-   ```bash
-   npm install
-   # ou yarn install
-   ```
+**Testes**
 
-3. **Arquivo de ambiente**
+```bash
+pnpm test
+```
 
-   ```bash
-   cp .env.example .env.local
-   ```
+Preencha em `.env.local`:
 
-   Preencha em `.env.local`:
-
-   ```dotenv
-   NEXT_PUBLIC_API_URL=http://localhost:3001
-   NEXT_PUBLIC_FIREBASE_API_KEY=YOUR_FIREBASE_API_KEY
-   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=YOUR_FIREBASE_AUTH_DOMAIN
-   NEXT_PUBLIC_FIREBASE_PROJECT_ID=YOUR_FIREBASE_PROJECT_ID
-   ```
-
-4. **Rodar em modo de desenvolvimento**
-
-   ```bash
-   npm run dev
-   # ou yarn dev
-   ```
-
-5. Acesse `http://localhost:3000/pt/login` ou `http://localhost:3000/en/login`.
+```dotenv
+   NEXT_PUBLIC_FIREBASE_API_KEY=
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+   NEXT_PUBLIC_FIREBASE_APP_ID=
+   NEXT_PUBLIC_API_URL=
+```
 
 ---
 
 ## 🛠 Scripts Disponíveis
 
-| Script                    | Descrição                                     |
-| ------------------------- | --------------------------------------------- |
-| `npm run dev`             | Inicia o servidor Next.js com Turbopack       |
-| `npm run build`           | Compila o app para produção                   |
-| `npm run start`           | Inicia o app em modo produção                 |
-| `npm run lint`            | Executa ESLint                                |
-| `npm run storybook`       | Inicia o Storybook em `http://localhost:6006` |
-| `npm run build-storybook` | Gera build estático do Storybook              |
-| `npm test`                | Roda testes com Vitest                        |
-| `npm run coverage`        | Gera relatório de cobertura                   |
+```jsonc
+{
+  "dev": "next dev --turbopack", // rodar localmente
+  "build": "next build", // build de produção
+  "start": "next start", // iniciar servidor
+  "lint": "next lint --dir app", // lint do código
+  "storybook": "storybook dev -p 6006", // rodar Storybook
+  "build-storybook": "storybook build", // gerar Storybook estático
+  "test": "vitest", // testes unitários
+  "test-storybook": "vitest --project=storybook",
+  "chromatic": "npx chromatic --project-token=chpt_...",
+  "prepare": "husky install", // hooks git
+}
+```
 
 ---
 
@@ -127,13 +131,11 @@ gamo-web/
 1. **Iniciar**
 
    ```bash
-   npm run storybook
+   pnpm run storybook
    ```
 
 2. **Adicionar stories**
    Coloque arquivos `.stories.tsx` na pasta de componentes.
-3. **Testes de UI**
-   Vitest integrado via `@storybook/experimental-addon-test`.
 
 ---
 
@@ -159,39 +161,19 @@ gamo-web/
 
 ---
 
-## ⚙️ Deploy em Produção
-
-### Vercel
-
-1. Conecte o repositório no Vercel.
-2. Defina as variáveis de ambiente no painel (Settings → Environment Variables):
-
-   ```env
-   NEXT_PUBLIC_API_URL=https://gamo-api-production.up.railway.app
-   NEXT_PUBLIC_FIREBASE_API_KEY=...
-   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
-   NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
-   ```
-
-3. Build Command: `npm run build`
-4. Output Directory: `.next`
-5. Deploy. O domínio `gamo.games` já deve apontar para o projeto.
-
----
-
 ## 🧪 Testes
 
 - **Unitários**: Vitest + Testing Library
 - **Rodar**:
 
   ```bash
-  npm test
+  pnpm test
   ```
 
 - **Cobertura**:
 
   ```bash
-  npm run coverage
+  pnpm run coverage
   ```
 
 ---
