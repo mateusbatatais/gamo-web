@@ -33,6 +33,7 @@
 `app/` principais _routes_ e layouts (Next.js App Router)
 
 ```
+@types/
 app/
   [locale]/
     auth/
