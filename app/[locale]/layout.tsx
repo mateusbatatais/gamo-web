@@ -3,16 +3,16 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.scss";
 import { Providers } from "@/components/Providers";
-import { Lato } from "next/font/google";
+import { Quicksand } from "next/font/google";
 import LogRocketInit from "@/components/atoms/LogRocketInit/LogRocketInit";
 import { getTranslations } from "next-intl/server";
 import { ReactNode } from "react";
 
-const lato = Lato({
+const quicksand = Quicksand({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
-  variable: "--font-lato",
+  variable: "--font-quicksand",
 });
 
 type Props = {
@@ -46,7 +46,7 @@ export default async function LocaleLayout({
   }
 
   return (
-    <html lang={locale} className={lato.variable}>
+    <html lang={locale} className={quicksand.variable}>
       <body className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
         <NextIntlClientProvider>
           <Providers>

@@ -122,7 +122,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-lato)", "sans-serif"],
+        sans: ["var(--font-quicksand)", "sans-serif"],
       },
 
       colors: {
