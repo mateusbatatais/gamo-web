@@ -12,6 +12,24 @@
     "siteName": "Gamo",
     "siteDescription": "The Gamo platform helps users manage their gaming consoles."
   },
+  "filters": {
+    "brand": {
+      "label": "Filter by Brand",
+      "all": "All Brands"
+    },
+    "generation": {
+      "label": "Filter by Generation",
+      "1": "1st Generation",
+      "2": "2nd Generation",
+      "3": "3rd Generation",
+      "4": "4th Generation",
+      "5": "5th Generation",
+      "6": "6th Generation",
+      "7": "7th Generation",
+      "8": "8th Generation",
+      "9": "9th Generation"
+    }
+  },
   "HomePage": {
     "title": "Hello",
     "about": "About"

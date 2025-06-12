@@ -5,6 +5,7 @@ export interface ConsoleVariantDTO {
   brand: { id: number; slug: string };
   name: string;
   consoleName: string;
+  imageUrl: string;
 }
 
 export interface ConsoleVariantsResponse {

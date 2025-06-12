@@ -12,6 +12,24 @@
     "loading": "Carregando...",
     "error": "Ocorreu um erro"
   },
+  "filters": {
+    "brand": {
+      "label": "Filtrar por Marca",
+      "all": "Todas as Marcas"
+    },
+    "generation": {
+      "label": "Filtrar por Geração",
+      "1": "1ª Geração",
+      "2": "2ª Geração",
+      "3": "3ª Geração",
+      "4": "4ª Geração",
+      "5": "5ª Geração",
+      "6": "6ª Geração",
+      "7": "7ª Geração",
+      "8": "8ª Geração",
+      "9": "9ª Geração"
+    }
+  },
   "HomePage": {
     "title": "Olá",
     "about": "Sobre"

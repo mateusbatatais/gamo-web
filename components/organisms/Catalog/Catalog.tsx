@@ -1,10 +1,9 @@
-// components/organisms/CatalogComponent.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/utils/api"; // Importando a função apiFetch
 import { ConsoleVariantsResponse } from "@/@types/console";
-import Filter from "@/components/molecules/Filter/Filter";
+import FilterContainer from "@/components/molecules/Filter/Filter"; // Agora usamos o FilterContainer
 import ConsoleCard from "@/components/molecules/ConsoleCard/ConsoleCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 
@@ -16,10 +15,29 @@ interface CatalogComponentProps {
   totalPages: number;
 }
 
-const CatalogComponent = ({ brand, locale, page, perPage, totalPages }: CatalogComponentProps) => {
+const CatalogComponent = ({ locale, page, perPage, totalPages }: CatalogComponentProps) => {
   const [consoleVariants, setConsoleVariants] = useState<ConsoleVariantsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]); // Marca selecionada
+  const [selectedGenerations, setSelectedGenerations] = useState<string[]>([]); // Geração selecionada
+
+  // Função para atualizar as marcas filtradas
+  const handleBrandChange = (brands: string[]) => {
+    setSelectedBrands(brands);
+    // Atualiza a URL
+    window.history.pushState(
+      {},
+      "",
+      `?brand=${brands.join(",")}&locale=${locale}&page=1&perPage=${perPage}`,
+    );
+  };
+
+  // Função para atualizar as gerações filtradas
+  const handleGenerationChange = (generations: string[]) => {
+    setSelectedGenerations(generations);
+  };
 
   useEffect(() => {
     const fetchConsoleVariants = async () => {
@@ -28,7 +46,7 @@ const CatalogComponent = ({ brand, locale, page, perPage, totalPages }: CatalogC
 
       try {
         const data: ConsoleVariantsResponse = await apiFetch(
-          `/consoles?brand=${brand}&locale=${locale}&page=${page}&perPage=${perPage}`,
+          `/consoles?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=${page}&perPage=${perPage}`,
         );
         setConsoleVariants(data);
       } catch (error: unknown) {
@@ -43,7 +61,7 @@ const CatalogComponent = ({ brand, locale, page, perPage, totalPages }: CatalogC
     };
 
     fetchConsoleVariants();
-  }, [brand, locale, page, perPage]);
+  }, [selectedBrands, selectedGenerations, locale, page, perPage]); // Atualiza quando algum filtro mudar
 
   if (loading) return <div>Loading...</div>;
 
@@ -51,11 +69,14 @@ const CatalogComponent = ({ brand, locale, page, perPage, totalPages }: CatalogC
 
   return (
     <div>
-      <Filter
-        selectedBrand={brand}
-        onBrandChange={(selectedBrand) => {
-          window.location.search = `?brand=${selectedBrand}&locale=${locale}&page=1&perPage=${perPage}`;
-        }}
+      <h1>Console Catalog</h1>
+
+      {/* Passamos as funções de alteração de filtro */}
+      <FilterContainer
+        onBrandChange={handleBrandChange}
+        onGenerationChange={handleGenerationChange}
+        selectedBrands={selectedBrands} // Passando os filtros para o FilterContainer
+        selectedGenerations={selectedGenerations} // Passando as gerações para o FilterContainer
       />
 
       <div className="grid grid-cols-3 gap-4">
@@ -65,7 +86,7 @@ const CatalogComponent = ({ brand, locale, page, perPage, totalPages }: CatalogC
             name={variant.name}
             consoleName={variant.consoleName}
             brand={variant.brand.slug}
-            imageUrl="https://via.placeholder.com/150"
+            imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
             description="Description of the console"
           />
         ))}
@@ -75,7 +96,7 @@ const CatalogComponent = ({ brand, locale, page, perPage, totalPages }: CatalogC
         currentPage={page}
         totalPages={totalPages}
         onPageChange={(newPage) => {
-          window.location.search = `?brand=${brand}&locale=${locale}&page=${newPage}&perPage=${perPage}`;
+          window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&page=${newPage}&perPage=${perPage}`;
         }}
       />
     </div>
