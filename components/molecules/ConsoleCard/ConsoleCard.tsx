@@ -14,12 +14,12 @@ const ConsoleCard = ({ name, consoleName, brand, imageUrl, description }: Consol
       <Image
         width={200}
         height={100}
-        src={imageUrl}
+        src={`/${imageUrl}`}
         alt={name}
         className="w-full h-48 object-cover mb-4 rounded"
       />
-      <h3 className="text-xl font-semibold">{name}</h3>
-      <h2 className="text-xl font-semibold">{consoleName}</h2>
+      <h2 className="font-semibold">{consoleName}</h2>
+      <h3 className="text-xs">{name}</h3>
       <p className="text-gray-500">{brand}</p>
       <p className="text-sm text-gray-700 mt-2">{description}</p>
     </div>
