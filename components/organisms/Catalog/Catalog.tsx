@@ -12,13 +12,13 @@ interface CatalogComponentProps {
   locale: string;
   page: number;
   perPage: number;
-  totalPages: number;
 }
 
-const CatalogComponent = ({ locale, page, perPage, totalPages }: CatalogComponentProps) => {
+const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [consoleVariants, setConsoleVariants] = useState<ConsoleVariantsResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState<number>(1); // Estado para totalPages
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]); // Marca selecionada
   const [selectedGenerations, setSelectedGenerations] = useState<string[]>([]); // Geração selecionada
@@ -49,6 +49,8 @@ const CatalogComponent = ({ locale, page, perPage, totalPages }: CatalogComponen
           `/consoles?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=${page}&perPage=${perPage}`,
         );
         setConsoleVariants(data);
+
+        setTotalPages(data.meta.totalPages || 1); // Garantir que totalPages seja atribuído corretamente
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
@@ -68,38 +70,39 @@ const CatalogComponent = ({ locale, page, perPage, totalPages }: CatalogComponen
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
-      <h1>Console Catalog</h1>
-
-      {/* Passamos as funções de alteração de filtro */}
-      <FilterContainer
-        onBrandChange={handleBrandChange}
-        onGenerationChange={handleGenerationChange}
-        selectedBrands={selectedBrands} // Passando os filtros para o FilterContainer
-        selectedGenerations={selectedGenerations} // Passando as gerações para o FilterContainer
-      />
-
-      <div className="grid grid-cols-3 gap-4">
-        {consoleVariants?.items.map((variant) => (
-          <ConsoleCard
-            key={variant.id}
-            name={variant.name}
-            consoleName={variant.consoleName}
-            brand={variant.brand.slug}
-            imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
-            description="Description of the console"
+    <>
+      <div className="flex">
+        <div className="w-1/4">
+          <FilterContainer
+            onBrandChange={handleBrandChange}
+            onGenerationChange={handleGenerationChange}
+            selectedBrands={selectedBrands} // Passando os filtros para o FilterContainer
+            selectedGenerations={selectedGenerations} // Passando as gerações para o FilterContainer
           />
-        ))}
+        </div>
+        <div className="w-3/4 ">
+          <div className="grid grid-cols-3 gap-4">
+            {consoleVariants?.items.map((variant) => (
+              <ConsoleCard
+                key={variant.id}
+                name={variant.name}
+                consoleName={variant.consoleName}
+                brand={variant.brand.slug}
+                imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
+                description="Description of the console"
+              />
+            ))}
+          </div>
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(newPage) => {
+              window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&page=${newPage}&perPage=${perPage}`;
+            }}
+          />
+        </div>
       </div>
-
-      <Pagination
-        currentPage={page}
-        totalPages={totalPages}
-        onPageChange={(newPage) => {
-          window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&page=${newPage}&perPage=${perPage}`;
-        }}
-      />
-    </div>
+    </>
   );
 };
 

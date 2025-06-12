@@ -11,17 +11,8 @@ const CatalogPageWrapper = () => {
   const locale = useLocale();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const perPage = parseInt(searchParams.get("perPage") || "6", 10);
-  const totalPages = 10; // Este valor pode vir de uma API ou ser calculado a partir dos dados
 
-  return (
-    <CatalogComponent
-      brand={brand}
-      locale={locale}
-      page={page}
-      perPage={perPage}
-      totalPages={totalPages}
-    />
-  );
+  return <CatalogComponent brand={brand} locale={locale} page={page} perPage={perPage} />;
 };
 
 export default CatalogPageWrapper;
