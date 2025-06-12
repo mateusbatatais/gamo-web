@@ -1,14 +1,27 @@
-import { useTranslations } from "next-intl";
+// app/site/catalog/page.tsx
+"use client";
 
-export default function Catalog() {
-  const t = useTranslations("HomePage");
+import { useSearchParams } from "next/navigation";
+import { useLocale } from "next-intl";
+import CatalogComponent from "@/components/organisms/Catalog/Catalog";
+
+const CatalogPageWrapper = () => {
+  const searchParams = useSearchParams();
+  const brand = searchParams.get("brand") || "";
+  const locale = useLocale();
+  const page = parseInt(searchParams.get("page") || "1", 10);
+  const perPage = parseInt(searchParams.get("perPage") || "4", 10);
+  const totalPages = 10; // Este valor pode vir de uma API ou ser calculado a partir dos dados
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <div>
-          <h1>{t("title")}</h1>
-        </div>
-      </main>
-    </div>
+    <CatalogComponent
+      brand={brand}
+      locale={locale}
+      page={page}
+      perPage={perPage}
+      totalPages={totalPages}
+    />
   );
-}
+};
+
+export default CatalogPageWrapper;
