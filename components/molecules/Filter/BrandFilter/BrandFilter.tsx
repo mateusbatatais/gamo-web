@@ -20,7 +20,7 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
         const data = await apiFetch<{ slug: string; id: number }[]>("/brands");
         const formattedBrands = data.map((brand) => ({
           value: brand.slug,
-          label: brand.slug.charAt(0).toUpperCase() + brand.slug.slice(1),
+          label: brand.slug ? brand.slug.charAt(0).toUpperCase() + brand.slug.slice(1) : "",
         }));
         setBrands(formattedBrands);
       } catch (error: unknown) {
@@ -37,7 +37,7 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
     fetchBrands();
   }, []);
 
-  if (loading) return <div>Loading brands...</div>;
+  if (loading) return <div>{t("common.loading")}</div>;
   if (error) return <div>{error}</div>;
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +51,9 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
 
   return (
     <div className="mb-4">
-      <p className="font-medium text-lg">{t("filters.brand.label")}</p>
+      <p className="font-medium text-lg" data-testid="label-filter">
+        {t("filters.brand.label")}
+      </p>
       {brands.map((brand) => (
         <div key={brand.value} className="flex items-center">
           <input
