@@ -23,20 +23,24 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]); // Marca selecionada
   const [selectedGenerations, setSelectedGenerations] = useState<string[]>([]); // Geração selecionada
 
-  // Função para atualizar as marcas filtradas
   const handleBrandChange = (brands: string[]) => {
     setSelectedBrands(brands);
-    // Atualiza a URL
+    // Atualiza a URL com os filtros de marca e geração
     window.history.pushState(
       {},
       "",
-      `?brand=${brands.join(",")}&locale=${locale}&page=1&perPage=${perPage}`,
+      `?brand=${brands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=1&perPage=${perPage}`,
     );
   };
 
-  // Função para atualizar as gerações filtradas
   const handleGenerationChange = (generations: string[]) => {
     setSelectedGenerations(generations);
+    // Atualiza a URL com os filtros de marca e geração
+    window.history.pushState(
+      {},
+      "",
+      `?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${generations.join(",")}&page=1&perPage=${perPage}`,
+    );
   };
 
   useEffect(() => {
@@ -97,7 +101,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={(newPage) => {
-              window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&page=${newPage}&perPage=${perPage}`;
+              window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=${newPage}&perPage=${perPage}`;
             }}
           />
         </div>
