@@ -42,19 +42,29 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
       `?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${generations.join(",")}&page=1&perPage=${perPage}`,
     );
   };
-
+  // No componente frontend
   useEffect(() => {
     const fetchConsoleVariants = async () => {
       setLoading(true);
-      setError("");
+
+      const params = new URLSearchParams({
+        locale,
+        page: page.toString(),
+        perPage: perPage.toString(),
+      });
+
+      if (selectedBrands.length > 0) {
+        params.append("brand", selectedBrands.join(","));
+      }
+
+      if (selectedGenerations.length > 0) {
+        params.append("generation", selectedGenerations.join(","));
+      }
 
       try {
-        const data: ConsoleVariantsResponse = await apiFetch(
-          `/consoles?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=${page}&perPage=${perPage}`,
-        );
+        const data: ConsoleVariantsResponse = await apiFetch(`/consoles?${params.toString()}`);
         setConsoleVariants(data);
-
-        setTotalPages(data.meta.totalPages || 1); // Garantir que totalPages seja atribuído corretamente
+        setTotalPages(data.meta.totalPages);
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
@@ -67,8 +77,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
     };
 
     fetchConsoleVariants();
-  }, [selectedBrands, selectedGenerations, locale, page, perPage]); // Atualiza quando algum filtro mudar
-
+  }, [selectedBrands, selectedGenerations, locale, page, perPage]);
   if (loading) return <div>Loading...</div>;
 
   if (error) return <div>{error}</div>;
