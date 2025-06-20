@@ -146,6 +146,7 @@
     "detailsForm": {
       "title": "Dados da Conta",
       "name": "Nome",
+      "slug": "Username (apelido)",
       "email": "E-mail",
       "description": "Descrição",
       "descriptionPlaceholder": "Conte um pouco sobre você...",

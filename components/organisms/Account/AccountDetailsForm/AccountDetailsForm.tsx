@@ -17,6 +17,7 @@ import { Textarea } from "@/components/atoms/Textarea/Textarea";
 interface UserDetailsPayload {
   name: string;
   email: string;
+  slug: string;
   description: string;
   profileImage?: string;
 }
@@ -28,6 +29,7 @@ interface ApiError extends Error {
 export default function AccountDetailsForm() {
   const { token, user, logout } = useAuth();
   const [name, setName] = useState(user?.name || "");
+  const [slug, setSlug] = useState(user?.slug || "");
   const [email, setEmail] = useState(user?.email || "");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,12 +47,16 @@ export default function AccountDetailsForm() {
   // fetch profile
   useEffect(() => {
     if (!token) return;
-    apiFetch<{ name: string; email: string; description?: string; profileImage?: string }>(
-      "/user/profile",
-      { token },
-    )
+    apiFetch<{
+      name: string;
+      slug: string;
+      email: string;
+      description?: string;
+      profileImage?: string;
+    }>("/user/profile", { token })
       .then((data) => {
         setName(data.name);
+        setSlug(data.slug);
         setEmail(data.email);
         setDescription(data.description ?? "");
         setPreviewUrl(data.profileImage || null);
@@ -102,6 +108,7 @@ export default function AccountDetailsForm() {
         name,
         email,
         description,
+        slug,
         ...(profileImageUrl ? { profileImage: profileImageUrl } : {}),
       };
 
@@ -182,6 +189,16 @@ export default function AccountDetailsForm() {
             placeholder={t("name")}
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
+            error={errorMsg ?? undefined}
+          />
+
+          <Input
+            type="text"
+            label={t("slug")}
+            placeholder={t("slug")}
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
             required
             error={errorMsg ?? undefined}
           />

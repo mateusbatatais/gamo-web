@@ -10,6 +10,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test": "vitest",
+    "e2e": "pnpm exec playwright test",
+    "e2e:ui": "pnpm exec playwright test --ui",
+    "e2e:report": "pnpm exec playwright show-report",
     "test-storybook": "vitest --project=storybook",
     "chromatic": "npx chromatic --project-token=chpt_1f555db8bdddeb5",
     "prepare": "husky install"
