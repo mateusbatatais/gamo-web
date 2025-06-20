@@ -22,6 +22,7 @@ describe("ConsoleCard Component", () => {
     name: "PlayStation 5",
     consoleName: "PS5",
     brand: "Sony",
+    slug: "ps5-slim",
     imageUrl: "ps5.jpg",
     description: "O mais recente console da Sony com tecnologia de ponta.",
   };
@@ -77,6 +78,7 @@ describe("ConsoleCard Component", () => {
       brand: "Microsoft",
       imageUrl: "xbox.jpg",
       description: "",
+      slug: "xbox-series-x",
     };
 
     render(<ConsoleCard {...minimalProps} />);

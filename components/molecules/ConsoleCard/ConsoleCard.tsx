@@ -1,7 +1,7 @@
 // components/molecules/ConsoleCard.tsx
 import { Button } from "@/components/atoms/Button/Button";
-import { Link } from "@/i18n/navigation";
 import Image from "next/image";
+import Link from "next/link";
 interface ConsoleCardProps {
   name: string;
   consoleName: string;
