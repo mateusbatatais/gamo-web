@@ -5,8 +5,8 @@ import { useState, FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
-import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
+import Link from "next/link";
 
 export default function RecoverPage() {
   const t = useTranslations();

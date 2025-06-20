@@ -103,6 +103,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
                 brand={variant.brand.slug}
                 imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
                 description="Description of the console"
+                slug={variant.slug}
               />
             ))}
           </div>

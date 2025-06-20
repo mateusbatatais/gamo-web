@@ -1,4 +1,6 @@
 // components/molecules/ConsoleCard.tsx
+import { Button } from "@/components/atoms/Button/Button";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 interface ConsoleCardProps {
   name: string;
@@ -6,9 +8,17 @@ interface ConsoleCardProps {
   brand: string;
   imageUrl: string;
   description: string;
+  slug: string;
 }
 
-const ConsoleCard = ({ name, consoleName, brand, imageUrl, description }: ConsoleCardProps) => {
+const ConsoleCard = ({
+  name,
+  consoleName,
+  brand,
+  imageUrl,
+  description,
+  slug,
+}: ConsoleCardProps) => {
   return (
     <div className="border p-4 rounded shadow-lg">
       <Image
@@ -22,6 +32,9 @@ const ConsoleCard = ({ name, consoleName, brand, imageUrl, description }: Consol
       <h3 className="text-xs">{name}</h3>
       <p className="text-gray-500">{brand}</p>
       <p className="text-sm text-gray-700 mt-2">{description}</p>
+      <Link href={`/console/${slug}`} className="block">
+        <Button label="View Details" className="mt-4" />
+      </Link>
     </div>
   );
 };
