@@ -170,5 +170,22 @@
       "changeError": "Falha ao alterar senha.",
       "passwordChanged": "Senha alterada com sucesso!"
     }
+  },
+  "ConsoleDetails": {
+    "brand": "Marca",
+    "generation": "Geração",
+    "type": "Tipo",
+    "releaseDate": "Data de Lançamento",
+    "storage": "Armazenamento",
+    "launchDate": "Lançamento da Variante",
+    "description": "Descrição",
+    "noImage": "Imagem não disponível",
+    "availableSkins": "Skins Disponíveis",
+    "noSkinsAvailable": "Nenhuma skin disponível para esta variante",
+    "limitedEdition": "Edição Limitada",
+    "userCollections": "Coleções de Usuários",
+    "collectionsDescription": "Veja como outros colecionadores personalizaram seus consoles",
+    "viewCollections": "Ver Coleções",
+    "notFound": "Variante de console não encontrada"
   }
 }

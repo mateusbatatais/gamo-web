@@ -171,5 +171,22 @@
       "changeError": "Failed to change password.",
       "passwordChanged": "Password changed successfully!"
     }
+  },
+  "ConsoleDetails": {
+    "brand": "Brand",
+    "generation": "Generation",
+    "type": "Type",
+    "releaseDate": "Release Date",
+    "storage": "Storage",
+    "launchDate": "Variant Launch Date",
+    "description": "Description",
+    "noImage": "Image not available",
+    "availableSkins": "Available Skins",
+    "noSkinsAvailable": "No skins available for this variant",
+    "limitedEdition": "Limited Edition",
+    "userCollections": "User Collections",
+    "collectionsDescription": "Explore collections created by users featuring this console variant.",
+    "viewCollections": "View Collections",
+    "notFound": "Console variant not found"
   }
 }
