@@ -1,6 +1,13 @@
 // tests/e2e/auth/login.spec.ts
 import { test, expect } from "@playwright/test";
 
+declare const process: {
+  env: {
+    ADMIN_EMAIL: string;
+    ADMIN_PASSWORD: string;
+  };
+};
+
 test("Login com Firebase", async ({ page }) => {
   // Mock da resposta da API
   await page.route("**/firebase-auth-api", (route) => {
@@ -14,8 +21,9 @@ test("Login com Firebase", async ({ page }) => {
   await page.goto("/login");
 
   // Preencher formulário
-  await page.fill('input[name="email"]', "admin@gamo.games");
-  await page.fill('input[name="password"]', "1234");
+  await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
+
+  await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
 
   await page.click('button[type="submit"]');
 
