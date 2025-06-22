@@ -6,6 +6,7 @@ import { apiFetch } from "@/utils/api";
 
 interface ConsoleVariantDetail {
   id: number;
+  consoleId: number;
   slug: string;
   brand: { id: number; slug: string };
   generation?: number | null;

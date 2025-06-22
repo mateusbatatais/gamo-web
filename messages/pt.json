@@ -187,5 +187,24 @@
     "collectionsDescription": "Veja como outros colecionadores personalizaram seus consoles",
     "viewCollections": "Ver Coleções",
     "notFound": "Variante de console não encontrada"
+  },
+  "Collection": {
+    "condition": "Condição",
+    "conditionNew": "Novo",
+    "conditionUsed": "Usado",
+    "conditionRefurbished": "Recondicionado",
+    "status": "Status",
+    "statusOwned": "Na minha coleção",
+    "statusSelling": "Vendendo",
+    "statusLookingFor": "Procurando",
+    "price": "Preço",
+    "hasBox": "Possui caixa original",
+    "hasManual": "Possui manual",
+    "acceptsTrade": "Aceita trocas",
+    "description": "Descrição (opcional)",
+    "descriptionPlaceholder": "Detalhes sobre o item...",
+    "cancel": "Cancelar",
+    "adding": "Adicionando...",
+    "add": "Adicionar"
   }
 }

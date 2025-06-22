@@ -188,5 +188,24 @@
     "collectionsDescription": "Explore collections created by users featuring this console variant.",
     "viewCollections": "View Collections",
     "notFound": "Console variant not found"
+  },
+  "Collection": {
+    "condition": "Condition",
+    "conditionNew": "New",
+    "conditionUsed": "Used",
+    "conditionRefurbished": "Refurbished",
+    "status": "Status",
+    "statusOwned": "In my collection",
+    "statusSelling": "Selling",
+    "statusLookingFor": "Looking for",
+    "price": "Price",
+    "hasBox": "Has original box",
+    "hasManual": "Has manual",
+    "acceptsTrade": "Accepts trades",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Details about the item...",
+    "cancel": "Cancel",
+    "adding": "Adding...",
+    "add": "Add"
   }
 }
