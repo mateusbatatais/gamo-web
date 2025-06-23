@@ -5,7 +5,7 @@ export async function apiFetch<T>(
     token?: string | null;
     method?: string;
     body?: unknown;
-  }
+  },
 ): Promise<T> {
   const { token, method = "GET", body } = opts || {};
   const headers: Record<string, string> = {
@@ -18,6 +18,8 @@ export async function apiFetch<T>(
     method,
     headers,
     body: body != null ? JSON.stringify(body) : undefined,
+    mode: "cors",
+    credentials: "include",
   });
   const data = await res.json();
 
