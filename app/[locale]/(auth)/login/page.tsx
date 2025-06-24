@@ -9,7 +9,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { GoogleLoginButton } from "@/components/molecules/GoogleLoginButton/GoogleLoginButton";
+import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
 
 export default function LoginPage() {
   const t = useTranslations();
@@ -124,7 +124,10 @@ export default function LoginPage() {
         <hr className="flex-1 border-gray-300 dark:border-gray-700" />
       </div>
 
-      <GoogleLoginButton />
+      <SocialLoginButton
+        provider="google"
+        onError={() => setError(t("login.errors.googleLoginFailed"))}
+      />
 
       <div className="mt-6 flex justify-between text-sm">
         <Link href="/reset-password" className="text-primary hover:underline">

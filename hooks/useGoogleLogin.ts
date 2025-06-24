@@ -1,15 +1,44 @@
-// hooks/useGoogleLogin.ts
+// src/hooks/useGoogleLogin.ts
 "use client";
 
+import { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../lib/firebase";
+import { auth, googleProvider } from "@/lib/firebase";
+import { apiFetch } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export const useGoogleLogin = () => {
-  const login = async () => {
-    const result = await signInWithPopup(auth, googleProvider);
-    const token = await result.user.getIdToken();
-    return token;
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+
+      // CORREÇÃO: Enviar token no header, não no body
+      const backendResponse = await apiFetch<{ token: string }>("/auth/social/google", {
+        method: "POST",
+        token: idToken,
+      });
+
+      // Atualizar contexto de autenticação
+      login(backendResponse.token);
+
+      // Redirecionar
+      router.push("/account");
+
+      return backendResponse.token;
+    } catch (error) {
+      console.error("Google login failed:", error);
+      throw new Error("Google login failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return { login };
+  return { login: handleLogin, loading };
 };

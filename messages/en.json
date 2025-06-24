@@ -56,7 +56,13 @@
       "required": "Field is required",
       "invalid": "Invalid credentials",
       "invalidCredentials": "Invalid credentials",
-      "userAlreadyExists": "User already exists"
+      "userAlreadyExists": "User already exists",
+      "emailNotVerified": "Email not verified. Please check your inbox.",
+      "googleLoginFailed": "Google login failed",
+      "popupClosed": "Login cancelled by user",
+      "accountExists": "An account with this email already exists",
+      "invalidToken": "Invalid access token"
+
     },
     "or": "or",
     "googleButton": "Sign in with Google",
