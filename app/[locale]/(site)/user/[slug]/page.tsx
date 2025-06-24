@@ -6,13 +6,14 @@ import { PublicProfileLayout } from "@/components/templates/Layout/PublicProfile
 import { getPublicProfile, getUserConsolesPublic } from "@/lib/api/publicProfile";
 
 interface PublicProfilePageProps {
-  params: {
+  params: Promise<{
     slug: string;
     locale: string;
-  };
+  }>;
 }
 
-export default async function PublicProfilePage({ params }: PublicProfilePageProps) {
+export default async function PublicProfilePage(props: PublicProfilePageProps) {
+  const params = await props.params;
   const { slug, locale } = params;
 
   try {
@@ -35,7 +36,8 @@ export default async function PublicProfilePage({ params }: PublicProfilePagePro
   }
 }
 
-export async function generateMetadata({ params }: PublicProfilePageProps) {
+export async function generateMetadata(props: PublicProfilePageProps) {
+  const params = await props.params;
   const { slug, locale } = params;
 
   try {
