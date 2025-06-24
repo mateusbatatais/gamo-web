@@ -107,14 +107,8 @@ export default function SignupPage() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <SocialLoginButton
-          provider="google"
-          onError={(error) => setError(error.message)}
-        />
-        <SocialLoginButton 
-          provider="microsoft" 
-          onError={(error) => setError(error.message)}
-        />
+        <SocialLoginButton provider="google" onError={(error) => setError(error.message)} />
+        <SocialLoginButton provider="microsoft" onError={(error) => setError(error.message)} />
       </div>
 
       <div className="mt-6 flex justify-between text-sm">

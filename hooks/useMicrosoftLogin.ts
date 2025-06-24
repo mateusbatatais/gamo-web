@@ -31,7 +31,7 @@ export const useMicrosoftLogin = () => {
       return backendResponse.token;
     } catch (error) {
       console.error("Microsoft login failed:", error);
-      
+
       // Tratamento específico de erros da Microsoft
       let errorMessage = "Falha ao entrar com Microsoft";
       if ((error as any).code === "popup_closed_by_user") {
@@ -39,7 +39,7 @@ export const useMicrosoftLogin = () => {
       } else if ((error as any).code === "account_exists_with_different_credential") {
         errorMessage = "Conta já existe com credenciais diferentes";
       }
-      
+
       throw new Error(errorMessage);
     } finally {
       setLoading(false);
