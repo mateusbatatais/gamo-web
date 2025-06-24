@@ -25,13 +25,13 @@ export const Default: Story = {
 export const WithBrands: Story = {
   args: {
     selectedBrands: ["sony", "microsoft"],
-    onBrandChange: (brands) => console.log("Selected brands:", brands),
+    onBrandChange: (brands) => console.log("Selected WithBrands:", brands),
   },
 };
 
 export const EmptyState: Story = {
   args: {
     selectedBrands: [],
-    onBrandChange: (brands) => console.log("Selected brands:", brands),
+    onBrandChange: (brands) => console.log("Selected EmptyState:", brands),
   },
 };

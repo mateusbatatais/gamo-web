@@ -6,8 +6,11 @@ import GenerationFilter from "./GenerationFilter";
 vi.mock("next-intl", () => ({
   useTranslations: vi.fn(() => (key: string) => {
     const translations: Record<string, string> = {
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       "filters.generation.label": "Filtrar por Geração",
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       "filters.generation.1": "1ª Geração",
+      // eslint-disable-next-line sonarjs/no-duplicate-string
       "filters.generation.2": "2ª Geração",
       "filters.generation.3": "3ª Geração",
       "filters.generation.4": "4ª Geração",

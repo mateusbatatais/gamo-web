@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import ConsoleCard from "./ConsoleCard";
 
+const imgeUrl = "/public/images/consoles/sony/ps5.webp"; // Placeholder image URL
+
 const meta: Meta<typeof ConsoleCard> = {
   title: "Components/Molecules/ConsoleCard",
   component: ConsoleCard,
@@ -22,7 +24,7 @@ export const Default: Story = {
     name: "PlayStation 5",
     consoleName: "PS5",
     brand: "Sony",
-    imageUrl: "/public/images/consoles/sony/ps5.webp", // Placeholder image URL
+    imageUrl: imgeUrl, // Placeholder image URL
     description: "The PlayStation 5 is Sony's 9th generation console.",
   },
 };
@@ -32,7 +34,7 @@ export const WithIcon: Story = {
     name: "PlayStation 5",
     consoleName: "PS5",
     brand: "Sony",
-    imageUrl: "/public/images/consoles/sony/ps5.webp", // Placeholder image URL
+    imageUrl: imgeUrl, // Placeholder image URL
     description: "The PlayStation 5 is Sony's 9th generation console.",
   },
 };
@@ -42,7 +44,7 @@ export const CustomDescription: Story = {
     name: "Xbox Series X",
     consoleName: "Xbox Series X",
     brand: "Microsoft",
-    imageUrl: "/public/images/consoles/sony/ps5.webp", // Placeholder image URL
+    imageUrl: imgeUrl, // Placeholder image URL
     description: "The Xbox Series X is the next-gen console from Microsoft.",
   },
 };
