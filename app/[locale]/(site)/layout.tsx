@@ -1,7 +1,6 @@
 // app/[locale]/(site)/layout.tsx
 
 import { ReactNode } from "react";
-import "../../globals.scss";
 import Footer from "@/components/templates/Layout/Footer/Footer";
 import Header from "@/components/templates/Layout/Header/Header";
 

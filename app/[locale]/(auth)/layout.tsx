@@ -3,7 +3,6 @@
 
 import { ReactNode } from "react";
 import Image from "next/image";
-import "../../globals.scss";
 import { Link } from "@/i18n/navigation";
 import { useClearInvalidToken } from "@/hooks/useClearInvalidToken";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";

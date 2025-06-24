@@ -1,16 +1,27 @@
-// hooks/useTheme.ts
 "use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useTheme() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
+
   useEffect(() => {
-    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (stored) setTheme(stored);
+    const storedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
+    const currentDataMode = document.documentElement.getAttribute("data-theme") as "light" | "dark" | null;
+    const initialTheme = currentDataMode || storedTheme || "light";
+    setTheme(initialTheme);
+    document.documentElement.setAttribute("data-theme", initialTheme);
+    
   }, []);
+
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
+    document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
+    
   }, [theme]);
-  return { theme, setTheme };
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => prevTheme === "light" ? "dark" : "light");
+  };
+
+  return { theme, setTheme, toggleTheme };
 }
