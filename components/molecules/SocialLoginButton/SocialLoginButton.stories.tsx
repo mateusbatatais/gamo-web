@@ -8,7 +8,7 @@ const meta: Meta<typeof SocialLoginButton> = {
   argTypes: {
     provider: {
       control: "select",
-      options: ["google", "facebook", "apple"],
+      options: ["google", "microsoft", "apple"],
     },
   },
 };
@@ -22,9 +22,9 @@ export const Google: Story = {
   },
 };
 
-export const Facebook: Story = {
+export const Microsoft: Story = {
   args: {
-    provider: "facebook",
+    provider: "microsoft",
   },
 };
 

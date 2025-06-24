@@ -58,7 +58,7 @@
       "invalidCredentials": "Invalid credentials",
       "userAlreadyExists": "User already exists",
       "emailNotVerified": "Email not verified. Please check your inbox.",
-      "googleLoginFailed": "Google login failed",
+      "loginFailed": "Login failed",
       "popupClosed": "Login cancelled by user",
       "accountExists": "An account with this email already exists",
       "invalidToken": "Invalid access token"
@@ -66,6 +66,7 @@
     },
     "or": "or",
     "googleButton": "Sign in with Google",
+    "microsoftButton": "Sign in with Microsoft",
     "loading": "Signing in…"
   },
   "signup": {

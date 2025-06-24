@@ -106,10 +106,16 @@ export default function SignupPage() {
         <hr className="flex-1 border-gray-300 dark:border-gray-700" />
       </div>
 
-      <SocialLoginButton
-        provider="google"
-        onError={() => setError(t("login.errors.googleLoginFailed"))}
-      />
+      <div className="flex flex-col gap-2">
+        <SocialLoginButton
+          provider="google"
+          onError={(error) => setError(error.message)}
+        />
+        <SocialLoginButton 
+          provider="microsoft" 
+          onError={(error) => setError(error.message)}
+        />
+      </div>
 
       <div className="mt-6 flex justify-between text-sm">
         <Link href={`/login`} className="text-primary hover:underline">

@@ -1,14 +1,14 @@
-// src/hooks/useGoogleLogin.ts
+// src/hooks/useMicrosoftLogin.ts
 "use client";
 
 import { useState } from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "@/lib/firebase";
+import { auth, microsoftProvider } from "@/lib/firebase";
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 
-export const useGoogleLogin = () => {
+export const useMicrosoftLogin = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
@@ -16,22 +16,31 @@ export const useGoogleLogin = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, microsoftProvider);
       const idToken = await result.user.getIdToken();
 
+      // Usar o mesmo endpoint que o Google
       const backendResponse = await apiFetch<{ token: string }>("/auth/social/google", {
         method: "POST",
         token: idToken,
       });
 
       login(backendResponse.token);
-
       router.push("/account");
 
       return backendResponse.token;
     } catch (error) {
-      console.error("Google login failed:", error);
-      throw new Error("Google login failed");
+      console.error("Microsoft login failed:", error);
+      
+      // Tratamento específico de erros da Microsoft
+      let errorMessage = "Falha ao entrar com Microsoft";
+      if ((error as any).code === "popup_closed_by_user") {
+        errorMessage = "Login cancelado pelo usuário";
+      } else if ((error as any).code === "account_exists_with_different_credential") {
+        errorMessage = "Conta já existe com credenciais diferentes";
+      }
+      
+      throw new Error(errorMessage);
     } finally {
       setLoading(false);
     }

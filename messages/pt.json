@@ -58,13 +58,14 @@
       "invalidCredentials": "Credenciais inválidas",
       "userAlreadyExists": "Usuário já existe",
       "emailNotVerified": "E-mail não verificado. Por favor, verifique sua caixa de entrada.",
-      "googleLoginFailed": "Falha ao entrar com Google",
+      "loginFailed": "Falha ao entrar",
       "popupClosed": "Login cancelado pelo usuário",
       "accountExists": "Esta conta já está cadastrada com outro método",
       "invalidToken": "Token de acesso inválido"
     },
     "or": "ou",
     "googleButton": "Entrar com Google",
+    "microsoftButton": "Continuar com Microsoft",
     "loading": "Entrando…"
   },
   "signup": {
