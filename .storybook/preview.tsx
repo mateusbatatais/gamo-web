@@ -11,7 +11,6 @@ const quicksand = Quicksand({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
-  variable: "--font-quicksand",
 });
 
 export const globalTypes = {
@@ -41,7 +40,7 @@ const preview: Preview = {
       const messagesForLocale = messages[locale as keyof typeof messages];
 
       return (
-        <div className={quicksand.variable}>
+        <div className={quicksand.className}>
           <NextIntlClientProvider locale={locale} messages={messagesForLocale}>
             <Story />
           </NextIntlClientProvider>

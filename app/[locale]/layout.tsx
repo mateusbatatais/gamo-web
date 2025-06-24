@@ -12,7 +12,6 @@ const quicksand = Quicksand({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
-  variable: "--font-quicksand",
 });
 
 type Props = {
@@ -46,8 +45,8 @@ export default async function LocaleLayout({
   }
 
   return (
-    <html lang={locale} className={quicksand.variable}>
-      <body className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans">
+    <html lang={locale} className={quicksand.className}>
+      <body className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
         <NextIntlClientProvider>
           <Providers>
             <LogRocketInit />

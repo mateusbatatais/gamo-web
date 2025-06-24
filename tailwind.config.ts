@@ -121,10 +121,6 @@ export default {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["var(--font-quicksand)", "sans-serif"],
-      },
-
       colors: {
         primary: {
           DEFAULT: primaryDEFAULT,
