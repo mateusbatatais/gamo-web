@@ -2,7 +2,6 @@
 import { notFound } from "next/navigation";
 import { PublicProfileConsoleGrid } from "@/components/organisms/PublicProfile/PublicProfileConsoleGrid/PublicProfileConsoleGrid";
 import { PublicProfileHeader } from "@/components/organisms/PublicProfile/PublicProfileHeader/PublicProfileHeader";
-import { PublicProfileLayout } from "@/components/templates/Layout/PublicProfileLayout/PublicProfileLayout";
 import { getPublicProfile, getUserConsolesPublic } from "@/lib/api/publicProfile";
 
 interface PublicProfilePageProps {
@@ -23,12 +22,14 @@ export default async function PublicProfilePage(props: PublicProfilePageProps) {
     ]);
 
     return (
-      <PublicProfileLayout>
-        <PublicProfileHeader profile={profile} />
-        <div className="mt-8">
-          <PublicProfileConsoleGrid consoles={consoles} />
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <PublicProfileHeader profile={profile} />
+          <div className="mt-8">
+            <PublicProfileConsoleGrid consoles={consoles} />
+          </div>
         </div>
-      </PublicProfileLayout>
+      </div>
     );
   } catch (error) {
     console.error("Error fetching public profile data:", error);

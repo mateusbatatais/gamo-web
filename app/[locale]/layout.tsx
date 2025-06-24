@@ -2,11 +2,11 @@ import { Locale, NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import "../globals.scss";
-import { Providers } from "@/components/Providers";
 import { Quicksand } from "next/font/google";
 import LogRocketInit from "@/components/atoms/LogRocketInit/LogRocketInit";
 import { getTranslations } from "next-intl/server";
 import { ReactNode } from "react";
+import { Providers } from "@/contexts/Providers";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
