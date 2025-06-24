@@ -1,0 +1,26 @@
+// types/publicProfile.d.ts
+export interface PublicUserProfile {
+  id: number;
+  name: string;
+  slug: string;
+  profileImage: string | null;
+  description: string | null;
+}
+
+export interface UserConsolePublic {
+  id: number;
+  consoleId: number;
+  consoleName: string;
+  variantName: string;
+  skinName: string | null;
+  customSkin: string | null;
+  description: string | null;
+  status: string;
+  price: number | null;
+  hasBox: boolean | null;
+  hasManual: boolean | null;
+  condition: string | null;
+  acceptsTrade: boolean | null;
+  photoUrl: string | null;
+  createdAt: Date;
+}

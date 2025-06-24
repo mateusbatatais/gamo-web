@@ -206,5 +206,21 @@
     "cancel": "Cancelar",
     "adding": "Adicionando...",
     "add": "Adicionar"
+  },
+  "PublicProfile": {
+    "collection": "Coleção de Consoles",
+    "noConsoles": "Este usuário ainda não adicionou consoles à sua coleção",
+    "status": {
+      "owned": "Na coleção",
+      "selling": "À venda",
+      "looking_for": "Procurando"
+    },
+    "skin": "Skin",
+    "withBox": "Com caixa",
+    "withManual": "Com manual",
+    "acceptsTrade": "Aceita trocas",
+    "defaultDescription": "Perfil de colecionador na plataforma GAMO",
+    "profileNotFound": "Perfil não encontrado",
+    "profileNotFoundDescription": "O perfil solicitado não foi encontrado"
   }
 }

@@ -207,5 +207,21 @@
     "cancel": "Cancel",
     "adding": "Adding...",
     "add": "Add"
+  },
+  "PublicProfile": {
+    "collection": "Console Collection",
+    "noConsoles": "This user hasn't added any consoles to their collection yet",
+    "status": {
+      "owned": "Owned",
+      "selling": "Selling",
+      "looking_for": "Looking for"
+    },
+    "skin": "Skin",
+    "withBox": "With box",
+    "withManual": "With manual",
+    "acceptsTrade": "Accepts trades",
+    "defaultDescription": "Collector profile on GAMO platform",
+    "profileNotFound": "Profile not found",
+    "profileNotFoundDescription": "The requested profile was not found"
   }
 }
