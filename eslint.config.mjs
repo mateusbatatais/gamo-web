@@ -20,7 +20,6 @@ const eslintConfig = [
     },
     rules: {
       // Regras principais para detectar duplicação
-      "sonarjs/no-duplicate-string": "error",
       "sonarjs/no-identical-functions": "error",
 
       // Regras adicionais recomendadas
