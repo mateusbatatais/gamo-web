@@ -7,28 +7,26 @@ import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
 import { apiFetch } from "@/utils/api";
 import Link from "next/link";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function RecoverPage() {
   const t = useTranslations();
-
+  const { showToast } = useToast(); // Usando o hook do Toast
   const [email, setEmail] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
 
-    // Validação simples de e-mail
     if (!email.trim()) {
-      setError(t("recover.errors.required"));
+      showToast(t("recover.errors.required"), "danger");
       return;
     }
-    // Regex mínima de validação de e-mail (pode aprimorar se desejar)
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError(t("recover.errors.emailInvalid"));
+      showToast(t("recover.errors.emailInvalid"), "danger");
       return;
     }
 
@@ -39,18 +37,19 @@ export default function RecoverPage() {
         body: { email },
       });
       setEmailSent(true);
+      showToast(t("recover.successMessage", { email }), "success");
     } catch (err: unknown) {
       console.error("[RecoverPage] erro:", err);
+      let message = t("recover.errorGeneric");
+
       if (typeof err === "object" && err !== null && "code" in err) {
         const code = (err as { code: string }).code;
         if (code === "USER_NOT_FOUND") {
-          setError(t("recover.errors.notFound"));
-        } else {
-          setError(t("recover.errorGeneric"));
+          message = t("recover.errors.notFound");
         }
-      } else {
-        setError(t("recover.errorGeneric"));
       }
+
+      showToast(message, "danger");
     } finally {
       setLoading(false);
     }
@@ -89,7 +88,6 @@ export default function RecoverPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        {error && <p className="text-red-600 text-sm">{error}</p>}
 
         <Button
           type="submit"

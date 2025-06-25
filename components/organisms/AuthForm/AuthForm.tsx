@@ -3,6 +3,7 @@ import React from "react";
 import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
 import { useAuthForm } from "@/hooks/auth/useAuthForm";
+import { useToast } from "@/contexts/ToastContext";
 
 interface AuthFormProps {
   config: {
@@ -22,6 +23,7 @@ interface AuthFormProps {
 
 export const AuthForm: React.FC<AuthFormProps> = ({ config, onSubmit, additionalContent }) => {
   const { values, loading, error, handleChange, setLoading, setError } = useAuthForm(config);
+  const { showToast } = useToast(); // Hook de toast
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,8 +35,10 @@ export const AuthForm: React.FC<AuthFormProps> = ({ config, onSubmit, additional
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || "An error occurred");
+        showToast(err.message, "danger");
       } else {
         setError("An error occurred");
+        showToast("An error occurred", "danger");
       }
     } finally {
       setLoading(false);
@@ -53,10 +57,9 @@ export const AuthForm: React.FC<AuthFormProps> = ({ config, onSubmit, additional
           onChange={(e) => handleChange(field.name, e.target.value)}
           required={field.required}
           showToggle={field.showToggle}
+          error={error ? error : undefined}
         />
       ))}
-
-      {error && <p className="text-red-600 text-sm">{error}</p>}
 
       <Button
         type="submit"

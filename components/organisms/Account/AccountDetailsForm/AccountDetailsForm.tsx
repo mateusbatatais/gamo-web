@@ -6,13 +6,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/utils/api";
-import Toast, { ToastType } from "@/components/molecules/Toast/Toast";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/atoms/Input/Input";
 import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlaceholder";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
+import { useToast } from "@/contexts/ToastContext";
 
 interface UserDetailsPayload {
   name: string;
@@ -33,18 +33,15 @@ export default function AccountDetailsForm() {
   const [email, setEmail] = useState(user?.email || "");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [toast, setToast] = useState<{ type: ToastType; message: string } | null>(null);
-
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(user?.profileImage || null);
 
   const t = useTranslations("account.detailsForm");
   const router = useRouter();
+  const { showToast } = useToast();
 
-  // fetch profile
   useEffect(() => {
     if (!token) return;
     apiFetch<{
@@ -65,11 +62,10 @@ export default function AccountDetailsForm() {
         const apiErr = err as ApiError;
         if (apiErr.code === "UNAUTHORIZED") return void logout();
         setErrorMsg(t("fetchError"));
-        setToast({ type: "danger", message: t("fetchError") });
+        showToast(t("fetchError"), "danger"); // Usando showToast
       });
-  }, [token, logout, t]);
+  }, [token, logout, t, showToast]); // Adicionado showToast nas dependências
 
-  // when blob ready, set preview
   useEffect(() => {
     if (!croppedBlob) return;
     const url = URL.createObjectURL(croppedBlob);
@@ -78,14 +74,9 @@ export default function AccountDetailsForm() {
     return () => URL.revokeObjectURL(url);
   }, [croppedBlob]);
 
-  function closeToast() {
-    setToast(null);
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrorMsg(null);
-    setToast(null);
     setLoading(true);
 
     try {
@@ -118,14 +109,14 @@ export default function AccountDetailsForm() {
         body: payload,
       });
 
-      setToast({ type: "success", message: t("updateSuccess") });
+      showToast(t("updateSuccess"), "success"); // Usando showToast
       router.refresh();
     } catch (err: unknown) {
       const apiErr = err as ApiError;
       if (apiErr.code === "UNAUTHORIZED") return void logout();
       const msg = apiErr.message || t("updateError");
       setErrorMsg(msg);
-      setToast({ type: "danger", message: msg });
+      showToast(msg, "danger"); // Usando showToast
     } finally {
       setLoading(false);
     }
@@ -133,12 +124,6 @@ export default function AccountDetailsForm() {
 
   return (
     <>
-      {toast && (
-        <div className="fixed top-4 inset-x-0 z-50 flex justify-center">
-          <Toast {...toast} durationMs={5000} onClose={closeToast} />
-        </div>
-      )}
-
       {fileSrc && !previewUrl && (
         <div className="space-y-4">
           <ImageCropper src={fileSrc} aspect={1} onBlobReady={setCroppedBlob} />

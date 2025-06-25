@@ -1,5 +1,5 @@
 // src/utils/authErrors.ts
-interface AuthError {
+export interface AuthError {
   code?: string;
   message?: string;
   [key: string]: unknown;

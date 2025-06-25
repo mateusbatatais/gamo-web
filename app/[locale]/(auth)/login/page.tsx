@@ -9,11 +9,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Divider } from "@/components/atoms/Divider/Divider";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function LoginPage() {
   const t = useTranslations();
   const router = useRouter();
   const { login } = useAuth();
+  const { showToast } = useToast();
 
   const loginConfig = {
     fields: [
@@ -63,11 +65,11 @@ export default function LoginPage() {
             <div className="flex flex-col gap-2">
               <SocialLoginButton
                 provider="google"
-                onError={(error) => console.log(error.message)}
+                onError={(error) => showToast(error.message, "danger")}
               />
               <SocialLoginButton
                 provider="microsoft"
-                onError={(error) => console.log(error.message)}
+                onError={(error) => showToast(error.message, "danger")}
               />
             </div>
             <div className="mt-6 flex justify-between text-sm">

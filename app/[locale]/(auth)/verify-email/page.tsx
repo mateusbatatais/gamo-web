@@ -6,18 +6,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function VerifyEmailPage() {
   const t = useTranslations("verifyEmail");
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { showToast } = useToast();
 
   const [status, setStatus] = useState<"loading" | "success" | "error" | "expired" | "noToken">(
     "loading",
   );
   const [message, setMessage] = useState("");
 
-  // Assim que carregue, limpa token inválido em localStorage
   useEffect(() => {
     try {
       localStorage.removeItem("gamo_token");
@@ -32,6 +33,7 @@ export default function VerifyEmailPage() {
       if (!token) {
         setStatus("noToken");
         setMessage(t("noTokenProvided"));
+        showToast(t("noTokenProvided"), "danger");
         return;
       }
 
@@ -45,33 +47,35 @@ export default function VerifyEmailPage() {
           if (data.code === "INVALID_OR_EXPIRED_TOKEN") {
             setStatus("expired");
             setMessage(t("expiredMessage"));
+            showToast(t("expiredMessage"), "danger");
           } else {
             setStatus("error");
             setMessage(data.message || t("errorGeneric"));
+            showToast(data.message || t("errorGeneric"), "danger");
           }
         } else {
           setStatus("success");
           setMessage(t("successMessage"));
+          showToast(t("successMessage"), "success");
         }
       } catch {
         setStatus("error");
         setMessage(t("errorGeneric"));
+        showToast(t("errorGeneric"), "danger");
       }
     }
 
     verify();
-  }, [searchParams, t]);
+  }, []);
 
-  // Redireciona para login 2s após sucesso
   useEffect(() => {
     if (status === "success") {
-      // Garante que não haja token armazenado
       try {
         localStorage.removeItem("gamo_token");
       } catch {}
 
       const timeout = setTimeout(() => {
-        router.push(`/login`); // sem locale explícito → Next-Intl encaixa pt/en
+        router.push(`/login`);
       }, 2000);
       return () => clearTimeout(timeout);
     }

@@ -1,12 +1,13 @@
+// app/[locale]/console/[slug]/page.tsx
 "use client";
 
-// app/[locale]/console/[slug]/page.tsx
 import { useTranslations } from "next-intl";
 import useConsoleDetails from "@/hooks/useConsoleDetails";
 import ConsoleInfo from "@/components/organisms/ConsoleInfo/ConsoleInfo";
-import Toast from "@/components/molecules/Toast/Toast";
 import SkinCard from "@/components/molecules/SkinCard/SkinCard";
 import { useParams } from "next/navigation";
+import { useToast } from "@/contexts/ToastContext";
+import { useEffect } from "react";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -15,13 +16,20 @@ export default function ConsoleDetailPage() {
 
   const t = useTranslations("ConsoleDetails");
   const { data, loading, error } = useConsoleDetails(slug || "", locale || "pt");
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    if (error) {
+      showToast(error || t("notFound"), "danger");
+    }
+  }, [error, t, showToast]);
 
   if (loading) {
     return <div className="flex justify-center py-12">Loading</div>;
   }
 
-  if (error || !data) {
-    return <Toast message={error || t("notFound")} type="danger" />;
+  if (!data) {
+    return <div className="container mx-auto px-4 py-8">Console não encontrado</div>;
   }
 
   return (

@@ -8,6 +8,7 @@ import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useTranslations } from "next-intl";
 import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
 import { MicrosoftIcon } from "@/components/atoms/Icons/MicrosoftIcon"; // Novo ícone
+import { useToast } from "@/contexts/ToastContext";
 
 interface SocialLoginButtonProps {
   provider: "google" | "microsoft" | "apple";
@@ -22,6 +23,8 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   onSuccess,
   onError,
 }) => {
+  const { showToast } = useToast();
+
   const { login: googleLogin, loading: googleLoading } = useGoogleLogin();
   const { login: microsoftLogin, loading: microsoftLoading } = useMicrosoftLogin(); // Novo
 
@@ -38,12 +41,13 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
       } else if (provider === "microsoft") {
         token = await microsoftLogin(); // Chamada para Microsoft
       } else {
+        showToast("Provedor não suportado", "success");
         throw new Error("Provedor não suportado");
       }
-
+      showToast("Bem vindo!", "success");
       if (onSuccess) onSuccess(token);
     } catch (error) {
-      console.error("Social login failed:", error);
+      showToast(error instanceof Error ? error.message : String(error), "danger");
       if (onError) onError(error as Error);
     }
   };

@@ -8,10 +8,13 @@ import { apiFetch } from "@/utils/api";
 import { Divider } from "@/components/atoms/Divider/Divider";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
+import { useToast } from "@/contexts/ToastContext";
+import { AuthError, translateAuthError } from "@/utils/authErrors";
 
 export default function SignupPage() {
   const t = useTranslations();
   const router = useRouter();
+  const { showToast } = useToast();
 
   const signupConfig = {
     fields: [
@@ -42,12 +45,17 @@ export default function SignupPage() {
   };
 
   const handleSubmit = async (values: Record<string, string>) => {
-    await apiFetch<{ userId: string }>("/auth/signup", {
-      method: "POST",
-      body: values,
-    });
+    try {
+      await apiFetch<{ userId: string }>("/auth/signup", {
+        method: "POST",
+        body: values,
+      });
 
-    router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
+      router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
+    } catch (err: unknown) {
+      const message = translateAuthError(err as AuthError, t);
+      showToast(message, "danger");
+    }
   };
 
   return (

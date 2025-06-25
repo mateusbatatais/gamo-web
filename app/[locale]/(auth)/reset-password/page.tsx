@@ -8,19 +8,17 @@ import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
 import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function ResetPasswordPage() {
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // Lê o token da query string: ?token=...
+  const { showToast } = useToast();
   const token = searchParams.get("token") || "";
-
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -33,14 +31,14 @@ export default function ResetPasswordPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setError(null);
 
     if (!newPassword.trim() || !confirmPassword.trim()) {
-      setError(t("resetPassword.errors.required"));
+      showToast(t("resetPassword.errors.required"), "danger");
       return;
     }
+
     if (newPassword !== confirmPassword) {
-      setError(t("resetPassword.errors.passwordMismatch"));
+      showToast(t("resetPassword.errors.passwordMismatch"), "danger");
       return;
     }
 
@@ -55,18 +53,19 @@ export default function ResetPasswordPage() {
         },
       });
       setSuccess(true);
+      showToast(t("resetPassword.successMessage"), "success");
     } catch (err: unknown) {
       console.error("[ResetPasswordPage] erro:", err);
+      let message = t("resetPassword.errorGeneric");
+
       if (typeof err === "object" && err !== null && "code" in err) {
         const code = (err as { code: string }).code;
         if (code === "INVALID_OR_EXPIRED_TOKEN") {
-          setError(t("resetPassword.errors.invalidOrExpiredToken"));
-        } else {
-          setError(t("resetPassword.errorGeneric"));
+          message = t("resetPassword.errors.invalidOrExpiredToken");
         }
-      } else {
-        setError(t("resetPassword.errorGeneric"));
       }
+
+      showToast(message, "danger");
     } finally {
       setLoading(false);
     }
@@ -116,8 +115,6 @@ export default function ResetPasswordPage() {
           showToggle={true}
           required
         />
-
-        {error && <p className="text-red-600 text-sm">{error}</p>}
 
         <Button
           type="submit"
