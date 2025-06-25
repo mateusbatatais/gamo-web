@@ -33,10 +33,14 @@ export const useMicrosoftLogin = () => {
       console.error("Microsoft login failed:", error);
 
       // Tratamento específico de erros da Microsoft
+      interface MicrosoftAuthError extends Error {
+        code?: string;
+      }
       let errorMessage = "Falha ao entrar com Microsoft";
-      if ((error as any).code === "popup_closed_by_user") {
+      const msError = error as MicrosoftAuthError;
+      if (msError.code === "popup_closed_by_user") {
         errorMessage = "Login cancelado pelo usuário";
-      } else if ((error as any).code === "account_exists_with_different_credential") {
+      } else if (msError.code === "account_exists_with_different_credential") {
         errorMessage = "Conta já existe com credenciais diferentes";
       }
 
