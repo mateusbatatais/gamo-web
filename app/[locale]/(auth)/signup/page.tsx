@@ -9,7 +9,7 @@ import { Divider } from "@/components/atoms/Divider/Divider";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
 import { useToast } from "@/contexts/ToastContext";
-import { AuthError, translateAuthError } from "@/utils/authErrors";
+import { AuthError } from "@/utils/authErrors";
 
 export default function SignupPage() {
   const t = useTranslations();
@@ -53,14 +53,12 @@ export default function SignupPage() {
 
       router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
     } catch (err: unknown) {
-      const message = translateAuthError(err as AuthError, t.raw);
-
       // Erro específico de e-mail
       if ((err as AuthError).code === "EMAIL_SEND_FAILED") {
         showToast(t("signup.emailSendError"), "warning");
         router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
       } else {
-        showToast(message, "danger");
+        showToast(err instanceof Error ? err.message : String(err), "danger");
       }
     }
   };
