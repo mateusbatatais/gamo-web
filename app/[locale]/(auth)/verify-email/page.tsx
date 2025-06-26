@@ -20,14 +20,6 @@ export default function VerifyEmailPage() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    try {
-      localStorage.removeItem("gamo_token");
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  useEffect(() => {
     async function verify() {
       const token = searchParams.get("token");
       if (!token) {
@@ -54,6 +46,11 @@ export default function VerifyEmailPage() {
             showToast(data.message || t("errorGeneric"), "danger");
           }
         } else {
+          // SÓ REMOVE O TOKEN APÓS VALIDAÇÃO BEM SUCEDIDA
+          try {
+            localStorage.removeItem("gamo_token");
+          } catch {}
+
           setStatus("success");
           setMessage(t("successMessage"));
           showToast(t("successMessage"), "success");
@@ -70,10 +67,6 @@ export default function VerifyEmailPage() {
 
   useEffect(() => {
     if (status === "success") {
-      try {
-        localStorage.removeItem("gamo_token");
-      } catch {}
-
       const timeout = setTimeout(() => {
         router.push(`/login`);
       }, 2000);
