@@ -53,7 +53,7 @@ export default function SignupPage() {
 
       router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
     } catch (err: unknown) {
-      const message = translateAuthError(err as AuthError, t);
+      const message = translateAuthError(err as AuthError, t.raw);
       showToast(message, "danger");
     }
   };
