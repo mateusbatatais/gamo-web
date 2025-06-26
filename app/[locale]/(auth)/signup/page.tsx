@@ -54,7 +54,14 @@ export default function SignupPage() {
       router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
     } catch (err: unknown) {
       const message = translateAuthError(err as AuthError, t.raw);
-      showToast(message, "danger");
+
+      // Erro específico de e-mail
+      if ((err as AuthError).code === "EMAIL_SEND_FAILED") {
+        showToast(t("signup.emailSendError"), "warning");
+        router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
+      } else {
+        showToast(message, "danger");
+      }
     }
   };
 

@@ -78,6 +78,7 @@
     "passwordLabel": "Senha",
     "confirmPasswordLabel": "Confirmar Senha",
     "button": "Criar Conta",
+    "emailSendError": "Conta criada, mas não foi possível enviar o e-mail de confirmação. Tente novamente mais tarde.",
     "haveAccount": "Já possui conta? Faça login",
     "errors": {
       "required": "Campo obrigatório",

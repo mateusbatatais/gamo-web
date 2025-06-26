@@ -62,7 +62,6 @@
       "popupClosed": "Login cancelled by user",
       "accountExists": "An account with this email already exists",
       "invalidToken": "Invalid access token"
-
     },
     "or": "or",
     "googleButton": "Sign in with Google",
@@ -80,6 +79,7 @@
     "confirmPasswordLabel": "Confirm Password",
     "button": "Create Account",
     "haveAccount": "Already have an account? Log in",
+    "emailSendError": "Account created, but we could not send the confirmation email. Please contact support.",
     "errors": {
       "required": "Field is required",
       "emailInvalid": "Invalid email address",
