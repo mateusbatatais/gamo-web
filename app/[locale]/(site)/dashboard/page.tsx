@@ -22,37 +22,30 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
-  // 3) Se chegamos aqui, `token` existe: buscamos o perfil
   useEffect(() => {
-    // Só busca perfil se contexto estiver inicializado e houver token
     if (!initialized || !token) return;
     apiFetch<UserProfile>("/user/profile", { token })
       .then((data) => setProfile(data))
       .catch(() => {
-        // Se der erro (ex. 401), desloga e manda para login
         logout();
         router.replace("/login");
       })
       .finally(() => setLoadingProfile(false));
   }, [token, logout, router, initialized]);
 
-  // 1) Enquanto o contexto não estiver inicializado, mostra loading
   if (!initialized) {
     return <div>{t("common.loading")}</div>;
   }
 
-  // 2) Se estiver inicializado mas não houver token, redireciona para login
   if (!token) {
     router.replace("/login");
     return null;
   }
 
-  // 4) Enquanto carregamos o perfil, mostra loading
   if (loadingProfile) {
     return <div>{t("common.loading")}</div>;
   }
 
-  // 5) Se, depois de carregar, não houver profile (por segurança), exibe erro + botão de logout
   if (!profile) {
     return (
       <div>
@@ -70,13 +63,10 @@ export default function DashboardPage() {
     );
   }
 
-  // 6) Se chegamos aqui, temos profile pronto e token válido
   return (
     <main className="p-4 space-y-4">
       <h1 className="text-3xl font-bold">{t("dashboard.title")}</h1>
-      <p className="text-xl">
-        {t("dashboard.welcome", { name: profile.name })}
-      </p>
+      <p className="text-xl">{t("dashboard.welcome", { name: profile.name })}</p>
       <p>{t("dashboard.email", { email: profile.email })}</p>
       <p>{t("dashboard.role", { role: profile.role })}</p>
       <button

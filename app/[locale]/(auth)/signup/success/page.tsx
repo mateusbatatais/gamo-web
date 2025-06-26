@@ -4,17 +4,15 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/atoms/Button/Button";
-import { Link } from "@/i18n/navigation";
 import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
+import { SuccessCard } from "@/components/atoms/SuccessCard/SuccessCard";
 
 export default function SignupSuccessPage() {
   const t = useTranslations();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { showToast } = useToast();
-
   const emailParam = searchParams.get("email");
   const [timer, setTimer] = useState<number>(30);
   const [canResend, setCanResend] = useState<boolean>(false);
@@ -50,38 +48,25 @@ export default function SignupSuccessPage() {
         body: { email: emailParam },
       });
       setResendSuccess(true);
+      setTimer(30);
+      setCanResend(false);
       showToast(t("signup.success.resendSuccess"), "success");
     } catch (err: unknown) {
       console.error("[SignupSuccessPage] erro ao reenviar:", err);
-      const errorMsg = t("signup.success.resendError");
-      setResendError(errorMsg);
-      showToast(errorMsg, "danger");
+      setResendError(t("signup.success.resendError"));
+      showToast(t("signup.success.resendError"), "danger");
     } finally {
       setResendLoading(false);
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 text-center">
-      <h1 className="text-3xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-        {t("signup.success.title")}
-      </h1>
-
-      {emailParam && (
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {t("signup.success.message", { email: emailParam })}
-        </p>
-      )}
-
-      <div className="space-y-4">
-        <Link href={`/login`}>
-          <Button
-            variant="primary"
-            className="w-full"
-            label={t("signup.success.loginButton")}
-          ></Button>
-        </Link>
-
+    <SuccessCard
+      title={t("signup.success.title")}
+      message={t("signup.success.message", { email: emailParam ?? "" })}
+      buttonHref="/login"
+      buttonLabel={t("signup.success.loginButton")}
+      additionalContent={
         <div className="text-sm text-gray-500 dark:text-gray-400">
           {resendSuccess ? (
             <p className="text-green-600 dark:text-green-400">
@@ -90,26 +75,24 @@ export default function SignupSuccessPage() {
           ) : (
             <>
               <p>{t("signup.success.noEmail")}</p>
-
               {!canResend ? (
                 <p className="mt-1 font-medium text-gray-700 dark:text-gray-200">
                   {t("signup.success.resendTimer", { seconds: timer })}
                 </p>
               ) : (
-                <Button
+                <button
                   onClick={handleResend}
                   disabled={resendLoading}
-                  variant="transparent"
                   className="text-primary hover:underline disabled:opacity-50"
-                  label={resendLoading ? t("common.loading") : t("signup.success.resendButton")}
-                ></Button>
+                >
+                  {resendLoading ? t("common.loading") : t("signup.success.resendButton")}
+                </button>
               )}
-
               {resendError && <p className="text-red-600 dark:text-red-400 mt-2">{resendError}</p>}
             </>
           )}
         </div>
-      </div>
-    </div>
+      }
+    />
   );
 }

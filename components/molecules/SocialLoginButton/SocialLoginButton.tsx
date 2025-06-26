@@ -3,11 +3,11 @@
 
 import React from "react";
 import { useGoogleLogin } from "@/hooks/useGoogleLogin";
-import { useMicrosoftLogin } from "@/hooks/useMicrosoftLogin"; // Novo hook
+import { useMicrosoftLogin } from "@/hooks/useMicrosoftLogin";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useTranslations } from "next-intl";
 import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
-import { MicrosoftIcon } from "@/components/atoms/Icons/MicrosoftIcon"; // Novo ícone
+import { MicrosoftIcon } from "@/components/atoms/Icons/MicrosoftIcon";
 import { useToast } from "@/contexts/ToastContext";
 
 interface SocialLoginButtonProps {
@@ -26,7 +26,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   const { showToast } = useToast();
 
   const { login: googleLogin, loading: googleLoading } = useGoogleLogin();
-  const { login: microsoftLogin, loading: microsoftLoading } = useMicrosoftLogin(); // Novo
+  const { login: microsoftLogin, loading: microsoftLoading } = useMicrosoftLogin();
 
   const loading =
     provider === "google" ? googleLoading : provider === "microsoft" ? microsoftLoading : false;
@@ -39,7 +39,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
       if (provider === "google") {
         token = await googleLogin();
       } else if (provider === "microsoft") {
-        token = await microsoftLogin(); // Chamada para Microsoft
+        token = await microsoftLogin();
       } else {
         showToast("Provedor não suportado", "success");
         throw new Error("Provedor não suportado");

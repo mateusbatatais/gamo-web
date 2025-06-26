@@ -1,14 +1,14 @@
 // app/[locale]/reset-password/page.tsx
 "use client";
 
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { Input } from "@/components/atoms/Input/Input";
-import { Button } from "@/components/atoms/Button/Button";
-import { Link } from "@/i18n/navigation";
+import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
+import { FieldError } from "@/@types/forms";
+import { SuccessCard } from "@/components/atoms/SuccessCard/SuccessCard";
 
 export default function ResetPasswordPage() {
   const t = useTranslations();
@@ -17,55 +17,103 @@ export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
   const { showToast } = useToast();
   const token = searchParams.get("token") || "";
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [errors, setErrors] = useState<Record<string, FieldError>>({});
+  const [values, setValues] = useState({
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   useEffect(() => {
     if (!token) {
-      // Se não tiver token na URL, volta para recover
       router.replace(`/recover`);
     }
-  }, [token, locale, router]);
+  }, [token, router]);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const resetPasswordConfig = {
+    fields: [
+      {
+        name: "newPassword",
+        label: t("resetPassword.newPasswordLabel"),
+        type: "password",
+        placeholder: "••••••••",
+        required: true,
+        showToggle: true,
+      },
+      {
+        name: "confirmPassword",
+        label: t("resetPassword.confirmPasswordLabel"),
+        type: "password",
+        placeholder: "••••••••",
+        required: true,
+        showToggle: true,
+      },
+    ],
+    submitLabel: t("resetPassword.button"),
+  };
 
-    if (!newPassword.trim() || !confirmPassword.trim()) {
-      showToast(t("resetPassword.errors.required"), "danger");
-      return;
+  const handleValueChange = (name: string, value: string) => {
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
+  };
 
-    if (newPassword !== confirmPassword) {
-      showToast(t("resetPassword.errors.passwordMismatch"), "danger");
-      return;
-    }
-
+  const handleSubmit = async () => {
     setLoading(true);
+    setErrors({});
+
+    // Validação básica
+    const newErrors: Record<string, FieldError> = {};
+    if (!values.newPassword) {
+      newErrors.newPassword = { message: t("resetPassword.errors.required") };
+    } else if (values.newPassword.length < 6) {
+      newErrors.newPassword = { message: t("resetPassword.errors.passwordMinLength") };
+    }
+
+    if (!values.confirmPassword) {
+      newErrors.confirmPassword = { message: t("resetPassword.errors.required") };
+    } else if (values.newPassword !== values.confirmPassword) {
+      newErrors.confirmPassword = { message: t("resetPassword.errors.passwordMismatch") };
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
     try {
       await apiFetch("/auth/reset-password", {
         method: "POST",
         body: {
           token,
-          newPassword,
+          newPassword: values.newPassword,
           locale,
         },
       });
+
       setSuccess(true);
       showToast(t("resetPassword.successMessage"), "success");
     } catch (err: unknown) {
-      console.error("[ResetPasswordPage] erro:", err);
-      let message = t("resetPassword.errorGeneric");
-
-      if (typeof err === "object" && err !== null && "code" in err) {
-        const code = (err as { code: string }).code;
-        if (code === "INVALID_OR_EXPIRED_TOKEN") {
-          message = t("resetPassword.errors.invalidOrExpiredToken");
-        }
+      let errorCode: string | undefined = undefined;
+      if (err && typeof err === "object" && "code" in err) {
+        errorCode = (err as { code?: string }).code;
       }
 
-      showToast(message, "danger");
+      if (errorCode === "INVALID_OR_EXPIRED_TOKEN") {
+        newErrors.general = { message: t("resetPassword.errors.invalidOrExpiredToken") };
+      } else {
+        newErrors.general = { message: t("resetPassword.errorGeneric") };
+      }
+
+      setErrors(newErrors);
     } finally {
       setLoading(false);
     }
@@ -73,57 +121,23 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="max-w-md mx-auto p-6 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-          {t("resetPassword.successTitle")}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">{t("resetPassword.successMessage")}</p>
-        <Link href={`/login`}>
-          <Button
-            variant="primary"
-            className="w-full"
-            label={t("resetPassword.backToLogin")}
-          ></Button>
-        </Link>
-      </div>
+      <SuccessCard
+        title={t("resetPassword.successTitle")}
+        message={t("resetPassword.successMessage")}
+        buttonHref="/login"
+        buttonLabel={t("resetPassword.backToLogin")}
+      />
     );
   }
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
-        {t("resetPassword.title")}
-      </h1>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label={t("resetPassword.newPasswordLabel")}
-          type="password"
-          placeholder="••••••••"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          showToggle={true}
-          required
-        />
-
-        <Input
-          label={t("resetPassword.confirmPasswordLabel")}
-          type="password"
-          placeholder="••••••••"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          showToggle={true}
-          required
-        />
-
-        <Button
-          type="submit"
-          label={loading ? t("common.loading") : t("resetPassword.button")}
-          variant="primary"
-          disabled={loading}
-          className="w-full"
-        />
-      </form>
-    </div>
+    <AuthForm
+      config={resetPasswordConfig}
+      onSubmit={handleSubmit}
+      loading={loading}
+      errors={errors}
+      values={values}
+      onValueChange={handleValueChange}
+    />
   );
 }

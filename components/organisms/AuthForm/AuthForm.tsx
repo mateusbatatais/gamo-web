@@ -1,48 +1,45 @@
-// src/components/organisms/AuthForm/AuthForm.tsx
+// components/organisms/AuthForm/AuthForm.tsx
+"use client";
+
 import React from "react";
 import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
-import { useAuthForm } from "@/hooks/auth/useAuthForm";
-import { useToast } from "@/contexts/ToastContext";
+import { FieldError } from "@/@types/forms";
+
+interface FieldConfig {
+  name: string;
+  label: string;
+  type: string;
+  placeholder: string;
+  required?: boolean;
+  showToggle?: boolean;
+}
 
 interface AuthFormProps {
   config: {
-    fields: {
-      name: string;
-      label: string;
-      type: string;
-      placeholder: string;
-      required?: boolean;
-      showToggle?: boolean;
-    }[];
+    fields: FieldConfig[];
     submitLabel: string;
   };
-  onSubmit: (values: Record<string, string>) => Promise<void>;
+  onSubmit: (values: Record<string, string>) => void;
   additionalContent?: React.ReactNode;
+  loading?: boolean;
+  errors?: Record<string, FieldError>; // Agora é um objeto com erros por campo
+  values: Record<string, string>; // Adicionado valores
+  onValueChange: (name: string, value: string) => void; // Adicionado handler de mudança
 }
 
-export const AuthForm: React.FC<AuthFormProps> = ({ config, onSubmit, additionalContent }) => {
-  const { values, loading, error, handleChange, setLoading, setError } = useAuthForm(config);
-  const { showToast } = useToast(); // Hook de toast
-
-  const handleSubmit = async (e: React.FormEvent) => {
+export function AuthForm({
+  config,
+  onSubmit,
+  additionalContent,
+  loading = false,
+  errors = {},
+  values,
+  onValueChange,
+}: AuthFormProps) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    try {
-      await onSubmit(values);
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message || "An error occurred");
-        showToast(err.message, "danger");
-      } else {
-        setError("An error occurred");
-        showToast("An error occurred", "danger");
-      }
-    } finally {
-      setLoading(false);
-    }
+    onSubmit(values);
   };
 
   return (
@@ -53,23 +50,26 @@ export const AuthForm: React.FC<AuthFormProps> = ({ config, onSubmit, additional
           label={field.label}
           type={field.type}
           placeholder={field.placeholder}
-          value={values[field.name]}
-          onChange={(e) => handleChange(field.name, e.target.value)}
+          value={values[field.name] || ""}
+          onChange={(e) => onValueChange(field.name, e.target.value)}
           required={field.required}
           showToggle={field.showToggle}
-          error={error ? error : undefined}
+          error={errors[field.name]?.message} // Erro específico por campo
         />
       ))}
 
+      {/* Erro geral (não associado a um campo específico) */}
+      {errors.general && <p className="text-red-600 text-sm">{errors.general.message}</p>}
+
       <Button
         type="submit"
-        label={loading ? "Loading..." : config.submitLabel}
+        label={loading ? "Carregando..." : config.submitLabel}
         variant="primary"
-        disabled={loading}
         className="w-full"
+        disabled={loading}
       />
 
       {additionalContent}
     </form>
   );
-};
+}

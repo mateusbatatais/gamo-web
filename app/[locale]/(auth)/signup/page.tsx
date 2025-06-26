@@ -1,20 +1,29 @@
 // app/[locale]/(auth)/signup/page.tsx
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl"; // Adicionei useLocale
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
-import { apiFetch } from "@/utils/api";
 import { Divider } from "@/components/atoms/Divider/Divider";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
+import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
-import { AuthError } from "@/utils/authErrors";
+import { FieldError } from "@/@types/forms";
 
 export default function SignupPage() {
   const t = useTranslations();
   const router = useRouter();
   const { showToast } = useToast();
+  const locale = useLocale(); // Obtém o locale atual
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, FieldError>>({});
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   const signupConfig = {
     fields: [
@@ -44,22 +53,87 @@ export default function SignupPage() {
     submitLabel: t("signup.button"),
   };
 
-  const handleSubmit = async (values: Record<string, string>) => {
-    try {
-      await apiFetch<{ userId: string }>("/auth/signup", {
-        method: "POST",
-        body: values,
+  const handleValueChange = (name: string, value: string) => {
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
       });
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setErrors({});
+
+    // Validação básica
+    const newErrors: Record<string, FieldError> = {};
+    if (!values.name.trim()) {
+      newErrors.name = { message: t("signup.errors.nameRequired") };
+    }
+    if (!values.email.trim()) {
+      newErrors.email = { message: t("signup.errors.emailRequired") };
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      newErrors.email = { message: t("signup.errors.emailInvalid") };
+    }
+    if (!values.password) {
+      newErrors.password = { message: t("signup.errors.passwordRequired") };
+    } else if (values.password.length < 6) {
+      newErrors.password = { message: t("signup.errors.passwordMinLength") };
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await apiFetch<{
+        userId: string;
+        code?: string;
+      }>("/auth/signup", {
+        method: "POST",
+        body: {
+          ...values,
+          locale,
+        },
+      });
+
+      if (response.code === "USER_CREATED_EMAIL_FAILED") {
+        showToast(t("signup.emailSendError"), "warning");
+      } else {
+        showToast(t("signup.success"), "success");
+      }
 
       router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
     } catch (err: unknown) {
-      // Erro específico de e-mail
-      if ((err as AuthError).code === "EMAIL_SEND_FAILED") {
+      let errorCode: string | undefined = undefined;
+
+      if (typeof err === "object" && err !== null) {
+        if ("code" in err) {
+          errorCode = (err as { code?: string }).code;
+        }
+      }
+
+      // Tratar o caso em que o usuário foi criado, mas o e-mail não foi enviado
+      if (errorCode === "USER_CREATED_EMAIL_FAILED") {
         showToast(t("signup.emailSendError"), "warning");
         router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
-      } else {
-        showToast(err instanceof Error ? err.message : String(err), "danger");
       }
+      // Tratar outros erros
+      else if (errorCode === "EMAIL_ALREADY_EXISTS") {
+        newErrors.email = { message: t("signup.errors.emailExists") };
+        setErrors(newErrors);
+      } else {
+        newErrors.general = { message: t("signup.errorGeneric") };
+        setErrors(newErrors);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,6 +147,10 @@ export default function SignupPage() {
       <AuthForm
         config={signupConfig}
         onSubmit={handleSubmit}
+        loading={loading}
+        errors={errors}
+        values={values}
+        onValueChange={handleValueChange}
         additionalContent={
           <>
             <Divider label={t("login.or")} />
@@ -80,11 +158,11 @@ export default function SignupPage() {
             <div className="flex flex-col gap-2">
               <SocialLoginButton
                 provider="google"
-                onError={(error) => console.log(error.message)}
+                onError={(error) => showToast(error.message, "danger")}
               />
               <SocialLoginButton
                 provider="microsoft"
-                onError={(error) => console.log(error.message)}
+                onError={(error) => showToast(error.message, "danger")}
               />
             </div>
             <div className="mt-6 flex justify-between text-sm">

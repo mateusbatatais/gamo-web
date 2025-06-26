@@ -15,10 +15,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
-const microsoftProvider = new OAuthProvider('microsoft.com');
+const microsoftProvider = new OAuthProvider("microsoft.com");
 microsoftProvider.setCustomParameters({
-  prompt: 'consent',
-  tenant: 'common', 
+  prompt: "consent",
+  tenant: "84ecf51e-5121-40c5-84a4-283ace3db775",
 });
 
 export { auth, googleProvider, microsoftProvider };

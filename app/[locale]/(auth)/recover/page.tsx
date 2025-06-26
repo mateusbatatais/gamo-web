@@ -1,108 +1,118 @@
 // app/[locale]/recover/page.tsx
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Input } from "@/components/atoms/Input/Input";
-import { Button } from "@/components/atoms/Button/Button";
+import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { apiFetch } from "@/utils/api";
-import Link from "next/link";
 import { useToast } from "@/contexts/ToastContext";
+import Link from "next/link";
+import { FieldError } from "@/@types/forms";
+import { SuccessCard } from "@/components/atoms/SuccessCard/SuccessCard";
 
 export default function RecoverPage() {
   const t = useTranslations();
-  const { showToast } = useToast(); // Usando o hook do Toast
-  const [email, setEmail] = useState("");
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [errors, setErrors] = useState<Record<string, FieldError>>({});
+  const [values, setValues] = useState({ email: "" });
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const recoverConfig = {
+    fields: [
+      {
+        name: "email",
+        label: t("recover.emailLabel"),
+        type: "email",
+        placeholder: t("recover.emailPlaceholder"),
+        required: true,
+      },
+    ],
+    submitLabel: t("recover.button"),
+  };
 
-    if (!email.trim()) {
-      showToast(t("recover.errors.required"), "danger");
-      return;
+  const handleValueChange = (name: string, value: string) => {
+    setValues((prev) => ({ ...prev, [name]: value }));
+
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
     }
+  };
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      showToast(t("recover.errors.emailInvalid"), "danger");
-      return;
-    }
-
+  const handleSubmit = async () => {
     setLoading(true);
+    setErrors({});
+
+    // Validação básica
+    const newErrors: Record<string, FieldError> = {};
+    if (!values.email.trim()) {
+      newErrors.email = { message: t("recover.errors.required") };
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      newErrors.email = { message: t("recover.errors.emailInvalid") };
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
     try {
       await apiFetch("/auth/recover", {
         method: "POST",
-        body: { email },
+        body: { email: values.email },
       });
-      setEmailSent(true);
-      showToast(t("recover.successMessage", { email }), "success");
-    } catch (err: unknown) {
-      console.error("[RecoverPage] erro:", err);
-      let message = t("recover.errorGeneric");
 
-      if (typeof err === "object" && err !== null && "code" in err) {
-        const code = (err as { code: string }).code;
-        if (code === "USER_NOT_FOUND") {
-          message = t("recover.errors.notFound");
-        }
+      setEmailSent(true);
+      showToast(t("recover.successMessage", { email: values.email }), "success");
+    } catch (err: unknown) {
+      let errorCode: string | undefined = undefined;
+      if (err && typeof err === "object" && "code" in err) {
+        errorCode = (err as { code?: string }).code;
       }
 
-      showToast(message, "danger");
+      if (errorCode === "USER_NOT_FOUND") {
+        newErrors.email = { message: t("recover.errors.notFound") };
+      } else {
+        newErrors.general = { message: t("recover.errorGeneric") };
+      }
+
+      setErrors(newErrors);
     } finally {
       setLoading(false);
     }
   };
 
-  // Se o e-mail já foi enviado, exibe mensagem de sucesso
   if (emailSent) {
     return (
-      <div className="max-w-md mx-auto p-6 text-center">
-        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">
-          {t("recover.successTitle")}
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {t("recover.successMessage", { email })}
-        </p>
-        <Link href={`/login`}>
-          <Button variant="primary" className="w-full" label={t("recover.backToLogin")}></Button>
-        </Link>
-      </div>
+      <SuccessCard
+        title={t("recover.successTitle")}
+        message={t("recover.successMessage", { email: values.email })}
+        buttonHref="/login"
+        buttonLabel={t("recover.backToLogin")}
+      />
     );
   }
 
-  // Caso contrário, exibe o formulário de recuperação
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6">
-        {t("recover.title")}
-      </h1>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label={t("recover.emailLabel")}
-          type="email"
-          placeholder={t("recover.emailPlaceholder")}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <Button
-          type="submit"
-          label={loading ? t("common.loading") : t("recover.button")}
-          variant="primary"
-          disabled={loading}
-          className="w-full"
-        />
-      </form>
-
-      <div className="mt-6 text-center text-sm">
-        <Link href={`/login`} className="text-primary hover:underline">
-          {t("recover.backToLogin")}
-        </Link>
-      </div>
-    </div>
+    <AuthForm
+      config={recoverConfig}
+      onSubmit={handleSubmit}
+      loading={loading}
+      errors={errors}
+      values={values}
+      onValueChange={handleValueChange}
+      additionalContent={
+        <div className="mt-6 text-center text-sm">
+          <Link href={`/login`} className="text-primary hover:underline">
+            {t("recover.backToLogin")}
+          </Link>
+        </div>
+      }
+    />
   );
 }

@@ -20,7 +20,7 @@ export const useMicrosoftLogin = () => {
       const idToken = await result.user.getIdToken();
 
       // Usar o mesmo endpoint que o Google
-      const backendResponse = await apiFetch<{ token: string }>("/auth/social/google", {
+      const backendResponse = await apiFetch<{ token: string }>("/auth/social-login", {
         method: "POST",
         token: idToken,
       });

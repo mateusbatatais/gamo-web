@@ -25,7 +25,6 @@ export default function VerifyEmailPage() {
       if (!token) {
         setStatus("noToken");
         setMessage(t("noTokenProvided"));
-        showToast(t("noTokenProvided"), "danger");
         return;
       }
 
@@ -39,7 +38,7 @@ export default function VerifyEmailPage() {
           if (data.code === "INVALID_OR_EXPIRED_TOKEN") {
             setStatus("expired");
             setMessage(t("expiredMessage"));
-            showToast(t("expiredMessage"), "danger");
+            showToast(t("expiredMessage"), "warning");
           } else {
             setStatus("error");
             setMessage(data.message || t("errorGeneric"));
@@ -94,24 +93,11 @@ export default function VerifyEmailPage() {
           </div>
         )}
 
-        {(status === "expired" || status === "error") && (
+        {(status === "expired" || status === "error" || status === "noToken") && (
           <div className="text-center space-y-6">
             <h1 className="text-2xl font-bold text-red-600">
               {status === "expired" ? t("expiredTitle") : t("errorTitle")}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 text-center">{message}</p>
-            <Button
-              onClick={() => router.push(`/signup`)}
-              variant="primary"
-              className="mt-4 w-full"
-              label={t("goToSignup")}
-            />
-          </div>
-        )}
-
-        {status === "noToken" && (
-          <div className="text-center space-y-6">
-            <h1 className="text-2xl font-bold text-red-600">{t("errorTitle")}</h1>
             <p className="text-gray-600 dark:text-gray-400 text-center">{message}</p>
             <Button
               onClick={() => router.push(`/signup`)}

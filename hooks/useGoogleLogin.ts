@@ -19,7 +19,7 @@ export const useGoogleLogin = () => {
       const result = await signInWithPopup(auth, googleProvider);
       const idToken = await result.user.getIdToken();
 
-      const backendResponse = await apiFetch<{ token: string }>("/auth/social/google", {
+      const backendResponse = await apiFetch<{ token: string }>("/auth/social-login", {
         method: "POST",
         token: idToken,
       });

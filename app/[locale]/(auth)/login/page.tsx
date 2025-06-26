@@ -1,21 +1,29 @@
 // app/[locale]/(auth)/login/page.tsx
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
-import { apiFetch } from "@/utils/api";
-import { useAuth } from "@/contexts/AuthContext";
 import { Divider } from "@/components/atoms/Divider/Divider";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
+import { apiFetch } from "@/utils/api";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
+import { FieldError } from "@/@types/forms";
 
 export default function LoginPage() {
   const t = useTranslations();
   const router = useRouter();
   const { login } = useAuth();
   const { showToast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, FieldError>>({});
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
 
   const loginConfig = {
     fields: [
@@ -38,14 +46,72 @@ export default function LoginPage() {
     submitLabel: t("login.button"),
   };
 
-  const handleSubmit = async (values: Record<string, string>) => {
-    const data = await apiFetch<{ token: string }>("/auth/login", {
-      method: "POST",
-      body: { email: values.email, password: values.password },
-    });
+  const handleValueChange = (name: string, value: string) => {
+    setValues((prev) => ({ ...prev, [name]: value }));
 
-    login(data.token);
-    router.push("/account");
+    // Limpa o erro quando o usuário começa a digitar
+    if (errors[name]) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setErrors({});
+
+    // Validação básica
+    const newErrors: Record<string, FieldError> = {};
+    if (!values.email.trim()) {
+      newErrors.email = { message: t("login.errors.emailRequired") };
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
+      newErrors.email = { message: t("login.errors.emailInvalid") };
+    }
+
+    if (!values.password) {
+      newErrors.password = { message: t("login.errors.passwordRequired") };
+    } else if (values.password.length < 6) {
+      newErrors.password = { message: t("login.errors.passwordMinLength") };
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const data = await apiFetch<{ token: string }>("/auth/login", {
+        method: "POST",
+        body: { email: values.email, password: values.password },
+      });
+
+      login(data.token);
+      showToast(t("login.success"), "success");
+      router.push("/account");
+    } catch (err: unknown) {
+      let errorCode: string | undefined = undefined;
+      if (typeof err === "object" && err !== null && "code" in err) {
+        errorCode = (err as { code?: string }).code;
+      }
+
+      if (errorCode === "INVALID_CREDENTIALS") {
+        newErrors.password = { message: t("login.errors.invalidCredentials") };
+      } else if (errorCode === "USER_NOT_FOUND") {
+        newErrors.email = { message: t("login.errors.userNotFound") };
+      } else if (errorCode === "EMAIL_NOT_VERIFIED") {
+        newErrors.general = { message: t("login.errors.emailNotVerified") };
+      } else {
+        newErrors.general = { message: t("login.errorGeneric") };
+      }
+
+      setErrors(newErrors);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,6 +124,10 @@ export default function LoginPage() {
       <AuthForm
         config={loginConfig}
         onSubmit={handleSubmit}
+        loading={loading}
+        errors={errors}
+        values={values}
+        onValueChange={handleValueChange}
         additionalContent={
           <>
             <Divider label={t("login.or")} />

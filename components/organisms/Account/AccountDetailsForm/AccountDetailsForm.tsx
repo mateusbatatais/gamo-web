@@ -62,9 +62,9 @@ export default function AccountDetailsForm() {
         const apiErr = err as ApiError;
         if (apiErr.code === "UNAUTHORIZED") return void logout();
         setErrorMsg(t("fetchError"));
-        showToast(t("fetchError"), "danger"); // Usando showToast
+        showToast(t("fetchError"), "danger");
       });
-  }, [token, logout, t, showToast]); // Adicionado showToast nas dependências
+  }, [token, logout, t, showToast]);
 
   useEffect(() => {
     if (!croppedBlob) return;
@@ -109,7 +109,7 @@ export default function AccountDetailsForm() {
         body: payload,
       });
 
-      showToast(t("updateSuccess"), "success"); // Usando showToast
+      showToast(t("updateSuccess"), "success");
       router.refresh();
     } catch (err: unknown) {
       const apiErr = err as ApiError;
