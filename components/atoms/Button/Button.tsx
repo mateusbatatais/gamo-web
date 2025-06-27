@@ -1,12 +1,12 @@
 import React, { ReactNode } from "react";
 import clsx from "clsx";
 
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonSize = "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "primary" | "secondary" | "outline" | "transparent";
 export type ButtonStatus = "default" | "success" | "danger" | "warning" | "info";
 
 export interface ButtonProps {
-  label: string;
+  label?: string;
   title?: string;
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
@@ -17,32 +17,42 @@ export interface ButtonProps {
   icon?: ReactNode;
   iconPosition?: "left" | "right";
   className?: string;
+  children?: ReactNode;
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
   sm: "px-3 py-1 text-sm",
   md: "px-4 py-2 text-base",
   lg: "px-5 py-3 text-lg",
+  xl: "px-6 py-3.5 text-xl",
 };
 
+// Classes base para cada variante
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-primary text-white hover:bg-primary/90 dark:bg-primary-600 dark:hover:bg-primary-500",
+    "bg-primary text-white hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-500 border border-transparent",
   secondary:
-    "bg-secondary text-white hover:bg-secondary/90 dark:bg-secondary-600 dark:hover:bg-secondary-500",
-  outline:
-    "border border-primary text-primary hover:bg-primary/10 dark:border-primary-600 dark:text-primary-200 dark:hover:bg-primary-800",
-  transparent:
-    "bg-transparent text-primary hover:bg-primary/10 dark:text-primary-200 dark:hover:bg-primary-800",
+    "bg-secondary text-white hover:bg-secondary-600 dark:bg-secondary-600 dark:hover:bg-secondary-500 border border-transparent",
+  outline: "border bg-transparent",
+  transparent: "bg-transparent border-transparent",
 };
 
-const statusClasses: Record<ButtonStatus, string> = {
-  default: "",
-  success: "bg-green-600 text-white hover:bg-green-700 dark:bg-green-500 dark:hover:bg-green-400",
-  danger: "bg-red-600 text-white hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-400",
-  warning:
-    "bg-yellow-500 text-white hover:bg-yellow-600 dark:bg-yellow-400 dark:hover:bg-yellow-300",
-  info: "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400",
+// Classes para status - agora focam apenas na cor do texto e borda
+const statusColorClasses: Record<ButtonStatus, string> = {
+  default: "text-primary border-primary hover:bg-primary/10",
+  success: "text-success border-success hover:bg-success/10",
+  danger: "text-danger border-danger hover:bg-danger/10",
+  warning: "text-warning border-warning hover:bg-warning/10",
+  info: "text-info border-info hover:bg-info/10",
+};
+
+// Classes para variantes sólidas (que usam background)
+const solidStatusClasses: Record<ButtonStatus, string> = {
+  default: "bg-primary text-white hover:bg-primary-600",
+  success: "bg-success text-white hover:bg-success-600",
+  danger: "bg-danger text-white hover:bg-danger-600",
+  warning: "bg-warning text-white hover:bg-warning-600",
+  info: "bg-info text-white hover:bg-info-600",
 };
 
 export function Button({
@@ -57,12 +67,24 @@ export function Button({
   icon,
   iconPosition = "left",
   className,
+  children,
 }: ButtonProps) {
-  const base = "inline-flex items-center justify-center font-medium rounded-md transition";
-  const sizeCls = sizeClasses[size];
-  const styleCls = status !== "default" ? statusClasses[status] : variantClasses[variant];
+  const base =
+    "inline-flex items-center justify-center font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-900 cursor-pointer";
 
-  const iconSpacing = icon ? (iconPosition === "right" ? "ml-2" : "mr-2") : undefined;
+  const sizeCls = sizeClasses[size];
+  const variantCls = variantClasses[variant];
+
+  // Determina as classes de cor baseado na variante e status
+  let colorCls = "";
+  if (variant === "outline" || variant === "transparent") {
+    colorCls = statusColorClasses[status];
+  } else {
+    colorCls = solidStatusClasses[status];
+  }
+
+  const iconSpacing = icon ? (iconPosition === "right" ? "ml-2" : "mr-2") : "";
+  const content = children || label;
 
   return (
     <button
@@ -73,13 +95,14 @@ export function Button({
       className={clsx(
         base,
         sizeCls,
-        styleCls,
+        variantCls,
+        colorCls,
         disabled && "opacity-50 cursor-not-allowed",
         className,
       )}
     >
       {icon && iconPosition === "left" && <span className={iconSpacing}>{icon}</span>}
-      {label}
+      {content}
       {icon && iconPosition === "right" && <span className={iconSpacing}>{icon}</span>}
     </button>
   );

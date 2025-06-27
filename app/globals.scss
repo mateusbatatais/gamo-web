@@ -113,6 +113,22 @@
   --border-radius-lg: 0.5rem;
   --border-radius-xl: 0.75rem;
   --border-radius-2xl: 1rem;
+
+  /* Focus */
+  --focus-ring-color: var(--color-primary-300);
+  --focus-ring-offset: 2px;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+
+  /* Opacities */
+  --hover-opacity: 0.9;
+  --active-opacity: 0.8;
+  --disabled-opacity: 0.5;
 }
 
 @layer base {
