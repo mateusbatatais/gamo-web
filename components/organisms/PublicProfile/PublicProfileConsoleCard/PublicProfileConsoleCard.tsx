@@ -32,7 +32,7 @@ export const PublicProfileConsoleCard = ({ consoleItem }: { consoleItem: UserCon
             <p className="text-gray-600">{consoleItem.variantName}</p>
           </div>
 
-          <Badge variant={consoleItem.status === "SELLING" ? "primary" : "secondary"}>
+          <Badge variant={consoleItem.status === "SELLING" ? "solid" : "soft"}>
             {t(`status.${consoleItem.status.toLowerCase()}`)}
           </Badge>
         </div>
