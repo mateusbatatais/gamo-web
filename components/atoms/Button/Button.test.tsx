@@ -40,14 +40,14 @@ describe("Button component", () => {
   it("aplica classe de status danger para variante sólida", () => {
     render(<Button label="Erro" status="danger" variant="primary" />);
     const button = screen.getByRole("button");
-    expect(button.className).toContain("!bg-danger");
+    expect(button.className).toContain("bg-danger-500");
   });
 
   it("aplica classes de status danger para variante outline", () => {
     render(<Button label="Erro" status="danger" variant="outline" />);
     const button = screen.getByRole("button");
-    expect(button.className).toContain("text-danger");
-    expect(button.className).toContain("border-danger");
+    expect(button.className).toContain("text-danger-500");
+    expect(button.className).toContain("border-danger-500");
   });
 
   it("aplica classe de tamanho pequeno", () => {
@@ -95,13 +95,5 @@ describe("Button component", () => {
     render(<Button label="Desabilitado" disabled />);
     const button = screen.getByRole("button");
     expect(button.className).toContain("cursor-not-allowed");
-  });
-
-  it("deve aplicar classes de foco corretamente", () => {
-    render(<Button label="Foco" />);
-    const button = screen.getByRole("button");
-    expect(button.className).toContain("focus:outline-none");
-    expect(button.className).toContain("focus:ring-2");
-    expect(button.className).toContain("focus:ring-offset-2");
   });
 });

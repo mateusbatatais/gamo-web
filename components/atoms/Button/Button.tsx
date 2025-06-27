@@ -1,3 +1,4 @@
+// components/atoms/Button/Button.tsx
 import React, { ReactNode } from "react";
 import clsx from "clsx";
 
@@ -29,30 +30,28 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 // Classes base para cada variante
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    "bg-primary text-white hover:bg-primary-600 dark:bg-primary-600 dark:hover:bg-primary-500 border border-transparent",
-  secondary:
-    "bg-secondary text-white hover:bg-secondary-600 dark:bg-secondary-600 dark:hover:bg-secondary-500 border border-transparent",
+  primary: "bg-primary-500 text-white border border-transparent",
+  secondary: "bg-secondary-500 text-white border border-transparent",
   outline: "border bg-transparent",
   transparent: "bg-transparent border-transparent",
 };
 
 // Classes para status - agora focam apenas na cor do texto e borda
 const statusColorClasses: Record<ButtonStatus, string> = {
-  default: "text-primary border-primary hover:bg-primary/10",
-  success: "text-success border-success hover:bg-success/10",
-  danger: "text-danger border-danger hover:bg-danger/10",
-  warning: "text-warning border-warning hover:bg-warning/10",
-  info: "text-info border-info hover:bg-info/10",
+  default: "text-primary-500 border-primary-500 hover:bg-primary-500/10",
+  success: "text-success-500 border-success-500 hover:bg-success-500/10",
+  danger: "text-danger-500 border-danger-500 hover:bg-danger-500/10",
+  warning: "text-warning-500 border-warning-500 hover:bg-warning-500/10",
+  info: "text-info-500 border-info-500 hover:bg-info-500/10",
 };
 
 // Classes para variantes sólidas (que usam background)
 const solidStatusClasses: Record<ButtonStatus, string> = {
-  default: "bg-primary text-white hover:bg-primary-600",
-  success: "bg-success text-white hover:bg-success-600",
-  danger: "bg-danger text-white hover:bg-danger-600",
-  warning: "bg-warning text-white hover:bg-warning-600",
-  info: "bg-info text-white hover:bg-info-600",
+  default: "bg-primary-500 text-white hover:bg-primary-600",
+  success: "bg-success-500 text-white hover:bg-success-600",
+  danger: "bg-danger-500 text-white hover:bg-danger-600",
+  warning: "bg-warning-500 text-white hover:bg-warning-600",
+  info: "bg-info-500 text-white hover:bg-info-600",
 };
 
 export function Button({
@@ -70,7 +69,7 @@ export function Button({
   children,
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 dark:focus:ring-offset-gray-900 cursor-pointer";
+    "inline-flex items-center justify-center font-medium rounded transition-colors cursor-pointer";
 
   const sizeCls = sizeClasses[size];
   const variantCls = variantClasses[variant];
