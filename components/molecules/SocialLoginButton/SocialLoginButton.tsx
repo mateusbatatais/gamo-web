@@ -80,7 +80,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
     <button
       onClick={handleLogin}
       disabled={loading}
-      className={`w-full flex items-center justify-center ${classes} ${className}`}
+      className={`w-full flex items-center justify-center cursor-pointer ${classes} ${className}`}
       aria-label={text}
     >
       {loading ? (
