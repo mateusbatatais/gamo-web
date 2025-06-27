@@ -60,52 +60,54 @@ export const ErrorStateDisabled: Story = {
   },
 };
 
-export const ErrorInteractive: Story = {
-  render: () => {
-    const [isChecked, setIsChecked] = useState(false);
-    const [hasError, setHasError] = useState(true);
+const ErrorInteractiveComponent = () => {
+  const [isChecked, setIsChecked] = useState(false);
+  const [hasError, setHasError] = useState(true);
 
-    return (
-      <div className="flex flex-col gap-4">
-        <Checkbox
-          label="Checkbox com erro interativo"
-          error={hasError}
-          checked={isChecked}
-          onChange={(e) => setIsChecked(e.target.checked)}
-        />
+  return (
+    <div className="flex flex-col gap-4">
+      <Checkbox
+        label="Checkbox com erro interativo"
+        error={hasError}
+        checked={isChecked}
+        onChange={(e) => setIsChecked(e.target.checked)}
+      />
 
-        <div className="flex items-center gap-2 mt-2">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={hasError}
-              onChange={(e) => setHasError(e.target.checked)}
-              className="w-4 h-4"
-            />
-            Estado de erro
-          </label>
+      <div className="flex items-center gap-2 mt-2">
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={hasError}
+            onChange={(e) => setHasError(e.target.checked)}
+            className="w-4 h-4"
+          />
+          Estado de erro
+        </label>
 
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isChecked}
-              onChange={(e) => setIsChecked(e.target.checked)}
-              className="w-4 h-4"
-            />
-            Marcado
-          </label>
-        </div>
-
-        <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded">
-          <h3 className="font-medium mb-2">Estado atual:</h3>
-          <ul className="text-sm">
-            <li>Erro: {hasError ? "Sim" : "Não"}</li>
-            <li>Marcado: {isChecked ? "Sim" : "Não"}</li>
-          </ul>
-        </div>
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={(e) => setIsChecked(e.target.checked)}
+            className="w-4 h-4"
+          />
+          Marcado
+        </label>
       </div>
-    );
-  },
+
+      <div className="mt-4 p-3 bg-gray-100 dark:bg-gray-800 rounded">
+        <h3 className="font-medium mb-2">Estado atual:</h3>
+        <ul className="text-sm">
+          <li>Erro: {hasError ? "Sim" : "Não"}</li>
+          <li>Marcado: {isChecked ? "Sim" : "Não"}</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export const ErrorInteractive: Story = {
+  render: () => <ErrorInteractiveComponent />,
 };
 
 export const ErrorStateGallery: Story = {

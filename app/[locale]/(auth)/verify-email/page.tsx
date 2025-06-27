@@ -45,7 +45,6 @@ export default function VerifyEmailPage() {
             showToast(data.message || t("errorGeneric"), "danger");
           }
         } else {
-          // SÓ REMOVE O TOKEN APÓS VALIDAÇÃO BEM SUCEDIDA
           try {
             localStorage.removeItem("gamo_token");
           } catch {}

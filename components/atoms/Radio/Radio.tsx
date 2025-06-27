@@ -39,7 +39,38 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
   };
 
   return (
-    <div className={clsx("flex flex-col", containerClassName)}>
+    <div
+      className={clsx("flex flex-col", containerClassName)}
+      role="radio"
+      tabIndex={disabled ? -1 : 0}
+      aria-checked={checked}
+      aria-disabled={disabled}
+      onClick={(e) => {
+        if (!disabled && !checked) {
+          const fakeEvent = {
+            ...e,
+            target: {
+              ...e.target,
+              checked: true,
+            },
+          } as unknown as React.ChangeEvent<HTMLInputElement>;
+          handleChange(fakeEvent);
+        }
+      }}
+      onKeyDown={(e) => {
+        if (!disabled && !checked && (e.key === " " || e.key === "Enter")) {
+          e.preventDefault();
+          const fakeEvent = {
+            ...e,
+            target: {
+              ...e.target,
+              checked: true,
+            },
+          } as unknown as React.ChangeEvent<HTMLInputElement>;
+          handleChange(fakeEvent);
+        }
+      }}
+    >
       <label
         className={clsx(
           "inline-flex items-start cursor-pointer",
@@ -99,7 +130,6 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
           )}
         </div>
       </label>
-
       {description && (
         <span
           className={clsx(

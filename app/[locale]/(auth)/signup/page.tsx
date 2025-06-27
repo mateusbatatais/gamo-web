@@ -65,11 +65,7 @@ export default function SignupPage() {
     }
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setErrors({});
-
-    // Validação básica
+  const validateFields = () => {
     const newErrors: Record<string, FieldError> = {};
     if (!values.name.trim()) {
       newErrors.name = { message: t("signup.errors.nameRequired") };
@@ -84,6 +80,30 @@ export default function SignupPage() {
     } else if (values.password.length < 6) {
       newErrors.password = { message: t("signup.errors.passwordMinLength") };
     }
+    return newErrors;
+  };
+
+  const handleApiError = (err: unknown, newErrors: Record<string, FieldError>) => {
+    let errorCode: string | undefined = undefined;
+    if (typeof err === "object" && err !== null && "code" in err) {
+      errorCode = (err as { code?: string }).code;
+    }
+    if (errorCode === "USER_CREATED_EMAIL_FAILED") {
+      showToast(t("signup.emailSendError"), "warning");
+      router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
+    } else if (errorCode === "EMAIL_ALREADY_EXISTS") {
+      newErrors.email = { message: t("signup.errors.emailExists") };
+      setErrors(newErrors);
+    } else {
+      newErrors.general = { message: t("signup.errorGeneric") };
+      setErrors(newErrors);
+    }
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setErrors({});
+    const newErrors = validateFields();
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -92,15 +112,9 @@ export default function SignupPage() {
     }
 
     try {
-      const response = await apiFetch<{
-        userId: string;
-        code?: string;
-      }>("/auth/signup", {
+      const response = await apiFetch<{ userId: string; code?: string }>("/auth/signup", {
         method: "POST",
-        body: {
-          ...values,
-          locale,
-        },
+        body: { ...values, locale },
       });
 
       if (response.code === "USER_CREATED_EMAIL_FAILED") {
@@ -111,27 +125,7 @@ export default function SignupPage() {
 
       router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
     } catch (err: unknown) {
-      let errorCode: string | undefined = undefined;
-
-      if (typeof err === "object" && err !== null) {
-        if ("code" in err) {
-          errorCode = (err as { code?: string }).code;
-        }
-      }
-
-      // Tratar o caso em que o usuário foi criado, mas o e-mail não foi enviado
-      if (errorCode === "USER_CREATED_EMAIL_FAILED") {
-        showToast(t("signup.emailSendError"), "warning");
-        router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
-      }
-      // Tratar outros erros
-      else if (errorCode === "EMAIL_ALREADY_EXISTS") {
-        newErrors.email = { message: t("signup.errors.emailExists") };
-        setErrors(newErrors);
-      } else {
-        newErrors.general = { message: t("signup.errorGeneric") };
-        setErrors(newErrors);
-      }
+      handleApiError(err, {});
     } finally {
       setLoading(false);
     }

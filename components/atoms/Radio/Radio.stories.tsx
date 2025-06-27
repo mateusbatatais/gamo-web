@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Radio } from "./Radio";
-import React from "react";
+import React, { useState } from "react";
 
 const meta: Meta<typeof Radio> = {
   title: "Components/Atoms/Radio",
@@ -77,56 +77,60 @@ export const SelectedDisabled: Story = {
   },
 };
 
-export const Group: Story = {
-  render: () => {
-    const [selected, setSelected] = React.useState("option1");
-    return (
-      <div className="flex flex-col gap-4">
-        <Radio
-          label="Opção 1"
-          checked={selected === "option1"}
-          onChange={() => setSelected("option1")}
-        />
-        <Radio
-          label="Opção 2"
-          checked={selected === "option2"}
-          onChange={() => setSelected("option2")}
-        />
-        <Radio
-          label="Opção 3"
-          checked={selected === "option3"}
-          onChange={() => setSelected("option3")}
-          disabled
-        />
-        <div className="mt-4">
-          <p>Selecionado: {selected}</p>
-        </div>
+const RadioGroupExample = () => {
+  const [selected, setSelected] = useState("option1");
+  return (
+    <div className="flex flex-col gap-4">
+      <Radio
+        label="Opção 1"
+        checked={selected === "option1"}
+        onChange={() => setSelected("option1")}
+      />
+      <Radio
+        label="Opção 2"
+        checked={selected === "option2"}
+        onChange={() => setSelected("option2")}
+      />
+      <Radio
+        label="Opção 3"
+        checked={selected === "option3"}
+        onChange={() => setSelected("option3")}
+        disabled
+      />
+      <div className="mt-4">
+        <p>Selecionado: {selected}</p>
       </div>
-    );
-  },
+    </div>
+  );
+};
+
+export const Group: Story = {
+  render: () => <RadioGroupExample />,
+};
+
+const RadioGroupWithError = () => {
+  const [selected, setSelected] = useState("");
+  return (
+    <div className="flex flex-col gap-4">
+      <Radio
+        label="Opção A"
+        checked={selected === "A"}
+        onChange={() => setSelected("A")}
+        error={!selected}
+      />
+      <Radio
+        label="Opção B"
+        checked={selected === "B"}
+        onChange={() => setSelected("B")}
+        error={!selected}
+      />
+      <div className="mt-2 text-sm text-danger">{!selected && "Selecione uma opção"}</div>
+    </div>
+  );
 };
 
 export const GroupWithError: Story = {
-  render: () => {
-    const [selected, setSelected] = React.useState("");
-    return (
-      <div className="flex flex-col gap-4">
-        <Radio
-          label="Opção A"
-          checked={selected === "A"}
-          onChange={() => setSelected("A")}
-          error={!selected}
-        />
-        <Radio
-          label="Opção B"
-          checked={selected === "B"}
-          onChange={() => setSelected("B")}
-          error={!selected}
-        />
-        <div className="mt-2 text-sm text-danger">{!selected && "Selecione uma opção"}</div>
-      </div>
-    );
-  },
+  render: () => <RadioGroupWithError />,
 };
 
 export const DarkMode: Story = {
