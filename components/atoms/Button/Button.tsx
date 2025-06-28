@@ -69,7 +69,7 @@ export function Button({
   children,
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center font-medium rounded transition-colors cursor-pointer";
+    "inline-flex items-center justify-center font-medium rounded transition-colors cursor-pointer gap-2";
 
   const sizeCls = sizeClasses[size];
   const variantCls = variantClasses[variant];
@@ -82,7 +82,6 @@ export function Button({
     colorCls = solidStatusClasses[status];
   }
 
-  const iconSpacing = icon ? (iconPosition === "right" ? "ml-2" : "mr-2") : "";
   const content = children || label;
 
   return (
@@ -100,9 +99,9 @@ export function Button({
         className,
       )}
     >
-      {icon && iconPosition === "left" && <span className={iconSpacing}>{icon}</span>}
+      {icon && iconPosition === "left" && <span>{icon}</span>}
       {content}
-      {icon && iconPosition === "right" && <span className={iconSpacing}>{icon}</span>}
+      {icon && iconPosition === "right" && <span>{icon}</span>}
     </button>
   );
 }
