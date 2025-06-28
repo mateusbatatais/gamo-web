@@ -63,69 +63,25 @@ export function Dialog({
           borderRadius: "var(--border-radius-xl)",
           background: "var(--color-neutral-50)",
           color: "var(--color-neutral-900)",
-          // Modo escuro
-          "@media (prefers-color-scheme: dark)": {
-            background: "var(--color-gray-800)",
-            color: "var(--color-neutral-100)",
-          },
+          // Modo escuro usando classes Tailwind
+          "@apply dark:bg-gray-800 dark:text-neutral-100": {},
         },
         ...props.sx,
       }}
     >
-      <DialogTitle
-        sx={{
-          m: 0,
-          p: 3,
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-          borderBottom: "1px solid var(--color-neutral-200)",
-          // Modo escuro
-          "@media (prefers-color-scheme: dark)": {
-            borderBottom: "1px solid var(--color-neutral-700)",
-          },
-        }}
-      >
-        {icon && (
-          <Box
-            sx={{
-              color: "var(--color-primary-500)",
-              // Modo escuro
-              "@media (prefers-color-scheme: dark)": {
-                color: "var(--color-primary-400)",
-              },
-            }}
-          >
-            {icon}
-          </Box>
-        )}
-        <Box sx={{ flexGrow: 1 }}>
+      <DialogTitle className="flex items-center gap-2 m-0 p-3 border-b border-neutral-200 dark:border-neutral-700 dark:bg-gray-800">
+        {icon && <Box className="text-primary-500 dark:text-primary-400">{icon}</Box>}
+        <Box className="flex-grow">
           <Typography
             variant="h5"
             component="div"
             fontWeight={600}
-            sx={{
-              color: "inherit",
-              // Modo escuro
-              "@media (prefers-color-scheme: dark)": {
-                color: "var(--color-neutral-100)",
-              },
-            }}
+            className="text-inherit dark:text-neutral-100"
           >
             {title}
           </Typography>
           {subtitle && (
-            <Typography
-              variant="body2"
-              mt={0.5}
-              sx={{
-                color: "var(--color-neutral-500)",
-                // Modo escuro
-                "@media (prefers-color-scheme: dark)": {
-                  color: "var(--color-neutral-400)",
-                },
-              }}
-            >
+            <Typography variant="body2" className="mt-0.5 text-neutral-500 dark:text-neutral-400">
               {subtitle}
             </Typography>
           )}
@@ -135,23 +91,14 @@ export function Dialog({
           <IconButton
             aria-label="close"
             onClick={onClose}
-            sx={{
-              color: "var(--color-neutral-500)",
-              "&:hover": {
-                color: "var(--color-neutral-700)",
-                background: "var(--color-neutral-100)",
-              },
-              // Modo escuro
-              "@media (prefers-color-scheme: dark)": {
-                color: "var(--color-neutral-400)",
-                "&:hover": {
-                  color: "var(--color-neutral-200)",
-                  background: "var(--color-neutral-700)",
-                },
-              },
-            }}
+            className="
+              text-neutral-500 hover:text-neutral-700
+              hover:bg-neutral-100
+              dark:text-neutral-400 dark:hover:text-neutral-200
+              dark:hover:bg-neutral-700
+            "
           >
-            <X />
+            <X className="dark:text-neutral-400" />
           </IconButton>
         ) : (
           <Button
@@ -166,17 +113,11 @@ export function Dialog({
 
       <DialogContent
         dividers
-        sx={{
-          py: 3,
-          px: 3,
-          color: "var(--color-neutral-700)",
-          background: "var(--color-neutral-50)",
-          // Modo escuro
-          "@media (prefers-color-scheme: dark)": {
-            color: "var(--color-neutral-300)",
-            background: "var(--color-gray-800)",
-          },
-        }}
+        className="
+          py-3 px-3 
+          text-neutral-700 dark:text-neutral-300
+          bg-neutral-50 dark:bg-gray-800
+        "
       >
         {children}
       </DialogContent>
@@ -184,20 +125,14 @@ export function Dialog({
       {(actions || actionButtons) && (
         <DialogActions
           data-testid="dialog-actions"
-          sx={{
-            px: 3,
-            py: 2,
-            borderTop: "1px solid var(--color-neutral-200)",
-            background: "var(--color-neutral-100)",
-            // Modo escuro
-            "@media (prefers-color-scheme: dark)": {
-              borderTop: "1px solid var(--color-neutral-700)",
-              background: "var(--color-neutral-800)",
-            },
-          }}
+          className="
+            px-3 py-2
+            border-t border-neutral-200 dark:border-neutral-700
+            bg-neutral-100 dark:bg-neutral-800
+          "
         >
           {actions || (
-            <Box display="flex" gap={2}>
+            <Box className="flex gap-2">
               <Button
                 variant="outline"
                 status="default"
