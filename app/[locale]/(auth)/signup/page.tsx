@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl"; // Adicionei useLocale
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
-import { Divider } from "@/components/atoms/Divider/Divider";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
 import { apiFetch } from "@/utils/api";
@@ -147,8 +146,13 @@ export default function SignupPage() {
         onValueChange={handleValueChange}
         additionalContent={
           <>
-            <Divider label={t("login.or")} />
-
+            <div className="my-4 flex items-center">
+              <hr className="flex-1 border-gray-300 dark:border-gray-700" />
+              <span className="px-2 text-gray-500 text-sm dark:text-gray-400">
+                {t("login.or")}{" "}
+              </span>
+              <hr className="flex-1 border-gray-300 dark:border-gray-700" />
+            </div>
             <div className="flex flex-col gap-2">
               <SocialLoginButton
                 provider="google"
