@@ -1,58 +1,73 @@
-import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Textarea, TextareaProps } from "./Textarea";
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { Textarea } from "./Textarea";
+import { Info, CheckCircle } from "lucide-react";
 
-const meta: Meta<TextareaProps> = {
+const meta: Meta<typeof Textarea> = {
   title: "Components/Atoms/Textarea",
   component: Textarea,
   tags: ["autodocs"],
   argTypes: {
-    label: { control: "text" },
-    placeholder: { control: "text" },
-    rows: { control: { type: "number", min: 1 } },
-    inputSize: {
-      control: { type: "radio" },
+    size: {
+      control: { type: "select" },
       options: ["sm", "md", "lg"],
     },
-    error: { control: "text" },
+    status: {
+      control: { type: "select" },
+      options: ["default", "success", "danger", "warning", "info"],
+    },
+    iconPosition: {
+      control: { type: "select" },
+      options: ["left", "right"],
+    },
   },
 };
 
 export default meta;
-type Story = StoryObj<TextareaProps>;
+type Story = StoryObj<typeof Textarea>;
 
 export const Default: Story = {
   args: {
     label: "Descrição",
-    placeholder: "Escreva algo...",
-    rows: 4,
-    inputSize: "md",
+    placeholder: "Digite sua descrição...",
   },
 };
 
 export const WithError: Story = {
   args: {
-    label: "Comentário",
-    placeholder: "Digite seu comentário",
+    label: "Com erro",
     error: "Campo obrigatório",
-    rows: 3,
-    inputSize: "md",
   },
 };
 
-export const Large: Story = {
+export const WithIcon: Story = {
   args: {
-    label: "Observações",
-    placeholder: "Mais espaço…",
-    rows: 6,
-    inputSize: "lg",
+    label: "Com ícone",
+    icon: <Info className="w-5 h-5" />,
   },
 };
 
-export const Small: Story = {
+export const SuccessStatus: Story = {
   args: {
-    label: "Nota Rápida",
-    placeholder: "Até 2 linhas…",
-    rows: 2,
-    inputSize: "sm",
+    label: "Status success",
+    status: "success",
+    icon: <CheckCircle className="w-5 h-5 text-success-500" />,
   },
+};
+
+export const Disabled: Story = {
+  args: {
+    label: "Desabilitado",
+    disabled: true,
+    value: "Texto desabilitado",
+  },
+};
+
+export const SizeGallery: Story = {
+  render: () => (
+    <div className="space-y-4">
+      <Textarea size="sm" label="Pequeno" placeholder="Tamanho sm" />
+      <Textarea size="md" label="Médio" placeholder="Tamanho md" />
+      <Textarea size="lg" label="Grande" placeholder="Tamanho lg" />
+    </div>
+  ),
 };

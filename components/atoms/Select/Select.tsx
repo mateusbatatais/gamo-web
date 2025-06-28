@@ -87,9 +87,9 @@ export function Select({
         <select
           disabled={disabled}
           className={clsx(
-            "block w-full appearance-none rounded border bg-white pr-10 transition-colors",
+            "block w-full appearance-none rounded border pr-10 transition-colors",
             "focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-opacity-50",
-            "dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-400",
+            "dark:bg-transparent dark:text-white dark:placeholder-neutral-400",
             sizeClasses[size],
             statusClasses[currentStatus],
             hasIcon && iconPosition === "left" ? "pl-10" : "pl-3",

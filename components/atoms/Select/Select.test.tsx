@@ -63,7 +63,7 @@ describe("Select component", () => {
   it("modo dark aplica classes corretas", () => {
     render(<Select options={options} />);
     const select = screen.getByRole("combobox");
-    expect(select.className).toContain("dark:bg-neutral-800");
+    expect(select.className).toContain("dark:bg-transparent");
     expect(select.className).toContain("dark:text-white");
   });
 });

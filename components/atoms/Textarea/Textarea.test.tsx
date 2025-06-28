@@ -1,27 +1,32 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { Textarea } from "./Textarea";
+import { Info } from "lucide-react";
 
 describe("Textarea component", () => {
-  it("exibe o label quando fornecido", () => {
-    render(<Textarea label="Comentário" placeholder="..." />);
-    expect(screen.getByText("Comentário")).toBeInTheDocument();
+  it("associa a label ao textarea", () => {
+    render(<Textarea label="Descrição" />);
+    const textarea = screen.getByLabelText("Descrição");
+    expect(textarea).toBeInTheDocument();
   });
 
-  it("exibe a mensagem de erro corretamente", () => {
-    render(<Textarea label="Feedback" placeholder="..." error="Campo requerido" />);
-    expect(screen.getByText("Campo requerido")).toBeInTheDocument();
-  });
-
-  it("aplica estilos de desabilitado quando `disabled` é true", () => {
-    render(<Textarea label="Notas" disabled />);
+  it("aplica status danger quando há erro", () => {
+    render(<Textarea error="Erro" />);
     const textarea = screen.getByRole("textbox");
-    expect(textarea).toBeDisabled();
+    expect(textarea.className).toContain("border-danger");
   });
 
-  it("aplica classes de tamanho corretamente (inputSize)", () => {
-    render(<Textarea label="Grande" inputSize="lg" rows={1} />);
+  it("exibe ícone à esquerda", () => {
+    render(<Textarea icon={<Info data-testid="icon" />} />);
+    expect(screen.getByTestId("icon")).toBeInTheDocument();
+    expect(screen.getByRole("textbox").className).toContain("pl-10");
+  });
+
+  it("aplica modo dark corretamente", () => {
+    render(<Textarea />, {
+      wrapper: ({ children }) => <div className="dark">{children}</div>,
+    });
     const textarea = screen.getByRole("textbox");
-    expect(textarea).toHaveClass("text-lg");
+    expect(textarea.className).toContain("dark:bg-gray-800");
   });
 });
