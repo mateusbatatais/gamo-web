@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/utils/api";
 import { useTranslations } from "next-intl";
+import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 
 interface BrandFilterProps {
   selectedBrands: string[];
@@ -56,15 +57,14 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
       </p>
       {brands.map((brand) => (
         <div key={brand.value} className="flex items-center">
-          <input
-            type="checkbox"
+          <Checkbox
+            data-testid={`checkbox-${brand.value}`}
+            name="brand"
             value={brand.value}
             checked={selectedBrands.includes(brand.value)}
             onChange={handleCheckboxChange}
-            id={brand.value}
-            className="mr-2"
+            label={brand.label}
           />
-          <label htmlFor={brand.value}>{brand.label}</label>
         </div>
       ))}
     </div>

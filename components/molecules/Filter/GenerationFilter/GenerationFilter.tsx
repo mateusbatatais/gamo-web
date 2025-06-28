@@ -1,3 +1,4 @@
+import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { useTranslations } from "next-intl";
 import React from "react";
 
@@ -34,15 +35,14 @@ const GenerationFilter = ({ selectedGenerations, onGenerationChange }: Generatio
       <p className="font-medium text-lg">{t("filters.generation.label")}</p>
       {generations.map((generation) => (
         <div key={generation.value} className="flex items-center">
-          <input
-            type="checkbox"
+          <Checkbox
+            data-testid={`checkbox-${generation.value}`}
+            name="generation"
             value={generation.value}
             checked={selectedGenerations.includes(generation.value)}
             onChange={handleCheckboxChange}
-            id={generation.value}
-            className="mr-2"
+            label={generation.label}
           />
-          <label htmlFor={generation.value}>{generation.label}</label>
         </div>
       ))}
     </div>
