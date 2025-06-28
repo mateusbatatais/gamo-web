@@ -12,9 +12,9 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { Button, ButtonProps } from "../Button/Button";
 import clsx from "clsx";
+import { X } from "lucide-react";
 
 export type DialogSize = "sm" | "md" | "lg" | "xl";
 
@@ -49,16 +49,12 @@ export function Dialog({
   icon,
   closeButtonVariant = "icon",
   actionButtons,
-  className, // Adicione esta linha
+  className,
   ...props
 }: DialogProps) {
   return (
     <MuiDialog
-      onClose={(event, reason) => {
-        // Trate corretamente o fechamento pelo backdrop
-        if (reason === "backdropClick") {
-          props.onBackdropClick?.(event);
-        }
+      onClose={() => {
         onClose();
       }}
       fullWidth
@@ -107,7 +103,7 @@ export function Dialog({
               },
             }}
           >
-            <CloseIcon />
+            <X />
           </IconButton>
         ) : (
           <Button variant="transparent" onClick={onClose} label="Fechar" size="sm" />
@@ -128,6 +124,7 @@ export function Dialog({
 
       {(actions || actionButtons) && (
         <DialogActions
+          data-testid="dialog-actions"
           sx={{
             px: 3,
             py: 2,
