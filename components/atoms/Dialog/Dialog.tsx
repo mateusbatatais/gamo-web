@@ -1,4 +1,3 @@
-// components/atoms/Dialog/Dialog.tsx
 "use client";
 
 import React from "react";
@@ -54,17 +53,21 @@ export function Dialog({
 }: DialogProps) {
   return (
     <MuiDialog
-      onClose={() => {
-        onClose();
-      }}
+      onClose={onClose}
       fullWidth
       maxWidth={sizeMap[size]}
       {...props}
-      className={clsx("custom-dialog-root", className)} // Adicione esta linha
+      className={clsx("custom-dialog-root", className)}
       sx={{
         "& .MuiDialog-paper": {
           borderRadius: "var(--border-radius-xl)",
           background: "var(--color-neutral-50)",
+          color: "var(--color-neutral-900)",
+          // Modo escuro
+          "@media (prefers-color-scheme: dark)": {
+            background: "var(--color-gray-800)",
+            color: "var(--color-neutral-100)",
+          },
         },
         ...props.sx,
       }}
@@ -77,15 +80,52 @@ export function Dialog({
           alignItems: "center",
           gap: 2,
           borderBottom: "1px solid var(--color-neutral-200)",
+          // Modo escuro
+          "@media (prefers-color-scheme: dark)": {
+            borderBottom: "1px solid var(--color-neutral-700)",
+          },
         }}
       >
-        {icon && <Box sx={{ color: "var(--color-primary-500)" }}>{icon}</Box>}
+        {icon && (
+          <Box
+            sx={{
+              color: "var(--color-primary-500)",
+              // Modo escuro
+              "@media (prefers-color-scheme: dark)": {
+                color: "var(--color-primary-400)",
+              },
+            }}
+          >
+            {icon}
+          </Box>
+        )}
         <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="h5" component="div" fontWeight={600}>
+          <Typography
+            variant="h5"
+            component="div"
+            fontWeight={600}
+            sx={{
+              color: "inherit",
+              // Modo escuro
+              "@media (prefers-color-scheme: dark)": {
+                color: "var(--color-neutral-100)",
+              },
+            }}
+          >
             {title}
           </Typography>
           {subtitle && (
-            <Typography variant="body2" color="text.secondary" mt={0.5}>
+            <Typography
+              variant="body2"
+              mt={0.5}
+              sx={{
+                color: "var(--color-neutral-500)",
+                // Modo escuro
+                "@media (prefers-color-scheme: dark)": {
+                  color: "var(--color-neutral-400)",
+                },
+              }}
+            >
               {subtitle}
             </Typography>
           )}
@@ -101,12 +141,26 @@ export function Dialog({
                 color: "var(--color-neutral-700)",
                 background: "var(--color-neutral-100)",
               },
+              // Modo escuro
+              "@media (prefers-color-scheme: dark)": {
+                color: "var(--color-neutral-400)",
+                "&:hover": {
+                  color: "var(--color-neutral-200)",
+                  background: "var(--color-neutral-700)",
+                },
+              },
             }}
           >
             <X />
           </IconButton>
         ) : (
-          <Button variant="transparent" onClick={onClose} label="Fechar" size="sm" />
+          <Button
+            variant="transparent"
+            onClick={onClose}
+            label="Fechar"
+            size="sm"
+            className="text-neutral-700 dark:text-neutral-300"
+          />
         )}
       </DialogTitle>
 
@@ -117,6 +171,11 @@ export function Dialog({
           px: 3,
           color: "var(--color-neutral-700)",
           background: "var(--color-neutral-50)",
+          // Modo escuro
+          "@media (prefers-color-scheme: dark)": {
+            color: "var(--color-neutral-300)",
+            background: "var(--color-gray-800)",
+          },
         }}
       >
         {children}
@@ -130,6 +189,11 @@ export function Dialog({
             py: 2,
             borderTop: "1px solid var(--color-neutral-200)",
             background: "var(--color-neutral-100)",
+            // Modo escuro
+            "@media (prefers-color-scheme: dark)": {
+              borderTop: "1px solid var(--color-neutral-700)",
+              background: "var(--color-neutral-800)",
+            },
           }}
         >
           {actions || (
