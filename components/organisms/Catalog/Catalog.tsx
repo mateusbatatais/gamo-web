@@ -6,6 +6,7 @@ import { ConsoleVariantsResponse } from "@/@types/console";
 import FilterContainer from "@/components/molecules/Filter/Filter"; // Agora usamos o FilterContainer
 import ConsoleCard from "@/components/molecules/ConsoleCard/ConsoleCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
+import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 
 interface CatalogComponentProps {
   brand: string;
@@ -42,6 +43,13 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
       `?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${generations.join(",")}&page=1&perPage=${perPage}`,
     );
   };
+
+  const clearFilters = () => {
+    setSelectedBrands([]);
+    setSelectedGenerations([]);
+    window.history.pushState({}, "", `?locale=${locale}&page=1&perPage=${perPage}`);
+  };
+
   // No componente frontend
   useEffect(() => {
     const fetchConsoleVariants = async () => {
@@ -94,26 +102,41 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
           />
         </div>
         <div className="w-3/4 ">
-          <div className="grid grid-cols-3 gap-4">
-            {consoleVariants?.items.map((variant) => (
-              <ConsoleCard
-                key={variant.id}
-                name={variant.name}
-                consoleName={variant.consoleName}
-                brand={variant.brand.slug}
-                imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
-                description="Description of the console"
-                slug={variant.slug}
+          {consoleVariants && consoleVariants?.items.length > 0 ? (
+            <>
+              <div className="grid grid-cols-3 gap-4">
+                {consoleVariants?.items.map((variant) => (
+                  <ConsoleCard
+                    key={variant.id}
+                    name={variant.name}
+                    consoleName={variant.consoleName}
+                    brand={variant.brand.slug}
+                    imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
+                    description="Description of the console"
+                    slug={variant.slug}
+                  />
+                ))}
+              </div>
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={(newPage) => {
+                  window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=${newPage}&perPage=${perPage}`;
+                }}
               />
-            ))}
-          </div>
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={(newPage) => {
-              window.location.search = `?brand=${selectedBrands.join(",")}&locale=${locale}&generation=${selectedGenerations.join(",")}&page=${newPage}&perPage=${perPage}`;
-            }}
-          />
+            </>
+          ) : (
+            <EmptyState
+              title="Nenhum console encontrado"
+              description="Tente ajustar seus filtros de busca"
+              variant="card"
+              size="lg"
+              actionText="Limpar filtros"
+              onAction={() => clearFilters()}
+              actionVariant="outline"
+              actionStatus="info"
+            />
+          )}
         </div>
       </div>
     </>

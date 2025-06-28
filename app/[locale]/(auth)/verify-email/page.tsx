@@ -61,6 +61,7 @@ export default function VerifyEmailPage() {
     }
 
     verify();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
