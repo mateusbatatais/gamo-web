@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
-import { SuccessCard } from "@/components/atoms/SuccessCard/SuccessCard";
+import { SuccessCard } from "@/components/molecules/SuccessCard/SuccessCard";
 
 export default function SignupSuccessPage() {
   const t = useTranslations();

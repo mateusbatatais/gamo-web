@@ -8,7 +8,7 @@ import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
 import { FieldError } from "@/@types/forms";
-import { SuccessCard } from "@/components/atoms/SuccessCard/SuccessCard";
+import { SuccessCard } from "@/components/molecules/SuccessCard/SuccessCard";
 
 export default function ResetPasswordPage() {
   const t = useTranslations();

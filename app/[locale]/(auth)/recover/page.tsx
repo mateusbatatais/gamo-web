@@ -8,7 +8,7 @@ import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
 import Link from "next/link";
 import { FieldError } from "@/@types/forms";
-import { SuccessCard } from "@/components/atoms/SuccessCard/SuccessCard";
+import { SuccessCard } from "@/components/molecules/SuccessCard/SuccessCard";
 
 export default function RecoverPage() {
   const t = useTranslations();
