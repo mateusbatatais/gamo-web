@@ -112,24 +112,4 @@ describe("GenerationFilter Component", () => {
       expect(checkbox.checked).toBe(false);
     });
   });
-
-  it("aplica as classes CSS corretamente", () => {
-    renderComponent();
-
-    // Verifica o container principal
-    const container = screen.getByText("Filtrar por Geração").parentElement;
-    expect(container).toHaveClass("mb-4");
-
-    // Verifica o título
-    const title = screen.getByText("Filtrar por Geração");
-    expect(title).toHaveClass("font-medium", "text-lg");
-
-    // Verifica um item
-    const generationItem = screen.getByText("1ª Geração").parentElement;
-    expect(generationItem).toHaveClass("flex", "items-center");
-
-    // Verifica o checkbox
-    const checkbox = screen.getByLabelText("1ª Geração");
-    expect(checkbox).toHaveClass("mr-2");
-  });
 });

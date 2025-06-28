@@ -16,39 +16,64 @@ describe("Radio component", () => {
 
   it("muda estado quando clicado", async () => {
     const onChange = vi.fn();
-    render(<Radio onChange={onChange} />);
-    const radio = screen.getByRole("radio");
-    await userEvent.click(radio);
+    render(<Radio onChange={onChange} label="Test Radio" />);
+
+    // Clica no container do radio usando o texto da label
+    await userEvent.click(screen.getByText("Test Radio"));
     expect(onChange).toHaveBeenCalled();
   });
 
   it("fica desabilitado quando prop disabled é true", () => {
-    render(<Radio disabled />);
-    const radio = screen.getByRole("radio");
-    expect(radio).toBeDisabled();
+    render(<Radio disabled label="Test Radio" />);
+
+    // Encontra o input pelo papel "radio" com o estado hidden
+    const radioInputs = screen.getAllByRole("radio", { hidden: true });
+    const input = radioInputs.find((el) => el.tagName === "INPUT");
+    expect(input).toBeDisabled();
   });
 
   it("aplica classes customizadas", () => {
-    render(<Radio className="custom-class" />);
-    const radio = screen.getByRole("radio");
-    expect(radio).toHaveClass("custom-class");
+    render(<Radio className="custom-class" label="Test Radio" />);
+
+    // Encontra o input pelo papel "radio" com o estado hidden
+    const radioInputs = screen.getAllByRole("radio", { hidden: true });
+    const input = radioInputs.find((el) => el.tagName === "INPUT");
+    expect(input).toHaveClass("custom-class");
   });
 
   it("exibe ponto interno quando marcado", () => {
-    render(<Radio checked />);
-    const dot = screen.getByRole("radio").nextElementSibling?.nextElementSibling;
+    render(<Radio checked label="Test Radio" />);
+
+    // Encontra o container do radio
+    const radioContainers = screen.getAllByRole("radio");
+    const container = radioContainers.find((el) => el.tagName === "DIV");
+
+    // Verifica se o ponto interno está presente
+    const dot = container?.querySelector("div:nth-child(3)");
     expect(dot).toBeInTheDocument();
   });
 
   it("não exibe ponto interno quando não marcado", () => {
-    render(<Radio />);
-    const dot = screen.getByRole("radio").nextElementSibling?.nextElementSibling;
+    render(<Radio label="Test Radio" />);
+
+    // Encontra o container do radio
+    const radioContainers = screen.getAllByRole("radio");
+    const container = radioContainers.find((el) => el.tagName === "DIV");
+
+    // Verifica se o ponto interno não está presente
+    const dot = container?.querySelector("div:nth-child(3)");
     expect(dot).toBeFalsy();
   });
 
   it("exibe borda vermelha quando em estado de erro", () => {
-    render(<Radio error />);
-    const circle = screen.getByRole("radio").nextElementSibling;
+    render(<Radio error label="Test Radio" />);
+
+    // Encontra o container do radio
+    const radioContainers = screen.getAllByRole("radio");
+    const container = radioContainers.find((el) => el.tagName === "DIV");
+
+    // Verifica o círculo externo
+    const circle = container?.querySelector("div:nth-child(2)");
     expect(circle).toHaveClass("border-danger");
   });
 
@@ -59,8 +84,14 @@ describe("Radio component", () => {
   });
 
   it("exibe ponto vermelho quando marcado e com erro", () => {
-    render(<Radio error checked />);
-    const dot = screen.getByRole("radio").nextElementSibling?.nextElementSibling;
+    render(<Radio error checked label="Test Radio" />);
+
+    // Encontra o container do radio
+    const radioContainers = screen.getAllByRole("radio");
+    const container = radioContainers.find((el) => el.tagName === "DIV");
+
+    // Verifica o ponto interno
+    const dot = container?.querySelector("div:nth-child(3)");
     expect(dot).toHaveClass("bg-danger");
   });
 
@@ -72,7 +103,11 @@ describe("Radio component", () => {
 
   it("mantém acessibilidade com aria-label", () => {
     render(<Radio aria-label="Accessible radio" />);
-    expect(screen.getByLabelText("Accessible radio")).toBeInTheDocument();
+
+    // Encontra o input pelo papel "radio" com o estado hidden
+    const radioInputs = screen.getAllByRole("radio", { hidden: true });
+    const input = radioInputs.find((el) => el.tagName === "INPUT");
+    expect(input).toHaveAttribute("aria-label", "Accessible radio");
   });
 
   it("responde ao clique na descrição", async () => {
@@ -83,35 +118,41 @@ describe("Radio component", () => {
   });
 });
 
-// Radio.test.tsx
 describe("Comportamento de radio isolado", () => {
   it("deve marcar quando clicado em um radio isolado", async () => {
     render(<Radio label="Radio único" />);
-    const radio = screen.getByRole("radio");
 
-    await userEvent.click(radio);
-    expect(radio).toBeChecked();
+    // Encontra o input pelo papel "radio" com o estado hidden
+    const radioInputs = screen.getAllByRole("radio", { hidden: true });
+    const input = radioInputs.find((el) => el.tagName === "INPUT") as HTMLInputElement;
+
+    // Clica usando o texto da label
+    await userEvent.click(screen.getByText("Radio único"));
+    expect(input.checked).toBe(true);
   });
 
   it("deve permanecer marcado ao clicar novamente", async () => {
     render(<Radio label="Radio único" />);
-    const radio = screen.getByRole("radio");
+
+    // Encontra o input pelo papel "radio" com o estado hidden
+    const radioInputs = screen.getAllByRole("radio", { hidden: true });
+    const input = radioInputs.find((el) => el.tagName === "INPUT") as HTMLInputElement;
 
     // Primeiro clique
-    await userEvent.click(radio);
-    expect(radio).toBeChecked();
+    await userEvent.click(screen.getByText("Radio único"));
+    expect(input.checked).toBe(true);
 
     // Segundo clique
-    await userEvent.click(radio);
-    expect(radio).toBeChecked(); // Deve permanecer marcado
+    await userEvent.click(screen.getByText("Radio único"));
+    expect(input.checked).toBe(true); // Deve permanecer marcado
   });
 
   it("deve alternar corretamente quando controlado", async () => {
     const onChange = vi.fn();
     render(<Radio label="Controlado" checked={false} onChange={onChange} />);
-    const radio = screen.getByRole("radio");
 
-    await userEvent.click(radio);
+    // Clica usando o texto da label
+    await userEvent.click(screen.getByText("Controlado"));
     expect(onChange).toHaveBeenCalled();
   });
 });
