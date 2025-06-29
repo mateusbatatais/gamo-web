@@ -5,7 +5,7 @@ import enMessages from "../messages/en.json";
 import ptMessages from "../messages/pt.json";
 import "../app/globals.scss";
 import { Quicksand } from "next/font/google";
-import { withThemeByClassName } from "@storybook/addon-themes";
+import { withThemeByDataAttribute } from "@storybook/addon-themes";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -47,7 +47,7 @@ const preview: Preview = {
         </div>
       );
     },
-    withThemeByClassName({
+    withThemeByDataAttribute({
       themes: {
         light: "",
         dark: "dark",
