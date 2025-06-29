@@ -161,13 +161,8 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
             onGenerationChange={handleGenerationChange}
             selectedBrands={selectedBrands}
             selectedGenerations={selectedGenerations}
+            clearFilters={clearFilters}
           />
-          <button
-            onClick={clearFilters}
-            className="w-full mt-4 px-4 py-2 text-sm font-medium border border-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-          >
-            Limpar filtros
-          </button>
         </div>
       </div>
 
