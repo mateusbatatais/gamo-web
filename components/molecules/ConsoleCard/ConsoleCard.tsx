@@ -1,9 +1,11 @@
 // components/molecules/ConsoleCard.tsx
+
 import { Button, ButtonVariant, ButtonStatus } from "@/components/atoms/Button/Button";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import { Monitor, Gamepad } from "lucide-react";
 
 export interface ConsoleCardProps {
   name: string;
@@ -36,6 +38,25 @@ const ConsoleCard = ({
   badge,
   children,
 }: ConsoleCardProps) => {
+  const [imageError, setImageError] = useState(false);
+
+  // Normaliza a URL da imagem
+  const normalizeImageUrl = (url: string) => {
+    if (!url) return "/default-console.webp";
+
+    // Remove barras duplas no início
+    if (url.startsWith("//")) {
+      return url.slice(1);
+    }
+
+    // Garante que comece com uma barra
+    if (!url.startsWith("/")) {
+      return `/${url}`;
+    }
+
+    return url;
+  };
+
   return (
     <article
       className={clsx(
@@ -47,18 +68,31 @@ const ConsoleCard = ({
     >
       <div
         className={clsx(
-          "relative bg-gray-100 dark:bg-gray-800",
+          "relative bg-gray-100 dark:bg-gray-800 flex items-center justify-center",
           orientation === "vertical" ? "w-full aspect-video" : "w-1/3 min-w-[160px]",
         )}
       >
-        <Image
-          src={`/${imageUrl}`}
-          alt={`${name} console`}
-          fill
-          className="object-cover"
-          sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
-        />
-        {badge && <div className="absolute top-2 right-2">{badge}</div>}
+        {imageError ? (
+          <div className="p-4 text-gray-400">
+            {consoleName.includes("Console") ? (
+              <Monitor size={40} className="mx-auto" />
+            ) : (
+              <Gamepad size={40} className="mx-auto" />
+            )}
+            <span className="sr-only">Imagem não disponível</span>
+          </div>
+        ) : (
+          <Image
+            src={normalizeImageUrl(imageUrl)}
+            alt={`${name} console`}
+            fill
+            className="object-cover"
+            sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
+            onError={() => setImageError(true)}
+            priority={true}
+          />
+        )}
+        {badge && <div className="absolute top-2 right-2 z-10">{badge}</div>}
       </div>
 
       <div
@@ -79,7 +113,7 @@ const ConsoleCard = ({
           {description}
         </p>
 
-        <Link href={`/console/${slug}`}>
+        <Link href={`/console/${slug}`} className="block">
           <Button
             variant={buttonVariant}
             status={buttonStatus}
