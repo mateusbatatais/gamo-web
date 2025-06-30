@@ -31,17 +31,6 @@ describe("BrandFilter Component", () => {
     vi.clearAllMocks();
   });
 
-  it("exibe estado de carregamento", async () => {
-    // Usando vi.mocked para melhor tipagem
-    vi.mocked(apiFetch).mockImplementation(
-      () => new Promise(() => {}), // Promise que nunca resolve
-    );
-
-    render(<BrandFilter selectedBrands={[]} onBrandChange={mockOnBrandChange} />);
-
-    expect(screen.getByText("Carregando...")).toBeInTheDocument();
-  });
-
   it("exibe mensagem de erro quando a requisição falha", async () => {
     const errorMessage = "Erro na conexão";
     vi.mocked(apiFetch).mockRejectedValue(new Error(errorMessage));

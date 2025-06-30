@@ -11,9 +11,10 @@ import { Input } from "@/components/atoms/Input/Input";
 interface SearchBarProps {
   className?: string;
   variant?: "header" | "page";
+  compact?: boolean;
 }
 
-export function SearchBar({ className, variant = "page" }: SearchBarProps) {
+export function SearchBar({ className, variant = "page", compact = false }: SearchBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("search") || "");
@@ -72,7 +73,7 @@ export function SearchBar({ className, variant = "page" }: SearchBarProps) {
             onKeyDown={handleKeyPress}
             placeholder="Buscar consoles..."
             className="flex-grow"
-            inputSize="md"
+            inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}
           />
           <Button
@@ -93,10 +94,16 @@ export function SearchBar({ className, variant = "page" }: SearchBarProps) {
               onKeyDown={handleKeyPress}
               placeholder="Buscar consoles..."
               className="flex-grow"
-              inputSize="md"
+              inputSize={compact ? "sm" : "md"}
               icon={<Search size={18} />}
             />
-            <Button onClick={handleSearch} variant="primary" className="ml-2" label="Buscar" />
+            <Button
+              onClick={handleSearch}
+              variant="primary"
+              className="ml-2"
+              label="Buscar"
+              size={compact ? "sm" : "md"}
+            />
           </div>
 
           <Button
@@ -114,7 +121,7 @@ export function SearchBar({ className, variant = "page" }: SearchBarProps) {
             onKeyDown={handleKeyPress}
             placeholder="Buscar consoles..."
             className="flex-grow"
-            inputSize="md"
+            inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}
           />
           <Button onClick={handleSearch} variant="primary" className="ml-2" label="Buscar" />

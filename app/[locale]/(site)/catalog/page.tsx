@@ -10,7 +10,7 @@ const CatalogPageWrapper = () => {
   // const brand = searchParams.get("brand") || "";
   const locale = useLocale();
   const page = parseInt(searchParams.get("page") || "1", 10);
-  const perPage = parseInt(searchParams.get("perPage") || "6", 10);
+  const perPage = parseInt(searchParams.get("perPage") || "12", 10);
 
   return <CatalogComponent locale={locale} page={page} perPage={perPage} />;
 };

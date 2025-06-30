@@ -1,7 +1,7 @@
 // components/templates/Layout/Header/Header.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
@@ -10,45 +10,93 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { Menu, X } from "lucide-react";
+import clsx from "clsx";
 
 export default function Header() {
   const t = useTranslations("Header");
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // No useEffect de scroll, adicionar debounce
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const handleScroll = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsScrolled(window.scrollY > 0);
+      }, 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <header className="bg-white shadow-sm dark:bg-gray-900">
+    <header
+      className={clsx(
+        "bg-white shadow-sm dark:bg-gray-900 sticky top-0 z-50 transition-all duration-300",
+        isScrolled ? "py-2" : "py-4", // Padding reduzido quando scrollado
+      )}
+    >
       <div className="container mx-auto px-4">
-        {/* Primeira linha: Logo e controles mobile */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo - muda para ícone pequeno quando scrollado */}
           <Link
             href="/"
-            className="text-2xl font-bold text-gray-800 dark:text-gray-100 flex-shrink-0"
+            className={clsx(
+              "text-2xl font-bold text-gray-800 dark:text-gray-100 flex-shrink-0 transition-all",
+              isScrolled ? "w-10" : "w-32", // Largura reduzida
+            )}
           >
-            <Image
-              src="/images/logo-gamo.svg"
-              alt={t("altLogo")}
-              className="h-16 w-auto"
-              width={80}
-              height={24}
-              priority={true}
-            />
+            {isScrolled ? (
+              // Ícone simplificado para header reduzido
+              <Image
+                src="/images/icon-gamo.svg"
+                alt={t("altLogo")}
+                className="h-auto w-full"
+                width={130}
+                height={40}
+                priority={true}
+              />
+            ) : (
+              // Logo completo
+              <Image
+                src="/images/logo-gamo.svg"
+                alt={t("altLogo")}
+                className="h-auto w-full"
+                width={130}
+                height={40}
+                priority={true}
+              />
+            )}
           </Link>
 
           {/* Barra de busca - desktop */}
-          <div className="hidden md:block w-full max-w-md mx-4">
-            <SearchBar variant="header" />
+          <div
+            className={clsx(
+              "hidden md:block mx-4 transition-all duration-300",
+              isScrolled ? "max-w-md w-full" : "max-w-xl w-full", // Reduz tamanho quando scrollado
+            )}
+          >
+            <SearchBar variant="header" compact={isScrolled} />
           </div>
 
           <div className="flex items-center space-x-2">
+            {/* Barra de busca - mobile (sempre visível) */}
             <div className="md:hidden">
               <SearchBar variant="header" />
             </div>
 
+            {/* Botão menu mobile */}
             <button
               onClick={toggleMenu}
               className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 md:hidden"
@@ -57,8 +105,13 @@ export default function Header() {
             </button>
           </div>
 
-          {/* Menu desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Menu desktop - elementos podem ser reduzidos */}
+          <div
+            className={clsx(
+              "hidden md:flex items-center space-x-4 transition-all",
+              isScrolled ? "text-sm" : "text-base", // Tamanho de fonte reduzido
+            )}
+          >
             <Link
               href="/catalog"
               className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
@@ -87,7 +140,7 @@ export default function Header() {
 
         {/* Menu mobile */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
+          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4 mt-2">
             <nav className="flex flex-col space-y-4">
               <Link
                 href="/catalog"

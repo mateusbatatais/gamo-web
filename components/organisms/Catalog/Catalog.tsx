@@ -212,7 +212,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
     <div className="flex flex-col lg:flex-row">
       {/* Filtros - desktop */}
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
-        <div className="sticky top-4">
+        <div className="sticky top-[70px]">
           <FilterContainer
             onBrandChange={handleBrandChange}
             onGenerationChange={handleGenerationChange}
