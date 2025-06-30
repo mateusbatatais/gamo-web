@@ -151,9 +151,8 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   if (loading) {
     return (
       <div className="flex flex-col lg:flex-row">
-        {/* Skeleton para filtros desktop */}
         <div className="hidden lg:block w-full lg:w-1/4 pr-4">
-          <div className="sticky top-4">
+          <div className="sticky top-[70px] ">
             <div className="space-y-6">
               <div>
                 <Skeleton className="h-6 w-1/2 mb-3" animated />
@@ -210,7 +209,6 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
 
   return (
     <div className="flex flex-col lg:flex-row">
-      {/* Filtros - desktop */}
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
         <div className="sticky top-[70px]">
           <FilterContainer
