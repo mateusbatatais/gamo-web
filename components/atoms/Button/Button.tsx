@@ -1,6 +1,7 @@
 // components/atoms/Button/Button.tsx
 import React, { ReactNode } from "react";
 import clsx from "clsx";
+import { ButtonSkeleton } from "./Button.skeleton";
 
 export type ButtonSize = "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "primary" | "secondary" | "outline" | "transparent";
@@ -12,6 +13,7 @@ export interface ButtonProps {
   type?: "button" | "submit" | "reset";
   onClick?: () => void;
   disabled?: boolean;
+  loading?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
   status?: ButtonStatus;
@@ -60,6 +62,7 @@ export function Button({
   type = "button",
   onClick,
   disabled = false,
+  loading = false,
   size = "md",
   variant = "primary",
   status = "default",
@@ -87,21 +90,30 @@ export function Button({
   return (
     <button
       type={type}
-      title={title}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || loading}
+      title={title}
       className={clsx(
         base,
         sizeCls,
         variantCls,
         colorCls,
-        disabled && "opacity-50 cursor-not-allowed",
+        {
+          "opacity-50 cursor-not-allowed": disabled || loading,
+          "animate-pulse": loading,
+        },
         className,
       )}
     >
-      {icon && iconPosition === "left" && <span>{icon}</span>}
-      {content}
-      {icon && iconPosition === "right" && <span>{icon}</span>}
+      {loading ? (
+        <ButtonSkeleton />
+      ) : (
+        <>
+          {icon && iconPosition === "left" && <span className="flex-shrink-0">{icon}</span>}
+          {content && <span>{content}</span>}
+          {icon && iconPosition === "right" && <span className="flex-shrink-0">{icon}</span>}
+        </>
+      )}
     </button>
   );
 }
