@@ -268,18 +268,15 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
           )}
         </div>
 
-        {/* Estados de erro e vazio */}
         {error ? (
-          <div className="py-12">
-            <EmptyState
-              title="Erro ao carregar dados"
-              description={error}
-              variant="card"
-              size="lg"
-              actionText="Tentar novamente"
-              onAction={() => window.location.reload()}
-            />
-          </div>
+          <EmptyState
+            title="Erro ao carregar dados"
+            description={error}
+            variant="card"
+            size="lg"
+            actionText="Tentar novamente"
+            onAction={() => window.location.reload()}
+          />
         ) : consoleVariants && consoleVariants.items.length > 0 ? (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -291,7 +288,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
                   consoleName={variant.consoleName}
                   brand={variant.brand.slug}
                   imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
-                  description={variant.description || "Descrição não disponível"}
+                  description={variant.consoleDescription || "Descrição não disponível"}
                   slug={variant.slug}
                 />
               ))}
@@ -305,18 +302,16 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
             </div>
           </>
         ) : (
-          <div className="py-12">
-            <EmptyState
-              title="Nenhum console encontrado"
-              description="Tente ajustar seus filtros de busca"
-              variant="card"
-              size="lg"
-              actionText="Limpar filtros"
-              onAction={() => clearFilters()}
-              actionVariant="outline"
-              actionStatus="info"
-            />
-          </div>
+          <EmptyState
+            title="Nenhum console encontrado"
+            description="Tente ajustar seus filtros de busca"
+            variant="card"
+            size="lg"
+            actionText="Limpar filtros"
+            onAction={() => clearFilters()}
+            actionVariant="outline"
+            actionStatus="info"
+          />
         )}
       </div>
     </div>
