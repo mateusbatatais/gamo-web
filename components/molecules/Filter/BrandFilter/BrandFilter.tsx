@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { apiFetch } from "@/utils/api";
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
+import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 
 interface BrandFilterProps {
   selectedBrands: string[];
@@ -38,7 +39,20 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
     fetchBrands();
   }, []);
 
-  if (loading) return <div>{t("common.loading")}</div>;
+  if (loading)
+    return (
+      <div>
+        <Skeleton className="h-6 w-1/2 mb-3" animated />
+        <div className="space-y-2">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex items-center">
+              <Skeleton className="h-4 w-4 mr-2" rounded="sm" animated />
+              <Skeleton className="h-4 w-3/4" animated />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   if (error) return <div>{error}</div>;
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
