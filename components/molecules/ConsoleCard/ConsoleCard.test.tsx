@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { describe, it, expect, vi, afterEach } from "vitest";
 import ConsoleCard from "./ConsoleCard";
 
 // Mock do next/image
@@ -18,12 +18,8 @@ vi.mock("next/image", () => ({
     className: string;
     sizes: string;
   }) => {
-    // Simular erro se a src for uma string vazia
-    if (src === "/fail-image.webp") {
-      return <img {...props} alt={alt} data-testid="next-image-mock" onError={onError} />;
-    }
-
-    return <img src={src} alt={alt} data-testid="next-image-mock" {...props} />;
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={alt} data-testid="next-image-mock" onError={onError} {...props} />;
   },
 }));
 
@@ -41,17 +37,20 @@ vi.mock("next/link", () => ({
 }));
 
 describe("ConsoleCard Component", () => {
-  const mockProps = {
+  const baseProps = {
     name: "PlayStation 5",
     consoleName: "PS5 Console",
     brand: "Sony",
-    imageUrl: "images/consoles/sony/ps5.webp",
     description: "Next-gen gaming console",
     slug: "ps5-slim",
   };
 
+  afterEach(() => {
+    cleanup();
+  });
+
   it("renderiza todas as informações corretamente", () => {
-    render(<ConsoleCard {...mockProps} />);
+    render(<ConsoleCard {...baseProps} imageUrl="images/consoles/sony/ps5.webp" />);
 
     // Verifica textos
     expect(screen.getByText("PS5 Console")).toBeInTheDocument();
@@ -61,7 +60,6 @@ describe("ConsoleCard Component", () => {
 
     // Verifica a imagem
     const image = screen.getByTestId("next-image-mock");
-    expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute("src", "/images/consoles/sony/ps5.webp");
     expect(image).toHaveAttribute("alt", "PlayStation 5 console");
 
@@ -71,7 +69,7 @@ describe("ConsoleCard Component", () => {
   });
 
   it("mostra ícone de fallback quando a imagem falha", () => {
-    render(<ConsoleCard {...mockProps} imageUrl="fail-image.webp" />);
+    render(<ConsoleCard {...baseProps} imageUrl="fail-image.webp" />);
 
     // Forçar erro na imagem
     const image = screen.getByTestId("next-image-mock");
@@ -84,7 +82,7 @@ describe("ConsoleCard Component", () => {
   it("mostra ícone de gamepad para consoles não tradicionais", () => {
     render(
       <ConsoleCard
-        {...mockProps}
+        {...baseProps}
         imageUrl="fail-image.webp"
         consoleName="Handheld Gaming Device"
       />,
@@ -98,30 +96,32 @@ describe("ConsoleCard Component", () => {
     expect(screen.getByTestId("gamepad-icon")).toBeInTheDocument();
   });
 
-  it("normaliza diferentes formatos de URL de imagem", () => {
-    // Teste 1: URL sem barra inicial
-    render(<ConsoleCard {...mockProps} imageUrl="test-image.webp" />);
-    let image = screen.getByTestId("next-image-mock");
+  it("normaliza URL sem barra inicial", () => {
+    render(<ConsoleCard {...baseProps} imageUrl="test-image.webp" />);
+    const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/test-image.webp");
+  });
 
-    // Teste 2: URL com barra inicial
-    render(<ConsoleCard {...mockProps} imageUrl="/test-image.webp" />);
-    image = screen.getByTestId("next-image-mock");
+  it("normaliza URL com barra inicial", () => {
+    render(<ConsoleCard {...baseProps} imageUrl="/test-image.webp" />);
+    const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/test-image.webp");
+  });
 
-    // Teste 3: URL com duas barras
-    render(<ConsoleCard {...mockProps} imageUrl="//test-image.webp" />);
-    image = screen.getByTestId("next-image-mock");
+  it("normaliza URL com duas barras", () => {
+    render(<ConsoleCard {...baseProps} imageUrl="//test-image.webp" />);
+    const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/test-image.webp");
+  });
 
-    // Teste 4: URL vazia
-    render(<ConsoleCard {...mockProps} imageUrl="" />);
-    image = screen.getByTestId("next-image-mock");
+  it("normaliza URL vazia para padrão", () => {
+    render(<ConsoleCard {...baseProps} imageUrl="" />);
+    const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/default-console.webp");
   });
 
   it("aplica as classes CSS corretamente", () => {
-    const { container } = render(<ConsoleCard {...mockProps} />);
+    const { container } = render(<ConsoleCard {...baseProps} imageUrl="test-image.webp" />);
     const card = container.firstChild;
 
     // Verifica classes principais

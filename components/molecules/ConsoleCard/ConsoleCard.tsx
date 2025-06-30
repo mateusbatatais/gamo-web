@@ -6,10 +6,12 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ReactNode, useState } from "react";
 import { Monitor, Gamepad } from "lucide-react";
+import { ConsoleCardSkeleton } from "./ConsoleCard.skeleton";
 
 export interface ConsoleCardProps {
   name: string;
   consoleName: string;
+  loading?: boolean;
   brand: string;
   imageUrl: string;
   description: string;
@@ -25,6 +27,7 @@ export interface ConsoleCardProps {
 
 const ConsoleCard = ({
   name,
+  loading = false,
   consoleName,
   brand,
   imageUrl,
@@ -56,6 +59,10 @@ const ConsoleCard = ({
 
     return url;
   };
+
+  if (loading) {
+    return <ConsoleCardSkeleton />;
+  }
 
   return (
     <article
