@@ -21,10 +21,7 @@ export function ThemeToggle({
   className,
   showSystemOption = false,
 }: ThemeToggleProps) {
-  const { theme, setTheme } = useTheme() as {
-    theme: "light" | "dark" | "system";
-    setTheme: (theme: "light" | "dark" | "system") => void;
-  };
+  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -32,7 +29,7 @@ export function ThemeToggle({
   }, []);
 
   // Renderizar placeholder durante SSR
-  if (!mounted || !theme) {
+  if (!mounted) {
     return (
       <div
         data-testid="theme-toggle-skeleton"
@@ -44,26 +41,25 @@ export function ThemeToggle({
     );
   }
 
-  const handleThemeChange = (newTheme: "light" | "dark" | "system") => {
-    if (newTheme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-      setTheme(systemTheme);
-    } else {
-      setTheme(newTheme);
-    }
-  };
-
   const getButtonLabel = () => {
     if (variant === "icon") return "";
+
+    // Considerando o tema atual para mostrar o texto adequado
     if (theme === "light") return "Modo Escuro";
-    return "Modo Claro";
+    if (theme === "dark") return "Modo Claro";
+    return theme === "system" ? "Modo Sistema" : "Alternar Tema";
   };
 
   const getButtonTitle = () => {
     if (theme === "light") return "Ativar modo escuro";
-    return "Ativar modo claro";
+    if (theme === "dark") return "Ativar modo claro";
+    return "Usar tema do sistema";
+  };
+
+  const getIcon = () => {
+    if (theme === "light") return <Moon size={iconSize} />;
+    if (theme === "dark") return <Sun size={iconSize} />;
+    return <Monitor size={iconSize} />;
   };
 
   const sizeClasses: Record<ThemeToggleSize, string> = {
@@ -73,6 +69,17 @@ export function ThemeToggle({
   };
 
   const iconSize = size === "sm" ? 16 : size === "md" ? 20 : 24;
+
+  // Função para alternar o tema de forma cíclica
+  const toggleTheme = () => {
+    if (theme === "system") {
+      setTheme("light");
+    } else if (theme === "light") {
+      setTheme("dark");
+    } else {
+      setTheme("system");
+    }
+  };
 
   return (
     <div
@@ -84,7 +91,7 @@ export function ThemeToggle({
     >
       {showSystemOption && variant === "full" && (
         <Button
-          onClick={() => handleThemeChange("system")}
+          onClick={() => setTheme("system")}
           variant="transparent"
           size={size}
           className={clsx("rounded-full", theme === "system" && "bg-gray-200 dark:bg-gray-700")}
@@ -95,7 +102,7 @@ export function ThemeToggle({
       )}
 
       <Button
-        onClick={() => handleThemeChange(theme === "light" ? "dark" : "light")}
+        onClick={toggleTheme}
         className={clsx(
           "rounded-full transition-colors",
           sizeClasses[size],
@@ -106,7 +113,7 @@ export function ThemeToggle({
         aria-label={getButtonTitle()}
         variant="transparent"
         size={size}
-        icon={theme === "light" ? <Moon size={iconSize} /> : <Sun size={iconSize} />}
+        icon={getIcon()}
         label={getButtonLabel()}
       />
     </div>

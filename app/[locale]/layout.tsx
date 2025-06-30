@@ -7,6 +7,7 @@ import LogRocketInit from "@/components/atoms/LogRocketInit/LogRocketInit";
 import { getTranslations } from "next-intl/server";
 import { ReactNode } from "react";
 import { Providers } from "@/contexts/Providers";
+import { ThemeProvider } from "next-themes";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -45,14 +46,16 @@ export default async function LocaleLayout({
   }
 
   return (
-    <html lang={locale} className={quicksand.className}>
+    <html lang={locale} className={quicksand.className} suppressHydrationWarning>
       <body className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
-        <NextIntlClientProvider>
-          <Providers>
-            <LogRocketInit />
-            {children}
-          </Providers>
-        </NextIntlClientProvider>
+        <ThemeProvider attribute="data-theme" enableSystem>
+          <NextIntlClientProvider>
+            <Providers>
+              <LogRocketInit />
+              {children}
+            </Providers>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

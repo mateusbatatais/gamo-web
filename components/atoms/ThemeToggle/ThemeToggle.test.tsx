@@ -32,7 +32,6 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "light",
       setTheme: mockSetTheme,
-      toggleTheme: vi.fn(),
     });
   });
 
@@ -45,32 +44,67 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "dark",
       setTheme: mockSetTheme,
-      toggleTheme: vi.fn(),
     });
     render(<ThemeToggle />);
     expect(screen.getByTestId("sun-icon")).toBeInTheDocument();
   });
 
-  it("alterna para tema escuro ao clicar no tema claro", () => {
+  it("renderiza o ícone de monitor no tema sistema", () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: "system",
+      setTheme: mockSetTheme,
+    });
+    render(<ThemeToggle />);
+    expect(screen.getByTestId("monitor-icon")).toBeInTheDocument();
+  });
+
+  it("alterna de light para dark ao clicar", () => {
     render(<ThemeToggle />);
     fireEvent.click(screen.getByRole("button"));
     expect(mockSetTheme).toHaveBeenCalledWith("dark");
   });
 
-  it("alterna para tema claro ao clicar no tema escuro", () => {
+  it("alterna de dark para system ao clicar", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "dark",
       setTheme: mockSetTheme,
-      toggleTheme: vi.fn(),
+    });
+    render(<ThemeToggle />);
+    fireEvent.click(screen.getByRole("button"));
+    expect(mockSetTheme).toHaveBeenCalledWith("system");
+  });
+
+  it("alterna de system para light ao clicar", () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: "system",
+      setTheme: mockSetTheme,
     });
     render(<ThemeToggle />);
     fireEvent.click(screen.getByRole("button"));
     expect(mockSetTheme).toHaveBeenCalledWith("light");
   });
 
-  it("mostra texto no modo 'text'", () => {
+  it("mostra texto 'Modo Escuro' no tema claro no modo 'text'", () => {
     render(<ThemeToggle variant="text" />);
     expect(screen.getByText("Modo Escuro")).toBeInTheDocument();
+  });
+
+  it("mostra texto 'Modo Claro' no tema escuro no modo 'text'", () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: "dark",
+      setTheme: mockSetTheme,
+    });
+    render(<ThemeToggle variant="text" />);
+    expect(screen.getByText("Modo Claro")).toBeInTheDocument();
+  });
+
+  it("mostra texto 'Modo Sistema' no tema sistema no modo 'text'", () => {
+    vi.mocked(useTheme).mockReturnValue({
+      theme: "system",
+      setTheme: mockSetTheme,
+    });
+    render(<ThemeToggle variant="text" />);
+    expect(screen.getByText("Modo Sistema")).toBeInTheDocument();
   });
 
   it("mostra opção de sistema no modo 'full'", () => {
@@ -83,18 +117,20 @@ describe("ThemeToggle component", () => {
     render(<ThemeToggle variant="full" showSystemOption />);
     const systemButton = screen.getAllByRole("button")[0];
     fireEvent.click(systemButton);
-    expect(mockSetTheme).toHaveBeenCalled();
+    expect(mockSetTheme).toHaveBeenCalledWith("system");
   });
 
-  it("exibe skeleton durante o carregamento", () => {
+  it("destaca botão do sistema quando ativo", () => {
     vi.mocked(useTheme).mockReturnValue({
-      theme: undefined,
+      theme: "system",
       setTheme: mockSetTheme,
-      toggleTheme: vi.fn(),
-    } as unknown as ReturnType<typeof useTheme>);
+    });
 
-    render(<ThemeToggle />);
-    expect(screen.getByTestId("theme-toggle-skeleton")).toBeInTheDocument();
+    render(<ThemeToggle variant="full" showSystemOption />);
+    const systemButton = screen.getAllByRole("button")[0];
+
+    expect(systemButton).toHaveClass("bg-gray-200");
+    expect(systemButton).toHaveClass("dark:bg-gray-700");
   });
 
   it("aplica classes de tamanho corretamente", () => {

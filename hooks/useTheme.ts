@@ -1,27 +1,35 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useTheme() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark" | "system">(() => {
+    // Inicialização sincrona com localStorage
+    if (typeof window !== "undefined") {
+      return (localStorage.getItem("theme") as "light" | "dark" | "system") || "system";
+    }
+    return "system";
+  });
 
   useEffect(() => {
-    const storedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    const currentDataMode = document.documentElement.getAttribute("data-theme") as "light" | "dark" | null;
-    const initialTheme = currentDataMode || storedTheme || "light";
-    setTheme(initialTheme);
-    document.documentElement.setAttribute("data-theme", initialTheme);
-    
-  }, []);
+    const root = document.documentElement;
 
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
+    // Aplicar tema imediatamente após hidratação
+    const applyTheme = (theme: "light" | "dark") => {
+      root.setAttribute("data-theme", theme);
+      root.style.colorScheme = theme;
+    };
+
+    if (theme === "system") {
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+      applyTheme(systemTheme);
+    } else {
+      applyTheme(theme);
+    }
+
     localStorage.setItem("theme", theme);
-    
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === "light" ? "dark" : "light");
-  };
-
-  return { theme, setTheme, toggleTheme };
+  return { theme, setTheme };
 }
