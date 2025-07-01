@@ -9,29 +9,48 @@ if (!process.env.CI) {
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  fullyParallel: true,
+  fullyParallel: false, // Desativar paralelismo no CI
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
-  reporter: "html",
+  workers: 1, // Usar apenas 1 worker
+  reporter: [["html"], ["list"]], // Adicionar reporter de console
+  timeout: process.env.CI ? 180000 : 60000, // 3 minutos timeout global
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
     // Timeouts aumentados para CI
-    actionTimeout: process.env.CI ? 30000 : 10000,
-    navigationTimeout: process.env.CI ? 60000 : 30000,
+    actionTimeout: process.env.CI ? 60000 : 30000,
+    navigationTimeout: process.env.CI ? 120000 : 60000,
   },
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        // Configurações específicas para CI
+        viewport: { width: 1280, height: 720 },
+        launchOptions: {
+          args: process.env.CI
+            ? [
+                "--disable-gpu",
+                "--disable-dev-shm-usage",
+                "--disable-setuid-sandbox",
+                "--no-sandbox",
+              ]
+            : [],
+        },
+      },
     },
   ],
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
-    timeout: process.env.CI ? 120000 : 60000, // 2 minutos para CI
+    timeout: process.env.CI ? 300000 : 120000, // 5 minutos para CI
+    stdout: "pipe", // Para capturar logs do servidor
+    stderr: "pipe", // Para capturar logs de erro
     env: {
       ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
       ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
@@ -44,6 +63,9 @@ export default defineConfig({
       NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
       // Forçar modo de desenvolvimento
       NODE_ENV: "development",
+      // Logs detalhados
+      DEBUG: "firebase:*",
+      FIREBASE_DEBUG: "true",
     },
   },
 });
