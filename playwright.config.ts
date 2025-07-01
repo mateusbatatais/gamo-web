@@ -45,13 +45,15 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev 2>&1 | tee server.log", // Redireciona logs para arquivo
+    command: "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
-    timeout: process.env.CI ? 300000 : 120000, // 5 minutos para CI
-    stdout: "pipe", // Para capturar logs do servidor
-    stderr: "pipe", // Para capturar logs de erro
+    timeout: process.env.CI ? 300000 : 120000,
+    stdout: "pipe",
+    stderr: "pipe",
     env: {
+      NEXT_PUBLIC_API_URL: "http://localhost:3000",
+      NEXT_PUBLIC_BASE_URL: "http://localhost:3000",
       ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
       ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || "",
       NEXT_PUBLIC_FIREBASE_API_KEY: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",

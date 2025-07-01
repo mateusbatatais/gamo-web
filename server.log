@@ -1,0 +1,24 @@
+
+> gamo-web@0.1.0 dev D:\Documents\.01 Docs main\Projetos_dev\Gamo\dev\gamo-web
+> next dev --turbopack
+
+   [1m[38;2;173;127;168m▲ Next.js 15.3.4[39m[22m (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://172.18.128.1:3000
+   - Environments: .env.local
+
+ [32m[1m✓[22m[39m Starting...
+Creating turbopack project {
+  dir: [32m'D:\\Documents\\.01 Docs main\\Projetos_dev\\Gamo\\dev\\gamo-web'[39m,
+  testMode: [33mtrue[39m
+}
+ [32m[1m✓[22m[39m Compiled middleware in 216ms
+ [32m[1m✓[22m[39m Ready in 2.1s
+ [37m[1m○[22m[39m Compiling /[locale] ...
+ [32m[1m✓[22m[39m Compiled /[locale] in 4.3s
+ GET /pt [32m200[39m in 5427ms
+ [37m[1m○[22m[39m Compiling /[locale]/login ...
+ [32m[1m✓[22m[39m Compiled /[locale]/login in 1240ms
+ GET /en/login [32m200[39m in 2617ms
+ [37m[1m○[22m[39m Compiling /[locale]/account ...
+ [32m[1m✓[22m[39m Compiled /[locale]/account in 2.2s
