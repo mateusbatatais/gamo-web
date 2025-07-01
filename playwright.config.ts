@@ -1,4 +1,4 @@
-import { defineConfig } from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -17,10 +17,16 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    // Timeouts aumentados para CI
     actionTimeout: process.env.CI ? 30000 : 10000,
     navigationTimeout: process.env.CI ? 60000 : 30000,
   },
-
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:3000",
@@ -36,6 +42,8 @@ export default defineConfig({
       NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID:
         process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
       NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
+      // Forçar modo de desenvolvimento
+      NODE_ENV: "development",
     },
   },
 });

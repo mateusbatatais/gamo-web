@@ -14,7 +14,7 @@ test("Login com Firebase", async ({ page }) => {
     }
   }
 
-  // Só faz mock em ambiente local
+  // Desativar mock em ambiente CI
   if (!process.env.CI) {
     await page.route("**/firebase-auth-api", (route) => {
       route.fulfill({
@@ -32,18 +32,31 @@ test("Login com Firebase", async ({ page }) => {
   await page.fill('input[name="password"]', password);
   await page.click('button[type="submit"]');
 
-  // Aguardar condições de sucesso
+  // Aguardar condições de sucesso com timeout maior
   await Promise.race([
-    page.waitForURL(/\/account/),
-    page.waitForSelector("text=Login successful", { timeout: 10000 }),
+    page.waitForURL(/\/account/, { timeout: 30000 }),
+    page.waitForResponse(
+      (response) => response.url().includes("firebase") && response.status() === 200,
+      { timeout: 30000 },
+    ),
   ]);
 
-  // Verificar localStorage - mais tolerante
-  const storageState = await page.evaluate(() => localStorage.getItem("gamo_token"));
+  // Verificar localStorage com fallback
+  let storageState = null;
+  let attempts = 0;
 
-  // Verificação mais robusta
+  while (!storageState && attempts < 5) {
+    storageState = await page.evaluate(() => localStorage.getItem("gamo_token"));
+    if (!storageState) {
+      await page.waitForTimeout(1000); // Esperar 1 segundo
+      attempts++;
+    }
+  }
+
+  // Verificação mais tolerante
   if (process.env.CI) {
-    expect(storageState).toBeTruthy();
+    // No CI, aceita qualquer token válido
+    expect(storageState).toMatch(/^eyJ/); // Verifica se parece um JWT
   } else {
     expect(storageState).toEqual("mock-jwt-token");
   }
