@@ -1,7 +1,17 @@
 import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({
+  path: ".env.local",
+  override: true,
+});
+
+// Verificação de segurança
+if (process.env.CI) {
+  console.log("Variáveis de ambiente no CI:");
+  console.log(`FIREBASE_API_KEY: ${!!process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`);
+  console.log(`ADMIN_EMAIL: ${!!process.env.ADMIN_EMAIL}`);
+}
 
 /**
  * Read environment variables from file.

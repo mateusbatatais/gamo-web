@@ -131,9 +131,7 @@ export default function LoginPage() {
           <>
             <div className="my-4 flex items-center">
               <hr className="flex-1 border-gray-300 dark:border-gray-700" />
-              <span className="px-2 text-gray-500 text-sm dark:text-gray-400">
-                {t("login.or")}{" "}
-              </span>
+              <span className="px-2 text-gray-500 text-sm dark:text-gray-400">{t("login.or")}</span>
               <hr className="flex-1 border-gray-300 dark:border-gray-700" />
             </div>
 
