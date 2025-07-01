@@ -12,6 +12,8 @@ import { useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import clsx from "clsx";
 import { ConsoleCardSkeleton } from "@/components/molecules/ConsoleCard/ConsoleCard.skeleton";
+import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
+import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 
 interface CatalogComponentProps {
   locale: string;
@@ -19,12 +21,22 @@ interface CatalogComponentProps {
   perPage: number;
 }
 
+const SORT_OPTIONS: SortOption[] = [
+  { value: "name-asc", label: "Nome (A-Z)" },
+  { value: "name-desc", label: "Nome (Z-A)" },
+  { value: "releaseDate-asc", label: "Data de Lançamento (Mais antigos)" },
+  { value: "releaseDate-desc", label: "Data de Lançamento (Mais recentes)" },
+  { value: "popularity-desc", label: "Mais populares" },
+];
+
 const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [consoleVariants, setConsoleVariants] = useState<ConsoleVariantsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState<number>(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [view, setView] = useState<ViewType>("grid"); // Estado para a visualização
+  const [sort, setSort] = useState<string>("name-asc"); // Estado para ordenação
 
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
@@ -47,6 +59,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
       perPage: perPage.toString(),
       generation: selectedGenerations.join(","),
       search: searchQuery,
+      sort,
     });
 
     if (brands.length > 0) {
@@ -131,7 +144,41 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
     };
 
     fetchConsoleVariants();
-  }, [selectedBrands, selectedGenerations, locale, page, perPage, searchQuery]);
+  }, [selectedBrands, selectedGenerations, locale, page, perPage, searchQuery, sort]);
+
+  useEffect(() => {
+    const savedView = localStorage.getItem("catalog-view") as ViewType | null;
+    if (savedView) {
+      setView(savedView);
+    }
+  }, []);
+
+  useEffect(() => {
+    const savedSort = localStorage.getItem("catalog-sort");
+    if (savedSort) {
+      setSort(savedSort);
+    }
+  }, []);
+
+  // Função para lidar com mudança de ordenação
+  const handleSortChange = (newSort: string) => {
+    setSort(newSort);
+    localStorage.setItem("catalog-sort", newSort);
+    setLoading(true); // Forçar recarregamento
+
+    // Atualizar URL com o novo parâmetro de ordenação
+    const params = new URLSearchParams({
+      locale,
+      page: "1", // Voltar para a primeira página
+      perPage: perPage.toString(),
+      brand: selectedBrands.join(","),
+      generation: selectedGenerations.join(","),
+      search: searchQuery,
+      sort: newSort,
+    });
+
+    window.history.pushState({}, "", `/catalog?${params.toString()}`);
+  };
 
   const handlePageChange = (newPage: number) => {
     setLoading(true);
@@ -185,8 +232,15 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
 
         {/* Skeleton para conteúdo */}
         <div className="w-full">
-          <div className="mb-6">
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <Skeleton className="h-12 w-full rounded-lg" animated />
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-10 w-32 rounded-md" animated />
+              <div className="flex space-x-1">
+                <Skeleton className="w-10 h-10 rounded-md" animated />
+                <Skeleton className="w-10 h-10 rounded-md" animated />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -221,11 +275,21 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
         </div>
       </div>
 
-      {/* Conteúdo principal */}
       <div className="w-full lg:w-3/4">
-        {/* Barra de busca */}
-        <div className="mb-6">
-          <SearchBar variant="page" />
+        {/* Barra de busca e botões de visualização */}
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="w-full sm:w-auto flex-1">
+            <SearchBar variant="page" />
+          </div>
+          <div className="flex items-center justify-between sm:justify-end gap-4">
+            <SortSelect
+              options={SORT_OPTIONS}
+              value={sort}
+              onChange={handleSortChange}
+              className="w-full sm:w-auto"
+            />
+            <ViewToggle onViewChange={(newView) => setView(newView)} storageKey="catalog-view" />
+          </div>
         </div>
 
         {/* Filtros para mobile */}
@@ -277,7 +341,13 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
           />
         ) : consoleVariants && consoleVariants.items.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div
+              className={
+                view === "grid"
+                  ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                  : "flex flex-col space-y-6"
+              }
+            >
               {consoleVariants.items.map((variant) => (
                 <ConsoleCard
                   key={variant.id}
@@ -288,6 +358,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
                   imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
                   description={variant.consoleDescription || "Descrição não disponível"}
                   slug={variant.slug}
+                  orientation={view === "grid" ? "vertical" : "horizontal"}
                 />
               ))}
             </div>
