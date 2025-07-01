@@ -1,14 +1,15 @@
 // tests/e2e/auth/login.spec.ts
 import { test, expect } from "@playwright/test";
 
-declare const process: {
-  env: {
-    ADMIN_EMAIL: string;
-    ADMIN_PASSWORD: string;
-  };
-};
-
 test("Login com Firebase", async ({ page }) => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    test.fail(true, "Credenciais não configuradas no ambiente");
+    return;
+  }
+
   // Mock da resposta da API
   await page.route("**/firebase-auth-api", (route) => {
     route.fulfill({
@@ -20,16 +21,12 @@ test("Login com Firebase", async ({ page }) => {
 
   await page.goto("/login");
 
-  // Preencher formulário
-  await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
-
-  await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
-
+  await page.fill('input[name="email"]', adminEmail);
+  await page.fill('input[name="password"]', adminPassword);
   await page.click('button[type="submit"]');
 
   await page.waitForLoadState("networkidle");
 
-  // Verificar localStorage
   const storageState = await page.evaluate(() => localStorage.getItem("gamo_token"));
   expect(storageState).toBeTruthy();
 

@@ -47,6 +47,7 @@ export function AuthForm({
       {config.fields.map((field) => (
         <Input
           key={field.name}
+          name={field.name}
           label={field.label}
           type={field.type}
           placeholder={field.placeholder}
