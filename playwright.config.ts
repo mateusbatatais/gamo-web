@@ -45,7 +45,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "pnpm dev",
+    command: "pnpm dev 2>&1 | tee server.log", // Redireciona logs para arquivo
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300000 : 120000, // 5 minutos para CI

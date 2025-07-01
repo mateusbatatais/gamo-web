@@ -28,26 +28,7 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
-        run: |
-          # Iniciar servidor em background com logs
-          pnpm dev > server.log 2>&1 &
-          SERVER_PID=$!
-
-          # Esperar o servidor iniciar
-          sleep 15
-
-          # Executar testes com timeout aumentado
-          pnpm exec playwright test --timeout=180000 || TEST_EXIT_CODE=$?
-
-          # Capturar logs do servidor
-          echo "=== SERVER LOGS ==="
-          cat server.log
-
-          # Finalizar servidor
-          kill $SERVER_PID
-
-          # Sair com código de erro se os testes falharem
-          exit ${TEST_EXIT_CODE:-0}
+        run: pnpm exec playwright test --timeout=180000
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -55,5 +36,5 @@ jobs:
           path: |
             playwright-report/
             test-results/
-            server.log
+            server.log # Inclui o log do servidor
           retention-days: 30
