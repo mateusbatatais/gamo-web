@@ -1,6 +1,25 @@
 // tests/e2e/auth/login.spec.ts
 import { test, expect } from "@playwright/test";
 
+// Extende a interface Window para incluir 'firebase'
+declare global {
+  interface Window {
+    firebase?: {
+      auth: () => {
+        signInWithEmailAndPassword: (
+          email: string,
+          password: string,
+        ) => Promise<{
+          user: {
+            getIdToken: () => Promise<string>;
+            email: string;
+          };
+        }>;
+      };
+    };
+  }
+}
+
 test("Login com Firebase", async ({ page }) => {
   // Verifica credenciais
   const adminEmail = process.env.ADMIN_EMAIL;
@@ -11,9 +30,30 @@ test("Login com Firebase", async ({ page }) => {
     return;
   }
 
-  // Mock mais robusto
+  // Configurar fallback para i18n
+  await page.addInitScript(() => {
+    window.localStorage.setItem("i18nextLng", "en");
+  });
+
+  // Mock completo do Firebase Auth
+  await page.addInitScript(() => {
+    // Usar window.firebase com verificação de segurança
+    window.firebase = {
+      auth: () => ({
+        signInWithEmailAndPassword: (email: string) =>
+          Promise.resolve({
+            user: {
+              getIdToken: () => Promise.resolve("mock-jwt-token"),
+              email: email,
+            },
+          }),
+      }),
+    };
+  });
+
+  // Mock da rota API
   await page.route("**/firebase-auth-api", (route) => {
-    console.log("Interceptando chamada Firebase API");
+    console.log("✅ Mock da API Firebase acionado");
     route.fulfill({
       status: 200,
       contentType: "application/json",
@@ -21,16 +61,13 @@ test("Login com Firebase", async ({ page }) => {
     });
   });
 
-  // Monitorar console e erros
+  // Monitorar eventos
   page.on("console", (msg) => console.log("CONSOLE:", msg.text()));
   page.on("pageerror", (error) => console.error("PAGE ERROR:", error.message));
 
   await page.goto("/login", { waitUntil: "networkidle" });
 
-  // Debug: tirar screenshot antes do preenchimento
-  await page.screenshot({ path: "screenshot-before-login.png" });
-
-  // Preencher formulário com verificações
+  // Preencher formulário
   await expect(page.locator('input[name="email"]')).toBeVisible();
   await page.fill('input[name="email"]', adminEmail);
 
@@ -52,12 +89,6 @@ test("Login com Firebase", async ({ page }) => {
   const storageState = await page.evaluate(() => localStorage.getItem("gamo_token"));
   console.log("Token no localStorage:", storageState);
 
-  if (!storageState) {
-    await page.screenshot({ path: "screenshot-after-login-failed.png" });
-    test.fail(true, "Token não encontrado no localStorage");
-    return;
-  }
-
   expect(storageState).toBeTruthy();
 
   // Verificar redirecionamento
@@ -65,12 +96,5 @@ test("Login com Firebase", async ({ page }) => {
   const url = page.url();
   console.log("URL atual:", url);
 
-  if (!url.match(/\/account/)) {
-    await page.screenshot({ path: "screenshot-after-redirect-failed.png" });
-  }
-
   expect(url).toMatch(/\/account/);
-
-  // Debug: tirar screenshot após login bem-sucedido
-  await page.screenshot({ path: "screenshot-after-login.png" });
 });
