@@ -16,7 +16,7 @@ export interface ConsoleVariant {
   brand: { id: number; slug: string };
   name: string;
   consoleName: string;
-  description: string;
+  consoleDescription: string;
   imageUrl: string;
   releaseDate?: string | null;
   storage?: string | null;

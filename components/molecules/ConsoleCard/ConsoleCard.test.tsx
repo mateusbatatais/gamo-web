@@ -64,7 +64,7 @@ describe("ConsoleCard Component", () => {
     expect(image).toHaveAttribute("alt", "PlayStation 5 console");
 
     // Verifica o link
-    const link = screen.getByRole("link");
+    const link = screen.getAllByRole("link")[0];
     expect(link).toHaveAttribute("href", "/console/ps5-slim");
   });
 

@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { Button } from "@/components/atoms/Button/Button";
 
 interface PaginationProps {
   currentPage: number;
@@ -22,8 +23,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Função para gerar os números das páginas a serem exibidas
-  const getPageNumbers = () => {
+  const getPageNumbers = useCallback(() => {
     if (totalPages <= 1) return [];
 
     const pageNumbers = [];
@@ -38,12 +38,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
       endPage = Math.min(totalPages, maxVisiblePages);
     }
 
-    // Ajustar se estiver perto do fim
     if (currentPage + delta > totalPages) {
       startPage = Math.max(1, totalPages - maxVisiblePages + 1);
     }
 
-    // Adicionar primeira página e ellipsis se necessário
     if (startPage > 1) {
       pageNumbers.push(1);
       if (startPage > 2) {
@@ -51,12 +49,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
       }
     }
 
-    // Adicionar páginas visíveis
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
 
-    // Adicionar última página e ellipsis se necessário
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageNumbers.push("...");
@@ -65,7 +61,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
     }
 
     return pageNumbers;
-  };
+  }, [currentPage, totalPages, isMobile]);
 
   const pageNumbers = getPageNumbers();
 
@@ -73,63 +69,59 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
 
   return (
     <div className={clsx("flex items-center justify-center mt-8 gap-1", className)}>
-      {/* Botão anterior */}
-      <button
+      <Button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className={clsx(
-          "p-2 rounded-full border flex items-center",
-          "disabled:opacity-30 disabled:cursor-not-allowed",
-          "hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
-        )}
+        variant="secondary"
+        className={clsx("rounded-full ", isMobile && "h-10 w-10")}
         aria-label="Página anterior"
+        icon={<ChevronLeft size={18} />}
       >
-        <ChevronLeft size={18} />
         {!isMobile && <span className="ml-1">Anterior</span>}
-      </button>
+      </Button>
 
-      {/* Números de página */}
       <div className="flex items-center gap-1 mx-2">
         {pageNumbers.map((page, index) => {
           if (page === "...") {
             return (
-              <span key={`ellipsis-${index}`} className="px-2 py-1 flex items-center">
+              <span
+                key={`ellipsis-${index}`}
+                className="px-2 py-1 flex items-center text-gray-500"
+                aria-label="Mais páginas"
+              >
                 <MoreHorizontal size={16} />
               </span>
             );
           }
 
           return (
-            <button
+            <Button
               key={page}
-              onClick={() => onPageChange(Number(page))}
-              className={clsx(
-                "min-w-[2.5rem] h-10 rounded-full flex items-center justify-center",
-                "hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
-                page === currentPage ? "bg-primary-500 text-white border-primary-500" : "border",
-              )}
+              variant={page === currentPage ? "primary" : "secondary"}
+              onClick={() => {
+                if (page !== currentPage) {
+                  onPageChange(Number(page));
+                }
+              }}
+              className={clsx("rounded-full h-10 w-10", page === currentPage && "!cursor-default")}
               aria-current={page === currentPage ? "page" : undefined}
             >
               {page}
-            </button>
+            </Button>
           );
         })}
       </div>
 
-      {/* Próximo botão */}
-      <button
+      <Button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className={clsx(
-          "p-2 rounded-full border flex items-center",
-          "disabled:opacity-30 disabled:cursor-not-allowed",
-          "hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
-        )}
+        variant="secondary"
+        className={clsx("rounded-full", isMobile && "h-10 w-10")}
         aria-label="Próxima página"
+        icon={<ChevronRight size={18} />}
       >
         {!isMobile && <span className="mr-1">Próxima</span>}
-        <ChevronRight size={18} />
-      </button>
+      </Button>
     </div>
   );
 };

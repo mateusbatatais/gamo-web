@@ -79,26 +79,28 @@ const ConsoleCard = ({
           orientation === "vertical" ? "w-full aspect-video" : "w-1/3 min-w-[160px]",
         )}
       >
-        {imageError ? (
-          <div className="p-4 text-gray-400">
-            {consoleName.includes("Console") ? (
-              <Monitor size={40} className="mx-auto" />
-            ) : (
-              <Gamepad size={40} className="mx-auto" />
-            )}
-            <span className="sr-only">Imagem não disponível</span>
-          </div>
-        ) : (
-          <Image
-            src={normalizeImageUrl(imageUrl)}
-            alt={`${name} console`}
-            fill
-            className="object-cover"
-            sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
-            onError={() => setImageError(true)}
-            priority={true}
-          />
-        )}
+        <Link href={`/console/${slug}`} className="block">
+          {imageError ? (
+            <div className="p-4 text-gray-400">
+              {consoleName.includes("Console") ? (
+                <Monitor size={40} className="mx-auto" />
+              ) : (
+                <Gamepad size={40} className="mx-auto" />
+              )}
+              <span className="sr-only">Imagem não disponível</span>
+            </div>
+          ) : (
+            <Image
+              src={normalizeImageUrl(imageUrl)}
+              alt={`${name} console`}
+              fill
+              className="object-cover"
+              sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
+              onError={() => setImageError(true)}
+              priority={true}
+            />
+          )}
+        </Link>
         {badge && <div className="absolute top-2 right-2 z-10">{badge}</div>}
       </div>
 
@@ -106,7 +108,11 @@ const ConsoleCard = ({
         className={clsx("p-4 bg-white dark:bg-gray-900", orientation === "horizontal" && "flex-1")}
       >
         <header className="mb-2">
-          <h2 className="font-semibold text-lg text-gray-800 dark:text-gray-100">{consoleName}</h2>
+          <Link href={`/console/${slug}`} className="block">
+            <h2 className="font-semibold text-lg text-gray-800 dark:text-gray-100">
+              {consoleName}
+            </h2>
+          </Link>
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-sm text-gray-600 dark:text-gray-300">{name}</h3>
