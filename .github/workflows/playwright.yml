@@ -38,7 +38,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run Playwright tests
-        run: pnpm exec playwright test --verbose
+        run: pnpm exec playwright test --debug
 
       - name: Upload test artifacts
         if: always()

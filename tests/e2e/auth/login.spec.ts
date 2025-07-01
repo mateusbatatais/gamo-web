@@ -67,6 +67,11 @@ test("Login com Firebase", async ({ page }) => {
 
   await page.goto("/login", { waitUntil: "networkidle" });
 
+  if (process.env.CI) {
+    await page.waitForTimeout(2000);
+    await page.screenshot({ path: "before-fill.png" });
+  }
+
   // Preencher formulário
   await expect(page.locator('input[name="email"]')).toBeVisible();
   await page.fill('input[name="email"]', adminEmail);
@@ -97,4 +102,9 @@ test("Login com Firebase", async ({ page }) => {
   console.log("URL atual:", url);
 
   expect(url).toMatch(/\/account/);
+
+  if (!storageState) {
+    await page.context().storageState({ path: "storage-state.json" });
+    await page.screenshot({ path: "login-failed.png" });
+  }
 });
