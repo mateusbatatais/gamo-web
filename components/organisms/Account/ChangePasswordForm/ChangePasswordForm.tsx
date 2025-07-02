@@ -78,8 +78,6 @@ export default function ChangePasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="max-w-lg w-full space-y-4 p-4 border rounded-lg">
-      <h2 className="text-xl font-semibold">{t("title")}</h2>
-
       <div>
         <Input
           label={t("currentPassword")}

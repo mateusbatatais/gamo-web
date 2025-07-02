@@ -126,93 +126,99 @@ export default function AccountDetailsForm() {
     <>
       {fileSrc && !previewUrl && (
         <div className="space-y-4">
-          <ImageCropper src={fileSrc} aspect={1} onBlobReady={setCroppedBlob} />
-          <Button variant="secondary" onClick={() => setFileSrc(null)} label={t("cancelCrop")} />
+          <ImageCropper
+            src={fileSrc}
+            aspect={1}
+            onBlobReady={setCroppedBlob}
+            setFileSrc={setFileSrc}
+          />
         </div>
       )}
 
       {!fileSrc && (
-        <form onSubmit={handleSubmit} className="max-w-lg space-y-6 p-4 border rounded-lg">
-          <h2 className="text-xl font-semibold">{t("title")}</h2>
-
-          <div className="flex flex-col items-center gap-2">
-            {previewUrl ? (
-              <Image
-                src={previewUrl}
-                alt="Avatar"
-                width={128}
-                height={128}
-                className="rounded-full object-cover"
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col md:flex-row gap-6 mt-4 ">
+            <div className="flex flex-col  items-center ">
+              {previewUrl ? (
+                <Image
+                  src={previewUrl}
+                  alt="Avatar"
+                  width={128}
+                  height={128}
+                  className="rounded-full object-cover"
+                />
+              ) : (
+                <ProfileImagePlaceholder />
+              )}
+              <Button
+                type="button"
+                label={t("selectPhoto")}
+                onClick={() => document.getElementById("profileInput")?.click()}
+                className="mt-2"
               />
-            ) : (
-              <ProfileImagePlaceholder />
-            )}
+              <input
+                id="profileInput"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setFileSrc(URL.createObjectURL(file));
+                    setPreviewUrl(null);
+                  }
+                }}
+              />
+            </div>
+            <div className="flex-1 space-y-6 p-4 border rounded-lg">
+              <Input
+                type="text"
+                label={t("name")}
+                placeholder={t("name")}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                error={errorMsg ?? undefined}
+              />
+
+              <Input
+                type="text"
+                label={t("slug")}
+                placeholder={t("slug")}
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                required
+                error={errorMsg ?? undefined}
+              />
+
+              <Input
+                type="email"
+                label={t("email")}
+                disabled
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                error={errorMsg ?? undefined}
+              />
+
+              <div>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full border p-2 rounded h-24"
+                  placeholder={t("descriptionPlaceholder")}
+                  label={t("description")}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="mt-6 flex justify-end">
             <Button
-              type="button"
-              label={t("selectPhoto")}
-              onClick={() => document.getElementById("profileInput")?.click()}
-              className="mt-2"
-            />
-            <input
-              id="profileInput"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setFileSrc(URL.createObjectURL(file));
-                  setPreviewUrl(null);
-                }
-              }}
+              type="submit"
+              disabled={loading}
+              label={loading ? t("saving") : t("saveChanges")}
             />
           </div>
-
-          <Input
-            type="text"
-            label={t("name")}
-            placeholder={t("name")}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-          />
-
-          <Input
-            type="text"
-            label={t("slug")}
-            placeholder={t("slug")}
-            value={slug}
-            onChange={(e) => setSlug(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-          />
-
-          <Input
-            type="email"
-            label={t("email")}
-            disabled
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-          />
-
-          <div>
-            <Textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full border p-2 rounded h-24"
-              placeholder={t("descriptionPlaceholder")}
-              label={t("description")}
-            />
-          </div>
-
-          <Button
-            type="submit"
-            disabled={loading}
-            label={loading ? t("saving") : t("saveChanges")}
-          />
         </form>
       )}
     </>
