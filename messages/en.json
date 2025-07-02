@@ -143,6 +143,34 @@
     "backToLogin": "Go to login"
   },
   "account": {
+    "layout": {
+      "title": "My Account"
+    },
+    "sidebar": {
+      "overview": "Overview",
+      "details": "Profile Details",
+      "security": "Security",
+      "sales": "My Sales",
+      "purchases": "My Purchases",
+      "privacy": "Privacy",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "overview": {
+      "title": "Account Overview",
+      "recentActivity": "Recent Activity",
+      "quickActions": "Quick Actions",
+      "statistics": "Statistics",
+      "editProfile": "Edit Profile",
+      "changePassword": "Change Password",
+      "viewSales": "View Sales",
+      "settings": "Settings",
+      "totalSales": "Total Sales",
+      "pendingOrders": "Pending Orders",
+      "completedTransactions": "Completed Transactions",
+      "accountRating": "Account Rating",
+      "viewAll": "View All"
+    },
     "page": {
       "title": "My Account",
       "backToDashboard": "Back to Dashboard",
@@ -164,8 +192,7 @@
       "updateError": "Failed to update details.",
       "updateSuccess": "Details updated successfully!",
       "profileImage": "Profile Image",
-      "selectPhoto": "Select Photo",
-      "cancelCrop": "Cancel Crop"
+      "selectPhoto": "Select Photo"
     },
     "changePasswordForm": {
       "title": "Change Password",
@@ -178,6 +205,10 @@
       "changeError": "Failed to change password.",
       "passwordChanged": "Password changed successfully!"
     }
+  },
+  "crop": {
+    "cancelCrop": "Cancel Crop",
+    "confirmCrop": "Confirm Crop"
   },
   "ConsoleDetails": {
     "brand": "Brand",

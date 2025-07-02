@@ -141,6 +141,34 @@
     "backToLogin": "Ir para Login"
   },
   "account": {
+    "layout": {
+      "title": "Minha Conta"
+    },
+    "sidebar": {
+      "overview": "Visão Geral",
+      "details": "Detalhes do Perfil",
+      "security": "Segurança",
+      "sales": "Minhas Vendas",
+      "purchases": "Minhas Compras",
+      "privacy": "Privacidade",
+      "settings": "Configurações",
+      "logout": "Sair"
+    },
+    "overview": {
+      "title": "Visão Geral da Conta",
+      "recentActivity": "Atividade Recente",
+      "quickActions": "Ações Rápidas",
+      "statistics": "Estatísticas",
+      "editProfile": "Editar Perfil",
+      "changePassword": "Mudar Senha",
+      "viewSales": "Ver Vendas",
+      "settings": "Configurações",
+      "totalSales": "Total de Vendas",
+      "pendingOrders": "Pedidos Pendentes",
+      "completedTransactions": "Transações Concluídas",
+      "accountRating": "Avaliação da Conta",
+      "viewAll": "Ver Tudo"
+    },
     "page": {
       "title": "Minha Conta",
       "backToDashboard": "Voltar ao Painel",
@@ -162,8 +190,7 @@
       "updateError": "Falha ao atualizar dados.",
       "updateSuccess": "Dados atualizados com sucesso!",
       "profileImage": "Imagem de perfil",
-      "selectPhoto": "Selecionar foto",
-      "cancelCrop": "Cancelar recorte"
+      "selectPhoto": "Selecionar foto"
     },
     "changePasswordForm": {
       "title": "Alterar Senha",
@@ -176,6 +203,11 @@
       "changeError": "Falha ao alterar senha.",
       "passwordChanged": "Senha alterada com sucesso!"
     }
+  },
+
+  "crop": {
+    "cancelCrop": "Cancelar Crop",
+    "confirmCrop": "Confirmar Crop"
   },
   "ConsoleDetails": {
     "brand": "Marca",
