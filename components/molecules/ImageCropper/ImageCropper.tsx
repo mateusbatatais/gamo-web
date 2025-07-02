@@ -1,6 +1,8 @@
 // components/ui/ImageCropper.tsx
 "use client";
 
+import { Button } from "@/components/atoms/Button/Button";
+import { useTranslations } from "next-intl";
 import React, { useState, useRef, useCallback } from "react";
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
@@ -9,12 +11,19 @@ interface ImageCropperProps {
   src: string;
   aspect?: number;
   onBlobReady: (blob: Blob) => void;
+  setFileSrc: (src: string | null) => void;
 }
 
-export default function ImageCropper({ src, aspect = 1, onBlobReady }: ImageCropperProps) {
+export default function ImageCropper({
+  src,
+  aspect = 1,
+  onBlobReady,
+  setFileSrc,
+}: ImageCropperProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [pixelCrop, setPixelCrop] = useState<PixelCrop>();
+  const t = useTranslations("");
 
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -79,12 +88,15 @@ export default function ImageCropper({ src, aspect = 1, onBlobReady }: ImageCrop
           className="max-w-full max-h-96"
         />
       </ReactCrop>
-      <button
-        onClick={onConfirm}
-        className="px-4 py-2 bg-primary-500 text-white rounded hover:bg-primary-600"
-      >
-        Confirmar crop
-      </button>
+      <div className="mt-6 gap-3 flex justify-end">
+        <Button
+          variant="transparent"
+          status="danger"
+          onClick={() => setFileSrc(null)}
+          label={t("crop.cancelCrop")}
+        />
+        <Button onClick={onConfirm} label={t("crop.confirmCrop")}></Button>
+      </div>
     </div>
   );
 }
