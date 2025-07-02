@@ -88,7 +88,9 @@ export default function VerifyEmailPage() {
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
               {t("successTitle")}
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">{message}</p>
+            <p className="text-gray-600 dark:text-gray-400" data-testid="verify-success-message">
+              {message}
+            </p>
             <p className="text-sm text-gray-500 dark:text-gray-400">{t("redirectingLogin")}</p>
           </div>
         )}

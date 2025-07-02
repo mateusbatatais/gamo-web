@@ -82,6 +82,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
       disabled={loading}
       className={`w-full flex items-center justify-center cursor-pointer ${classes} ${className}`}
       aria-label={text}
+      data-testid={`social-login-${provider}`}
     >
       {loading ? (
         <div className="flex items-center">

@@ -69,7 +69,7 @@ export default function SignupSuccessPage() {
       additionalContent={
         <div className="text-sm text-gray-500 dark:text-gray-400">
           {resendSuccess ? (
-            <p className="text-green-600 dark:text-green-400">
+            <p className="text-green-600 dark:text-green-400" data-testid="resend-success-message">
               {t("signup.success.resendSuccess")}
             </p>
           ) : (
