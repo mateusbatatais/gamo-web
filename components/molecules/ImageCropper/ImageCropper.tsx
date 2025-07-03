@@ -72,7 +72,7 @@ export default function ImageCropper({
   }, [onBlobReady, pixelCrop]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" data-testid="image-cropper">
       <ReactCrop
         crop={crop}
         onChange={(c) => setCrop(c)}
@@ -95,7 +95,11 @@ export default function ImageCropper({
           onClick={() => setFileSrc(null)}
           label={t("crop.cancelCrop")}
         />
-        <Button onClick={onConfirm} label={t("crop.confirmCrop")}></Button>
+        <Button
+          onClick={onConfirm}
+          label={t("crop.confirmCrop")}
+          data-testid="button-crop-confirm"
+        ></Button>
       </div>
     </div>
   );

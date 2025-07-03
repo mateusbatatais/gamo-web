@@ -1,28 +1,14 @@
 // components/templates/AccountLayout/AccountLayout.tsx
 import React, { ReactNode } from "react";
 import AccountSidebar from "@/components/organisms/Account/AccountSidebar/AccountSidebar";
-import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-
 interface AccountLayoutProps {
   children: ReactNode;
   title?: string;
 }
 
 export default function AccountLayout({ children, title }: AccountLayoutProps) {
-  const { user, initialized } = useAuth();
   const t = useTranslations("account.layout");
-  const router = useRouter();
-
-  if (!initialized) {
-    return <div>Loading...</div>;
-  }
-
-  if (initialized && !user) {
-    router.push("/login");
-    return null;
-  }
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -155,12 +155,14 @@ export default function AccountDetailsForm() {
                 label={t("selectPhoto")}
                 onClick={() => document.getElementById("profileInput")?.click()}
                 className="mt-2"
+                data-testid="button-select-photo"
               />
               <input
                 id="profileInput"
                 type="file"
                 accept="image/*"
                 className="hidden"
+                data-testid="input-profile-image"
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
@@ -173,6 +175,7 @@ export default function AccountDetailsForm() {
             <div className="flex-1 space-y-6 p-4 border rounded-lg">
               <Input
                 type="text"
+                data-testid="input-name"
                 label={t("name")}
                 placeholder={t("name")}
                 value={name}
@@ -183,6 +186,7 @@ export default function AccountDetailsForm() {
 
               <Input
                 type="text"
+                data-testid="input-slug"
                 label={t("slug")}
                 placeholder={t("slug")}
                 value={slug}
@@ -193,6 +197,7 @@ export default function AccountDetailsForm() {
 
               <Input
                 type="email"
+                data-testid="input-email"
                 label={t("email")}
                 disabled
                 value={email}
@@ -203,6 +208,7 @@ export default function AccountDetailsForm() {
 
               <div>
                 <Textarea
+                  data-testid="input-textarea-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full border p-2 rounded h-24"
@@ -217,6 +223,7 @@ export default function AccountDetailsForm() {
               type="submit"
               disabled={loading}
               label={loading ? t("saving") : t("saveChanges")}
+              data-testid="button-save"
             />
           </div>
         </form>
