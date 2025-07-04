@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { isValidUrl } from "@/utils/validate-url";
 import { AddToCollectionButton } from "../AddToCollectionButton/AddToCollectionButton";
+import { Card } from "@/components/atoms/Card/Card";
+import { Badge } from "@/components/atoms/Badge/Badge";
+import { Monitor } from "lucide-react";
 
 interface SkinCardProps {
   skin: {
@@ -29,7 +32,7 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
   const hasValidImage = isValidUrl(imageUrl);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 !p-0">
       <Link href={`/skin/${skin.slug}`}>
         <div className="h-48 relative">
           {hasValidImage ? (
@@ -41,8 +44,9 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div className="bg-gray-200 border-2 border-dashed w-full h-full flex items-center justify-center">
-              <span className="text-gray-500">{t("noImage")}</span>
+            <div className="bg-gray-200 rounded-top-xl border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center  dark:bg-gray-700">
+              <Monitor size={40} className="mx-auto" />
+              <span className="sr-only">{t("noImage")}</span>
             </div>
           )}
         </div>
@@ -56,29 +60,17 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
         </Link>
 
         {skin.editionName && (
-          <div className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2">
+          <Badge status="primary" className="mb-2">
             {skin.editionName}
-          </div>
+          </Badge>
         )}
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {skin.limitedEdition && (
-            <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
-              {t("limitedEdition")}
-            </span>
-          )}
+          {skin.limitedEdition && <Badge status="danger">{t("limitedEdition")}</Badge>}
 
-          {skin.material && (
-            <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-              {skin.material}
-            </span>
-          )}
+          {skin.material && <Badge variant="soft">{skin.material}</Badge>}
 
-          {skin.finish && (
-            <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-              {skin.finish}
-            </span>
-          )}
+          {skin.finish && <Badge variant="soft">{skin.finish}</Badge>}
         </div>
 
         <div className="mt-4">
@@ -90,6 +82,6 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
           />
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

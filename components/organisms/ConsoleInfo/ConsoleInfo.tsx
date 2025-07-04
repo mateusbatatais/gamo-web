@@ -4,6 +4,8 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { isValidUrl } from "@/utils/validate-url";
 import InfoItem from "@/components/atoms/InfoItem/InfoItem";
+import { Card } from "@/components/atoms/Card/Card";
+import { Monitor } from "lucide-react";
 
 interface ConsoleInfoProps {
   consoleVariant: {
@@ -28,7 +30,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
   const hasValidImage = isValidUrl(imageUrl);
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+    <Card className="mb-8">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="md:w-1/3">
           {hasValidImage ? (
@@ -42,8 +44,9 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-64 flex items-center justify-center">
-              <span className="text-gray-500">{t("noImage")}</span>
+            <div className="bg-gray-200 border-2 border-dashed rounded-xl border-gray-300 w-full h-full flex items-center justify-center dark:bg-gray-700">
+              <Monitor size={40} className="mx-auto" />
+              <span className="sr-only">{t("noImage")}</span>
             </div>
           )}
         </div>
@@ -84,6 +87,6 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
           )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

@@ -8,6 +8,8 @@ import SkinCard from "@/components/molecules/SkinCard/SkinCard";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
 import { useEffect } from "react";
+import { Button } from "@/components/atoms/Button/Button";
+import { Card } from "@/components/atoms/Card/Card";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -25,11 +27,21 @@ export default function ConsoleDetailPage() {
   }, [error, t, showToast]);
 
   if (loading) {
-    return <div className="flex justify-center py-12">Loading</div>;
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="text-center">Loading...</div>
+      </div>
+    );
   }
 
   if (!data) {
-    return <div className="container mx-auto px-4 py-8">Console não encontrado</div>;
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <div className="text-center py-12 text-gray-500">{t("notFound")}</div>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -37,12 +49,12 @@ export default function ConsoleDetailPage() {
       <ConsoleInfo consoleVariant={data} />
 
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6 pb-2 border-b">
+        <h2 className="text-2xl font-bold mb-6 pb-2 border-b dark:border-gray-700">
           {t("availableSkins")} ({data.skins.length})
         </h2>
 
         {data.skins.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {data.skins.map((skin) => (
               <SkinCard
                 key={skin.id}
@@ -53,17 +65,21 @@ export default function ConsoleDetailPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-12 text-gray-500">{t("noSkinsAvailable")}</div>
+          <Card>
+            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              {t("noSkinsAvailable")}
+            </div>
+          </Card>
         )}
       </section>
 
-      <section className="bg-gray-50 rounded-xl p-6">
+      <Card className="bg-gray-50 dark:bg-gray-800">
         <h2 className="text-2xl font-bold mb-4">{t("userCollections")}</h2>
-        <p className="text-gray-600 mb-6">{t("collectionsDescription")}</p>
-        <button className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-6 rounded-lg transition-colors">
+        <p className="text-gray-600 dark:text-gray-300 mb-6">{t("collectionsDescription")}</p>
+        <Button variant="primary" className="mt-2">
           {t("viewCollections")}
-        </button>
-      </section>
+        </Button>
+      </Card>
     </div>
   );
 }
