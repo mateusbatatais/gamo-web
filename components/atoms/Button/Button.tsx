@@ -70,6 +70,7 @@ export function Button({
   iconPosition = "left",
   className,
   children,
+  ...props
 }: ButtonProps) {
   const base =
     "inline-flex items-center justify-center font-medium rounded transition-colors cursor-pointer gap-2";
@@ -104,6 +105,7 @@ export function Button({
         },
         className,
       )}
+      {...props}
     >
       {loading ? (
         <ButtonSkeleton />
