@@ -167,7 +167,8 @@
       "pendingOrders": "Pedidos Pendentes",
       "completedTransactions": "Transações Concluídas",
       "accountRating": "Avaliação da Conta",
-      "viewAll": "Ver Tudo"
+      "viewAll": "Ver Tudo",
+      "publicProfile": "Perfil Público"
     },
     "page": {
       "title": "Minha Conta",

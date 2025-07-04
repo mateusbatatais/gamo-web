@@ -68,7 +68,7 @@ const ConsoleCard = ({
     <article
       className={clsx(
         "border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow",
-        orientation === "vertical" ? "max-w-sm" : "flex max-w-2xl",
+        orientation === "vertical" ? "max-w-sm" : "flex",
         className,
       )}
       aria-label={`${consoleName} - ${brand}`}

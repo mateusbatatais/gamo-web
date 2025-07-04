@@ -169,7 +169,8 @@
       "pendingOrders": "Pending Orders",
       "completedTransactions": "Completed Transactions",
       "accountRating": "Account Rating",
-      "viewAll": "View All"
+      "viewAll": "View All",
+      "PublicProfile": "Public Profile"
     },
     "page": {
       "title": "My Account",

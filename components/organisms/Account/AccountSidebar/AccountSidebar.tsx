@@ -41,7 +41,6 @@ export default function AccountSidebar() {
         )}
         <div>
           <p className="font-medium">{user?.name}</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
         </div>
       </div>
 

@@ -10,6 +10,7 @@ import { useTranslations } from "next-intl";
 import { Select } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 
 interface AddToCollectionFormProps {
   consoleVariantId: number;
@@ -38,6 +39,7 @@ export function AddToCollectionForm({
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,11 +59,14 @@ export function AddToCollectionForm({
         },
       });
       onSuccess();
+      showToast(t("sucess"), "success");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
+        showToast(err.message, "danger");
       } else {
         setError("Ocorreu um erro ao adicionar à coleção");
+        showToast("err.message", "danger");
       }
     } finally {
       setLoading(false);
@@ -167,7 +172,13 @@ export function AddToCollectionForm({
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button type="button" variant="secondary" onClick={onSuccess} label={t("cancel")}></Button>
+        <Button
+          type="button"
+          variant="transparent"
+          status="warning"
+          onClick={onSuccess}
+          label={t("cancel")}
+        ></Button>
         <Button type="submit" disabled={loading} label={loading ? t("adding") : t("add")}></Button>
       </div>
     </form>

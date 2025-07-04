@@ -32,7 +32,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
   return (
     <Card className="mb-8">
       <div className="flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/3">
+        <div className="md:w-1/3 h-48">
           {hasValidImage ? (
             <Image
               src={imageUrl!}

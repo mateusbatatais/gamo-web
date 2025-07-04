@@ -13,9 +13,11 @@ import {
   Info,
 } from "lucide-react";
 import { Card } from "@/components/atoms/Card/Card";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function AccountOverview() {
   const t = useTranslations("account.overview");
+  const { user } = useAuth();
 
   return (
     <div className="space-y-6">
@@ -82,9 +84,9 @@ export default function AccountOverview() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <ActionCard
-              title={t("editProfile")}
+              title={t("publicProfile")}
               icon={<User className="w-6 h-6" />}
-              href="/account/details"
+              href={`user/${user?.slug}`}
               color="primary"
             />
             <ActionCard
