@@ -2,7 +2,6 @@
 import { ProfileReviews } from "@/components/organisms/PublicProfile/ProfileReviews/ProfileReviews";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import { Card } from "@/components/atoms/Card/Card";
 
 // Gerar parâmetros estáticos
 export async function generateStaticParams() {
@@ -24,15 +23,15 @@ export default async function ReviewsPage() {
   ];
 
   return (
-    <Card className="overflow-hidden">
-      <div className="p-4 border-b dark:border-gray-700">
+    <>
+      <div className="p-4 border-b dark:border-gray-700 mb-4">
         <h2 className="text-xl font-bold dark:text-white">Reviews Recentes</h2>
       </div>
-      <div className="p-4">
+      <div>
         <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
           <ProfileReviews reviews={reviews} />
         </Suspense>
       </div>
-    </Card>
+    </>
   );
 }
