@@ -1,6 +1,5 @@
 // components/organisms/PublicProfile/ProfileReviews/ProfileReviews.tsx
 import React from "react";
-import { Card } from "@/components/atoms/Card/Card";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 
@@ -21,7 +20,7 @@ export const ProfileReviews = ({ reviews }: ProfileReviewsProps) => {
   const t = useTranslations("PublicProfile");
 
   return (
-    <Card className="p-4">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold dark:text-white">{t("recentlyReviewed")}</h3>
         <Button variant="transparent" size="sm">
@@ -67,6 +66,6 @@ export const ProfileReviews = ({ reviews }: ProfileReviewsProps) => {
           </div>
         ))}
       </div>
-    </Card>
+    </div>
   );
 };
