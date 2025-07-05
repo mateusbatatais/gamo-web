@@ -2,6 +2,7 @@
 import React from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
+import { Card } from "@/components/atoms/Card/Card";
 
 interface RecentlyPlayedItem {
   title: string;
@@ -18,7 +19,7 @@ export const ProfileRecentlyPlayed = ({ items }: ProfileRecentlyPlayedProps) => 
   const t = useTranslations("PublicProfile");
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+    <Card>
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold dark:text-white">{t("recentlyPlayed")}</h3>
         <Button variant="transparent" size="sm">
@@ -50,6 +51,6 @@ export const ProfileRecentlyPlayed = ({ items }: ProfileRecentlyPlayedProps) => 
           </div>
         ))}
       </div>
-    </div>
+    </Card>
   );
 };

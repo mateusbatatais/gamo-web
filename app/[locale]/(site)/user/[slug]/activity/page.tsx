@@ -1,37 +1,35 @@
-// app/[locale]/user/[slug]/page.tsx
-import { getUserConsolesPublic } from "@/lib/api/publicProfile";
-import { PublicProfileConsoleGrid } from "@/components/organisms/PublicProfile/PublicProfileConsoleGrid/PublicProfileConsoleGrid";
+// app/[locale]/user/[slug]/activity/page.tsx
+import { ProfileRecentlyPlayed } from "@/components/organisms/PublicProfile/ProfileRecentlyPlayed/ProfileRecentlyPlayed";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import { Card } from "@/components/atoms/Card/Card";
 
-interface CollectionPageProps {
-  params: {
+interface ActivityPageProps {
+  params: Promise<{
     slug: string;
     locale: string;
-  };
+  }>;
 }
 
-// Gerar parâmetros estáticos
-export async function generateStaticParams() {
-  // Em produção, você buscaria slugs reais da API
-  return [{ slug: "example", locale: "pt" }];
-}
-
-export default async function CollectionPage({ params }: CollectionPageProps) {
-  const { slug, locale } = params;
-  const consoles = await getUserConsolesPublic(slug, locale);
+export default async function ActivityPage({}: ActivityPageProps) {
+  // Dados mockados - substituir por chamada à API
+  const recentlyPlayed = [
+    { title: "The Last of Us Part II", platform: "PS5", date: "Jun 04", hours: 12 },
+    { title: "Cyberpunk 2077", platform: "PC", date: "Jun 03", hours: 28 },
+    { title: "Elden Ring", platform: "Xbox Series X", date: "Jun 03", hours: 45 },
+    { title: "Hollow Knight", platform: "Switch", date: "Jun 01", hours: 15 },
+    { title: "God of War Ragnarök", platform: "PS5", date: "May 26", hours: 22 },
+  ];
 
   return (
-    <Card className="overflow-hidden">
-      <div className="p-4 border-b dark:border-gray-700">
-        <h2 className="text-xl font-bold dark:text-white">Coleção de Consoles</h2>
+    <>
+      <div className="p-4 border-b dark:border-gray-700 mb-4">
+        <h2 className="text-xl font-bold dark:text-white">Atividade Recente</h2>
       </div>
-      <div className="p-4">
+      <div>
         <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-          <PublicProfileConsoleGrid consoles={consoles} />
+          <ProfileRecentlyPlayed items={recentlyPlayed} />
         </Suspense>
       </div>
-    </Card>
+    </>
   );
 }
