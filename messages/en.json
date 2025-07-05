@@ -261,6 +261,21 @@
     "acceptsTrade": "Accepts trades",
     "defaultDescription": "Collector profile on GAMO platform",
     "profileNotFound": "Profile not found",
-    "profileNotFoundDescription": "The requested profile was not found"
+    "profileNotFoundDescription": "The requested profile was not found",
+    "statistics": "Statistics",
+    "totalGames": "Total Games Played",
+    "playedThisYear": "Played in 2025",
+    "backlog": "Games Backloggd",
+    "achievements": "Achievements",
+    "recentlyPlayed": "Recently Played",
+    "recentlyReviewed": "Recently Reviewed",
+    "seeMore": "See More",
+    "readFullReview": "Read Full Review",
+    "games": "Games",
+    "activity": "Activity",
+    "reviews": "Reviews",
+    "lists": "Lists",
+    "friends": "Friends",
+    "likes": "Likes"
   }
 }

@@ -1,8 +1,9 @@
-// components/organisms/PublicProfile/PublicProfileConsoleGrid.tsx
+// components/organisms/PublicProfile/PublicProfileConsoleGrid/PublicProfileConsoleGrid.tsx
 import React from "react";
 import { useTranslations } from "next-intl";
 import { UserConsolePublic } from "@/@types/publicProfile";
 import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
+import { Card } from "@/components/atoms/Card/Card";
 
 interface PublicProfileConsoleGridProps {
   consoles: UserConsolePublic[];
@@ -13,17 +14,18 @@ export const PublicProfileConsoleGrid = ({ consoles }: PublicProfileConsoleGridP
 
   if (consoles.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">{t("noConsoles")}</p>
-      </div>
+      <Card>
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">{t("noConsoles")}</p>
+        </div>
+      </Card>
     );
   }
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-6">{t("collection")}</h2>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("collection")}</h2>
+      <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
         {consoles.map((consoleItem) => (
           <PublicProfileConsoleCard key={consoleItem.id} consoleItem={consoleItem} />
         ))}

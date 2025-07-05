@@ -260,6 +260,21 @@
     "acceptsTrade": "Aceita trocas",
     "defaultDescription": "Perfil de colecionador na plataforma GAMO",
     "profileNotFound": "Perfil não encontrado",
-    "profileNotFoundDescription": "O perfil solicitado não foi encontrado"
+    "profileNotFoundDescription": "O perfil solicitado não foi encontrado",
+    "statistics": "Estatísticas",
+    "totalGames": "Total de Jogos Jogados",
+    "playedThisYear": "Jogados em 2025",
+    "backlog": "Backlog de Jogos",
+    "achievements": "Conquistas",
+    "recentlyPlayed": "Jogos Recentemente Jogados",
+    "recentlyReviewed": "Jogos Recentemente Avaliados",
+    "seeMore": "Ver Mais",
+    "readFullReview": "Ler Avaliação Completa",
+    "games": "Jogos",
+    "activity": "Atividade",
+    "reviews": "Avaliações",
+    "lists": "Listas",
+    "friends": "Amigos",
+    "likes": "Curtidas"
   }
 }

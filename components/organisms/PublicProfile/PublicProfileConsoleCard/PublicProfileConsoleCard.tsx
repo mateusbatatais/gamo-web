@@ -1,16 +1,28 @@
-// components/organisms/PublicProfile/PublicProfileConsoleCard.tsx
+// components/organisms/PublicProfile/PublicProfileConsoleCard/PublicProfileConsoleCard.tsx
 import React from "react";
 import Image from "next/image";
-import { Badge } from "@/components/atoms/Badge/Badge";
+import { Badge, BadgeStatus } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
-import { UserConsolePublic } from "@/@types/publicProfile";
+import { ConsoleStatus, UserConsolePublic } from "@/@types/publicProfile";
+import { Card } from "@/components/atoms/Card/Card";
 
-export const PublicProfileConsoleCard = ({ consoleItem }: { consoleItem: UserConsolePublic }) => {
+export const PublicProfileConsoleCard = ({
+  consoleItem,
+}: {
+  consoleItem: UserConsolePublic & { status: ConsoleStatus["Status"] };
+}) => {
   const t = useTranslations("PublicProfile");
 
+  const statusVariantMap: Record<ConsoleStatus["Status"], BadgeStatus> = {
+    PUBLISHED: "info",
+    SELLING: "success",
+    SOLD: "warning",
+    ARCHIVED: "danger",
+  };
+
   return (
-    <div className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="relative h-48 bg-gray-100">
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
+      <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
         {consoleItem.photoUrl ? (
           <Image
             src={consoleItem.photoUrl}
@@ -28,23 +40,25 @@ export const PublicProfileConsoleCard = ({ consoleItem }: { consoleItem: UserCon
       <div className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">{consoleItem.consoleName}</h3>
-            <p className="text-gray-600">{consoleItem.variantName}</p>
+            <h3 className="font-semibold text-lg dark:text-white">{consoleItem.consoleName}</h3>
+            <p className="text-gray-600 dark:text-gray-300">{consoleItem.variantName}</p>
           </div>
-
-          <Badge variant={consoleItem.status === "SELLING" ? "solid" : "soft"}>
-            {t(`status.${consoleItem.status.toLowerCase()}`)}
-          </Badge>
+          <div className="absolute top-4 right-4">
+            <Badge status={statusVariantMap[consoleItem.status as ConsoleStatus["Status"]]}>
+              {t(`status.${consoleItem.status.toLowerCase()}`)}
+            </Badge>
+          </div>
         </div>
 
         {consoleItem.skinName && (
-          <p className="mt-2 text-sm">
-            <span className="font-medium">{t("skin")}:</span> {consoleItem.skinName}
+          <p className="mt-2 text-sm dark:text-gray-400">
+            <span className="font-medium dark:text-gray-300">{t("skin")}:</span>{" "}
+            {consoleItem.skinName}
           </p>
         )}
 
         {consoleItem.price && (
-          <p className="mt-2 font-bold">
+          <p className="mt-2 font-bold dark:text-white">
             {new Intl.NumberFormat(undefined, {
               style: "currency",
               currency: "BRL",
@@ -54,24 +68,24 @@ export const PublicProfileConsoleCard = ({ consoleItem }: { consoleItem: UserCon
 
         <div className="mt-3 flex gap-2 flex-wrap">
           {consoleItem.hasBox && (
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+            <Badge status="info" size="sm">
               {t("withBox")}
-            </span>
+            </Badge>
           )}
 
           {consoleItem.hasManual && (
-            <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+            <Badge status="success" size="sm">
               {t("withManual")}
-            </span>
+            </Badge>
           )}
 
           {consoleItem.acceptsTrade && (
-            <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">
+            <Badge status="warning" size="sm">
               {t("acceptsTrade")}
-            </span>
+            </Badge>
           )}
         </div>
       </div>
-    </div>
+    </Card>
   );
 };

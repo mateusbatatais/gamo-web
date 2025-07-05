@@ -15,7 +15,7 @@ export interface UserConsolePublic {
   skinName: string | null;
   customSkin: string | null;
   description: string | null;
-  status: string;
+  status: Status;
   price: number | null;
   hasBox: boolean | null;
   hasManual: boolean | null;
@@ -23,4 +23,8 @@ export interface UserConsolePublic {
   acceptsTrade: boolean | null;
   photoUrl: string | null;
   createdAt: Date;
+}
+
+export interface ConsoleStatus {
+  Status: "PUBLISHED" | "SELLING" | "SOLD" | "ARCHIVED";
 }
