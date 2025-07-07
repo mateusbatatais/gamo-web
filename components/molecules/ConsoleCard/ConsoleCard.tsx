@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { ReactNode, useState } from "react";
 import { Monitor, Gamepad } from "lucide-react";
 import { ConsoleCardSkeleton } from "./ConsoleCard.skeleton";
+import { normalizeImageUrl } from "@/utils/validate-url";
 
 export interface ConsoleCardProps {
   name: string;
@@ -42,23 +43,6 @@ const ConsoleCard = ({
   children,
 }: ConsoleCardProps) => {
   const [imageError, setImageError] = useState(false);
-
-  // Normaliza a URL da imagem
-  const normalizeImageUrl = (url: string) => {
-    if (!url) return "/default-console.webp";
-
-    // Remove barras duplas no início
-    if (url.startsWith("//")) {
-      return url.slice(1);
-    }
-
-    // Garante que comece com uma barra
-    if (!url.startsWith("/")) {
-      return `/${url}`;
-    }
-
-    return url;
-  };
 
   if (loading) {
     return <ConsoleCardSkeleton />;

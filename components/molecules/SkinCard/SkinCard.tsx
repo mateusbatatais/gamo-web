@@ -1,11 +1,11 @@
 // components/molecules/SkinCard/SkinCard.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { isValidUrl } from "@/utils/validate-url";
+import { normalizeImageUrl } from "@/utils/validate-url";
 import { AddToCollectionButton } from "../AddToCollectionButton/AddToCollectionButton";
 import { Card } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
@@ -29,28 +29,28 @@ interface SkinCardProps {
 export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCardProps) {
   const t = useTranslations("ConsoleDetails");
   const imageUrl = skin.imageUrl;
-  const hasValidImage = isValidUrl(imageUrl);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 !p-0">
-      <Link href={`/skin/${skin.slug}`}>
-        <div className="h-48 relative">
-          {hasValidImage ? (
-            <Image
-              src={imageUrl!}
-              alt={skin.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="bg-gray-200 rounded-top-xl border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center  dark:bg-gray-700">
-              <Monitor size={40} className="mx-auto" />
-              <span className="sr-only">{t("noImage")}</span>
-            </div>
-          )}
-        </div>
-      </Link>
+      <div className="h-48 relative">
+        {imageError ? (
+          <div className="bg-gray-200 rounded-top-xl border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center  dark:bg-gray-700">
+            <Monitor size={40} className="mx-auto" />
+            <span className="sr-only">{t("noImage")}</span>
+          </div>
+        ) : (
+          <Image
+            src={normalizeImageUrl(imageUrl!)}
+            alt={skin.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onError={() => setImageError(true)}
+            priority={true}
+          />
+        )}
+      </div>
 
       <div className="p-4">
         <Link href={`/skin/${skin.slug}`}>

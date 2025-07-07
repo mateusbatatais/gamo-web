@@ -1,11 +1,11 @@
 // components/organisms/ConsoleInfo/ConsoleInfo.tsx
-import React from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { isValidUrl } from "@/utils/validate-url";
+import { normalizeImageUrl } from "@/utils/validate-url";
 import InfoItem from "@/components/atoms/InfoItem/InfoItem";
 import { Card } from "@/components/atoms/Card/Card";
-import { Monitor } from "lucide-react";
+import { Gamepad } from "lucide-react";
 
 interface ConsoleInfoProps {
   consoleVariant: {
@@ -24,30 +24,29 @@ interface ConsoleInfoProps {
 
 export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
   const t = useTranslations("ConsoleDetails");
-
   // Valida a URL da imagem
   const imageUrl = consoleVariant.imageUrl;
-  const hasValidImage = isValidUrl(imageUrl);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <Card className="mb-8">
       <div className="flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/3 h-48">
-          {hasValidImage ? (
-            <Image
-              src={imageUrl!}
-              alt={`${consoleVariant.consoleName} ${consoleVariant.name}`}
-              width={400}
-              height={300}
-              className="rounded-lg object-contain"
-              priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="bg-gray-200 border-2 border-dashed rounded-xl border-gray-300 w-full h-full flex items-center justify-center dark:bg-gray-700">
-              <Monitor size={40} className="mx-auto" />
+        <div className="md:w-1/3 w-full aspect-[4/3] relative">
+          {imageError ? (
+            <div className="absolute inset-0 bg-gray-200 border-2 border-dashed rounded-xl text-gray-400 flex items-center justify-center dark:bg-gray-700">
+              <Gamepad size={40} className="mx-auto" />
               <span className="sr-only">{t("noImage")}</span>
             </div>
+          ) : (
+            <Image
+              src={normalizeImageUrl(imageUrl!)}
+              alt={`${consoleVariant.consoleName} ${consoleVariant.name}`}
+              fill
+              className="rounded-lg object-contain"
+              priority
+              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw, 33vw"
+              onError={() => setImageError(true)}
+            />
           )}
         </div>
 
