@@ -80,6 +80,7 @@ export default function ChangePasswordForm() {
     <form onSubmit={handleSubmit} className="max-w-lg w-full space-y-4 p-4 border rounded-lg">
       <div>
         <Input
+          data-testid="input-current-password"
           label={t("currentPassword")}
           type="password"
           value={currentPassword}
@@ -92,6 +93,7 @@ export default function ChangePasswordForm() {
 
       <div>
         <Input
+          data-testid="input-new-password"
           label={t("newPassword")}
           type="password"
           value={newPassword}
@@ -104,6 +106,7 @@ export default function ChangePasswordForm() {
 
       <div>
         <Input
+          data-testid="input-confirm-password"
           label={t("confirmNewPassword")}
           type="password"
           value={confirmNewPassword}
@@ -119,6 +122,7 @@ export default function ChangePasswordForm() {
         disabled={loading}
         className="mt-2"
         label={loading ? t("changing") : t("changePassword")}
+        data-testid="button-change-password"
       />
     </form>
   );

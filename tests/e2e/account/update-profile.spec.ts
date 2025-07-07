@@ -5,8 +5,19 @@ test.describe("Atualização de Perfil", () => {
   test.use({ storageState: "tests/e2e/storageState.json" });
 
   test("Atualiza campos do perfil (nome, slug e descrição)", async ({ page }) => {
-    await page.goto("/en/account/details");
-    await page.waitForTimeout(6000);
+    await page.goto(`/${DEFAULT_LOCALE}/account/details`);
+
+    await expect(page.locator('[data-testid="input-name"]')).not.toHaveValue("");
+
+    const [fileChooser] = await Promise.all([
+      page.waitForEvent("filechooser"),
+      page.click('[data-testid="button-select-photo"]'),
+    ]);
+
+    await fileChooser.setFiles("tests/e2e/assets/avatar.jpg");
+
+    await page.waitForSelector("[data-testid='image-cropper']");
+    await page.click("[data-testid='button-crop-confirm']");
 
     const novoNome = "Nome Teste";
     const novoSlug = "slug-teste";
@@ -21,7 +32,7 @@ test.describe("Atualização de Perfil", () => {
     await expect(page.getByRole("alert").getByText(/Details updated successfully!/i)).toBeVisible();
 
     // Força nova navegação para simular persistência real
-    await page.goto("/en/account/details");
+    await page.goto(`/${DEFAULT_LOCALE}/account/details`);
 
     await expect(page.locator('[data-testid="input-name"]')).toHaveValue(novoNome);
     await expect(page.locator('[data-testid="input-slug"]')).toHaveValue(novoSlug);
@@ -29,30 +40,6 @@ test.describe("Atualização de Perfil", () => {
       novaDescricao,
     );
   });
-
-  // test("Realiza upload e crop de nova imagem de perfil", async ({ page }) => {
-  //   await page.goto("/en/account/details");
-
-  //   const [fileChooser] = await Promise.all([
-  //     page.waitForEvent("filechooser"),
-  //     page.click('[data-testid="button-select-photo"]'),
-  //   ]);
-
-  //   await fileChooser.setFiles({
-  //     name: "avatar.jpg",
-  //     mimeType: "image/jpeg",
-  //     buffer: Buffer.from(
-  //       "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
-  //       "base64",
-  //     ),
-  //   });
-
-  //   await page.waitForSelector("[data-testid='image-cropper']");
-  //   await page.click("[data-testid='button-crop-confirm']");
-  //   await page.click("[data-testid='button-save']");
-
-  //   await expect(page.getByRole("alert").getByText(/perfil atualizado com sucesso/i)).toBeVisible();
-  // });
 });
 
 test.describe("Acesso não autenticado", () => {
