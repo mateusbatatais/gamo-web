@@ -63,7 +63,7 @@ const ConsoleCard = ({
           orientation === "vertical" ? "w-full aspect-video" : "w-1/3 min-w-[160px]",
         )}
       >
-        <Link href={`/console/${slug}`} className="block">
+        <Link href={`/console/${slug}`} className="block relative w-full h-full">
           {imageError ? (
             <div className="p-4 text-gray-400">
               {consoleName.includes("Console") ? (
