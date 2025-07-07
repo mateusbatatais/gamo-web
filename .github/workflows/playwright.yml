@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     # Adicionar todas as variáveis de ambiente necessárias
     env:
-      TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
@@ -24,31 +23,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      - name: Upload login debug artifacts
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: login-debug
-          path: |
-            login-page.png
-            login-after-submit.png
-            login-debug.html
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
         run: pnpm exec playwright test
-
-      - name: Upload debug artifacts (screenshot + HTML)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: login-debug
-          path: |
-            login-error.png
-            login-error.html
-          retention-days: 5
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:

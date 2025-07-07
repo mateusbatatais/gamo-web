@@ -5,23 +5,12 @@ async function globalSetup() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
-  console.log("🌐 Acessando app para injetar token");
-  await page.goto("http://localhost:3000/en"); // qualquer rota pública
+  await page.goto("http://localhost:3000/en/login");
+  await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
+  await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
+  await page.click('button[type="submit"]');
+  await page.waitForURL("**/en/account", { timeout: 60000 });
 
-  const token = process.env.TEST_TOKEN;
-  if (!token) {
-    throw new Error("❌ TEST_TOKEN não definido no ambiente");
-  }
-
-  console.log("🔐 Inserindo token manualmente no localStorage...");
-  await page.addInitScript((tokenVal) => {
-    localStorage.setItem("gamo_token", tokenVal);
-  }, token);
-
-  // Recarrega a página para garantir que a aplicação leia o token
-  await page.reload();
-
-  console.log("💾 Salvando storageState com token");
   await page.context().storageState({ path: "tests/e2e/storageState.json" });
 
   await browser.close();
