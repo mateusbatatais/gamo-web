@@ -11,23 +11,23 @@ async function globalSetup() {
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
   await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
 
-  await Promise.all([
-    page.waitForNavigation({ waitUntil: "networkidle" }),
-    page.click('button[type="submit"]'),
-  ]);
+  await page.click('button[type="submit"]');
+  console.log("🚀 Submeteu o formulário de login");
 
-  // Aceita qualquer /account com ou sem locale
-  const url = page.url();
-  console.log("🧭 URL após login:", url);
+  // Espera até 10s para o token aparecer no localStorage
+  const token = await page.waitForFunction(() => {
+    return localStorage.getItem("gamo_token");
+  }, { timeout: 10000 });
 
-  const token = await page.evaluate(() => localStorage.getItem("gamo_token"));
-  console.log("🔐 Token no localStorage:", token);
+  const resolvedToken = await token.jsonValue();
+  console.log("🔐 Token no localStorage:", resolvedToken);
 
-  if (!token) {
+  if (!resolvedToken) {
     throw new Error("❌ Token não encontrado após login — login pode ter falhado");
   }
 
   await page.context().storageState({ path: "tests/e2e/storageState.json" });
+  console.log("✅ Estado de autenticação salvo");
 
   await browser.close();
 }
