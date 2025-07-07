@@ -105,10 +105,11 @@ const ConsoleCard = ({
             {children}
           </div>
         </header>
-
-        <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 mb-4 line-clamp-2">
-          {description}
-        </p>
+        {description !== "" && (
+          <p className="text-sm text-gray-700 dark:text-gray-300 mt-2 mb-4 line-clamp-2">
+            {description}
+          </p>
+        )}
 
         <Link href={`/console/${slug}`} className="block">
           <Button

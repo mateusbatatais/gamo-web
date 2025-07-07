@@ -10,6 +10,8 @@ import { useToast } from "@/contexts/ToastContext";
 import { useEffect } from "react";
 import { Button } from "@/components/atoms/Button/Button";
 import { Card } from "@/components/atoms/Card/Card";
+import { ConsoleInfoSkeleton } from "@/components/organisms/ConsoleInfo/ConsoleInfo.skeleton";
+import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -26,15 +28,7 @@ export default function ConsoleDetailPage() {
     }
   }, [error, t, showToast]);
 
-  if (loading) {
-    return (
-      <div className="container mx-auto px-4 py-12">
-        <div className="text-center">Loading...</div>
-      </div>
-    );
-  }
-
-  if (!data) {
+  if (!loading && !data) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
@@ -46,40 +40,50 @@ export default function ConsoleDetailPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <ConsoleInfo consoleVariant={data} />
+      {loading ? <ConsoleInfoSkeleton /> : data ? <ConsoleInfo consoleVariant={data} /> : null}
 
       <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6 pb-2 border-b dark:border-gray-700">
-          {t("availableSkins")} ({data.skins.length})
+        <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
+          {t("availableSkins")} {!loading && data ? `(${data.skins.length})` : ""}
         </h2>
 
-        {data.skins.length > 0 ? (
+        {loading ? (
           <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {data.skins.map((skin) => (
-              <SkinCard
-                key={skin.id}
-                skin={skin}
-                consoleId={data.consoleId}
-                consoleVariantId={data.id}
-              />
+            {[...Array(4)].map((_, index) => (
+              <SkinCardSkeleton key={index} />
             ))}
           </div>
-        ) : (
-          <Card>
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-              {t("noSkinsAvailable")}
+        ) : data ? (
+          data.skins.length > 0 ? (
+            <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+              {data.skins.map((skin) => (
+                <SkinCard
+                  key={skin.id}
+                  skin={skin}
+                  consoleId={data.consoleId}
+                  consoleVariantId={data.id}
+                />
+              ))}
             </div>
-          </Card>
-        )}
+          ) : (
+            <Card>
+              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+                {t("noSkinsAvailable")}
+              </div>
+            </Card>
+          )
+        ) : null}
       </section>
 
-      <Card className="bg-gray-50 dark:bg-gray-800">
-        <h2 className="text-2xl font-bold mb-4">{t("userCollections")}</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">{t("collectionsDescription")}</p>
-        <Button variant="primary" className="mt-2">
-          {t("viewCollections")}
-        </Button>
-      </Card>
+      {!loading && (
+        <Card className="bg-gray-50 dark:bg-gray-800">
+          <h2 className="text-2xl font-bold mb-4">{t("userCollections")}</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">{t("collectionsDescription")}</p>
+          <Button variant="primary" className="mt-2">
+            {t("viewCollections")}
+          </Button>
+        </Card>
+      )}
     </div>
   );
 }

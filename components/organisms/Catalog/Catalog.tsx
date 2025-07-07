@@ -356,7 +356,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
                   consoleName={variant.consoleName}
                   brand={variant.brand.slug}
                   imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
-                  description={variant.consoleDescription || "Descrição não disponível"}
+                  description={variant.consoleDescription || ""}
                   slug={variant.slug}
                   orientation={view === "grid" ? "vertical" : "horizontal"}
                 />

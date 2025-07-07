@@ -33,7 +33,7 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 !p-0">
       <div className="h-48 relative">
         {imageError ? (
-          <div className="bg-gray-200 rounded-top-xl border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center  dark:bg-gray-700">
+          <div className="bg-gray-200 rounded-top-xl border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center dark:bg-gray-700 dark:border-gray-600">
             <Monitor size={40} className="mx-auto" />
             <span className="sr-only">{t("noImage")}</span>
           </div>
