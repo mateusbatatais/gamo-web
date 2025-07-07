@@ -9,7 +9,7 @@ async function globalSetup() {
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
   await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
   await page.click('button[type="submit"]');
-  await page.waitForURL("**/account");
+  await page.waitForURL("**/en/account");
 
   await page.context().storageState({ path: "tests/e2e/storageState.json" });
 
