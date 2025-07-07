@@ -250,6 +250,11 @@
     "reviews": "Reviews",
     "lists": "Lists",
     "friends": "Friends",
-    "likes": "Likes"
+    "likes": "Likes",
+    "status": {
+      "owned": "Owned",
+      "selling": "Selling",
+      "lookingFor": "Looking For"
+    }
   }
 }

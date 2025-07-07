@@ -250,6 +250,11 @@
     "reviews": "Avaliações",
     "lists": "Listas",
     "friends": "Amigos",
-    "likes": "Curtidas"
+    "likes": "Curtidas",
+    "status": {
+      "owned": "Tenho",
+      "selling": "Vendendo",
+      "lookingFor": "Procurando"
+    }
   }
 }
