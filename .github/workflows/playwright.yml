@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     # Adicionar todas as variáveis de ambiente necessárias
     env:
+      TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
       NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
