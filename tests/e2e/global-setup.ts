@@ -1,64 +1,49 @@
 import { chromium } from "@playwright/test";
-import http from "http";
-
-async function waitForServer(url: string, timeoutMs = 30000): Promise<void> {
-  const start = Date.now();
-  return new Promise((resolve, reject) => {
-    const check = () => {
-      http.get(url, (res) => {
-        if (res.statusCode && res.statusCode < 500) {
-          console.log(`🟢 Servidor respondeu com ${res.statusCode}`);
-          resolve();
-        } else {
-          retry();
-        }
-      }).on("error", retry);
-    };
-
-    const retry = () => {
-      if (Date.now() - start > timeoutMs) {
-        reject(new Error(`Timeout esperando ${url}`));
-      } else {
-        setTimeout(check, 1000);
-      }
-    };
-
-    check();
-  });
-}
+import fs from "fs";
+import path from "path";
 
 async function globalSetup() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
-  // 🔁 Aguarda o servidor estar no ar
-  await waitForServer("http://localhost:3000/en/login", 60000);
+  console.log("🔧 ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
+  console.log("🔧 ADMIN_PASSWORD:", process.env.ADMIN_PASSWORD ? "****" : "undefined");
 
-  // Acessa a página de login
   await page.goto("http://localhost:3000/en/login");
+  await page.screenshot({ path: "login-page.png" });
 
-  // Preenche e submete o formulário
+  // Espia a resposta do endpoint de login
+  page.on("response", async (res) => {
+    if (res.url().includes("/api/auth/login")) {
+      const body = await res.text();
+      console.log(`🛰️ Login response: ${res.status()} ${res.url()}`);
+      console.log("🛰️ Login response body:", body);
+    }
+  });
+
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
   await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
   await page.click('button[type="submit"]');
 
-  // Aguarda carregamento completo
-  await page.waitForLoadState("networkidle");
+  // Espera um pouco para captura de estado pós-login
+  await page.waitForTimeout(5000);
 
-  // Debug: mostra URL final e verifica token
-  const finalUrl = page.url();
-  console.log("🧭 URL após login:", finalUrl);
+  const currentUrl = page.url();
+  console.log("🧭 URL após login:", currentUrl);
+
+  const html = await page.content();
+  fs.writeFileSync(path.resolve("login-debug.html"), html, "utf-8");
 
   const token = await page.evaluate(() => localStorage.getItem("gamo_token"));
   console.log("🔐 Token no localStorage:", token);
+
+  await page.screenshot({ path: "login-after-submit.png" });
 
   if (!token) {
     throw new Error("❌ Token não encontrado após login — login pode ter falhado");
   }
 
-  // Salva estado de autenticação
   await page.context().storageState({ path: "tests/e2e/storageState.json" });
-
   await browser.close();
 }
 
