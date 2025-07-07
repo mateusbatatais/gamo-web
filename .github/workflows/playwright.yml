@@ -38,6 +38,16 @@ jobs:
         run: pnpm exec playwright install --with-deps
       - name: Run Playwright tests
         run: pnpm exec playwright test
+
+      - name: Upload debug artifacts (screenshot + HTML)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: login-debug
+          path: |
+            login-error.png
+            login-error.html
+          retention-days: 5
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
