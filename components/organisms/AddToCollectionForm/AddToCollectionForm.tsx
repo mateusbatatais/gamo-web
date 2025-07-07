@@ -59,7 +59,7 @@ export function AddToCollectionForm({
         },
       });
       onSuccess();
-      showToast(t("sucess"), "success");
+      showToast(t("success"), "success");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);

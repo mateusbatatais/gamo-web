@@ -119,7 +119,7 @@ export default function SignupPage() {
       if (response.code === "USER_CREATED_EMAIL_FAILED") {
         showToast(t("signup.emailSendError"), "warning");
       } else {
-        showToast(t("signup.success"), "success");
+        showToast(t("signup.success.title"), "success");
       }
 
       router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);

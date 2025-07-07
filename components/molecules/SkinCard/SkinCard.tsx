@@ -1,9 +1,7 @@
 // components/molecules/SkinCard/SkinCard.tsx
-"use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { normalizeImageUrl } from "@/utils/validate-url";
 import { AddToCollectionButton } from "../AddToCollectionButton/AddToCollectionButton";
@@ -53,11 +51,9 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
       </div>
 
       <div className="p-4">
-        <Link href={`/skin/${skin.slug}`}>
-          <h3 className="font-semibold text-lg mb-1 hover:text-primary transition-colors">
-            {skin.name}
-          </h3>
-        </Link>
+        <h3 className="font-semibold text-lg mb-1 hover:text-primary transition-colors">
+          {skin.name}
+        </h3>
 
         {skin.editionName && (
           <Badge status="primary" className="mb-2">

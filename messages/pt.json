@@ -6,19 +6,17 @@
     "role": "Perfil: {role}"
   },
   "common": {
-    "siteName": "Gamo",
-    "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles.",
     "logout": "Sair",
     "loading": "Carregando...",
-    "error": "Ocorreu um erro"
+    "error": "Ocorreu um erro",
+    "siteName": "Gamo",
+    "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles."
   },
   "filters": {
     "brand": {
-      "label": "Filtrar por Marca",
-      "all": "Todas as Marcas"
+      "label": "Filtrar por Marca"
     },
     "generation": {
-      "label": "Filtrar por Geração",
       "1": "1ª Geração",
       "2": "2ª Geração",
       "3": "3ª Geração",
@@ -27,21 +25,17 @@
       "6": "6ª Geração",
       "7": "7ª Geração",
       "8": "8ª Geração",
-      "9": "9ª Geração"
+      "9": "9ª Geração",
+      "label": "Filtrar por Geração"
     }
-  },
-  "HomePage": {
-    "title": "Olá",
-    "about": "Sobre"
   },
   "Header": {
     "altLogo": "Logo Gamo",
     "catalog": "Catálogo",
     "login": "Entrar",
-    "myAccount": "Minha Conta"
-  },
-  "Footer": {
-    "rights": "Todos os direitos reservados"
+    "myAccount": "Minha Conta",
+    "language": "Idioma",
+    "theme": "Tema"
   },
   "login": {
     "title": "Entrar",
@@ -53,16 +47,16 @@
     "forgot": "Esqueceu a senha?",
     "noAccount": "Ainda não tem conta? Cadastre-se",
     "errors": {
-      "required": "Campo obrigatório",
-      "invalid": "Credenciais inválidas",
       "invalidCredentials": "Credenciais inválidas",
-      "userAlreadyExists": "Usuário já existe",
       "emailNotVerified": "E-mail não verificado. Por favor, verifique sua caixa de entrada.",
-      "loginFailed": "Falha ao entrar",
-      "popupClosed": "Login cancelado pelo usuário",
-      "accountExists": "Esta conta já está cadastrada com outro método",
-      "invalidToken": "Token de acesso inválido"
+      "emailRequired": "E-mail necessário",
+      "emailInvalid": "Formato de e-mail inválido",
+      "passwordRequired": "Senha obrigatória",
+      "passwordMinLength": "Senha deve ter pelo menos 8 caracteres",
+      "userNotFound": "Usuário não encontrado"
     },
+    "errorGeneric": "Falha ao fazer login. Por favor, tente novamente.",
+    "success": "Login realizado com sucesso!",
     "or": "ou",
     "googleButton": "Entrar com Google",
     "microsoftButton": "Continuar com Microsoft",
@@ -76,16 +70,18 @@
     "emailLabel": "E-mail",
     "emailPlaceholder": "seu@exemplo.com",
     "passwordLabel": "Senha",
-    "confirmPasswordLabel": "Confirmar Senha",
     "button": "Criar Conta",
-    "emailSendError": "Conta criada, mas não foi possível enviar o e-mail de confirmação. Tente novamente mais tarde.",
     "haveAccount": "Já possui conta? Faça login",
     "errors": {
-      "required": "Campo obrigatório",
-      "emailInvalid": "E-mail inválido",
-      "passwordMismatch": "As senhas não conferem",
-      "userAlreadyExists": "Usuário já existe"
+      "nameRequired": "Nome é obrigatório",
+      "emailRequired": "E-mail é obrigatório",
+      "emailInvalid": "Formato de e-mail inválido",
+      "passwordRequired": "Senha é obrigatória",
+      "passwordMinLength": "Senha deve ter pelo menos 8 caracteres",
+      "emailExists": "E-mail já cadastrado"
     },
+    "errorGeneric": "Falha no cadastro. Por favor, tente novamente.",
+    "emailSendError": "Conta criada, mas não foi possível enviar o e-mail de confirmação. Tente novamente mais tarde.",
     "success": {
       "title": "Cadastro realizado com sucesso!",
       "message": "Enviamos um e-mail de confirmação para {email}. Verifique sua caixa de entrada (ou spam) para ativar sua conta.",
@@ -98,7 +94,6 @@
     }
   },
   "recover": {
-    "title": "Recuperar Senha",
     "emailLabel": "E-mail",
     "emailPlaceholder": "seu@exemplo.com",
     "button": "Enviar Link de Recuperação",
@@ -119,21 +114,20 @@
     "expiredTitle": "Link expirado",
     "redirectingLogin": "Redirecionando para a tela de login…",
     "expiredMessage": "Este link de verificação expirou. Por favor, solicite um novo e-mail.",
-    "goToLogin": "Ir para Login",
     "errorTitle": "Erro ao confirmar o e-mail",
     "errorGeneric": "Não foi possível verificar seu e-mail. Verifique o link ou tente novamente.",
     "noTokenProvided": "Token de verificação ausente.",
     "goToSignup": "Ir para Cadastro"
   },
   "resetPassword": {
-    "title": "Redefinir Senha",
     "newPasswordLabel": "Nova senha",
     "confirmPasswordLabel": "Confirmar Senha",
     "button": "Redefinir Senha",
     "errors": {
       "required": "Campo obrigatório",
       "passwordMismatch": "As senhas não conferem",
-      "invalidOrExpiredToken": "Token inválido ou expirado"
+      "invalidOrExpiredToken": "Token inválido ou expirado",
+      "passwordMinLength": "Senha deve ter pelo menos 8 caracteres"
     },
     "successTitle": "Senha redefinida!",
     "successMessage": "Sua senha foi atualizada com sucesso. Agora você pode fazer login.",
@@ -158,8 +152,6 @@
       "title": "Visão Geral da Conta",
       "recentActivity": "Atividade Recente",
       "quickActions": "Ações Rápidas",
-      "statistics": "Estatísticas",
-      "editProfile": "Editar Perfil",
       "changePassword": "Mudar Senha",
       "viewSales": "Ver Vendas",
       "settings": "Configurações",
@@ -169,14 +161,6 @@
       "accountRating": "Avaliação da Conta",
       "viewAll": "Ver Tudo",
       "publicProfile": "Perfil Público"
-    },
-    "page": {
-      "title": "Minha Conta",
-      "backToDashboard": "Voltar ao Painel",
-      "logout": "Sair"
-    },
-    "profileImage": {
-      "changePhoto": "Alterar foto"
     },
     "detailsForm": {
       "title": "Dados da Conta",
@@ -190,7 +174,6 @@
       "fetchError": "Falha ao obter dados do usuário.",
       "updateError": "Falha ao atualizar dados.",
       "updateSuccess": "Dados atualizados com sucesso!",
-      "profileImage": "Imagem de perfil",
       "selectPhoto": "Selecionar foto"
     },
     "changePasswordForm": {
@@ -205,7 +188,6 @@
       "passwordChanged": "Senha alterada com sucesso!"
     }
   },
-
   "crop": {
     "cancelCrop": "Cancelar Crop",
     "confirmCrop": "Confirmar Crop"
@@ -244,24 +226,17 @@
     "descriptionPlaceholder": "Detalhes sobre o item...",
     "cancel": "Cancelar",
     "adding": "Adicionando...",
-    "add": "Adicionar"
+    "add": "Adicionar",
+    "success": "Item adicionado à coleção com sucesso!"
   },
   "PublicProfile": {
     "collection": "Coleção de Consoles",
     "noConsoles": "Este usuário ainda não adicionou consoles à sua coleção",
-    "status": {
-      "owned": "Na coleção",
-      "selling": "À venda",
-      "looking_for": "Procurando"
-    },
     "skin": "Skin",
     "withBox": "Com caixa",
     "withManual": "Com manual",
     "acceptsTrade": "Aceita trocas",
-    "defaultDescription": "Perfil de colecionador na plataforma GAMO",
-    "profileNotFound": "Perfil não encontrado",
-    "profileNotFoundDescription": "O perfil solicitado não foi encontrado",
-    "statistics": "Estatísticas",
+    "defaultBio": "Jogador e colecionador de consoles",
     "totalGames": "Total de Jogos Jogados",
     "playedThisYear": "Jogados em 2025",
     "backlog": "Backlog de Jogos",
