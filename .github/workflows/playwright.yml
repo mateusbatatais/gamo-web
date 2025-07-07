@@ -27,10 +27,6 @@ jobs:
         run: npm install -g pnpm && pnpm install
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
-      - name: Start server
-        run: pnpm dev &
-      - name: Wait for server
-        run: npx wait-on http://localhost:3000/en/login
       - name: Run Playwright tests
         run: pnpm exec playwright test
       - uses: actions/upload-artifact@v4
