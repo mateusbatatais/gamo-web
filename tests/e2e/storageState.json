@@ -9,26 +9,6 @@
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
-    },
-    {
-      "name": "_lr_hb_-rix9j9%2Fgamo",
-      "value": "{%22heartbeat%22:1751888443223}",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1751974843,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_lr_tabs_-rix9j9%2Fgamo",
-      "value": "{%22recordingID%22:%226-0197e4b0-374a-76d4-b9f8-bef2fa21843f%22%2C%22sessionID%22:0%2C%22lastActivity%22:1751888443859%2C%22confirmed%22:true}",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1751974843,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
     }
   ],
   "origins": [
@@ -41,11 +21,7 @@
         },
         {
           "name": "gamo_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTc1MTg4ODQ0NCwiZXhwIjoxNzUyNDkzMjQ0fQ.nIXNgMEL8ds_H2KQwU6T47xK4shV1698e3lBEEDFOgE"
-        },
-        {
-          "name": "_lr_id_",
-          "value": "{\"userID\":\"907a7d25-5629-46d9-bcc7-583706a6aa86\"}"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzLCJpYXQiOjE3NTIwMDUwMzEsImV4cCI6MTc1MjYwOTgzMX0.TtykGpYm4xVW6tJVcLOg3pB4sYIpzTRyYgk0tdLh0R0"
         }
       ]
     }

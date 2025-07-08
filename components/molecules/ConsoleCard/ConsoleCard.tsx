@@ -8,6 +8,7 @@ import { ReactNode, useState } from "react";
 import { Monitor, Gamepad } from "lucide-react";
 import { ConsoleCardSkeleton } from "./ConsoleCard.skeleton";
 import { normalizeImageUrl } from "@/utils/validate-url";
+import { useTranslations } from "next-intl";
 
 export interface ConsoleCardProps {
   name: string;
@@ -43,6 +44,7 @@ const ConsoleCard = ({
   children,
 }: ConsoleCardProps) => {
   const [imageError, setImageError] = useState(false);
+  const t = useTranslations("");
 
   if (loading) {
     return <ConsoleCardSkeleton />;
@@ -71,7 +73,7 @@ const ConsoleCard = ({
               ) : (
                 <Gamepad size={40} className="mx-auto" />
               )}
-              <span className="sr-only">Imagem não disponível</span>
+              <span className="sr-only">{t("ConsoleDetails.noImage")}</span>
             </div>
           ) : (
             <Image
