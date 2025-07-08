@@ -185,7 +185,9 @@
       "changing": "Changing...",
       "passwordsDoNotMatch": "Passwords do not match.",
       "changeError": "Failed to change password.",
-      "passwordChanged": "Password changed successfully!"
+      "passwordChanged": "Password changed successfully!",
+      "passwordSet": "Password set successfully!",
+      "setError": "Failed to set password."
     }
   },
   "crop": {

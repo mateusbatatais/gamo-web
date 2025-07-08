@@ -185,7 +185,9 @@
       "changing": "Alterando...",
       "passwordsDoNotMatch": "As senhas não coincidem.",
       "changeError": "Falha ao alterar senha.",
-      "passwordChanged": "Senha alterada com sucesso!"
+      "passwordChanged": "Senha alterada com sucesso!",
+      "passwordSet": "Senha definida com sucesso!",
+      "setError": "Falha ao definir senha."
     }
   },
   "crop": {
