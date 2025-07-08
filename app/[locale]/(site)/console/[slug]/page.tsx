@@ -30,7 +30,7 @@ export default function ConsoleDetailPage() {
 
   if (!loading && !data) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto">
         <Card>
           <div className="text-center py-12 text-gray-500">{t("notFound")}</div>
         </Card>
@@ -39,7 +39,7 @@ export default function ConsoleDetailPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto max-w-6xl">
       {loading ? <ConsoleInfoSkeleton /> : data ? <ConsoleInfo consoleVariant={data} /> : null}
 
       <section className="mb-12">

@@ -11,7 +11,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
   const t = useTranslations("account.layout");
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto">
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/4 lg:w-1/5">
           <AccountSidebar />

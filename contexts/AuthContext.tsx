@@ -13,6 +13,7 @@ interface AuthUser {
   role: string;
   email: string;
   profileImage: string;
+  hasPassword: boolean;
 }
 
 interface AuthContextType {
@@ -39,7 +40,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setToken(stored);
       try {
         const decoded = jwtDecode<AuthUser>(stored);
-        setUser(decoded);
+        setUser({
+          ...decoded,
+          name: decoded.name || "",
+          slug: decoded.slug || "",
+          role: decoded.role || "",
+          email: decoded.email || "",
+          profileImage: decoded.profileImage || "",
+          hasPassword: decoded.hasPassword,
+        });
       } catch {
         // Se o decode falhar, removemos qualquer valor inválido
         localStorage.removeItem("gamo_token");
@@ -56,7 +65,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(newToken);
     try {
       const decoded = jwtDecode<AuthUser>(newToken);
-      setUser(decoded);
+      setUser({
+        ...decoded,
+        name: decoded.name || "",
+        slug: decoded.slug || "",
+        role: decoded.role || "",
+        email: decoded.email || "",
+        profileImage: decoded.profileImage || "",
+        hasPassword: decoded.hasPassword,
+      });
     } catch {
       setUser(null);
     }

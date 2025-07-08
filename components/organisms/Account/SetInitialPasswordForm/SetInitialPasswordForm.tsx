@@ -1,4 +1,3 @@
-// components/Account/ChangePasswordForm/ChangePasswordForm.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -7,22 +6,15 @@ import { useTranslations } from "next-intl";
 import { apiFetch } from "@/utils/api";
 import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
-import { useToast } from "@/contexts/ToastContext"; // Novo hook importado
+import { useToast } from "@/contexts/ToastContext";
 import { Card } from "@/components/atoms/Card/Card";
-
-interface ChangePasswordPayload {
-  currentPassword: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
 
 interface ApiError extends Error {
   code?: string;
 }
 
-export default function ChangePasswordForm() {
-  const { token, logout } = useAuth();
-  const [currentPassword, setCurrentPassword] = useState("");
+export default function SetInitialPasswordForm() {
+  const { token, logout, login } = useAuth();
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -45,21 +37,21 @@ export default function ChangePasswordForm() {
     setLoading(true);
 
     try {
-      const payload: ChangePasswordPayload = {
-        currentPassword,
-        newPassword,
-        confirmNewPassword,
-      };
-
-      await apiFetch<unknown>("/user/profile/password", {
+      const response = await apiFetch<{
+        user: unknown;
+        token: string;
+      }>("/user/profile/initial-password", {
         token,
         method: "PUT",
-        body: payload,
+        body: { newPassword, confirmNewPassword },
       });
 
-      const successMsg = t("passwordChanged");
+      const successMsg = t("passwordSet");
       showToast(successMsg, "success");
-      setCurrentPassword("");
+
+      // Atualizar o token no contexto
+      login(response.token);
+
       setNewPassword("");
       setConfirmNewPassword("");
     } catch (err: unknown) {
@@ -69,7 +61,7 @@ export default function ChangePasswordForm() {
         return;
       }
       console.error(apiErr);
-      const message = apiErr.message || t("changeError");
+      const message = apiErr.message || t("setError");
       setErrorMsg(message);
       showToast(message, "danger");
     } finally {
@@ -82,20 +74,6 @@ export default function ChangePasswordForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Input
-            data-testid="input-current-password"
-            label={t("currentPassword")}
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-            className="w-full"
-          />
-        </div>
-
-        <div>
-          <Input
-            data-testid="input-new-password"
             label={t("newPassword")}
             type="password"
             value={newPassword}
@@ -108,7 +86,6 @@ export default function ChangePasswordForm() {
 
         <div>
           <Input
-            data-testid="input-confirm-password"
             label={t("confirmNewPassword")}
             type="password"
             value={confirmNewPassword}
