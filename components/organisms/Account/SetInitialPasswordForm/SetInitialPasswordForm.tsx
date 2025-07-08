@@ -81,12 +81,14 @@ export default function SetInitialPasswordForm() {
             required
             error={errorMsg ?? undefined}
             className="w-full"
+            data-testid="input-new-password"
           />
         </div>
 
         <div>
           <Input
             label={t("confirmNewPassword")}
+            data-testid="input-confirm-password"
             type="password"
             value={confirmNewPassword}
             onChange={(e) => setConfirmNewPassword(e.target.value)}

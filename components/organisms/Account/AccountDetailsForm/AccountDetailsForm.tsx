@@ -13,6 +13,7 @@ import { Input } from "@/components/atoms/Input/Input";
 import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlaceholder";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { useToast } from "@/contexts/ToastContext";
+import { Card } from "@/components/atoms/Card/Card";
 
 interface UserDetailsPayload {
   name: string;
@@ -172,7 +173,7 @@ export default function AccountDetailsForm() {
                 }}
               />
             </div>
-            <div className="flex-1 space-y-6 p-4 border rounded-lg">
+            <Card className="flex-1 space-y-6">
               <Input
                 type="text"
                 data-testid="input-name"
@@ -216,7 +217,7 @@ export default function AccountDetailsForm() {
                   label={t("description")}
                 />
               </div>
-            </div>
+            </Card>
           </div>
           <div className="mt-6 flex justify-end">
             <Button

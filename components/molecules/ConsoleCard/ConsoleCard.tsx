@@ -65,7 +65,7 @@ const ConsoleCard = ({
       >
         <Link href={`/console/${slug}`} className="block relative w-full h-full">
           {imageError ? (
-            <div className="p-4 text-gray-400">
+            <div className="p-4 text-gray-400 h-full items-center flex justify-center">
               {consoleName.includes("Console") ? (
                 <Monitor size={40} className="mx-auto" />
               ) : (
