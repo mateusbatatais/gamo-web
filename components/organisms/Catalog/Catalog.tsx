@@ -9,7 +9,6 @@ import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { useSearchParams } from "next/navigation";
-import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import clsx from "clsx";
 import { ConsoleCardSkeleton } from "@/components/molecules/ConsoleCard/ConsoleCard.skeleton";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
@@ -35,8 +34,8 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState<number>(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [view, setView] = useState<ViewType>("grid"); // Estado para a visualização
-  const [sort, setSort] = useState<string>("name-asc"); // Estado para ordenação
+  const [view, setView] = useState<ViewType>("grid");
+  const [sort, setSort] = useState<string>("name-asc");
 
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
@@ -114,6 +113,8 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
           page: page.toString(),
           perPage: perPage.toString(),
         });
+
+        if (sort) params.append("sort", sort);
 
         if (selectedBrands.length > 0) {
           params.append("brand", selectedBrands.join(","));
@@ -233,8 +234,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
         {/* Skeleton para conteúdo */}
         <div className="w-full">
           <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <Skeleton className="h-12 w-full rounded-lg" animated />
-            <div className="flex items-center gap-4">
+            <div className="flex justify-end items-end gap-4 flex-1">
               <Skeleton className="h-10 w-32 rounded-md" animated />
               <div className="flex space-x-1">
                 <Skeleton className="w-10 h-10 rounded-md" animated />
@@ -276,11 +276,8 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
       </div>
 
       <div className="w-full lg:w-3/4">
-        {/* Barra de busca e botões de visualização */}
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="w-full sm:w-auto flex-1">
-            <SearchBar variant="page" />
-          </div>
+          <div className="w-full sm:w-auto flex-1"></div>
           <div className="flex items-center justify-between sm:justify-end gap-4">
             <SortSelect
               options={SORT_OPTIONS}
