@@ -207,18 +207,18 @@
     "brand": "Brand",
     "generation": "Generation",
     "type": "Type",
-    "releaseDate": "Release Date",
+    "releaseDate": "Console release date",
     "storage": "Storage",
-    "launchDate": "Variant Launch Date",
+    "launchDate": "Version Launch Date",
     "description": "Description",
     "noImage": "Image not available",
     "availableSkins": "Available Skins",
-    "noSkinsAvailable": "No skins available for this variant",
+    "noSkinsAvailable": "No skins available for this version",
     "limitedEdition": "Limited Edition",
     "userCollections": "User Collections",
-    "collectionsDescription": "Explore collections created by users featuring this console variant.",
+    "collectionsDescription": "Explore collections created by users featuring this console version.",
     "viewCollections": "View Collections",
-    "notFound": "Console variant not found"
+    "notFound": "Console version not found"
   },
   "Collection": {
     "condition": "Condition",

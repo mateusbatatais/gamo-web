@@ -28,7 +28,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
-  const [sort, setSort] = useState<string>("name-asc");
+  const [sort, setSort] = useState<string>("releaseDate-desc");
   const t = useTranslations();
 
   const SORT_OPTIONS: SortOption[] = [

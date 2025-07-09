@@ -24,7 +24,6 @@ interface ConsoleInfoProps {
 
 export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
   const t = useTranslations("ConsoleDetails");
-  // Valida a URL da imagem
   const imageUrl = consoleVariant.imageUrl;
   const [imageError, setImageError] = useState(false);
 
@@ -68,14 +67,16 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
               }
             />
             <InfoItem label={t("storage")} value={consoleVariant.storage} />
-            <InfoItem
-              label={t("launchDate")}
-              value={
-                consoleVariant.launchDate
-                  ? new Date(consoleVariant.launchDate).toLocaleDateString()
-                  : "-"
-              }
-            />
+            {consoleVariant.launchDate !== consoleVariant.releaseDate && (
+              <InfoItem
+                label={t("launchDate")}
+                value={
+                  consoleVariant.launchDate
+                    ? new Date(consoleVariant.launchDate).toLocaleDateString()
+                    : "-"
+                }
+              />
+            )}
           </div>
 
           {consoleVariant.consoleDescription && (
