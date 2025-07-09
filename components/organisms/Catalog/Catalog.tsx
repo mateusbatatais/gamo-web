@@ -108,7 +108,6 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
     const fetchConsoleVariants = async () => {
       try {
         setLoading(true);
-        setLoading(true);
 
         const params = new URLSearchParams({
           locale,
