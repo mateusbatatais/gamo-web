@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { describe, it, expect, vi, afterEach } from "vitest";
 import ConsoleCard from "./ConsoleCard";
+import { NextIntlClientProvider } from "next-intl";
 
 // Mock do next/image
 vi.mock("next/image", () => ({
@@ -36,6 +37,22 @@ vi.mock("next/link", () => ({
   ),
 }));
 
+// Mock do NextIntl
+vi.mock("next-intl", async (importOriginal) => {
+  const actual = (await importOriginal()) as object;
+  return {
+    ...(actual as object),
+    // Mocka o `useTranslations` para retornar a chave
+    useTranslations: () => (key: string) => key,
+    // Assegura que o `NextIntlClientProvider` está disponível no mock
+    NextIntlClientProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  };
+});
+
+const messages = {
+  "ConsoleDetails.noImage": "No image available",
+};
+
 describe("ConsoleCard Component", () => {
   const baseProps = {
     name: "PlayStation 5",
@@ -49,8 +66,16 @@ describe("ConsoleCard Component", () => {
     cleanup();
   });
 
+  const renderWithIntl = (component: React.ReactNode) => {
+    return render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        {component}
+      </NextIntlClientProvider>,
+    );
+  };
+
   it("renderiza todas as informações corretamente", () => {
-    render(<ConsoleCard {...baseProps} imageUrl="images/consoles/sony/ps5.webp" />);
+    renderWithIntl(<ConsoleCard {...baseProps} imageUrl="images/consoles/sony/ps5.webp" />);
 
     // Verifica textos
     expect(screen.getByText("PS5 Console")).toBeInTheDocument();
@@ -69,7 +94,7 @@ describe("ConsoleCard Component", () => {
   });
 
   it("mostra ícone de fallback quando a imagem falha", () => {
-    render(<ConsoleCard {...baseProps} imageUrl="fail-image.webp" />);
+    renderWithIntl(<ConsoleCard {...baseProps} imageUrl="fail-image.webp" />);
 
     // Forçar erro na imagem
     const image = screen.getByTestId("next-image-mock");
@@ -80,7 +105,7 @@ describe("ConsoleCard Component", () => {
   });
 
   it("mostra ícone de gamepad para consoles não tradicionais", () => {
-    render(
+    renderWithIntl(
       <ConsoleCard
         {...baseProps}
         imageUrl="fail-image.webp"
@@ -97,32 +122,32 @@ describe("ConsoleCard Component", () => {
   });
 
   it("normaliza URL sem barra inicial", () => {
-    render(<ConsoleCard {...baseProps} imageUrl="test-image.webp" />);
+    renderWithIntl(<ConsoleCard {...baseProps} imageUrl="test-image.webp" />);
     const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/test-image.webp");
   });
 
   it("normaliza URL com barra inicial", () => {
-    render(<ConsoleCard {...baseProps} imageUrl="/test-image.webp" />);
+    renderWithIntl(<ConsoleCard {...baseProps} imageUrl="/test-image.webp" />);
     const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/test-image.webp");
   });
 
   it("normaliza URL com duas barras", () => {
-    render(<ConsoleCard {...baseProps} imageUrl="//test-image.webp" />);
+    renderWithIntl(<ConsoleCard {...baseProps} imageUrl="//test-image.webp" />);
     const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/test-image.webp");
   });
 
   it("normaliza URL vazia para padrão", () => {
-    render(<ConsoleCard {...baseProps} imageUrl="" />);
+    renderWithIntl(<ConsoleCard {...baseProps} imageUrl="" />);
     const image = screen.getByTestId("next-image-mock");
     expect(image).toHaveAttribute("src", "/default-console.webp");
   });
 
   it("aplica as classes CSS corretamente", () => {
-    const { container } = render(<ConsoleCard {...baseProps} imageUrl="test-image.webp" />);
-    const card = container.firstChild;
+    const { container } = renderWithIntl(<ConsoleCard {...baseProps} imageUrl="test-image.webp" />);
+    const card = container.querySelector("article");
 
     // Verifica classes principais
     expect(card).toHaveClass("border");
