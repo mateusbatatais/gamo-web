@@ -13,6 +13,7 @@
     "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles."
   },
   "filters": {
+    "label": "Filtros",
     "brand": {
       "label": "Filtrar por Marca"
     },
@@ -28,6 +29,13 @@
       "9": "9ª Geração",
       "label": "Filtrar por Geração"
     }
+  },
+  "order": {
+    "nameAsc": "Nome (A-Z)",
+    "nameDesc": "Nome (Z-A)",
+    "releaseDateAsc": "Data de Lançamento (Mais antigos)",
+    "releaseDateDesc": "Data de Lançamento (Mais recentes)",
+    "popularityDesc": "Mais populares"
   },
   "Header": {
     "altLogo": "Logo Gamo",

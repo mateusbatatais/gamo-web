@@ -13,20 +13,13 @@ import clsx from "clsx";
 import { ConsoleCardSkeleton } from "@/components/molecules/ConsoleCard/ConsoleCard.skeleton";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
+import { useTranslations } from "next-intl";
 
 interface CatalogComponentProps {
   locale: string;
   page: number;
   perPage: number;
 }
-
-const SORT_OPTIONS: SortOption[] = [
-  { value: "name-asc", label: "Nome (A-Z)" },
-  { value: "name-desc", label: "Nome (Z-A)" },
-  { value: "releaseDate-asc", label: "Data de Lançamento (Mais antigos)" },
-  { value: "releaseDate-desc", label: "Data de Lançamento (Mais recentes)" },
-  { value: "popularity-desc", label: "Mais populares" },
-];
 
 const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [consoleVariants, setConsoleVariants] = useState<ConsoleVariantsResponse | null>(null);
@@ -36,6 +29,15 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const [sort, setSort] = useState<string>("name-asc");
+  const t = useTranslations();
+
+  const SORT_OPTIONS: SortOption[] = [
+    { value: "name-asc", label: t("order.nameAsc") },
+    { value: "name-desc", label: t("order.nameDesc") },
+    { value: "releaseDate-asc", label: t("order.releaseDateAsc") },
+    { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
+    { value: "popularity-desc", label: t("order.popularityDesc") },
+  ];
 
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
@@ -161,16 +163,14 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
     }
   }, []);
 
-  // Função para lidar com mudança de ordenação
   const handleSortChange = (newSort: string) => {
     setSort(newSort);
     localStorage.setItem("catalog-sort", newSort);
-    setLoading(true); // Forçar recarregamento
+    setLoading(true);
 
-    // Atualizar URL com o novo parâmetro de ordenação
     const params = new URLSearchParams({
       locale,
-      page: "1", // Voltar para a primeira página
+      page: "1",
       perPage: perPage.toString(),
       brand: selectedBrands.join(","),
       generation: selectedGenerations.join(","),
@@ -191,6 +191,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
       page: newPage.toString(),
       perPage: perPage.toString(),
       search: searchQuery,
+      sort,
     });
 
     window.location.search = params.toString();
@@ -295,7 +296,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
             onClick={() => setShowFilters(!showFilters)}
             className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between font-medium"
           >
-            <span>Filtros</span>
+            <span>{t("filters.label")}</span>
             <svg
               className={clsx(
                 "w-5 h-5 transform transition-transform",
