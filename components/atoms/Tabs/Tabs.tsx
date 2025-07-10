@@ -36,7 +36,7 @@ export const Tabs = ({
   tabClassName,
   contentClassName,
   activeTabClassName = "text-primary-600 !border-primary-500 rounded-none",
-  inactiveTabClassName = "!text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200 border-transparent",
+  inactiveTabClassName = "!text-neutral-600 hover:text-neutral-900 dark:!text-neutral-400 dark:hover:text-neutral-200 border-transparent",
 }: TabsProps) => {
   const [activeTab, setActiveTab] = useState<number>(defaultValue);
 

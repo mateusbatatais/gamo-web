@@ -24,6 +24,7 @@ export async function apiFetch<T>(
   const data = await res.json();
 
   if (!res.ok) {
+    console.log("ee");
     const code = data.code;
     const rawMessage = data.message;
     const fallback = `Erro na API (${res.status})`;

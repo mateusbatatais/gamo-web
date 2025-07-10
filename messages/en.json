@@ -238,7 +238,13 @@
     "cancel": "Cancel",
     "adding": "Adding...",
     "add": "Add",
-    "success": "Item added to collection successfully!"
+    "success": "Item added to collection successfully!",
+    "tradeSection": "Buy/Sell/Trade",
+    "mainPhoto": "Main Photo",
+    "additionalPhotos": "Additional Photos",
+    "addMainPhoto": "Add Main Photo",
+    "addPhoto": "Add Photo",
+    "statusTrading": "For Trade"
   },
   "PublicProfile": {
     "collection": "Console Collection",

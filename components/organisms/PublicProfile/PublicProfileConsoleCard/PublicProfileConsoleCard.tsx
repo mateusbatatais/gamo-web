@@ -23,9 +23,9 @@ export const PublicProfileConsoleCard = ({
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
       <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
-        {consoleItem.photoUrl ? (
+        {consoleItem.photoMain ? (
           <Image
-            src={consoleItem.photoUrl}
+            src={consoleItem.photoMain}
             alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
             fill
             className="object-contain"

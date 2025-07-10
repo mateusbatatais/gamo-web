@@ -21,7 +21,8 @@ export interface UserConsolePublic {
   hasManual: boolean | null;
   condition: string | null;
   acceptsTrade: boolean | null;
-  photoUrl: string | null;
+  photoMain: string | null;
+  photos: string[] | null;
   createdAt: Date;
 }
 

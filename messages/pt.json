@@ -237,7 +237,13 @@
     "cancel": "Cancelar",
     "adding": "Adicionando...",
     "add": "Adicionar",
-    "success": "Item adicionado à coleção com sucesso!"
+    "success": "Item adicionado à coleção com sucesso!",
+    "tradeSection": "Compra/Venda/Troca",
+    "mainPhoto": "Foto Principal",
+    "additionalPhotos": "Fotos Adicionais",
+    "addMainPhoto": "Adicionar Foto Principal",
+    "addPhoto": "Adicionar Foto",
+    "statusTrading": "Para Troca"
   },
   "PublicProfile": {
     "collection": "Coleção de Consoles",

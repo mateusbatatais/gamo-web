@@ -12,6 +12,7 @@ interface ImageCropperProps {
   aspect?: number;
   onBlobReady: (blob: Blob) => void;
   setFileSrc: (src: string | null) => void;
+  onCancel?: () => void;
 }
 
 export default function ImageCropper({
@@ -19,6 +20,7 @@ export default function ImageCropper({
   aspect = 1,
   onBlobReady,
   setFileSrc,
+  onCancel,
 }: ImageCropperProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
@@ -37,6 +39,11 @@ export default function ImageCropper({
     },
     [aspect],
   );
+
+  const handleCancel = () => {
+    setFileSrc(null);
+    onCancel?.();
+  };
 
   const onCropComplete = useCallback((completed: PixelCrop) => {
     setPixelCrop(completed);
@@ -92,7 +99,7 @@ export default function ImageCropper({
         <Button
           variant="transparent"
           status="danger"
-          onClick={() => setFileSrc(null)}
+          onClick={() => handleCancel}
           label={t("crop.cancelCrop")}
         />
         <Button
