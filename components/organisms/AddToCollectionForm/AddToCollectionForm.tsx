@@ -16,6 +16,7 @@ interface AddToCollectionFormProps {
   consoleVariantId: number;
   skinId: number;
   consoleId: number;
+  initialStatus: "OWNED" | "TRADE";
   onSuccess: () => void;
 }
 
@@ -23,13 +24,14 @@ export function AddToCollectionForm({
   consoleVariantId,
   skinId,
   consoleId,
+  initialStatus,
   onSuccess,
 }: AddToCollectionFormProps) {
   const { token } = useAuth();
   const t = useTranslations("Collection");
   const [formData, setFormData] = useState({
     description: "",
-    status: "OWNED" as "OWNED" | "SELLING" | "LOOKING_FOR",
+    status: "OWNED" as "OWNED" | "TRADE",
     price: "",
     hasBox: false,
     hasManual: false,
@@ -101,16 +103,7 @@ export function AddToCollectionForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <div className="text-red-500 text-sm">{error}</div>}
-
-      <div>
-        <Select
-          name="condition"
-          value={formData.condition}
-          onChange={handleChange}
-          label={t("condition")}
-          options={conditionOptions}
-        ></Select>
-      </div>
+      <div>{initialStatus}</div>
 
       <div>
         <Select
@@ -121,8 +114,17 @@ export function AddToCollectionForm({
           options={statusOptions}
         ></Select>
       </div>
+      <div>
+        <Select
+          name="condition"
+          value={formData.condition}
+          onChange={handleChange}
+          label={t("condition")}
+          options={conditionOptions}
+        ></Select>
+      </div>
 
-      {formData.status === "SELLING" && (
+      {formData.status === "TRADE" && (
         <div>
           <Input
             label={t("price")}

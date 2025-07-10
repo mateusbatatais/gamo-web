@@ -242,8 +242,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
               </div>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 xl:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <ConsoleCardSkeleton key={i} />
             ))}
@@ -341,7 +340,7 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
             <div
               className={
                 view === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                  ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
                   : "flex flex-col space-y-6"
               }
             >

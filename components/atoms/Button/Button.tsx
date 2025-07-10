@@ -1,7 +1,7 @@
 // components/atoms/Button/Button.tsx
 import React, { ReactNode } from "react";
 import clsx from "clsx";
-import { ButtonSkeleton } from "./Button.skeleton";
+import { Spinner } from "../Spinner/Spinner";
 
 export type ButtonSize = "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "primary" | "secondary" | "outline" | "transparent";
@@ -108,7 +108,7 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <ButtonSkeleton />
+        <Spinner />
       ) : (
         <>
           {icon && iconPosition === "left" && <span className="flex-shrink-0">{icon}</span>}
