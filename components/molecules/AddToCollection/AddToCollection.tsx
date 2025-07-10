@@ -1,4 +1,4 @@
-// Novo componente AddToCollectionActions.tsx
+// components/molecules/AddToCollection/AddToCollection.tsx
 "use client";
 
 import { useState } from "react";
@@ -15,9 +15,10 @@ interface Props {
   consoleVariantId: number;
   consoleId: number;
   skinId: number;
+  onAddSuccess?: () => void;
 }
 
-export function AddToCollectionActions({ consoleVariantId, skinId, consoleId }: Props) {
+export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSuccess }: Props) {
   const { user, token } = useAuth();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +55,7 @@ export function AddToCollectionActions({ consoleVariantId, skinId, consoleId }: 
           condition: "USED",
         },
       });
+      onAddSuccess?.();
       showToast("Adicionado a coleção", "success");
     } catch (err: unknown) {
       if (err instanceof Error) {
