@@ -233,7 +233,7 @@
     "hasBox": "Has original box",
     "hasManual": "Has manual",
     "acceptsTrade": "Accepts trades",
-    "description": "Description (optional)",
+    "description": "Description",
     "descriptionPlaceholder": "Details about the item...",
     "cancel": "Cancel",
     "adding": "Adding...",
@@ -244,7 +244,8 @@
     "additionalPhotos": "Additional Photos",
     "addMainPhoto": "Add Main Photo",
     "addPhoto": "Add Photo",
-    "statusTrading": "For Trade"
+    "statusTrading": "For Trade",
+    "extras": "Extras details"
   },
   "PublicProfile": {
     "collection": "Console Collection",

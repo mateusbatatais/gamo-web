@@ -1,7 +1,11 @@
 // components/atoms/Button/Button.tsx
-import React, { ReactNode } from "react";
+import React, { ReactNode, Suspense } from "react";
 import clsx from "clsx";
-import { Spinner } from "../Spinner/Spinner";
+
+// Importa o Spinner de forma dinâmica para evitar problemas de importação circular e resolver problemas de testes
+const Spinner = React.lazy(() =>
+  import("../Spinner/Spinner").then((module) => ({ default: module.Spinner })),
+);
 
 export type ButtonSize = "sm" | "md" | "lg" | "xl";
 export type ButtonVariant = "primary" | "secondary" | "outline" | "transparent";
@@ -108,7 +112,9 @@ export function Button({
       {...props}
     >
       {loading ? (
-        <Spinner />
+        <Suspense fallback={null}>
+          <Spinner />
+        </Suspense>
       ) : (
         <>
           {icon && iconPosition === "left" && <span className="flex-shrink-0">{icon}</span>}

@@ -232,7 +232,7 @@
     "hasBox": "Possui caixa original",
     "hasManual": "Possui manual",
     "acceptsTrade": "Aceita trocas",
-    "description": "Descrição (opcional)",
+    "description": "Descrição",
     "descriptionPlaceholder": "Detalhes sobre o item...",
     "cancel": "Cancelar",
     "adding": "Adicionando...",
@@ -243,7 +243,8 @@
     "additionalPhotos": "Fotos Adicionais",
     "addMainPhoto": "Adicionar Foto Principal",
     "addPhoto": "Adicionar Foto",
-    "statusTrading": "Para Troca"
+    "statusTrading": "Para Troca",
+    "extras": "Detalhes extras"
   },
   "PublicProfile": {
     "collection": "Coleção de Consoles",

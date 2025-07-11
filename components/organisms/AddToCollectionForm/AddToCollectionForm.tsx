@@ -11,9 +11,10 @@ import { Select } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
-import { ChevronDown, ChevronUp, Plus, Trash2, Edit } from "lucide-react";
-import Image from "next/image";
+import { Plus } from "lucide-react";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
+import { Collapse } from "@/components/atoms/Collapse/Collapse";
+import { ImagePreview } from "@/components/molecules/ImagePreview/ImagePreview";
 
 interface AddToCollectionFormProps {
   consoleVariantId: number;
@@ -36,8 +37,6 @@ export function AddToCollectionForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { showToast } = useToast();
-
-  // Estados para imagens
   const [photoMain, setPhotoMain] = useState<{ url: string; blob: Blob | null } | null>(null);
   const [additionalPhotos, setAdditionalPhotos] = useState<{ url: string; blob: Blob | null }[]>(
     [],
@@ -52,7 +51,6 @@ export function AddToCollectionForm({
   const mainFileInputRef = useRef<HTMLInputElement>(null);
   const additionalFileInputRef = useRef<HTMLInputElement>(null);
 
-  // Estado formData agora só contém campos editáveis
   const [formData, setFormData] = useState({
     description: "",
     status: initialStatus === "TRADE" ? "SELLING" : "OWNED",
@@ -63,7 +61,6 @@ export function AddToCollectionForm({
     acceptsTrade: false,
   });
 
-  // Função para enviar imagens para o Cloudinary
   const uploadToCloudinary = async (blob: Blob, type: "main" | "additional" = "additional") => {
     try {
       const formData = new FormData();
@@ -94,7 +91,6 @@ export function AddToCollectionForm({
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    // Para a foto principal, pegamos apenas a primeira
     if (type === "main") {
       const file = files[0];
       const reader = new FileReader();
@@ -108,7 +104,6 @@ export function AddToCollectionForm({
       };
       reader.readAsDataURL(file);
     } else {
-      // Para fotos adicionais, processamos múltiplas
       files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -153,13 +148,11 @@ export function AddToCollectionForm({
     setError(null);
 
     try {
-      // Upload da foto principal
       let mainPhotoUrl = "";
       if (photoMain?.blob) {
         mainPhotoUrl = await uploadToCloudinary(photoMain.blob, "main");
       }
 
-      // Upload das fotos adicionais
       const additionalUrls: string[] = [];
       for (const photo of additionalPhotos) {
         if (photo.blob) {
@@ -168,7 +161,6 @@ export function AddToCollectionForm({
         }
       }
 
-      // Preparar payload com URLs das imagens
       const payload = {
         ...formData,
         consoleVariantId,
@@ -226,7 +218,6 @@ export function AddToCollectionForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Exibição de erro geral */}
       {error && <div className="text-red-500 text-center p-2">{error}</div>}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -240,18 +231,23 @@ export function AddToCollectionForm({
           />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium mb-2" id="extras-label">
+            {t("extras")}
+          </label>
           <Checkbox
             name="hasBox"
             checked={formData.hasBox}
             onChange={handleChange}
             label={t("hasBox")}
+            aria-labelledby="extras-label"
           />
           <Checkbox
             name="hasManual"
             checked={formData.hasManual}
             onChange={handleChange}
             label={t("hasManual")}
+            aria-labelledby="extras-label"
           />
         </div>
       </div>
@@ -267,150 +263,108 @@ export function AddToCollectionForm({
         />
       </div>
 
-      {/* Collapse para Trade */}
-      <div className="border rounded-lg overflow-hidden">
-        <button
-          type="button"
-          className="w-full p-4 flex justify-between items-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-          onClick={() => setTradeSectionOpen(!tradeSectionOpen)}
-        >
-          <span className="font-medium">{t("tradeSection")}</span>
-          {tradeSectionOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-        </button>
-
-        {tradeSectionOpen && (
-          <div className="p-4 border-t bg-white dark:bg-gray-900 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Select
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                label={t("status")}
-                options={statusOptions}
-              />
-
-              <Input
-                label={t("price")}
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                placeholder="0.00"
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            <Checkbox
-              name="acceptsTrade"
-              checked={formData.acceptsTrade}
+      <Collapse
+        title={t("tradeSection")}
+        defaultOpen={tradeSectionOpen}
+        onToggle={() => setTradeSectionOpen(!tradeSectionOpen)}
+      >
+        <div className="bg-white dark:bg-gray-900 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Select
+              name="status"
+              value={formData.status}
               onChange={handleChange}
-              label={t("acceptsTrade")}
+              label={t("status")}
+              options={statusOptions}
             />
 
-            <div>
-              <label className="block text-sm font-medium mb-2">{t("mainPhoto")}</label>
-              {photoMain ? (
-                <div className="relative group w-24 h-24">
-                  <Image
-                    src={photoMain.url}
-                    alt="Preview"
-                    fill
-                    className="object-cover rounded-md border"
-                    sizes="100px"
-                  />
+            <Input
+              label={t("price")}
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder={t("price")}
+            />
+          </div>
 
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
-                    <Button
-                      variant="transparent"
-                      onClick={() => {
-                        setCurrentCropImage({ url: photoMain.url, type: "main" });
-                        setIsCropOpen(true);
-                      }}
-                      icon={<Edit size={16} className="text-white" />}
-                    />
-                    <Button
-                      variant="transparent"
-                      onClick={() => removeImage("main")}
-                      icon={<Trash2 size={16} className="text-white" />}
-                    />
-                  </div>
-                </div>
-              ) : (
+          <Checkbox
+            name="acceptsTrade"
+            checked={formData.acceptsTrade}
+            onChange={handleChange}
+            label={t("acceptsTrade")}
+          />
+
+          <div>
+            <label className="block text-sm font-medium mb-2">{t("mainPhoto")}</label>
+            {photoMain ? (
+              <ImagePreview
+                src={photoMain.url}
+                onRemove={() => removeImage("main")}
+                onCropComplete={(blob) => {
+                  const url = URL.createObjectURL(blob);
+                  setPhotoMain({ url, blob });
+                }}
+              />
+            ) : (
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => mainFileInputRef.current?.click()}
+                icon={<Plus size={16} />}
+                label={t("addMainPhoto")}
+              />
+            )}
+            <input
+              type="file"
+              ref={mainFileInputRef}
+              className="hidden"
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e, "main")}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              {t("additionalPhotos")} ({additionalPhotos.length}/5)
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {additionalPhotos.map((photo, index) => (
+                <ImagePreview
+                  key={index}
+                  src={photo.url}
+                  onRemove={() => removeImage("additional", index)}
+                  onCropComplete={(blob) => {
+                    const newPhotos = [...additionalPhotos];
+                    const url = URL.createObjectURL(blob);
+                    newPhotos[index] = { url, blob };
+                    setAdditionalPhotos(newPhotos);
+                  }}
+                />
+              ))}
+
+              {additionalPhotos.length < 5 && (
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={() => mainFileInputRef.current?.click()}
+                  onClick={() => additionalFileInputRef.current?.click()}
+                  className="w-24 h-24 flex flex-col items-center justify-center"
                   icon={<Plus size={16} />}
-                  label={t("addMainPhoto")}
-                />
+                >
+                  {t("addPhoto")}
+                </Button>
               )}
-              <input
-                type="file"
-                ref={mainFileInputRef}
-                className="hidden"
-                accept="image/*"
-                onChange={(e) => handleImageUpload(e, "main")}
-              />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                {t("additionalPhotos")} ({additionalPhotos.length}/5)
-              </label>
-              <div className="flex flex-wrap gap-3">
-                {additionalPhotos.map((photo, index) => (
-                  <div key={index} className="relative group w-24 h-24">
-                    <Image
-                      src={photo.url}
-                      alt="Preview"
-                      fill
-                      className="object-cover rounded-md border"
-                      sizes="100px"
-                    />
-
-                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
-                      <Button
-                        variant="transparent"
-                        onClick={() => {
-                          setCurrentCropImage({ url: photo.url, type: "additional", index });
-                          setIsCropOpen(true);
-                        }}
-                        icon={<Edit size={16} className="text-white" />}
-                      />
-                      <Button
-                        variant="transparent"
-                        onClick={() => removeImage("additional", index)}
-                        icon={<Trash2 size={16} className="text-white" />}
-                      />
-                    </div>
-                  </div>
-                ))}
-
-                {additionalPhotos.length < 5 && (
-                  <Button
-                    variant="outline"
-                    type="button"
-                    onClick={() => additionalFileInputRef.current?.click()}
-                    className="w-24 h-24 flex flex-col items-center justify-center"
-                  >
-                    <Plus size={24} />
-                    <span className="mt-1 text-xs">{t("addPhoto")}</span>
-                  </Button>
-                )}
-              </div>
-              <input
-                type="file"
-                ref={additionalFileInputRef}
-                className="hidden"
-                accept="image/*"
-                multiple // Aceita múltiplos arquivos
-                onChange={(e) => handleImageUpload(e, "additional")}
-              />
-            </div>
+            <input
+              type="file"
+              ref={additionalFileInputRef}
+              className="hidden"
+              accept="image/*"
+              multiple // Aceita múltiplos arquivos
+              onChange={(e) => handleImageUpload(e, "additional")}
+            />
           </div>
-        )}
-      </div>
+        </div>
+      </Collapse>
 
       {isCropOpen && currentCropImage && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
@@ -430,7 +384,7 @@ export function AddToCollectionForm({
         </div>
       )}
 
-      <div className="flex justify-end gap-3 pt-4 border-t">
+      <div className="flex justify-end ">
         <Button
           type="button"
           variant="transparent"

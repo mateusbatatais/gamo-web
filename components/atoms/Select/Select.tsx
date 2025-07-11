@@ -69,7 +69,7 @@ export function Select({
       {label && (
         <label
           className={clsx(
-            "font-medium text-neutral-700 dark:text-neutral-200",
+            "text-sm text-neutral-700 dark:text-neutral-200",
             disabled && "text-neutral-400 dark:text-neutral-500",
           )}
         >

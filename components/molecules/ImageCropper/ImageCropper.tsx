@@ -92,14 +92,14 @@ export default function ImageCropper({
           alt="Crop preview"
           src={src}
           onLoad={onImageLoad}
-          className="max-w-full max-h-96"
+          className="max-w-full"
         />
       </ReactCrop>
       <div className="mt-6 gap-3 flex justify-end">
         <Button
           variant="transparent"
           status="danger"
-          onClick={() => handleCancel}
+          onClick={handleCancel}
           label={t("crop.cancelCrop")}
         />
         <Button

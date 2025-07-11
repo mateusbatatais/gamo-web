@@ -32,15 +32,17 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
         />
       </div>
 
-      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
+      <div className="absolute w-24 h-24 inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md">
         <Button
           variant="transparent"
           onClick={handleEditClick}
+          className="!p-2"
           icon={<Edit size={16} className="text-white" />}
         />
         <Button
           variant="transparent"
           onClick={onRemove}
+          className="!p-2"
           icon={<Trash2 size={16} className="text-white" />}
         />
       </div>
