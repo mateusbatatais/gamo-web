@@ -77,7 +77,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const base =
-    "inline-flex items-center justify-center font-medium rounded transition-colors cursor-pointer gap-2";
+    "inline-flex items-center justify-center font-medium rounded transition-colors cursor-pointer gap-2 leading-none";
 
   const sizeCls = sizeClasses[size];
   const variantCls = variantClasses[variant];

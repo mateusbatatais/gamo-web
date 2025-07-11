@@ -278,7 +278,7 @@ export function AddToCollectionForm({
         defaultOpen={tradeSectionOpen}
         onToggle={() => setTradeSectionOpen(!tradeSectionOpen)}
       >
-        <div className="bg-white dark:bg-gray-900 space-y-6">
+        <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Select
               name="status"
@@ -320,6 +320,7 @@ export function AddToCollectionForm({
                 variant="outline"
                 type="button"
                 onClick={() => mainFileInputRef.current?.click()}
+                className="w-24 h-24 flex flex-col items-center justify-center"
                 icon={<Plus size={16} />}
                 label={t("addMainPhoto")}
               />

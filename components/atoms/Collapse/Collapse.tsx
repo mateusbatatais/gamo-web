@@ -31,7 +31,9 @@ export const Collapse = ({ title, defaultOpen = false, children, onToggle }: Col
         label={title}
       ></Button>
 
-      {isOpen && <div className="p-4 border-t border-gray-300">{children}</div>}
+      {isOpen && (
+        <div className="p-4 border-t border-gray-300 dark:border-gray-700">{children}</div>
+      )}
     </Card>
   );
 };
