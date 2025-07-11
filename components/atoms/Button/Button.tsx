@@ -34,7 +34,6 @@ const sizeClasses: Record<ButtonSize, string> = {
   xl: "px-6 py-3.5 text-xl",
 };
 
-// Classes base para cada variante
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-primary-500 text-white border border-transparent",
   secondary: "bg-secondary-500 text-white border border-transparent",
@@ -42,7 +41,6 @@ const variantClasses: Record<ButtonVariant, string> = {
   transparent: "bg-transparent border-transparent",
 };
 
-// Classes para status - agora focam apenas na cor do texto e borda
 const statusColorClasses: Record<ButtonStatus, string> = {
   default: "text-primary-500 border-primary-500 hover:bg-primary-500/10",
   success: "text-success-500 border-success-500 hover:bg-success-500/10",
@@ -51,7 +49,6 @@ const statusColorClasses: Record<ButtonStatus, string> = {
   info: "text-info-500 border-info-500 hover:bg-info-500/10",
 };
 
-// Classes para variantes sólidas (que usam background)
 const solidStatusClasses: Record<ButtonStatus, string> = {
   default: "bg-primary-500 text-white hover:bg-primary-600",
   success: "bg-success-500 text-white hover:bg-success-600",
@@ -82,7 +79,6 @@ export function Button({
   const sizeCls = sizeClasses[size];
   const variantCls = variantClasses[variant];
 
-  // Determina as classes de cor baseado na variante e status
   let colorCls = "";
   if (variant === "outline" || variant === "transparent") {
     colorCls = statusColorClasses[status];

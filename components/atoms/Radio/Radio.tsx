@@ -21,19 +21,16 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
     ...inputProps
   } = props;
 
-  // Estado para controle não controlado
   const [internalChecked, setInternalChecked] = useState(propsChecked || false);
   const isControlled = propsChecked !== undefined;
   const checked = isControlled ? propsChecked : internalChecked;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!disabled) {
-      // Se não for controlado, atualiza estado interno
       if (!isControlled) {
         setInternalChecked(true);
       }
 
-      // Chama callback externa
       propsOnChange?.(e);
     }
   };
@@ -91,7 +88,6 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
             {...inputProps}
           />
 
-          {/* Círculo externo */}
           <div
             className={clsx(
               "absolute inset-0 border-2 rounded-full transition-colors",
@@ -105,7 +101,6 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>((props, ref) => {
             )}
           ></div>
 
-          {/* Ponto interno (quando selecionado) */}
           {checked && (
             <div
               className={clsx(

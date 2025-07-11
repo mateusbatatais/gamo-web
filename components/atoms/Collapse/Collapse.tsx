@@ -8,7 +8,7 @@ interface CollapseProps {
   title: string;
   defaultOpen?: boolean;
   children: React.ReactNode;
-  onToggle?: (isOpen: boolean) => void; // Adicione esta linha
+  onToggle?: (isOpen: boolean) => void;
 }
 
 export const Collapse = ({ title, defaultOpen = false, children, onToggle }: CollapseProps) => {

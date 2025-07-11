@@ -28,7 +28,6 @@ export function ThemeToggle({
     setMounted(true);
   }, []);
 
-  // Renderizar placeholder durante SSR
   if (!mounted) {
     return (
       <div
@@ -44,7 +43,6 @@ export function ThemeToggle({
   const getButtonLabel = () => {
     if (variant === "icon") return "";
 
-    // Considerando o tema atual para mostrar o texto adequado
     if (theme === "light") return "Modo Escuro";
     if (theme === "dark") return "Modo Claro";
     return theme === "system" ? "Modo Sistema" : "Alternar Tema";
@@ -70,7 +68,6 @@ export function ThemeToggle({
 
   const iconSize = size === "sm" ? 16 : size === "md" ? 20 : 24;
 
-  // Função para alternar o tema de forma cíclica
   const toggleTheme = () => {
     if (theme === "system") {
       setTheme("light");
