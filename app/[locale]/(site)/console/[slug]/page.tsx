@@ -8,7 +8,6 @@ import SkinCard from "@/components/molecules/SkinCard/SkinCard";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
 import { useEffect } from "react";
-import { Button } from "@/components/atoms/Button/Button";
 import { Card } from "@/components/atoms/Card/Card";
 import { ConsoleInfoSkeleton } from "@/components/organisms/ConsoleInfo/ConsoleInfo.skeleton";
 import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
@@ -74,16 +73,6 @@ export default function ConsoleDetailPage() {
           )
         ) : null}
       </section>
-
-      {!loading && (
-        <Card className="bg-gray-50 dark:bg-gray-800">
-          <h2 className="text-2xl font-bold mb-4">{t("userCollections")}</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">{t("collectionsDescription")}</p>
-          <Button variant="primary" className="mt-2">
-            {t("viewCollections")}
-          </Button>
-        </Card>
-      )}
     </div>
   );
 }

@@ -28,26 +28,25 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
     { id: "likes", label: t("likes"), icon: "❤️" },
   ];
 
-  // Determina a seção ativa com base na URL
-  const activeSection = pathname.split("/").pop() || "";
+  const pathParts = pathname.split("/");
+  const last = pathParts[pathParts.length - 1];
 
-  // Cria a URL completa para cada seção
+  const activeSection = last === slug ? "" : last;
+
   const createSectionUrl = (sectionId: string) => {
     return sectionId ? `/user/${slug}/${sectionId}` : `/user/${slug}`;
   };
 
-  // Encontra o label da seção ativa para mobile
   const activeSectionLabel = sections.find((s) => s.id === activeSection)?.label || t("collection");
 
   return (
     <>
       {/* Desktop Navigation */}
-      <div className="hidden md:flex justify-between border-b dark:border-gray-700 pb-2">
+      <div className="hidden md:flex justify-between border-b border-gray-300 dark:border-gray-700">
         <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
           {sections.map((section) => {
             const href = createSectionUrl(section.id);
             const isActive = activeSection === section.id;
-
             return (
               <Link
                 key={section.id}

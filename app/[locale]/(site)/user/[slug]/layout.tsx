@@ -41,20 +41,16 @@ export default async function PublicProfileLayout({ children, params }: PublicPr
 
     return (
       <div className="max-w-7xl mx-auto px-4 py-6">
-        {/* Cabeçalho */}
         <PublicProfileHeader profile={profile} />
 
-        {/* Estatísticas */}
         <div className="mt-6 mb-8">
           <ProfileStats stats={stats} />
         </div>
+        <span className="hidden md:block">
+          <ProfileNavigation slug={slug} />
+        </span>
 
-        {/* Navegação */}
-        <ProfileNavigation slug={slug} />
-
-        {/* Conteúdo principal com barra lateral */}
         <div className="flex flex-col lg:flex-row gap-8 mt-6">
-          {/* Barra lateral */}
           <div className="w-full lg:w-1/4 space-y-6">
             <ProfileBio bio={profile.description || ""} />
 
@@ -69,8 +65,9 @@ export default async function PublicProfileLayout({ children, params }: PublicPr
 
             <FavoriteGames games={favoriteGames} />
           </div>
-
-          {/* Conteúdo da página específica */}
+          <span className="md:hidden">
+            <ProfileNavigation slug={slug} />
+          </span>
           <div className="w-full lg:w-3/4">{children}</div>
         </div>
       </div>
