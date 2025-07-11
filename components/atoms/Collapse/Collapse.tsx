@@ -24,12 +24,18 @@ export const Collapse = ({ title, defaultOpen = false, children, onToggle }: Col
     <Card className="w-full !p-0 overflow-hidden">
       <Button
         variant="transparent"
-        className="w-full "
+        className="w-full"
         onClick={toggle}
         iconPosition="right"
-        icon={isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+        icon={
+          isOpen ? (
+            <ChevronUp size={20} data-testid="chevron-up" />
+          ) : (
+            <ChevronDown size={20} data-testid="chevron-down" />
+          )
+        }
         label={title}
-      ></Button>
+      />
 
       {isOpen && (
         <div className="p-4 border-t border-gray-300 dark:border-gray-700">{children}</div>
