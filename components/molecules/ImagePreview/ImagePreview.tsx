@@ -1,11 +1,12 @@
 // components/molecules/ImagePreview/ImagePreview.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import Image from "next/image";
 import ImageCropper from "../ImageCropper/ImageCropper";
+import { useTranslations } from "next-intl";
 
 interface ImagePreviewProps {
   src: string;
@@ -15,13 +16,31 @@ interface ImagePreviewProps {
 
 export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [blobProcessed, setBlobProcessed] = useState(false);
+  const initialSrc = useRef(src);
+  const t = useTranslations("");
+
+  useEffect(() => {
+    setBlobProcessed(src !== initialSrc.current);
+  }, [src]);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
+  const handleCrop = (blob: Blob) => {
+    onCropComplete(blob);
+    setIsEditing(false);
+    setBlobProcessed(true);
+  };
+
   return (
     <div className="relative group">
+      {!blobProcessed && (
+        <span className="absolute z-10 top-1 left-1 bg-yellow-500 text-white text-xs px-1 rounded">
+          {t("common.notEdited")}
+        </span>
+      )}
       <div className="w-24 h-24 relative">
         <Image
           src={src}
@@ -53,10 +72,7 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
             <div className="p-4">
               <ImageCropper
                 src={src}
-                onBlobReady={(blob) => {
-                  onCropComplete(blob);
-                  setIsEditing(false);
-                }}
+                onBlobReady={handleCrop}
                 setFileSrc={() => {}}
                 onCancel={() => setIsEditing(false)}
               />

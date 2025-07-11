@@ -87,11 +87,15 @@ export function AddToCollectionForm({
     }
   };
 
-  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, type: "main" | "additional") => {
+  const handleImageUpload = async (
+    e: ChangeEvent<HTMLInputElement>,
+    type: "main" | "additional",
+  ) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
     if (type === "main") {
+      // Fluxo único para foto principal (crop imediato)
       const file = files[0];
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -104,32 +108,40 @@ export function AddToCollectionForm({
       };
       reader.readAsDataURL(file);
     } else {
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const url = event.target?.result as string;
-          setCurrentCropImage({
-            url,
-            type: "additional",
-            index: additionalPhotos.length,
-          });
-          setIsCropOpen(true);
-        };
-        reader.readAsDataURL(file);
-      });
+      // Fluxo para múltiplas imagens (sem crop inicial)
+      const newPhotos: { url: string; blob: Blob | null }[] = [];
+
+      for (const file of files) {
+        try {
+          const url = URL.createObjectURL(file);
+          newPhotos.push({ url, blob: file });
+        } catch (error) {
+          console.error("Erro ao processar imagem:", error);
+        }
+      }
+
+      setAdditionalPhotos((prev) => [
+        ...prev,
+        ...newPhotos.slice(0, 5 - prev.length), // Limite de 5 fotos
+      ]);
     }
-    e.target.value = "";
+
+    e.target.value = ""; // Resetar o input
   };
 
   const handleCropComplete = (blob: Blob) => {
     if (!currentCropImage) return;
 
     const url = URL.createObjectURL(blob);
+
     if (currentCropImage.type === "main") {
       setPhotoMain({ url, blob });
-    } else {
-      setAdditionalPhotos((prev) => [...prev, { url, blob }]);
+    } else if (currentCropImage.index !== undefined) {
+      setAdditionalPhotos((prev) =>
+        prev.map((photo, index) => (index === currentCropImage.index ? { url, blob } : photo)),
+      );
     }
+
     setIsCropOpen(false);
     setCurrentCropImage(null);
   };

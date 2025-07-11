@@ -10,7 +10,8 @@
     "loading": "Loading...",
     "error": "An error occurred",
     "siteName": "Gamo",
-    "siteDescription": "The Gamo platform helps users manage their gaming consoles."
+    "siteDescription": "The Gamo platform helps users manage their gaming consoles.",
+    "notEdited": "Adjust the crop"
   },
   "filters": {
     "label": "Filters",

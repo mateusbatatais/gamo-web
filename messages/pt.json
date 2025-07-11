@@ -10,7 +10,8 @@
     "loading": "Carregando...",
     "error": "Ocorreu um erro",
     "siteName": "Gamo",
-    "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles."
+    "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles.",
+    "notEdited": "Ajuste o corte"
   },
   "filters": {
     "label": "Filtros",
