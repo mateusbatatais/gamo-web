@@ -7,6 +7,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import Image from "next/image";
 import ImageCropper from "../ImageCropper/ImageCropper";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/atoms/Badge/Badge";
 
 interface ImagePreviewProps {
   src: string;
@@ -37,9 +38,9 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
   return (
     <div className="relative group">
       {!blobProcessed && (
-        <span className="absolute z-10 top-1 left-1 bg-yellow-500 text-white text-xs px-1 rounded">
+        <Badge variant="soft" status="warning" className="absolute z-10 top-1 left-1 text-xs !px-1">
           {t("common.notEdited")}
-        </span>
+        </Badge>
       )}
       <div className="w-24 h-24 relative">
         <Image

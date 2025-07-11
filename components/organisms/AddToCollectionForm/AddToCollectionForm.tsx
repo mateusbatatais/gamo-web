@@ -76,14 +76,13 @@ export function AddToCollectionForm({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Falha no upload da imagem");
+        throw new Error(errorData.message);
       }
 
       const data = await response.json();
       return data.url;
     } catch (error) {
-      console.error("Erro no upload:", error);
-      throw new Error("Erro ao processar imagem");
+      showToast((error instanceof Error ? error.message : String(error)) || "error", "danger");
     }
   };
 
@@ -95,7 +94,6 @@ export function AddToCollectionForm({
     if (files.length === 0) return;
 
     if (type === "main") {
-      // Fluxo único para foto principal (crop imediato)
       const file = files[0];
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -196,8 +194,8 @@ export function AddToCollectionForm({
         setError(err.message);
         showToast(err.message, "danger");
       } else {
-        setError("Ocorreu um erro ao adicionar à coleção");
-        showToast("Ocorreu um erro ao adicionar à coleção", "danger");
+        setError(t("error"));
+        showToast(t("error"), "danger");
       }
     } finally {
       setLoading(false);

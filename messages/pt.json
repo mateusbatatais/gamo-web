@@ -239,6 +239,7 @@
     "adding": "Adicionando...",
     "add": "Adicionar",
     "success": "Item adicionado à coleção com sucesso!",
+    "error": "Erro ao adicionar item à coleção.",
     "tradeSection": "Compra/Venda/Troca",
     "mainPhoto": "Foto Principal",
     "additionalPhotos": "Fotos Adicionais",

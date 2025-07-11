@@ -240,6 +240,7 @@
     "adding": "Adding...",
     "add": "Add",
     "success": "Item added to collection successfully!",
+    "error": "Failed to add item to collection.",
     "tradeSection": "Buy/Sell/Trade",
     "mainPhoto": "Main Photo",
     "additionalPhotos": "Additional Photos",
