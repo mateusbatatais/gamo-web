@@ -3,7 +3,7 @@ import { Select } from "./Select";
 import { Home, CheckCircle } from "lucide-react";
 
 const meta: Meta<typeof Select> = {
-  title: "Components/Atoms/Select",
+  title: "Atoms/Select",
   component: Select,
   tags: ["autodocs"],
   argTypes: {

@@ -3,7 +3,7 @@ import Pagination from "./Pagination";
 import { fn } from "storybook/test";
 
 const meta: Meta<typeof Pagination> = {
-  title: "Components/Molecules/Pagination",
+  title: "Molecules/Pagination",
   component: Pagination,
   tags: ["autodocs"],
   args: {

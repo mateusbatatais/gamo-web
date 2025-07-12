@@ -3,7 +3,7 @@ import { Textarea } from "./Textarea";
 import { Info, CheckCircle } from "lucide-react";
 
 const meta: Meta<typeof Textarea> = {
-  title: "Components/Atoms/Textarea",
+  title: "Atoms/Textarea",
   component: Textarea,
   tags: ["autodocs"],
   argTypes: {

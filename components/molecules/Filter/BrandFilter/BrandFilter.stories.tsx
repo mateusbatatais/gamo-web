@@ -3,7 +3,7 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import BrandFilter from "./BrandFilter";
 
 const meta: Meta<typeof BrandFilter> = {
-  title: "Components/Molecules/Filter/BrandFilter",
+  title: "Molecules/Filter/BrandFilter",
   component: BrandFilter,
   tags: ["autodocs"],
   argTypes: {

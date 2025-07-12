@@ -5,7 +5,7 @@ import { Badge } from "../Badge/Badge";
 import { Card } from "../Card/Card";
 
 const meta: Meta<typeof Collapse> = {
-  title: "Components/Atoms/Collapse",
+  title: "Atoms/Collapse",
   component: Collapse,
   tags: ["autodocs"],
   argTypes: {

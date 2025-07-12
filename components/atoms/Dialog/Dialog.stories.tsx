@@ -5,7 +5,7 @@ import { Button } from "../Button/Button";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
 const meta: Meta<typeof Dialog> = {
-  title: "Components/Atoms/Dialog",
+  title: "Atoms/Dialog",
   component: Dialog,
   tags: ["autodocs"],
   argTypes: {

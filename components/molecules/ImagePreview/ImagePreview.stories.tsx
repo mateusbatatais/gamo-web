@@ -3,7 +3,7 @@ import { ImagePreview } from "./ImagePreview";
 import { fn } from "storybook/internal/test";
 
 const meta: Meta<typeof ImagePreview> = {
-  title: "Components/Molecules/ImagePreview",
+  title: "Molecules/ImagePreview",
   component: ImagePreview,
   tags: ["autodocs"],
   args: {

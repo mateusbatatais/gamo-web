@@ -3,7 +3,7 @@ import { SuccessCard } from "./SuccessCard";
 import { AlertCircle, AlertTriangle, ShieldCheck } from "lucide-react";
 
 const meta: Meta<typeof SuccessCard> = {
-  title: "Components/Molecules/SuccessCard",
+  title: "Molecules/SuccessCard",
   component: SuccessCard,
   tags: ["autodocs"],
   argTypes: {

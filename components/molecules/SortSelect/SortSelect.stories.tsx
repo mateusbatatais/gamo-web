@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { SortSelect, SortOption } from "./SortSelect";
 
 const meta: Meta<typeof SortSelect> = {
-  title: "Components/Molecules/SortSelect",
+  title: "Molecules/SortSelect",
   component: SortSelect,
   tags: ["autodocs"],
   argTypes: {

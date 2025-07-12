@@ -5,7 +5,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Edit, Trash2, User, Settings, LogOut } from "lucide-react";
 
 const meta: Meta<typeof Dropdown> = {
-  title: "Components/Molecules/Dropdown",
+  title: "Molecules/Dropdown",
   component: Dropdown,
   tags: ["autodocs"],
   argTypes: {

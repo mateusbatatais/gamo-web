@@ -5,7 +5,7 @@ import { Card } from "./Card";
 import Link from "next/link";
 
 const meta: Meta<typeof Card> = {
-  title: "Components/Atoms/Card",
+  title: "Atoms/Card",
   component: Card,
   tags: ["autodocs"],
   argTypes: {

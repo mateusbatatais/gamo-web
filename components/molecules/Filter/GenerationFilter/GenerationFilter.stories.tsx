@@ -2,7 +2,7 @@ import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import GenerationFilter from "./GenerationFilter";
 
 const meta: Meta = {
-  title: "Components/GenerationFilter",
+  title: "Molecules/GenerationFilter",
   component: GenerationFilter,
   argTypes: {
     onGenerationChange: { action: "changed" },

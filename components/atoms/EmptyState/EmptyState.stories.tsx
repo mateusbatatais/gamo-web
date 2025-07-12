@@ -3,7 +3,7 @@ import { EmptyState } from "./EmptyState";
 import { Search, AlertTriangle } from "lucide-react";
 
 const meta: Meta<typeof EmptyState> = {
-  title: "Components/Atoms/EmptyState",
+  title: "Atoms/EmptyState",
   component: EmptyState,
   tags: ["autodocs"],
   argTypes: {

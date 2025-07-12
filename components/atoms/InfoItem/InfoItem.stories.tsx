@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import InfoItem from "./InfoItem";
 
 const meta: Meta<typeof InfoItem> = {
-  title: "Components/Atoms/InfoItem",
+  title: "Atoms/InfoItem",
   component: InfoItem,
   tags: ["autodocs"],
   argTypes: {

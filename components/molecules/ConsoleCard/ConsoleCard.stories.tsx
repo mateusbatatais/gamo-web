@@ -14,7 +14,7 @@ const defaultProps = {
 };
 
 const meta: Meta<typeof ConsoleCard> = {
-  title: "Components/Molecules/ConsoleCard",
+  title: "Molecules/ConsoleCard",
   component: ConsoleCard,
   tags: ["autodocs"],
   argTypes: {

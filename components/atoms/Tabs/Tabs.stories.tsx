@@ -6,7 +6,7 @@ import { CheckCircle, Star } from "lucide-react";
 import React from "react";
 
 const meta: Meta<typeof Tabs> = {
-  title: "Components/Atoms/Tabs",
+  title: "Atoms/Tabs",
   component: Tabs,
   tags: ["autodocs"],
   argTypes: {

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ViewToggle } from "./ViewToggle";
 
 const meta: Meta<typeof ViewToggle> = {
-  title: "Components/Molecules/ViewToggle",
+  title: "Molecules/ViewToggle",
   component: ViewToggle,
   tags: ["autodocs"],
   argTypes: {
