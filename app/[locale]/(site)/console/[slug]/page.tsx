@@ -73,6 +73,15 @@ export default function ConsoleDetailPage() {
           )
         ) : null}
       </section>
+
+      {!loading && (
+        <Card className="bg-gray-50 dark:bg-gray-800">
+          <h2 className="text-2xl font-bold mb-4">Mercado</h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
+            Colocar itens desse modelo que estão a venda
+          </p>
+        </Card>
+      )}
     </div>
   );
 }

@@ -229,47 +229,43 @@ export function AddToCollectionForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && <div className="text-red-500 text-center p-2">{error}</div>}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Select
-            name="condition"
-            value={formData.condition}
-            onChange={handleChange}
-            label={t("condition")}
-            options={conditionOptions}
+      <div className="flex flex-row gap-2">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm text-neutral-700 dark:text-neutral-200">{t("mainPhoto")}</label>
+          {photoMain ? (
+            <ImagePreview
+              src={photoMain.url}
+              onRemove={() => removeImage("main")}
+              onCropComplete={(blob) => {
+                const url = URL.createObjectURL(blob);
+                setPhotoMain({ url, blob });
+              }}
+            />
+          ) : (
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => mainFileInputRef.current?.click()}
+              className="w-23 h-23 flex flex-col items-center justify-center"
+              icon={<Plus size={16} />}
+              label={t("addMainPhoto")}
+            />
+          )}
+          <input
+            type="file"
+            ref={mainFileInputRef}
+            className="hidden"
+            accept="image/*"
+            onChange={(e) => handleImageUpload(e, "main")}
           />
         </div>
-
-        <div className="space-y-2">
-          <label className="block text-sm font-medium mb-2" id="extras-label">
-            {t("extras")}
-          </label>
-          <Checkbox
-            name="hasBox"
-            checked={formData.hasBox}
-            onChange={handleChange}
-            label={t("hasBox")}
-            aria-labelledby="extras-label"
-          />
-          <Checkbox
-            name="hasManual"
-            checked={formData.hasManual}
-            onChange={handleChange}
-            label={t("hasManual")}
-            aria-labelledby="extras-label"
-          />
-        </div>
-      </div>
-
-      <div>
         <Textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           label={t("description")}
           placeholder={t("descriptionPlaceholder")}
-          rows={4}
+          rows={3}
         />
       </div>
 
@@ -279,13 +275,20 @@ export function AddToCollectionForm({
         onToggle={() => setTradeSectionOpen(!tradeSectionOpen)}
       >
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Select
               name="status"
               value={formData.status}
               onChange={handleChange}
               label={t("status")}
               options={statusOptions}
+            />
+            <Select
+              name="condition"
+              value={formData.condition}
+              onChange={handleChange}
+              label={t("condition")}
+              options={conditionOptions}
             />
 
             <Input
@@ -294,6 +297,7 @@ export function AddToCollectionForm({
               value={formData.price}
               onChange={handleChange}
               placeholder={t("price")}
+              type="number"
             />
           </div>
 
@@ -304,34 +308,26 @@ export function AddToCollectionForm({
             label={t("acceptsTrade")}
           />
 
-          <div>
-            <label className="block text-sm font-medium mb-2">{t("mainPhoto")}</label>
-            {photoMain ? (
-              <ImagePreview
-                src={photoMain.url}
-                onRemove={() => removeImage("main")}
-                onCropComplete={(blob) => {
-                  const url = URL.createObjectURL(blob);
-                  setPhotoMain({ url, blob });
-                }}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium mb-2" id="extras-label">
+                {t("extras")}
+              </label>
+              <Checkbox
+                name="hasBox"
+                checked={formData.hasBox}
+                onChange={handleChange}
+                label={t("hasBox")}
+                aria-labelledby="extras-label"
               />
-            ) : (
-              <Button
-                variant="outline"
-                type="button"
-                onClick={() => mainFileInputRef.current?.click()}
-                className="w-24 h-24 flex flex-col items-center justify-center"
-                icon={<Plus size={16} />}
-                label={t("addMainPhoto")}
+              <Checkbox
+                name="hasManual"
+                checked={formData.hasManual}
+                onChange={handleChange}
+                label={t("hasManual")}
+                aria-labelledby="extras-label"
               />
-            )}
-            <input
-              type="file"
-              ref={mainFileInputRef}
-              className="hidden"
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e, "main")}
-            />
+            </div>
           </div>
 
           <div>

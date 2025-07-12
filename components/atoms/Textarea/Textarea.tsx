@@ -68,11 +68,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     );
 
     return (
-      <div className="w-full">
+      <div className="flex flex-col gap-1.5 w-full">
         {label && (
           <label
-            htmlFor={textareaId}
-            className="block mb-1.5 text-sm font-medium text-gray-700 dark:text-gray-300"
+            className={clsx(
+              "text-sm text-neutral-700 dark:text-neutral-200",
+              props.disabled && "text-neutral-400 dark:text-neutral-500",
+            )}
           >
             {label}
           </label>

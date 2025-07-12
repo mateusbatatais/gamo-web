@@ -30,6 +30,8 @@ const FilterContainer = ({
         onGenerationChange={onGenerationChange}
       />
 
+      <small>Incluir filtros por modelo e se é portable</small>
+
       <Button onClick={clearFilters} variant="outline" className="w-full" label="Limpar filtros" />
     </div>
   );

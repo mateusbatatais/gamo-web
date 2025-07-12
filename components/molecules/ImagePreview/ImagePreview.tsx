@@ -41,7 +41,7 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
         <Badge
           variant="soft"
           status="warning"
-          className="absolute z-10 top-1 left-1 text-xs !px-1"
+          className="absolute z-10 top-1 left-1 text-[11px] !px-0.5 rounded-sm"
           data-testid="unprocessed-badge"
         >
           {t("common.notEdited")}
