@@ -1,7 +1,7 @@
 // components/organisms/PublicProfile/PublicProfileConsoleCard/PublicProfileConsoleCard.tsx
 import React from "react";
 import Image from "next/image";
-import { Badge, BadgeStatus } from "@/components/atoms/Badge/Badge";
+import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
 import { ConsoleStatus, UserConsolePublic } from "@/@types/publicProfile";
 import { Card } from "@/components/atoms/Card/Card";
@@ -13,13 +13,6 @@ export const PublicProfileConsoleCard = ({
 }) => {
   const t = useTranslations("PublicProfile");
 
-  const statusVariantMap: Record<ConsoleStatus["Status"], BadgeStatus> = {
-    PUBLISHED: "info",
-    SELLING: "success",
-    SOLD: "warning",
-    ARCHIVED: "danger",
-  };
-
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
       <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
@@ -28,7 +21,9 @@ export const PublicProfileConsoleCard = ({
             src={consoleItem.photoMain}
             alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
             fill
+            sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
             className="object-contain"
+            priority
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
@@ -42,11 +37,6 @@ export const PublicProfileConsoleCard = ({
           <div>
             <h3 className="font-semibold text-lg dark:text-white">{consoleItem.consoleName}</h3>
             <p className="text-gray-600 dark:text-gray-300">{consoleItem.variantName}</p>
-          </div>
-          <div className="absolute top-4 right-4">
-            <Badge status={statusVariantMap[consoleItem.status as ConsoleStatus["Status"]]}>
-              {t(`status.${consoleItem.status.toLowerCase()}`)}
-            </Badge>
           </div>
         </div>
 
@@ -67,15 +57,21 @@ export const PublicProfileConsoleCard = ({
         )}
 
         <div className="mt-3 flex gap-2 flex-wrap">
-          {consoleItem.hasBox && (
+          {consoleItem.hasBox && !consoleItem.hasManual && (
             <Badge status="info" size="sm">
               {t("withBox")}
             </Badge>
           )}
 
-          {consoleItem.hasManual && (
+          {consoleItem.hasManual && !consoleItem.hasBox && (
             <Badge status="success" size="sm">
               {t("withManual")}
+            </Badge>
+          )}
+
+          {consoleItem.hasManual && consoleItem.hasBox && (
+            <Badge status="success" size="sm">
+              CIB
             </Badge>
           )}
 
