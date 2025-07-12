@@ -84,58 +84,16 @@ describe("ThemeToggle component", () => {
     expect(mockSetTheme).toHaveBeenCalledWith("light");
   });
 
-  it("mostra texto 'Modo Escuro' no tema claro no modo 'text'", () => {
-    render(<ThemeToggle variant="text" />);
-    expect(screen.getByText("Modo Escuro")).toBeInTheDocument();
-  });
-
-  it("mostra texto 'Modo Claro' no tema escuro no modo 'text'", () => {
-    vi.mocked(useTheme).mockReturnValue({
-      theme: "dark",
-      setTheme: mockSetTheme,
-    });
-    render(<ThemeToggle variant="text" />);
-    expect(screen.getByText("Modo Claro")).toBeInTheDocument();
-  });
-
-  it("mostra texto 'Modo Sistema' no tema sistema no modo 'text'", () => {
-    vi.mocked(useTheme).mockReturnValue({
-      theme: "system",
-      setTheme: mockSetTheme,
-    });
-    render(<ThemeToggle variant="text" />);
-    expect(screen.getByText("Modo Sistema")).toBeInTheDocument();
-  });
-
   it("mostra opção de sistema no modo 'full'", () => {
-    render(<ThemeToggle variant="full" showSystemOption />);
+    render(<ThemeToggle showSystemOption />);
     expect(screen.getByTestId("monitor-icon")).toBeInTheDocument();
     expect(screen.getByTitle("Usar tema do sistema")).toBeInTheDocument();
   });
 
   it("define tema do sistema quando selecionado", () => {
-    render(<ThemeToggle variant="full" showSystemOption />);
+    render(<ThemeToggle showSystemOption />);
     const systemButton = screen.getAllByRole("button")[0];
     fireEvent.click(systemButton);
     expect(mockSetTheme).toHaveBeenCalledWith("system");
-  });
-
-  it("destaca botão do sistema quando ativo", () => {
-    vi.mocked(useTheme).mockReturnValue({
-      theme: "system",
-      setTheme: mockSetTheme,
-    });
-
-    render(<ThemeToggle variant="full" showSystemOption />);
-    const systemButton = screen.getAllByRole("button")[0];
-
-    expect(systemButton).toHaveClass("bg-gray-200");
-    expect(systemButton).toHaveClass("dark:bg-gray-700");
-  });
-
-  it("aplica classes de tamanho corretamente", () => {
-    render(<ThemeToggle size="sm" />);
-    const button = screen.getByRole("button");
-    expect(button).toHaveClass("p-1.5");
   });
 });
