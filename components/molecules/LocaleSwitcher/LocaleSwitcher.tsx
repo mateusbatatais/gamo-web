@@ -7,23 +7,22 @@ import { Locale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
-import { Dropdown, DropdownOption } from "@/components/atoms/Dropdown/Dropdown";
+import { Dropdown, DropdownItem } from "@/components/molecules/Dropdown/Dropdown";
 
 export default function LocaleSwitcher() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
   const params = useParams();
-  const locale = useLocale() as string;
+  const currentLocale = useLocale() as string;
 
-  // Mapeia os locais para o formato que o Dropdown espera
-  const options: DropdownOption[] = routing.locales.map((cur) => ({
-    value: cur,
-    label: cur.toUpperCase(),
+  const localeItems: DropdownItem[] = routing.locales.map((locale) => ({
+    id: locale,
+    label: locale.toUpperCase(),
+    onClick: () => handleLocaleChange(locale as Locale),
   }));
 
-  function handleChange(value: string) {
-    const nextLocale = value as Locale;
+  function handleLocaleChange(nextLocale: Locale) {
     startTransition(() => {
       router.replace(
         // @ts-expect-error alinhamos pathname + params em tempo de build
@@ -34,12 +33,8 @@ export default function LocaleSwitcher() {
   }
 
   return (
-    <Dropdown
-      options={options}
-      selected={locale}
-      onChange={handleChange}
-      placeholder="Idioma"
-      className={isPending ? "opacity-50 pointer-events-none" : ""}
-    />
+    <div className={isPending ? "opacity-50 pointer-events-none" : ""}>
+      <Dropdown items={localeItems} label={currentLocale.toUpperCase()} variant="transparent" />
+    </div>
   );
 }
