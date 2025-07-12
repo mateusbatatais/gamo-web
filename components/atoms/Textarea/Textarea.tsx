@@ -71,6 +71,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       <div className="flex flex-col gap-1.5 w-full">
         {label && (
           <label
+            htmlFor={textareaId}
             className={clsx(
               "text-sm text-neutral-700 dark:text-neutral-200",
               props.disabled && "text-neutral-400 dark:text-neutral-500",
