@@ -40,9 +40,19 @@
   },
   "Header": {
     "altLogo": "Logo Gamo",
-    "catalog": "Catálogo",
+    "catalog": {
+      "title": "Catálogo",
+      "consoles": "Consoles",
+      "games": "Jogos",
+      "accessories": "Acessórios",
+      "skins": "Skins",
+      "collections": "Coleções"
+    },
     "login": "Entrar",
     "myAccount": "Minha Conta",
+    "viewProfile": "Ver Perfil",
+    "wishlist": "Lista de Desejos",
+    "logout": "Sair",
     "language": "Idioma",
     "theme": "Tema"
   },

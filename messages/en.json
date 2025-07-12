@@ -41,9 +41,19 @@
   },
   "Header": {
     "altLogo": "Gamo Logo",
-    "catalog": "Catalog",
+    "catalog": {
+      "title": "Catalog",
+      "consoles": "Consoles",
+      "games": "Games",
+      "accessories": "Accessories",
+      "skins": "Skins",
+      "collections": ""
+    },
     "login": "Login",
     "myAccount": "My Account",
+    "viewProfile": "View Profile",
+    "wishlist": "Wishlist",
+    "logout": "Logout",
     "language": "Language",
     "theme": "Theme"
   },

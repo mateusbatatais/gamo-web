@@ -103,15 +103,17 @@ export function Dropdown({
   return (
     <div className={clsx("relative inline-block", className)}>
       {trigger ? (
-        <button
-          type="button"
-          onClick={handleOpen}
-          className="cursor-pointer focus:outline-none"
-          aria-haspopup="true"
-          aria-expanded={isOpen}
-        >
-          {trigger}
-        </button>
+        <div ref={anchorRef}>
+          <Link
+            href="#"
+            onClick={handleOpen}
+            className="cursor-pointer focus:outline-none"
+            aria-haspopup="true"
+            aria-expanded={isOpen}
+          >
+            {trigger}
+          </Link>
+        </div>
       ) : (
         defaultTrigger
       )}
@@ -155,7 +157,7 @@ export function Dropdown({
 
           if (item.href) {
             return (
-              <Link key={item.id} href={item.href} passHref legacyBehavior>
+              <Link key={item.id} href={item.href} passHref>
                 {content}
               </Link>
             );

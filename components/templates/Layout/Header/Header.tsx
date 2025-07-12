@@ -9,16 +9,30 @@ import LocaleSwitcher from "@/components/molecules/LocaleSwitcher/LocaleSwitcher
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+  Bell,
+  User,
+  Heart,
+  LogOut,
+  ChevronDown,
+  Gamepad,
+  Joystick,
+  Gamepad2,
+  SquareUserRound,
+} from "lucide-react";
 import clsx from "clsx";
+import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
+import { Button } from "@/components/atoms/Button/Button";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const t = useTranslations("Header");
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // No useEffect de scroll, adicionar debounce
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
 
@@ -36,29 +50,77 @@ export default function Header() {
     };
   }, []);
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const router = useRouter();
+
+  const catalogItems = [
+    {
+      id: "consoles",
+      label: t("catalog.consoles"),
+      icon: <Gamepad size={16} />,
+      onClick: () => router.push("/consoles"),
+    },
+    {
+      id: "accessories",
+      label: t("catalog.accessories"),
+      icon: <Joystick size={16} />,
+      onClick: () => router.push("/accessories"),
+    },
+    {
+      id: "games",
+      label: t("catalog.games"),
+      icon: <Gamepad2 size={16} />,
+      onClick: () => router.push("/games"),
+    },
+  ];
+
+  const accountItems = user
+    ? [
+        {
+          id: "myAccount",
+          label: t("myAccount"),
+          icon: <User size={16} />,
+          onClick: () => router.push("/account"),
+        },
+        {
+          id: "viewProfile",
+          label: t("viewProfile"),
+          icon: <SquareUserRound size={16} />,
+          onClick: () => router.push(`/user/${user.slug}`),
+        },
+        {
+          id: "wishlist",
+          label: t("wishlist"),
+          icon: <Heart size={16} />,
+          onClick: () => router.push("/wishlist"),
+        },
+        {
+          id: "logout",
+          label: t("logout"),
+          icon: <LogOut size={16} />,
+          onClick: () => logout(),
+        },
+      ]
+    : [];
 
   return (
     <header
       className={clsx(
         "bg-white shadow-sm dark:bg-gray-900 sticky top-0 z-50 transition-all duration-300",
-        isScrolled ? "py-2" : "py-4", // Padding reduzido quando scrollado
+        isScrolled ? "py-2" : "py-4",
       )}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          {/* Logo - muda para ícone pequeno quando scrollado */}
           <Link
             href="/"
             className={clsx(
               "text-2xl font-bold text-gray-800 dark:text-gray-100 flex-shrink-0 transition-all",
-              isScrolled ? "w-10" : "w-32", // Largura reduzida
+              isScrolled ? "w-10" : "w-32",
             )}
           >
             {isScrolled ? (
-              // Ícone simplificado para header reduzido
               <Image
                 src="/images/icon-gamo.svg"
                 alt={t("altLogo")}
@@ -68,7 +130,6 @@ export default function Header() {
                 priority={true}
               />
             ) : (
-              // Logo completo
               <Image
                 src="/images/logo-gamo.svg"
                 alt={t("altLogo")}
@@ -80,51 +141,68 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Barra de busca - desktop */}
           <div
             className={clsx(
               "hidden md:block mx-4 transition-all duration-300",
-              isScrolled ? "max-w-md w-full" : "max-w-xl w-full", // Reduz tamanho quando scrollado
+              isScrolled ? "max-w-md w-full" : "max-w-xl w-full",
             )}
           >
             <SearchBar variant="header" compact={isScrolled} />
           </div>
 
-          <div className="flex items-center space-x-2">
-            {/* Barra de busca - mobile (sempre visível) */}
+          <div className="flex items-center space-x-2 md:space-x-4">
+            {/* Barra de busca - mobile */}
             <div className="md:hidden">
               <SearchBar variant="header" />
             </div>
 
-            {/* Botão menu mobile */}
-            <button
+            <Button
               onClick={toggleMenu}
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 md:hidden"
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              variant="transparent"
+              size="sm"
+              className="md:hidden"
+              icon={isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            ></Button>
           </div>
 
-          {/* Menu desktop - elementos podem ser reduzidos */}
           <div
             className={clsx(
               "hidden md:flex items-center space-x-4 transition-all",
-              isScrolled ? "text-sm" : "text-base", // Tamanho de fonte reduzido
+              isScrolled ? "text-sm" : "text-base",
             )}
           >
-            <Link
-              href="/catalog"
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-            >
-              {t("catalog")}
-            </Link>
+            <Dropdown
+              label={t("catalog.title")}
+              variant="transparent"
+              items={catalogItems}
+              menuProps={{
+                className: "mt-2",
+              }}
+            />
+
             {user ? (
-              <Link
-                href="/account"
-                className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-              >
-                {t("myAccount")}
-              </Link>
+              <Dropdown
+                trigger={
+                  <div className="flex items-center space-x-1 cursor-pointer">
+                    {user.profileImage ? (
+                      <Image
+                        src={user.profileImage}
+                        alt="User Avatar"
+                        width={32}
+                        height={32}
+                        className="rounded-full border-2 border-transparent hover:border-primary"
+                      />
+                    ) : (
+                      <User size={20} />
+                    )}
+                    <ChevronDown size={16} />
+                  </div>
+                }
+                items={accountItems}
+                menuProps={{
+                  className: "mt-2",
+                }}
+              />
             ) : (
               <Link
                 href="/login"
@@ -133,30 +211,52 @@ export default function Header() {
                 {t("login")}
               </Link>
             )}
-            <LocaleSwitcher />
-            <ThemeToggle />
+
+            <div className="hidden md:flex ">
+              <LocaleSwitcher />
+              <Button size="sm" icon={<Bell size={20} />} variant="transparent"></Button>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
 
         {/* Menu mobile */}
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4 mt-2">
-            <nav className="flex flex-col space-y-4">
-              <Link
-                href="/catalog"
-                className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 py-2"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {t("catalog")}
-              </Link>
+            <nav className="flex flex-col space-y-3">
+              {/* Dropdown de catálogo mobile */}
+              <div className="relative">
+                <h3>{t("catalog.title")}</h3>
+
+                <div className="pl-4 mt-2 space-y-3">
+                  {catalogItems.map((item) => (
+                    <Link key={item.id} href={item.id!} onClick={() => setIsMenuOpen(false)}>
+                      <div className="flex items-center gap-2 py-1 ">
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
               {user ? (
-                <Link
-                  href="/account"
-                  className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t("myAccount")}
-                </Link>
+                <>
+                  {accountItems.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={item.id}
+                      onClick={() => {
+                        item.onClick?.();
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex gap-2 items-center "
+                    >
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </Link>
+                  ))}
+                </>
               ) : (
                 <Link
                   href="/login"
@@ -166,13 +266,14 @@ export default function Header() {
                   {t("login")}
                 </Link>
               )}
-              <div className="flex items-center justify-between py-2">
-                <span className="text-gray-600 dark:text-gray-300">{t("language")}</span>
-                <LocaleSwitcher />
-              </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-gray-600 dark:text-gray-300">{t("theme")}</span>
-                <ThemeToggle />
+
+              {/* Ícones no mobile (dentro do menu) */}
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <LocaleSwitcher />
+                  <Button size="sm" icon={<Bell size={20} />} variant="transparent"></Button>
+                  <ThemeToggle />
+                </div>
               </div>
             </nav>
           </div>
