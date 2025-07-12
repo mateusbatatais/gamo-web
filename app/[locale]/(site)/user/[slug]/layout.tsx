@@ -18,7 +18,7 @@ interface PublicProfileLayoutProps {
 }
 
 export default async function PublicProfileLayout({ children, params }: PublicProfileLayoutProps) {
-  const { slug, locale } = params;
+  const { slug, locale } = await params;
 
   try {
     const profile = await getPublicProfile(slug, locale);

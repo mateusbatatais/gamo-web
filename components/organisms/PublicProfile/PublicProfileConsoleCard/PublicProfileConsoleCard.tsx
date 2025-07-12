@@ -23,7 +23,7 @@ export const PublicProfileConsoleCard = ({
             fill
             sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
             className="object-contain"
-            priority
+            priority={true}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
