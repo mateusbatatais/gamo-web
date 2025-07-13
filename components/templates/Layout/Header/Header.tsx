@@ -78,13 +78,13 @@ export default function Header() {
   const accountItems = user
     ? [
         {
-          id: "myAccount",
+          id: "account",
           label: t("myAccount"),
           icon: <User size={16} />,
           onClick: () => router.push("/account"),
         },
         {
-          id: "viewProfile",
+          id: `/user/${user.slug}`,
           label: t("viewProfile"),
           icon: <SquareUserRound size={16} />,
           onClick: () => router.push(`/user/${user.slug}`),
@@ -180,6 +180,12 @@ export default function Header() {
               }}
             />
 
+            <div className="hidden md:flex ">
+              <Button size="sm" icon={<Bell size={20} />} variant="transparent"></Button>
+              <ThemeToggle />
+              <LocaleSwitcher />
+            </div>
+
             {user ? (
               <Dropdown
                 trigger={
@@ -204,19 +210,14 @@ export default function Header() {
                 }}
               />
             ) : (
-              <Link
-                href="/login"
-                className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100"
-              >
-                {t("login")}
+              <Link href="/login">
+                <Button
+                  variant="transparent"
+                  className="flex items-center gap-2"
+                  label={t("login")}
+                ></Button>
               </Link>
             )}
-
-            <div className="hidden md:flex ">
-              <LocaleSwitcher />
-              <Button size="sm" icon={<Bell size={20} />} variant="transparent"></Button>
-              <ThemeToggle />
-            </div>
           </div>
         </div>
 
@@ -224,10 +225,8 @@ export default function Header() {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4 mt-2">
             <nav className="flex flex-col space-y-3">
-              {/* Dropdown de catálogo mobile */}
               <div className="relative">
                 <h3>{t("catalog.title")}</h3>
-
                 <div className="pl-4 mt-2 space-y-3">
                   {catalogItems.map((item) => (
                     <Link key={item.id} href={item.id!} onClick={() => setIsMenuOpen(false)}>
@@ -243,9 +242,8 @@ export default function Header() {
               {user ? (
                 <>
                   {accountItems.map((item) => (
-                    <Link
+                    <button
                       key={item.id}
-                      href={item.id}
                       onClick={() => {
                         item.onClick?.();
                         setIsMenuOpen(false);
@@ -254,7 +252,7 @@ export default function Header() {
                     >
                       {item.icon}
                       <span>{item.label}</span>
-                    </Link>
+                    </button>
                   ))}
                 </>
               ) : (
