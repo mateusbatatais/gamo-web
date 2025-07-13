@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { apiFetch } from "@/utils/api";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import Image from "next/image";
@@ -28,7 +27,7 @@ interface ApiError extends Error {
 }
 
 export default function AccountDetailsForm() {
-  const { token, user, logout } = useAuth();
+  const { token, user, logout, updateUser } = useAuth(); // Adicionado updateUser
   const [name, setName] = useState(user?.name || "");
   const [slug, setSlug] = useState(user?.slug || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -40,7 +39,6 @@ export default function AccountDetailsForm() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(user?.profileImage || null);
 
   const t = useTranslations("account.detailsForm");
-  const router = useRouter();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -110,16 +108,26 @@ export default function AccountDetailsForm() {
         body: payload,
       });
 
+      updateUser({
+        name,
+        slug,
+        email,
+        description,
+        profileImage: profileImageUrl || "",
+      });
+
       showToast(t("updateSuccess"), "success");
-      router.refresh();
     } catch (err: unknown) {
       const apiErr = err as ApiError;
       if (apiErr.code === "UNAUTHORIZED") return void logout();
       const msg = apiErr.message || t("updateError");
       setErrorMsg(msg);
-      showToast(msg, "danger"); // Usando showToast
+      showToast(msg, "danger");
     } finally {
       setLoading(false);
+      if (croppedBlob) {
+        setCroppedBlob(null);
+      }
     }
   }
 

@@ -14,6 +14,7 @@ interface AuthUser {
   email: string;
   profileImage: string;
   hasPassword: boolean;
+  description?: string;
 }
 
 interface AuthContextType {
@@ -22,6 +23,7 @@ interface AuthContextType {
   initialized: boolean;
   login: (newToken: string) => void;
   logout: () => void;
+  updateUser: (userData: Partial<AuthUser>) => void; // Novo método
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -87,6 +89,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push(`/${locale}/login`);
   }
 
+  // Função para atualizar os dados do usuário no contexto
+  function updateUser(userData: Partial<AuthUser>) {
+    setUser((prev) => {
+      if (!prev) return null;
+      return { ...prev, ...userData };
+    });
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -95,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         initialized,
         login,
         logout,
+        updateUser, // Incluído no contexto
       }}
     >
       {children}
