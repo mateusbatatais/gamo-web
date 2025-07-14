@@ -30,6 +30,55 @@ export async function generateMetadata(props: Omit<Props, "children">) {
     title: t("siteName"),
     description: t("siteDescription"),
     url: `https://gamo.games/`,
+    openGraph: {
+      title: t("siteName"),
+      description: t("siteDescription"),
+      url: `https://gamo.games/${locale}`,
+      images: "/og-image.png",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("siteName"),
+      description: t("siteDescription"),
+      images: "/og-image.png",
+    },
+    keywords: t("siteKeywords")
+      .split(",")
+      .map((keyword) => keyword.trim()),
+    robots: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": "-1",
+      "max-video-preview": "-1",
+    },
+    appleWebApp: {
+      capable: true,
+      title: t("siteName"),
+      statusBarStyle: "default",
+      startupImage: "/apple-touch-icon.png",
+    },
+    icons: {
+      icon: "/favicon.ico",
+      apple: "/apple-touch-icon.png",
+      shortcut: "/favicon-32x32.png",
+      other: [
+        {
+          rel: "mask-icon",
+          url: "/safari-pinned-tab.svg",
+          color: "#5bbad5",
+        },
+      ],
+    },
+    manifest: "/manifest.json",
+    metadataBase: new URL("https://gamo.games/"),
+    alternates: {
+      canonical: `https://gamo.games/${locale}`,
+      languages: {
+        en: "/en",
+        pt: "/pt",
+      },
+    },
   };
 }
 
