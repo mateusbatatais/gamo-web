@@ -219,7 +219,7 @@ const ActionCard = ({
       className={`flex items-center gap-4 p-4 border rounded-lg transition-colors ${colorClasses[color]}`}
     >
       <div className={`p-3 rounded-lg ${iconClasses[color]}`}>{icon}</div>
-      <span className="font-medium text-gray-900 dark:text-white">{title}</span>
+      <span className="text-sm text-gray-900 dark:text-white word-wrap">{title}</span>
     </a>
   );
 };

@@ -5,10 +5,9 @@ import { useTranslations } from "next-intl";
 import { AuthGuard } from "@/contexts/AuthGuard";
 interface AccountLayoutProps {
   children: ReactNode;
-  title?: string;
 }
 
-export default function AccountLayout({ children, title }: AccountLayoutProps) {
+export default function AccountLayout({ children }: AccountLayoutProps) {
   const t = useTranslations("account");
 
   return (
@@ -20,7 +19,7 @@ export default function AccountLayout({ children, title }: AccountLayoutProps) {
           </div>
           <div className="w-full md:w-3/4 lg:w-4/5">
             <h1 className="text-2xl md:text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-              {title || t("title")}
+              {t("title")}
             </h1>
             <div className="space-y-6">{children}</div>
           </div>
