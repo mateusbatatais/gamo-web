@@ -3,7 +3,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
-import CatalogComponent from "@/components/organisms/Catalog/Catalog";
+import ConsoleCatalogComponent from "@/components/organisms/ConsoleCatalogComponent/ConsoleCatalogComponent";
 
 const CatalogPageWrapper = () => {
   const searchParams = useSearchParams();
@@ -12,7 +12,7 @@ const CatalogPageWrapper = () => {
   const page = parseInt(searchParams.get("page") || "1", 10);
   const perPage = parseInt(searchParams.get("perPage") || "12", 10);
 
-  return <CatalogComponent locale={locale} page={page} perPage={perPage} />;
+  return <ConsoleCatalogComponent locale={locale} page={page} perPage={perPage} />;
 };
 
 export default CatalogPageWrapper;

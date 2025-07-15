@@ -284,5 +284,8 @@
       "selling": "Selling",
       "lookingFor": "Looking For"
     }
+  },
+  "HomePage": {
+    "construction": "Under construction"
   }
 }

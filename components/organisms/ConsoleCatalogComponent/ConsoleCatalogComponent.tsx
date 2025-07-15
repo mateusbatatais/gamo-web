@@ -15,13 +15,13 @@ import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewTogg
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { useTranslations } from "next-intl";
 
-interface CatalogComponentProps {
+interface ConsoleCatalogComponentProps {
   locale: string;
   page: number;
   perPage: number;
 }
 
-const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
+const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogComponentProps) => {
   const [consoleVariants, setConsoleVariants] = useState<ConsoleVariantsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -383,4 +383,4 @@ const CatalogComponent = ({ locale, page, perPage }: CatalogComponentProps) => {
   );
 };
 
-export default CatalogComponent;
+export default ConsoleCatalogComponent;
