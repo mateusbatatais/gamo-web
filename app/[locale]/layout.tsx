@@ -34,13 +34,13 @@ export async function generateMetadata(props: Omit<Props, "children">) {
       title: t("siteName"),
       description: t("siteDescription"),
       url: `https://gamo.games/${locale}`,
-      images: "/og-image.png",
+      images: "https://gamo.games/images/logo-gamo.png",
     },
     twitter: {
       card: "summary_large_image",
       title: t("siteName"),
       description: t("siteDescription"),
-      images: "/og-image.png",
+      images: "https://gamo.games/images/logo-gamo.png",
     },
     keywords: t("siteKeywords")
       .split(",")
