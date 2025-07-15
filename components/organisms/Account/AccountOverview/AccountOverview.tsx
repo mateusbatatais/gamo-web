@@ -216,10 +216,10 @@ const ActionCard = ({
   return (
     <a
       href={href}
-      className={`flex items-center gap-4 p-4 border rounded-lg transition-colors ${colorClasses[color]}`}
+      className={`flex items-center gap-3 p-3 border rounded-lg transition-colors ${colorClasses[color]}`}
     >
       <div className={`p-3 rounded-lg ${iconClasses[color]}`}>{icon}</div>
-      <span className="text-sm text-gray-900 dark:text-white word-wrap">{title}</span>
+      <span className="text-sm text-gray-900 dark:text-white">{title}</span>
     </a>
   );
 };

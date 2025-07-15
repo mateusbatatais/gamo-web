@@ -17,7 +17,12 @@ interface SortSelectProps {
 export const SortSelect = ({ options, value, onChange, className }: SortSelectProps) => {
   return (
     <div className={clsx("relative", className)} data-testid="sort-select-container">
-      <Select value={value} onChange={(e) => onChange(e.target.value)} options={options}></Select>
+      <Select
+        value={value}
+        size="sm"
+        onChange={(e) => onChange(e.target.value)}
+        options={options}
+      ></Select>
     </div>
   );
 };
