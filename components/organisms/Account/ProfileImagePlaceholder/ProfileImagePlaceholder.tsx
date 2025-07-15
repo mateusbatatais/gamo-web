@@ -13,7 +13,7 @@ export default function ProfileImagePlaceholder({
   className,
 }: ProfileImagePlaceholderProps) {
   const sizeClasses = {
-    sm: "w-12 h-12",
+    sm: "w-10 h-10",
     md: "w-16 h-16",
     lg: "w-24 h-24",
   };
