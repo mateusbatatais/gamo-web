@@ -21,7 +21,6 @@ export default function AccountOverview() {
 
   return (
     <div className="space-y-6">
-      {/* Cards de estatísticas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title={t("totalSales")}
@@ -51,9 +50,7 @@ export default function AccountOverview() {
         />
       </div>
 
-      {/* Cards principais */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Atividades recentes */}
         <Card>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">

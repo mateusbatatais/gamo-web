@@ -155,9 +155,7 @@
     "backToLogin": "Ir para Login"
   },
   "account": {
-    "layout": {
-      "title": "Minha Conta"
-    },
+    "title": "Minha Conta",
     "sidebar": {
       "overview": "Visão Geral",
       "details": "Detalhes do Perfil",

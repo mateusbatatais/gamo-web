@@ -1,3 +1,5 @@
+"use client";
+
 // components/organisms/AccountSidebar/AccountSidebar.tsx
 import React from "react";
 import Link from "next/link";
