@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/atoms/Button/Button";
 import { useTranslations } from "next-intl";
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
@@ -11,7 +11,7 @@ interface ImageCropperProps {
   src: string;
   aspect?: number;
   onBlobReady: (blob: Blob) => void;
-  setFileSrc: (src: string | null) => void;
+  setFileSrc?: (src: string | null) => void;
   onCancel?: () => void;
 }
 
@@ -27,6 +27,9 @@ export default function ImageCropper({
   const [pixelCrop, setPixelCrop] = useState<PixelCrop>();
   const t = useTranslations("");
 
+  // Novo estado para controlar o modal
+  const [isOpen, setIsOpen] = useState(true);
+
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
       const { width, height } = e.currentTarget;
@@ -40,10 +43,11 @@ export default function ImageCropper({
     [aspect],
   );
 
-  const handleCancel = () => {
-    setFileSrc(null);
+  const handleCancel = useCallback(() => {
+    setIsOpen(false);
+    setFileSrc?.(null);
     onCancel?.();
-  };
+  }, [onCancel, setFileSrc]);
 
   const onCropComplete = useCallback((completed: PixelCrop) => {
     setPixelCrop(completed);
@@ -56,46 +60,68 @@ export default function ImageCropper({
       const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
       canvas.width = pixelCrop.width;
       canvas.height = pixelCrop.height;
-      const ctx = canvas.getContext("2d")!;
-      ctx.drawImage(
-        imgRef.current,
-        pixelCrop.x * scaleX,
-        pixelCrop.y * scaleY,
-        pixelCrop.width * scaleX,
-        pixelCrop.height * scaleY,
-        0,
-        0,
-        pixelCrop.width,
-        pixelCrop.height,
-      );
-      canvas.toBlob(
-        (blob) => {
-          if (blob) onBlobReady(blob);
-        },
-        "image/jpeg",
-        0.9,
-      );
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(
+          imgRef.current,
+          pixelCrop.x * scaleX,
+          pixelCrop.y * scaleY,
+          pixelCrop.width * scaleX,
+          pixelCrop.height * scaleY,
+          0,
+          0,
+          pixelCrop.width,
+          pixelCrop.height,
+        );
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              onBlobReady(blob);
+              setIsOpen(false);
+            }
+          },
+          "image/jpeg",
+          0.9,
+        );
+      }
     }
   }, [onBlobReady, pixelCrop]);
 
+  // Fechar ao pressionar ESC
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleCancel();
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [handleCancel]);
+
+  if (!isOpen) return null;
+
   return (
-    <div className="space-y-4" data-testid="image-cropper">
-      <ReactCrop
-        crop={crop}
-        onChange={(c) => setCrop(c)}
-        onComplete={onCropComplete}
-        aspect={aspect}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={imgRef}
-          alt="Crop preview"
-          src={src}
-          onLoad={onImageLoad}
-          className="max-w-full"
-        />
-      </ReactCrop>
-      <div className="mt-6 gap-3 flex justify-end">
+    <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center p-4">
+      <div className="flex-1 flex items-center justify-center w-full overflow-auto">
+        <ReactCrop
+          crop={crop}
+          onChange={(c) => setCrop(c)}
+          onComplete={onCropComplete}
+          aspect={aspect}
+          className="max-w-full max-h-full"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={imgRef}
+            alt="Crop preview"
+            src={src}
+            onLoad={onImageLoad}
+            className="max-w-full max-h-[70vh] object-contain"
+          />
+        </ReactCrop>
+      </div>
+
+      <div className="mt-4 gap-3 flex justify-end w-full max-w-3xl px-4 py-3 bg-white dark:bg-gray-900 rounded-lg">
         <Button
           variant="transparent"
           status="danger"
@@ -106,7 +132,7 @@ export default function ImageCropper({
           onClick={onConfirm}
           label={t("crop.confirmCrop")}
           data-testid="button-crop-confirm"
-        ></Button>
+        />
       </div>
     </div>
   );

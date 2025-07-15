@@ -82,21 +82,12 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
       </div>
 
       {isEditing && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4"
-          data-testid="crop-modal"
-        >
-          <div className="bg-white dark:bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-4">
-              <ImageCropper
-                src={src}
-                onBlobReady={handleCrop}
-                setFileSrc={() => {}}
-                onCancel={() => setIsEditing(false)}
-              />
-            </div>
-          </div>
-        </div>
+        <ImageCropper
+          src={src}
+          onBlobReady={handleCrop}
+          setFileSrc={() => setIsEditing(false)}
+          onCancel={() => setIsEditing(false)}
+        />
       )}
     </div>
   );

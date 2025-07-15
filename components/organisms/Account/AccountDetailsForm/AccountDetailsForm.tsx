@@ -133,15 +133,14 @@ export default function AccountDetailsForm() {
 
   return (
     <>
-      {fileSrc && !previewUrl && (
-        <div className="space-y-4">
-          <ImageCropper
-            src={fileSrc}
-            aspect={1}
-            onBlobReady={setCroppedBlob}
-            setFileSrc={setFileSrc}
-          />
-        </div>
+      {fileSrc && (
+        <ImageCropper
+          src={fileSrc}
+          aspect={1}
+          onBlobReady={setCroppedBlob}
+          setFileSrc={setFileSrc}
+          onCancel={() => setFileSrc(null)}
+        />
       )}
 
       {!fileSrc && (

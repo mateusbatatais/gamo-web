@@ -41,7 +41,6 @@ export function AddToCollectionForm({
   const [additionalPhotos, setAdditionalPhotos] = useState<{ url: string; blob: Blob | null }[]>(
     [],
   );
-  const [isCropOpen, setIsCropOpen] = useState(false);
   const [currentCropImage, setCurrentCropImage] = useState<{
     url: string;
     type: "main" | "additional";
@@ -102,7 +101,6 @@ export function AddToCollectionForm({
           url,
           type: "main",
         });
-        setIsCropOpen(true);
       };
       reader.readAsDataURL(file);
     } else {
@@ -140,7 +138,6 @@ export function AddToCollectionForm({
       );
     }
 
-    setIsCropOpen(false);
     setCurrentCropImage(null);
   };
 
@@ -373,22 +370,13 @@ export function AddToCollectionForm({
         </div>
       </Collapse>
 
-      {isCropOpen && currentCropImage && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-900 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-auto">
-            <div className="p-4">
-              <ImageCropper
-                src={currentCropImage.url}
-                onBlobReady={handleCropComplete}
-                setFileSrc={() => {}}
-                onCancel={() => {
-                  setIsCropOpen(false);
-                  setCurrentCropImage(null);
-                }}
-              />
-            </div>
-          </div>
-        </div>
+      {currentCropImage && (
+        <ImageCropper
+          src={currentCropImage.url}
+          onBlobReady={handleCropComplete}
+          setFileSrc={() => setCurrentCropImage(null)}
+          onCancel={() => setCurrentCropImage(null)}
+        />
       )}
 
       <div className="flex justify-end ">

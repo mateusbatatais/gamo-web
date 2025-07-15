@@ -17,6 +17,7 @@ describe("ImageCropper Component", () => {
   const mockOnBlobReady = vi.fn();
   const mockSetFileSrc = vi.fn();
   const imageSrc = "http://example.com/image.jpg"; // Coloque uma URL de imagem válida para o teste
+  const mockOnCancel = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks(); // Limpa os mocks antes de cada teste
@@ -57,5 +58,30 @@ describe("ImageCropper Component", () => {
     // Verifica se a imagem foi carregada e a área de corte foi configurada
     const image = screen.getByAltText("Crop preview");
     expect(image).toBeInTheDocument();
+  });
+
+  it("fecha com a tecla ESC", () => {
+    render(
+      <ImageCropper
+        src={imageSrc}
+        onBlobReady={mockOnBlobReady}
+        setFileSrc={mockSetFileSrc}
+        onCancel={mockOnCancel}
+      />,
+    );
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(mockOnCancel).toHaveBeenCalled();
+  });
+
+  it("não renderiza quando fechado", () => {
+    const { container } = render(
+      <ImageCropper src={imageSrc} onBlobReady={mockOnBlobReady} setFileSrc={mockSetFileSrc} />,
+    );
+
+    fireEvent.click(screen.getByText("Cancelar"));
+
+    expect(container).toBeEmptyDOMElement();
   });
 });
