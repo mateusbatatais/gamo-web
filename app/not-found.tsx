@@ -1,16 +1,21 @@
-"use client";
+import { NextIntlClientProvider } from "next-intl";
+import { Providers } from "@/contexts/Providers";
+import { ThemeProvider } from "next-themes";
+import NotFound from "@/components/templates/not-found/NotFound";
 
-import Error from "next/error";
+export default async function GlobalNotFound({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
 
-// This page renders when a route like `/unknown.txt` is requested.
-// In this case, the layout at `app/[locale]/layout.tsx` receives
-// an invalid value as the `[locale]` param and calls `notFound()`.
-
-export default function GlobalNotFound() {
   return (
-    <html lang="en">
-      <body>
-        <Error statusCode={404} />;
+    <html lang={locale} suppressHydrationWarning>
+      <body className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+        <ThemeProvider attribute="data-theme" enableSystem>
+          <NextIntlClientProvider>
+            <Providers>
+              <NotFound />
+            </Providers>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

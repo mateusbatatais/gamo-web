@@ -70,7 +70,6 @@ export async function generateMetadata(props: Omit<Props, "children">) {
         },
       ],
     },
-    manifest: "/manifest.json",
     metadataBase: new URL("https://gamo.games/"),
     alternates: {
       canonical: `https://gamo.games/${locale}`,
