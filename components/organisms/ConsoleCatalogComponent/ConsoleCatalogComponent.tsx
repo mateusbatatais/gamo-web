@@ -67,7 +67,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       params.set("brand", brands.join(","));
     }
 
-    window.history.pushState({}, "", `/catalog?${params.toString()}`);
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
   const handleGenerationChange = (generations: string[]) => {
@@ -86,7 +86,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       params.set("generation", generations.join(","));
     }
 
-    window.history.pushState({}, "", `/catalog?${params.toString()}`);
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
   const clearFilters = () => {
@@ -101,7 +101,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       search: searchQuery,
     });
 
-    window.history.pushState({}, "", `/catalog?${params.toString()}`);
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
   useEffect(() => {
@@ -177,7 +177,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       sort: newSort,
     });
 
-    window.history.pushState({}, "", `/catalog?${params.toString()}`);
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
   const handlePageChange = (newPage: number) => {

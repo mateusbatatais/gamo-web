@@ -31,7 +31,7 @@ export function SearchBar({ className, variant = "page", compact = false }: Sear
       params.delete("search");
     }
 
-    router.push(`/catalog?${params.toString()}`);
+    router.push(`/console-catalog?${params.toString()}`);
 
     // Recolher a busca em mobile após pesquisa
     if (variant === "header" && isExpanded) {
