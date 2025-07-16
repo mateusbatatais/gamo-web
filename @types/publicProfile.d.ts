@@ -19,7 +19,7 @@ export interface UserConsolePublic {
   price: number | null;
   hasBox: boolean | null;
   hasManual: boolean | null;
-  condition: string | null;
+  condition?: "NEW" | "USED" | "REFURBISHED";
   acceptsTrade: boolean | null;
   photoMain: string | null;
   photos: string[] | null;

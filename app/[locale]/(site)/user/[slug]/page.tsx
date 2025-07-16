@@ -14,10 +14,11 @@ interface CollectionPageProps {
 export default async function CollectionPage({ params }: CollectionPageProps) {
   const { slug, locale } = await params;
   const consoles = await getUserConsolesPublic(slug, locale);
-
+  // const isOwner = user?.slug === (await params).slug;
+  const isOwner = true; // Placeholder, replace with actual logic to determine if the user is the owner
   return (
     <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-      <PublicProfileConsoleGrid consoles={consoles} />
+      <PublicProfileConsoleGrid consoles={consoles} isOwner={isOwner} />
     </Suspense>
   );
 }
