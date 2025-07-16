@@ -8,11 +8,13 @@ import { Card } from "@/components/atoms/Card/Card";
 interface PublicProfileConsoleGridProps {
   consoles: UserConsolePublic[];
   isOwner?: boolean;
+  revalidate: () => Promise<void>; // Adicionamos a função de revalidação
 }
 
 export const PublicProfileConsoleGrid = ({
   consoles,
   isOwner = false,
+  revalidate,
 }: PublicProfileConsoleGridProps) => {
   const t = useTranslations("PublicProfile");
 
@@ -50,6 +52,7 @@ export const PublicProfileConsoleGrid = ({
             key={`owned-${consoleItem.id}`}
             consoleItem={consoleItem}
             isOwner={isOwner}
+            revalidate={revalidate} // Passar para o card
           />
         ))}
       </div>
@@ -63,6 +66,7 @@ export const PublicProfileConsoleGrid = ({
             key={`selling-${consoleItem.id}`}
             consoleItem={consoleItem}
             isOwner={isOwner}
+            revalidate={revalidate} // Passar para o card
           />
         ))}
       </div>
@@ -75,6 +79,7 @@ export const PublicProfileConsoleGrid = ({
             key={`lookingfor-${consoleItem.id}`}
             consoleItem={consoleItem}
             isOwner={isOwner}
+            revalidate={revalidate} // Passar para o card
           />
         ))}
       </div>

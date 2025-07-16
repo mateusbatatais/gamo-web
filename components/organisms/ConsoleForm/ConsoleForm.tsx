@@ -1,53 +1,72 @@
-// components/organisms/EditConsoleForm/EditConsoleForm.tsx
+// components/organisms/ConsoleForm/ConsoleForm.tsx
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState, useRef, ChangeEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/atoms/Input/Input";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Select } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
+import { Collapse } from "@/components/atoms/Collapse/Collapse";
+import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
+import { ImagePreview } from "@/components/molecules/ImagePreview/ImagePreview";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
-import { UserConsolePublic } from "@/@types/publicProfile";
-import { ImagePreview } from "@/components/molecules/ImagePreview/ImagePreview";
 import { Plus } from "lucide-react";
-import { Collapse } from "@/components/atoms/Collapse/Collapse";
-import { UserConsoleUpdate } from "@/@types/userConsole";
-import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
+import { UserConsoleInput, UserConsoleUpdate } from "@/@types/userConsole";
 
-interface EditConsoleFormProps {
-  consoleItem: UserConsolePublic;
+interface ConsoleFormProps {
+  mode: "create" | "edit";
+  consoleId: number;
+  consoleVariantId: number;
+  skinId?: number | null;
+  initialData?: {
+    id?: number;
+    description?: string | null;
+    status?: "OWNED" | "SELLING" | "LOOKING_FOR";
+    price?: number | null;
+    hasBox?: boolean | null;
+    hasManual?: boolean | null;
+    condition?: "NEW" | "USED" | "REFURBISHED" | null;
+    acceptsTrade?: boolean | null;
+    photoMain?: string | null;
+    photos?: string[] | null;
+  };
   onSuccess: () => void;
 }
 
-export const EditConsoleForm = ({ consoleItem, onSuccess }: EditConsoleFormProps) => {
-  const t = useTranslations("EditConsoleForm");
+export const ConsoleForm = ({
+  mode,
+  consoleId,
+  consoleVariantId,
+  skinId,
+  initialData,
+  onSuccess,
+}: ConsoleFormProps) => {
+  const t = useTranslations("ConsoleForm");
   const { token } = useAuth();
   const { showToast } = useToast();
 
-  // Estado inicial baseado no item existente
+  // Estado para os campos do formulário
   const [formData, setFormData] = useState({
-    description: consoleItem.description || "",
-    status: consoleItem.status,
-    price: consoleItem.price ? String(consoleItem.price) : "",
-    hasBox: consoleItem.hasBox || false,
-    hasManual: consoleItem.hasManual || false,
-    condition: consoleItem.condition || "USED",
-    acceptsTrade: consoleItem.acceptsTrade || false,
+    description: initialData?.description || "",
+    status: initialData?.status || "OWNED",
+    price: initialData?.price ? String(initialData.price) : "",
+    hasBox: initialData?.hasBox || false,
+    hasManual: initialData?.hasManual || false,
+    condition: initialData?.condition || "USED",
+    acceptsTrade: initialData?.acceptsTrade || false,
   });
 
-  // Estados para fotos
+  // Estados para as imagens
   const [photoMain, setPhotoMain] = useState<{ url: string; blob: Blob | null } | null>(
-    consoleItem.photoMain ? { url: consoleItem.photoMain, blob: null } : null,
+    initialData?.photoMain ? { url: initialData.photoMain, blob: null } : null,
   );
-
   const [additionalPhotos, setAdditionalPhotos] = useState<{ url: string; blob: Blob | null }[]>(
-    (consoleItem.photos || []).map((url) => ({ url, blob: null })),
+    initialData?.photos ? initialData.photos.map((url) => ({ url, blob: null })) : [],
   );
-
   const [currentCropImage, setCurrentCropImage] = useState<{
     url: string;
     type: "main" | "additional";
@@ -59,7 +78,7 @@ export const EditConsoleForm = ({ consoleItem, onSuccess }: EditConsoleFormProps
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
@@ -68,6 +87,59 @@ export const EditConsoleForm = ({ consoleItem, onSuccess }: EditConsoleFormProps
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const handleImageUpload = async (
+    e: ChangeEvent<HTMLInputElement>,
+    type: "main" | "additional",
+  ) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    if (type === "main") {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const url = event.target?.result as string;
+        setCurrentCropImage({
+          url,
+          type: "main",
+        });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const newPhotos: { url: string; blob: Blob | null }[] = [];
+      for (const file of files.slice(0, 5 - additionalPhotos.length)) {
+        const url = URL.createObjectURL(file);
+        newPhotos.push({ url, blob: file });
+      }
+      setAdditionalPhotos((prev) => [...prev, ...newPhotos]);
+    }
+    e.target.value = ""; // Reset input
+  };
+
+  const handleCropComplete = (blob: Blob) => {
+    if (!currentCropImage) return;
+
+    const url = URL.createObjectURL(blob);
+
+    if (currentCropImage.type === "main") {
+      setPhotoMain({ url, blob });
+    } else if (currentCropImage.index !== undefined) {
+      setAdditionalPhotos((prev) =>
+        prev.map((photo, index) => (index === currentCropImage.index ? { url, blob } : photo)),
+      );
+    }
+
+    setCurrentCropImage(null);
+  };
+
+  const removeImage = (type: "main" | "additional", index?: number) => {
+    if (type === "main") {
+      setPhotoMain(null);
+    } else if (index !== undefined) {
+      setAdditionalPhotos((prev) => prev.filter((_, i) => i !== index));
+    }
   };
 
   const uploadToCloudinary = async (blob: Blob, type: "main" | "additional" = "additional") => {
@@ -99,110 +171,64 @@ export const EditConsoleForm = ({ consoleItem, onSuccess }: EditConsoleFormProps
     }
   };
 
-  const handleImageUpload = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: "main" | "additional",
-  ) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
-
-    if (type === "main") {
-      const file = files[0];
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const url = event.target?.result as string;
-        setCurrentCropImage({
-          url,
-          type: "main",
-        });
-      };
-      reader.readAsDataURL(file);
-    } else {
-      const newPhotos: { url: string; blob: Blob | null }[] = [];
-      for (const file of files.slice(0, 5 - additionalPhotos.length)) {
-        try {
-          const url = URL.createObjectURL(file);
-          newPhotos.push({ url, blob: file });
-        } catch (error) {
-          console.error("Error processing image:", error);
-        }
-      }
-      setAdditionalPhotos((prev) => [...prev, ...newPhotos]);
-    }
-    e.target.value = "";
-  };
-
-  const handleCropComplete = (blob: Blob) => {
-    if (!currentCropImage) return;
-
-    const url = URL.createObjectURL(blob);
-
-    if (currentCropImage.type === "main") {
-      setPhotoMain({ url, blob });
-    } else if (currentCropImage.index !== undefined) {
-      setAdditionalPhotos((prev) =>
-        prev.map((photo, index) => (index === currentCropImage.index ? { url, blob } : photo)),
-      );
-    }
-
-    setCurrentCropImage(null);
-  };
-
-  const removeImage = (type: "main" | "additional", index?: number) => {
-    if (type === "main") {
-      setPhotoMain(null);
-    } else if (index !== undefined) {
-      setAdditionalPhotos((prev) => prev.filter((_, i) => i !== index));
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      // Upload de novas fotos (se houver blob)
-      const newMainPhotoUrl = photoMain?.blob
-        ? await uploadToCloudinary(photoMain.blob, "main")
-        : photoMain?.url || null;
+      // Upload da foto principal (se houver blob novo)
+      let mainPhotoUrl = photoMain?.url || null;
+      if (photoMain?.blob) {
+        mainPhotoUrl = await uploadToCloudinary(photoMain.blob, "main");
+      }
 
-      const newAdditionalUrls: string[] = [];
+      // Upload das fotos adicionais
+      const additionalUrls: string[] = [];
       for (const photo of additionalPhotos) {
         if (photo.blob) {
           const url = await uploadToCloudinary(photo.blob);
-          if (url) newAdditionalUrls.push(url);
+          if (url) additionalUrls.push(url);
         } else {
-          // Manter URL existente
-          newAdditionalUrls.push(photo.url);
+          // Se não tem blob, é porque já está salva (URL existente)
+          additionalUrls.push(photo.url);
         }
       }
 
-      const payload: UserConsoleUpdate = {
-        description: formData.description,
+      // Preparar payload baseado no modo
+      const payload: UserConsoleInput | UserConsoleUpdate = {
+        consoleId,
+        consoleVariantId,
+        skinId: skinId || undefined,
+        description: formData.description || undefined,
         status: formData.status,
         price: formData.price ? parseFloat(formData.price) : undefined,
         hasBox: formData.hasBox,
         hasManual: formData.hasManual,
         condition: formData.condition,
         acceptsTrade: formData.acceptsTrade,
-        photoMain: newMainPhotoUrl,
-        photos: newAdditionalUrls,
+        photoMain: mainPhotoUrl || undefined,
+        photos: additionalUrls,
       };
 
-      await apiFetch(`/user-consoles/${consoleItem.id}`, {
-        method: "PUT",
-        token,
-        body: payload,
-      });
+      // Fazer chamada API baseada no modo
+      if (mode === "create") {
+        await apiFetch("/user-consoles", {
+          method: "POST",
+          token,
+          body: payload,
+        });
+      } else if (mode === "edit" && initialData?.id) {
+        await apiFetch(`/user-consoles/${initialData.id}`, {
+          method: "PUT",
+          token,
+          body: payload,
+        });
+      }
 
       onSuccess();
-      showToast(t("success"), "success");
+      showToast(mode === "create" ? t("createSuccess") : t("editSuccess"), "success");
     } catch (err) {
-      if (err instanceof Error) {
-        showToast(err.message, "danger");
-      } else {
-        showToast(t("error"), "danger");
-      }
+      showToast(err instanceof Error ? err.message : t("error"), "danger");
     } finally {
       setLoading(false);
     }
@@ -372,7 +398,13 @@ export const EditConsoleForm = ({ consoleItem, onSuccess }: EditConsoleFormProps
 
       <div className="flex justify-end gap-3 mt-6">
         <Button type="button" variant="outline" onClick={onSuccess} label={t("cancel")} />
-        <Button type="submit" loading={loading} label={loading ? t("saving") : t("saveChanges")} />
+        <Button
+          type="submit"
+          loading={loading}
+          label={
+            loading ? t("saving") : mode === "create" ? t("addToCollection") : t("saveChanges")
+          }
+        />
       </div>
     </form>
   );

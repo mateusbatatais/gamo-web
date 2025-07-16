@@ -14,14 +14,16 @@ import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { EditConsoleForm } from "../../EditConsoleForm/EditConsoleForm";
+import { ConsoleForm } from "../../ConsoleForm/ConsoleForm";
 
 export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
+  revalidate, // Recebe a função de revalidação
 }: {
   consoleItem: UserConsolePublic & { status: ConsoleStatus["Status"] };
   isOwner: boolean;
+  revalidate: () => Promise<void>;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -38,6 +40,7 @@ export const PublicProfileConsoleCard = ({
         token,
       });
       showToast(t("deleteSuccess"), "success");
+      await revalidate();
     } catch {
       showToast(t("deleteError"), "danger");
     } finally {
@@ -50,19 +53,21 @@ export const PublicProfileConsoleCard = ({
     <>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
         {isOwner && (
-          <div className="absolute top-2 right-2 flex gap-2 z-10">
+          <div className="absolute top-2 right-2 flex z-10">
             <Button
-              className="bg-white dark:bg-gray-800 p-1 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-700"
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}
               icon={<Pencil size={16} />}
+              variant="transparent"
+              size="sm"
             ></Button>
             <Button
-              className="bg-white dark:bg-gray-800 p-1 rounded-full shadow-md hover:bg-gray-200 dark:hover:bg-gray-700"
               onClick={() => setShowDeleteModal(true)}
               disabled={loading}
+              variant="transparent"
               aria-label={t("deleteItem")}
               icon={<Trash size={16} />}
+              size="sm"
             ></Button>
           </div>
         )}
@@ -142,11 +147,27 @@ export const PublicProfileConsoleCard = ({
         title={t("editTitle")}
         size="xl"
       >
-        <EditConsoleForm
-          consoleItem={consoleItem}
-          onSuccess={() => {
+        <ConsoleForm
+          mode="edit"
+          consoleId={consoleItem.consoleId}
+          consoleVariantId={consoleItem.consoleVariantId}
+          skinId={consoleItem.skinId}
+          initialData={{
+            id: consoleItem.id,
+            description: consoleItem.description,
+            status: consoleItem.status,
+            price: consoleItem.price,
+            hasBox: consoleItem.hasBox,
+            hasManual: consoleItem.hasManual,
+            condition: consoleItem.condition,
+            acceptsTrade: consoleItem.acceptsTrade,
+            photoMain: consoleItem.photoMain,
+            photos: consoleItem.photos,
+          }}
+          onSuccess={async () => {
             setShowEditModal(false);
             showToast(t("editSuccess"), "success");
+            await revalidate(); // Revalidar dados após edição
           }}
         />
       </Dialog>

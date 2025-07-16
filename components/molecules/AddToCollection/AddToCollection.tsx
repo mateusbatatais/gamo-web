@@ -6,10 +6,10 @@ import { Button } from "@/components/atoms/Button/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { AddToCollectionForm } from "@/components/organisms/AddToCollectionForm/AddToCollectionForm";
 import { DollarSign, Plus } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
+import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
 
 interface Props {
   consoleVariantId: number;
@@ -22,7 +22,6 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
   const { user, token } = useAuth();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [actionType, setActionType] = useState<"OWNED" | "TRADE">("OWNED");
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
 
@@ -35,7 +34,6 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
     if (type === "OWNED") {
       addToCollectionDirectly();
     } else {
-      setActionType(type);
       setIsModalOpen(true);
     }
   };
@@ -96,12 +94,12 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
         onClose={() => setIsModalOpen(false)}
         title={"Adicionar à coleção"}
       >
-        <AddToCollectionForm
+        <ConsoleForm
+          mode="create"
+          consoleId={consoleId}
           consoleVariantId={consoleVariantId}
           skinId={skinId}
-          consoleId={consoleId}
           onSuccess={() => setIsModalOpen(false)}
-          initialStatus={actionType}
         />
       </Dialog>
     </div>

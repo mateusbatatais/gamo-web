@@ -12,6 +12,8 @@ export interface UserConsolePublic {
   consoleId: number;
   consoleName: string;
   variantName: string;
+  consoleVariantId: number;
+  skinId?: number;
   skinName: string | null;
   customSkin: string | null;
   description: string | null;
