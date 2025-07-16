@@ -289,11 +289,11 @@
     "construction": "Under construction"
   },
   "NotFound": {
-    "title": "Disco não encontrado!",
-    "description": "Parece que esta página não está na sua coleção. Talvez tenha sido vendida, trocada ou esteja em outro console.",
-    "imageAlt": "Erro de console de videogame",
-    "homeButton": "Voltar à página inicial",
-    "collectionButton": "Ver coleção",
-    "tip": "Dica de colecionador: Verifique se o disco está limpo e sem riscos profundos"
+    "title": "Not found disk",
+    "description": "It looks like this page is not in your collection. It may have been sold, traded, or is on another console.",
+    "imageAlt": "Video game console error",
+    "homeButton": "Back to home page",
+    "collectionButton": "View collection",
+    "tip": "Collector tip: Make sure the disc is clean and free of deep scratches"
   }
 }
