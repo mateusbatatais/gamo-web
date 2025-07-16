@@ -22,6 +22,7 @@ export default function NotFound() {
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * errorImages.length);
     setRandomImage(errorImages[randomIndex]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

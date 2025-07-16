@@ -19,7 +19,7 @@ import { ConsoleForm } from "../../ConsoleForm/ConsoleForm";
 export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
-  revalidate, // Recebe a função de revalidação
+  revalidate,
 }: {
   consoleItem: UserConsolePublic & { status: ConsoleStatus["Status"] };
   isOwner: boolean;
@@ -167,7 +167,7 @@ export const PublicProfileConsoleCard = ({
           onSuccess={async () => {
             setShowEditModal(false);
             showToast(t("editSuccess"), "success");
-            await revalidate(); // Revalidar dados após edição
+            await revalidate();
           }}
         />
       </Dialog>

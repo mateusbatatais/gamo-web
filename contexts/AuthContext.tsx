@@ -28,6 +28,15 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+function setTokenCookie(token: string) {
+  const maxAge = 30 * 24 * 60 * 60; // 30 dias
+  document.cookie = `gamo_token=${token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
+}
+
+function removeTokenCookie() {
+  document.cookie = `gamo_token=; path=/; max-age=0; SameSite=Lax; secure`;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -64,6 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Função para login: grava token em localStorage e atualiza estado imediatamente
   function login(newToken: string) {
     localStorage.setItem("gamo_token", newToken);
+    setTokenCookie(newToken); // <-- Adicionar cookie
+
     setToken(newToken);
     try {
       const decoded = jwtDecode<AuthUser>(newToken);
@@ -84,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Função para logout: limpa token e usuário, e redireciona para login
   function logout() {
     localStorage.removeItem("gamo_token");
+    removeTokenCookie();
+
     setToken(null);
     setUser(null);
     router.push(`/${locale}/login`);
