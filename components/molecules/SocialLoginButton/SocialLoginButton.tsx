@@ -2,14 +2,12 @@
 "use client";
 
 import React from "react";
-import { useGoogleLogin } from "@/hooks/useGoogleLogin";
-import { useMicrosoftLogin } from "@/hooks/useMicrosoftLogin";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useTranslations } from "next-intl";
 import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
 import { MicrosoftIcon } from "@/components/atoms/Icons/MicrosoftIcon";
 import { useToast } from "@/contexts/ToastContext";
-
+import { useSocialLogin } from "@/hooks/useSocialLogin";
 interface SocialLoginButtonProps {
   provider: "google" | "microsoft" | "apple";
   className?: string;
@@ -25,8 +23,10 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
 }) => {
   const { showToast } = useToast();
 
-  const { login: googleLogin, loading: googleLoading } = useGoogleLogin();
-  const { login: microsoftLogin, loading: microsoftLoading } = useMicrosoftLogin();
+  const { login: googleLogin, loading: googleLoading } = useSocialLogin({ provider: "Google" });
+  const { login: microsoftLogin, loading: microsoftLoading } = useSocialLogin({
+    provider: "Microsoft",
+  });
 
   const loading =
     provider === "google" ? googleLoading : provider === "microsoft" ? microsoftLoading : false;
