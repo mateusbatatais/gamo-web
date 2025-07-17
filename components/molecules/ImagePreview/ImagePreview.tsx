@@ -1,7 +1,7 @@
 // components/molecules/ImagePreview/ImagePreview.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import Image from "next/image";
@@ -13,24 +13,19 @@ interface ImagePreviewProps {
   src: string;
   onRemove: () => void;
   onCropComplete: (blob: Blob) => void;
-  initialProcessed?: boolean;
+  initialProcessed: boolean;
 }
 
 export function ImagePreview({
   src,
   onRemove,
   onCropComplete,
-  initialProcessed = false,
+  initialProcessed,
 }: ImagePreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isProcessed, setIsProcessed] = useState(initialProcessed);
-  const initialSrc = useRef(src);
+  const hasBeenCropped = useRef(false);
   const t = useTranslations("");
-
-  useEffect(() => {
-    const isDifferent = src !== initialSrc.current;
-    setIsProcessed((prev) => (isDifferent ? false : prev));
-  }, [src]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -40,11 +35,14 @@ export function ImagePreview({
     onCropComplete(blob);
     setIsEditing(false);
     setIsProcessed(true);
+    hasBeenCropped.current = true;
   };
+
+  const showBadge = !isProcessed && !hasBeenCropped.current;
 
   return (
     <div className="relative group" role="group" data-testid="image-preview">
-      {!isProcessed && (
+      {showBadge && (
         <Badge
           variant="soft"
           status="warning"

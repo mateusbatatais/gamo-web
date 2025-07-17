@@ -268,9 +268,9 @@ export const ConsoleForm = ({
               variant="outline"
               type="button"
               onClick={() => mainFileInputRef.current?.click()}
-              className="w-32 h-32 flex flex-col items-center justify-center"
+              className="w-24 h-24 flex flex-col items-center justify-center"
               icon={<Plus size={16} />}
-              label={t("addMainPhoto")}
+              label={t("addPhoto")}
             />
           )}
           <input
@@ -323,16 +323,15 @@ export const ConsoleForm = ({
             />
           </div>
 
-          <Checkbox
-            name="acceptsTrade"
-            checked={formData.acceptsTrade}
-            onChange={handleChange}
-            label={t("acceptsTrade")}
-          />
-
           <div className="space-y-2">
             <label className="block text-sm font-medium">{t("extras")}</label>
-            <div className="flex gap-4">
+            <div className="flex gap-2 flex-col sm:flex-row  sm:gap-4">
+              <Checkbox
+                name="acceptsTrade"
+                checked={formData.acceptsTrade}
+                onChange={handleChange}
+                label={t("acceptsTrade")}
+              />
               <Checkbox
                 name="hasBox"
                 checked={formData.hasBox}
