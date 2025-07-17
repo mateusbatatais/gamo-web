@@ -61,7 +61,6 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
         "w-full h-10 bg-white border border-neutral-300 rounded-md text-neutral-800 font-medium hover:bg-neutral-100 dark:bg-neutral-900 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800 transition disabled:opacity-50 disabled:cursor-not-allowed",
     },
     microsoft: {
-      // NOVA CONFIGURAÇÃO
       text: t("microsoftButton"),
       icon: <MicrosoftIcon className="h-5 w-5 mr-2" aria-hidden="true" />,
       classes:

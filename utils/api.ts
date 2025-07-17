@@ -5,11 +5,13 @@ export async function apiFetch<T>(
     token?: string | null;
     method?: string;
     body?: unknown;
+    headers?: Record<string, string>;
   },
 ): Promise<T> {
-  const { token, method = "GET", body } = opts || {};
+  const { token, method = "GET", body, headers: customHeaders = {} } = opts || {};
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    ...customHeaders,
   };
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;

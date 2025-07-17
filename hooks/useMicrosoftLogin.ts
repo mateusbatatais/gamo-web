@@ -7,11 +7,13 @@ import { auth, microsoftProvider } from "@/lib/firebase";
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 
 export const useMicrosoftLogin = () => {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const router = useRouter();
+  const locale = useLocale();
 
   const handleLogin = async () => {
     setLoading(true);
@@ -19,9 +21,9 @@ export const useMicrosoftLogin = () => {
       const result = await signInWithPopup(auth, microsoftProvider);
       const idToken = await result.user.getIdToken();
 
-      // Usar o mesmo endpoint que o Google
       const backendResponse = await apiFetch<{ token: string }>("/auth/social-login", {
         method: "POST",
+        body: { locale },
         token: idToken,
       });
 
