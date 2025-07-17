@@ -53,7 +53,7 @@ export const PublicProfileConsoleCard = ({
     <>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-10">
+          <div className="absolute top-2 right-2 flex z-1">
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}

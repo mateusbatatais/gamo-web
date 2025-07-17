@@ -1,7 +1,7 @@
 // components/molecules/ImagePreview/ImagePreview.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import Image from "next/image";
@@ -17,13 +17,8 @@ interface ImagePreviewProps {
 
 export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isProcessed, setIsProcessed] = useState(false); // Renomeado para melhor clareza
-  const initialSrc = useRef(src);
+  const [hasBeenCropped, setHasBeenCropped] = useState(false); // Novo estado para rastrear se o crop foi feito
   const t = useTranslations("");
-
-  useEffect(() => {
-    setIsProcessed(src !== initialSrc.current);
-  }, [src]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -32,12 +27,13 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
   const handleCrop = (blob: Blob) => {
     onCropComplete(blob);
     setIsEditing(false);
-    setIsProcessed(true);
+    setHasBeenCropped(true); // Marcar que o crop foi realmente feito
   };
 
   return (
     <div className="relative group" role="group" data-testid="image-preview">
-      {!isProcessed && (
+      {/* Mostrar badge apenas se NÃO foi feito crop E não está em edição */}
+      {!hasBeenCropped && !isEditing && (
         <Badge
           variant="soft"
           status="warning"
@@ -87,6 +83,13 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
           onBlobReady={handleCrop}
           setFileSrc={() => setIsEditing(false)}
           onCancel={() => setIsEditing(false)}
+          // Adicionamos um callback para detectar movimentos sem confirmação
+          onCropChange={(crop) => {
+            // Se o usuário fez algum ajuste, mas não confirmou
+            if (crop && crop.width > 0 && crop.height > 0) {
+              setHasBeenCropped(false); // Mantém o badge visível
+            }
+          }}
         />
       )}
     </div>

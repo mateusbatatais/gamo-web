@@ -13,6 +13,7 @@ interface ImageCropperProps {
   onBlobReady: (blob: Blob) => void;
   setFileSrc?: (src: string | null) => void;
   onCancel?: () => void;
+  onCropChange?: (crop: Crop) => void;
 }
 
 export default function ImageCropper({
@@ -21,14 +22,23 @@ export default function ImageCropper({
   onBlobReady,
   setFileSrc,
   onCancel,
+  onCropChange,
 }: ImageCropperProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [crop, setCrop] = useState<Crop>();
   const [pixelCrop, setPixelCrop] = useState<PixelCrop>();
+  const [isLoaded, setIsLoaded] = useState(false);
   const t = useTranslations("");
 
-  // Novo estado para controlar o modal
-  const [isOpen, setIsOpen] = useState(true);
+  const handleCropChange = useCallback(
+    (newCrop: Crop) => {
+      setCrop(newCrop);
+      if (onCropChange) {
+        onCropChange(newCrop);
+      }
+    },
+    [onCropChange],
+  );
 
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -39,12 +49,12 @@ export default function ImageCropper({
         height,
       );
       setCrop(initialCrop);
+      setIsLoaded(true);
     },
     [aspect],
   );
 
   const handleCancel = useCallback(() => {
-    setIsOpen(false);
     setFileSrc?.(null);
     onCancel?.();
   }, [onCancel, setFileSrc]);
@@ -54,38 +64,45 @@ export default function ImageCropper({
   }, []);
 
   const onConfirm = useCallback(() => {
-    if (imgRef.current && pixelCrop) {
+    if (imgRef.current && pixelCrop && isLoaded) {
       const canvas = document.createElement("canvas");
       const scaleX = imgRef.current.naturalWidth / imgRef.current.width;
       const scaleY = imgRef.current.naturalHeight / imgRef.current.height;
       canvas.width = pixelCrop.width;
       canvas.height = pixelCrop.height;
       const ctx = canvas.getContext("2d");
+
       if (ctx) {
-        ctx.drawImage(
-          imgRef.current,
-          pixelCrop.x * scaleX,
-          pixelCrop.y * scaleY,
-          pixelCrop.width * scaleX,
-          pixelCrop.height * scaleY,
-          0,
-          0,
-          pixelCrop.width,
-          pixelCrop.height,
-        );
-        canvas.toBlob(
-          (blob) => {
-            if (blob) {
-              onBlobReady(blob);
-              setIsOpen(false);
-            }
-          },
-          "image/jpeg",
-          0.9,
-        );
+        try {
+          ctx.drawImage(
+            imgRef.current,
+            pixelCrop.x * scaleX,
+            pixelCrop.y * scaleY,
+            pixelCrop.width * scaleX,
+            pixelCrop.height * scaleY,
+            0,
+            0,
+            pixelCrop.width,
+            pixelCrop.height,
+          );
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                onBlobReady(blob);
+              }
+            },
+            "image/jpeg",
+            0.9,
+          );
+        } catch (error) {
+          console.error("Error processing image:", error);
+          // Fallback para imagens problemáticas
+          onBlobReady(new Blob());
+        }
       }
     }
-  }, [onBlobReady, pixelCrop]);
+  }, [onBlobReady, pixelCrop, isLoaded]);
 
   // Fechar ao pressionar ESC
   useEffect(() => {
@@ -98,14 +115,12 @@ export default function ImageCropper({
     return () => window.removeEventListener("keydown", handleEsc);
   }, [handleCancel]);
 
-  if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center p-4">
       <div className="flex-1 flex items-center justify-center w-full overflow-auto">
         <ReactCrop
           crop={crop}
-          onChange={(c) => setCrop(c)}
+          onChange={handleCropChange}
           onComplete={onCropComplete}
           aspect={aspect}
           className="max-w-full max-h-full"
@@ -115,8 +130,13 @@ export default function ImageCropper({
             ref={imgRef}
             alt="Crop preview"
             src={src}
+            crossOrigin="anonymous" // Adicionar isso para imagens de origem cruzada
             onLoad={onImageLoad}
             className="max-w-full max-h-[70vh] object-contain"
+            onError={(e) => {
+              console.error("Error loading image", e);
+              handleCancel();
+            }}
           />
         </ReactCrop>
       </div>
@@ -132,6 +152,7 @@ export default function ImageCropper({
           onClick={onConfirm}
           label={t("crop.confirmCrop")}
           data-testid="button-crop-confirm"
+          disabled={!isLoaded} // Desabilitar enquanto a imagem não carregar
         />
       </div>
     </div>
