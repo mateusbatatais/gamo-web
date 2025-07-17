@@ -39,8 +39,8 @@ export const PublicProfileConsoleCard = ({
         method: "DELETE",
         token,
       });
-      showToast(t("deleteSuccess"), "success");
       await revalidate();
+      showToast(t("deleteSuccess"), "success");
     } catch {
       showToast(t("deleteError"), "danger");
     } finally {
