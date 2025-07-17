@@ -166,9 +166,9 @@ export const PublicProfileConsoleCard = ({
           }}
           onSuccess={async () => {
             setShowEditModal(false);
-            showToast(t("editSuccess"), "success");
             await revalidate();
           }}
+          onCancel={() => setShowEditModal(false)}
         />
       </Dialog>
 

@@ -35,6 +35,7 @@ interface ConsoleFormProps {
     photos?: string[] | null;
   };
   onSuccess: () => void;
+  onCancel?: () => void;
 }
 
 export const ConsoleForm = ({
@@ -44,6 +45,7 @@ export const ConsoleForm = ({
   skinId,
   initialData,
   onSuccess,
+  onCancel,
 }: ConsoleFormProps) => {
   const t = useTranslations("ConsoleForm");
   const { token } = useAuth();
@@ -259,6 +261,7 @@ export const ConsoleForm = ({
                 const url = URL.createObjectURL(blob);
                 setPhotoMain({ url, blob });
               }}
+              initialProcessed={true}
             />
           ) : (
             <Button
@@ -361,6 +364,7 @@ export const ConsoleForm = ({
                     newPhotos[index] = { url, blob };
                     setAdditionalPhotos(newPhotos);
                   }}
+                  initialProcessed={!photo.blob}
                 />
               ))}
 
@@ -397,7 +401,7 @@ export const ConsoleForm = ({
       )}
 
       <div className="flex justify-end gap-3 mt-6">
-        <Button type="button" variant="outline" onClick={onSuccess} label={t("cancel")} />
+        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
         <Button
           type="submit"
           loading={loading}

@@ -1,7 +1,7 @@
 // components/molecules/ImagePreview/ImagePreview.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import Image from "next/image";
@@ -13,12 +13,24 @@ interface ImagePreviewProps {
   src: string;
   onRemove: () => void;
   onCropComplete: (blob: Blob) => void;
+  initialProcessed?: boolean;
 }
 
-export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProps) {
+export function ImagePreview({
+  src,
+  onRemove,
+  onCropComplete,
+  initialProcessed = false,
+}: ImagePreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [hasBeenCropped, setHasBeenCropped] = useState(false); // Novo estado para rastrear se o crop foi feito
+  const [isProcessed, setIsProcessed] = useState(initialProcessed);
+  const initialSrc = useRef(src);
   const t = useTranslations("");
+
+  useEffect(() => {
+    const isDifferent = src !== initialSrc.current;
+    setIsProcessed((prev) => (isDifferent ? false : prev));
+  }, [src]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -27,13 +39,12 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
   const handleCrop = (blob: Blob) => {
     onCropComplete(blob);
     setIsEditing(false);
-    setHasBeenCropped(true); // Marcar que o crop foi realmente feito
+    setIsProcessed(true);
   };
 
   return (
     <div className="relative group" role="group" data-testid="image-preview">
-      {/* Mostrar badge apenas se NÃO foi feito crop E não está em edição */}
-      {!hasBeenCropped && !isEditing && (
+      {!isProcessed && (
         <Badge
           variant="soft"
           status="warning"
@@ -83,13 +94,6 @@ export function ImagePreview({ src, onRemove, onCropComplete }: ImagePreviewProp
           onBlobReady={handleCrop}
           setFileSrc={() => setIsEditing(false)}
           onCancel={() => setIsEditing(false)}
-          // Adicionamos um callback para detectar movimentos sem confirmação
-          onCropChange={(crop) => {
-            // Se o usuário fez algum ajuste, mas não confirmou
-            if (crop && crop.width > 0 && crop.height > 0) {
-              setHasBeenCropped(false); // Mantém o badge visível
-            }
-          }}
         />
       )}
     </div>

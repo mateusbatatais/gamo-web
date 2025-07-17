@@ -100,6 +100,7 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
           consoleVariantId={consoleVariantId}
           skinId={skinId}
           onSuccess={() => setIsModalOpen(false)}
+          onCancel={() => setIsModalOpen(false)}
         />
       </Dialog>
     </div>
