@@ -46,9 +46,24 @@ export const Default: Story = {
 
 const ImagePreviewGrid = () => (
   <div className="flex flex-wrap gap-4 p-4">
-    <ImagePreview src="/images/consoles/sony/ps1-fat.webp" onRemove={fn()} onCropComplete={fn()} />
-    <ImagePreview src="/images/consoles/sony/ps2-fat.webp" onRemove={fn()} onCropComplete={fn()} />
-    <ImagePreview src="/images/consoles/sony/ps3-fat.webp" onRemove={fn()} onCropComplete={fn()} />
+    <ImagePreview
+      src="/images/consoles/sony/ps1-fat.webp"
+      onRemove={fn()}
+      onCropComplete={fn()}
+      initialProcessed={true}
+    />
+    <ImagePreview
+      src="/images/consoles/sony/ps2-fat.webp"
+      onRemove={fn()}
+      onCropComplete={fn()}
+      initialProcessed={true}
+    />
+    <ImagePreview
+      src="/images/consoles/sony/ps3-fat.webp"
+      onRemove={fn()}
+      onCropComplete={fn()}
+      initialProcessed={false}
+    />
   </div>
 );
 
