@@ -116,6 +116,7 @@ export default function ImageCropper({
             onLoad={onImageLoad}
             crossOrigin="anonymous"
             className="max-w-full max-h-[70vh] object-contain"
+            data-testid="image-cropper"
           />
         </ReactCrop>
       </div>
