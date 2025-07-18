@@ -52,7 +52,12 @@ describe("ImagePreview component", () => {
 
   it("mostra o badge 'Not Edited' para imagens não processadas", () => {
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={false}
+      />,
     );
 
     expect(screen.getByText("Not Edited")).toBeInTheDocument();
@@ -60,7 +65,12 @@ describe("ImagePreview component", () => {
 
   it("renderiza a imagem corretamente", () => {
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     const image = screen.getByRole("img", { name: "Preview" });
@@ -70,7 +80,12 @@ describe("ImagePreview component", () => {
   it("chama onRemove ao clicar no botão de remover", async () => {
     const user = userEvent.setup();
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     const preview = screen.getByTestId("image-preview");
@@ -85,7 +100,12 @@ describe("ImagePreview component", () => {
   it("mostra botões de ação ao passar o mouse", async () => {
     const user = userEvent.setup();
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     const preview = screen.getByTestId("image-preview");
@@ -100,7 +120,12 @@ describe("ImagePreview component", () => {
   it("abre o editor ao clicar no botão de editar", async () => {
     const user = userEvent.setup();
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     // Hover para mostrar os botões
@@ -123,7 +148,12 @@ describe("ImagePreview component", () => {
   it("fecha o editor ao cancelar", async () => {
     const user = userEvent.setup();
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     // Abre o editor
@@ -145,7 +175,12 @@ describe("ImagePreview component", () => {
   it("chama onCropComplete ao aplicar corte", async () => {
     const user = userEvent.setup();
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     // Abre o editor
@@ -166,7 +201,12 @@ describe("ImagePreview component", () => {
   it("atualiza estado após corte aplicado", async () => {
     const user = userEvent.setup();
     const { rerender } = render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     // Aplica corte
@@ -180,7 +220,12 @@ describe("ImagePreview component", () => {
     // Simula atualização da src após corte
     const newSrc = "data:image/jpeg;base64,processed_image";
     rerender(
-      <ImagePreview src={newSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={newSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     // Verifica se badge desapareceu
@@ -192,7 +237,12 @@ describe("ImagePreview component", () => {
   it("chama onRemove ao clicar no botão de remover", async () => {
     const user = userEvent.setup();
     render(
-      <ImagePreview src={testSrc} onRemove={onRemoveMock} onCropComplete={onCropCompleteMock} />,
+      <ImagePreview
+        src={testSrc}
+        onRemove={onRemoveMock}
+        onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
+      />,
     );
 
     const preview = screen.getByTestId("image-preview");
@@ -211,6 +261,7 @@ describe("ImagePreview component", () => {
         src={processedSrc}
         onRemove={onRemoveMock}
         onCropComplete={onCropCompleteMock}
+        initialProcessed={true}
       />,
     );
 

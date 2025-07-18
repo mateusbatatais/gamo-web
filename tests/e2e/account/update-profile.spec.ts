@@ -7,6 +7,7 @@ test.describe("Atualização de Perfil", () => {
   test("Atualiza campos do perfil (nome, slug e descrição)", async ({ page }) => {
     await page.goto(`/${DEFAULT_LOCALE}/account/details`);
 
+    await expect(page.locator('[data-testid="input-name"]')).toBeEnabled();
     await expect(page.locator('[data-testid="input-name"]')).not.toHaveValue("");
 
     const [fileChooser] = await Promise.all([
