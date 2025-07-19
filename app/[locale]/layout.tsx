@@ -61,7 +61,6 @@ export async function generateMetadata(props: Omit<Props, "children">) {
     icons: {
       icon: "/favicon.ico",
       apple: "/apple-touch-icon.png",
-      shortcut: "/favicon-32x32.png",
       other: [
         {
           rel: "mask-icon",
