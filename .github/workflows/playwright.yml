@@ -46,7 +46,7 @@ jobs:
       - name: Checkout API
         uses: actions/checkout@v4
         with:
-          repository: sua-org/sua-api
+          repository: mateusbatatais/gamo-api
           path: api
 
       # Builda e sobe a API
