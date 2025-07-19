@@ -1,31 +1,113 @@
-name: Playwright Tests
+name: Playwright E2E
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
-    # Adicionar todas as variáveis de ambiente necessárias
+    services:
+      db:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: gamo_dev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
     env:
+      # Variáveis da API
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gamo_dev?schema=public
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      PORT: 8080
+      SMTP_HOST: ${{ secrets.SMTP_HOST }}
+      SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_PASS: ${{ secrets.SMTP_PASS }}
+      SMTP_FROM: ${{ secrets.SMTP_FROM }}
+      SENDINBLUE_API_KEY: ${{ secrets.SENDINBLUE_API_KEY }}
+      CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+      CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+      CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
       ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
       ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
-      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
-      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
-      NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-      NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
-      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FRONTEND_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:8080
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      # Clona a API (ajuste o repositório e branch conforme necessário)
+      - name: Checkout API
+        uses: actions/checkout@v4
         with:
-          node-version: lts/*
+          repository: sua-org/sua-api
+          path: api
+
+      # Builda e sobe a API
+      - name: Build API Docker image
+        run: docker build -t gamo-api ./api
+
+      - name: Run API container
+        run: |
+          docker run -d --name api \
+            --env-file <(env | grep -E 'DATABASE_URL|JWT_SECRET|FIREBASE_SERVICE_ACCOUNT|PORT|SMTP_HOST|SMTP_PORT|SMTP_USER|SMTP_PASS|SMTP_FROM|SENDINBLUE_API_KEY|CLOUDINARY_CLOUD_NAME|CLOUDINARY_API_KEY|CLOUDINARY_API_SECRET|ADMIN_EMAIL|ADMIN_PASSWORD|FRONTEND_URL') \
+            --network host \
+            -p 8080:8080 gamo-api
+
+      # Espera a API subir
+      - name: Wait for API
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:8080/health; then
+              echo "API is up!";
+              exit 0;
+            fi
+            echo "Waiting for API...";
+            sleep 2;
+          done
+          echo "API did not start in time";
+          exit 1
+
+      # Instala dependências do frontend
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
-      - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
+
+      # Sobe o frontend em background
+      - name: Start frontend
+        run: pnpm dev &
+
+      # Espera o frontend subir
+      - name: Wait for frontend
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/en/login; then
+              echo "Frontend is up!";
+              exit 0;
+            fi
+            echo "Waiting for frontend...";
+            sleep 2;
+          done
+          echo "Frontend did not start in time";
+          exit 1
+
+      # Roda os testes E2E
       - name: Run Playwright tests
         run: pnpm exec playwright test
+
+      # Salva artefatos de debug
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-debug
+          path: |
+            playwright-report/
+            tests/e2e/login-page.html
+            tests/e2e/login-after-submit.png
+            tests/e2e/login-after-submit.html
+          retention-days: 7
