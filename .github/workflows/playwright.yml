@@ -74,6 +74,14 @@ jobs:
           echo "API did not start in time";
           exit 1
 
+      - name: Show API logs if failed
+        if: failure()
+        run: docker logs api || true
+
+      - name: Print API container env
+        if: failure()
+        run: docker exec api env || true
+
       # Instala dependências do frontend
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
