@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Clona a API (ajuste o repositório e branch conforme necessário)
+      # Clona a API
       - name: Checkout API
         uses: actions/checkout@v4
         with:
