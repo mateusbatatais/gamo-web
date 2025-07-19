@@ -10,6 +10,9 @@ async function globalSetup() {
   console.log("[global-setup] ADMIN_PASSWORD:", process.env.ADMIN_PASSWORD ? '***' : 'NOT SET');
 
   await page.goto("http://localhost:3000/en/login");
+  const htmlLogin = await page.content();
+  await fs.writeFile('tests/e2e/login-page.html', htmlLogin);
+  console.log("[global-setup] HTML da página de login salvo");
   console.log("[global-setup] Navigated to login page");
 
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
