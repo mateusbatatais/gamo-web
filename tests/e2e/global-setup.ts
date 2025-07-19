@@ -1,5 +1,6 @@
 // tests/e2e/global-setup.ts
 import { chromium } from "@playwright/test";
+import { promises as fs } from "fs";
 
 async function globalSetup() {
   const browser = await chromium.launch();
@@ -23,6 +24,11 @@ async function globalSetup() {
   // Screenshot after submit for debugging
   await page.screenshot({ path: 'tests/e2e/login-after-submit.png', fullPage: true });
   console.log("[global-setup] Screenshot taken after submit");
+
+  // Save HTML after submit for debugging
+  const html = await page.content();
+  await fs.writeFile('tests/e2e/login-after-submit.html', html);
+  console.log("[global-setup] HTML saved after submit");
 
   await page.waitForURL("**/en/account", { timeout: 60000 });
   console.log("[global-setup] Navigated to /en/account");
