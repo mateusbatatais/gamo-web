@@ -78,24 +78,7 @@ jobs:
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
 
-      # Sobe o frontend em background
-      - name: Start frontend
-        run: pnpm dev &
-
-      # Espera o frontend subir
-      - name: Wait for frontend
-        run: |
-          for i in {1..30}; do
-            if curl -s http://localhost:3000/en/login; then
-              echo "Frontend is up!";
-              exit 0;
-            fi
-            echo "Waiting for frontend...";
-            sleep 2;
-          done
-          echo "Frontend did not start in time";
-          exit 1
-
+      
       # Roda os testes E2E
       - name: Run Playwright tests
         run: pnpm exec playwright test
