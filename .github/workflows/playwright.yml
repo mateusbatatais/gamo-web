@@ -86,10 +86,6 @@ jobs:
         if: failure()
         run: docker logs api || true
 
-      - name: Print API container env
-        if: failure()
-        run: docker exec api env || true
-
       # Instala dependências do frontend
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
@@ -97,16 +93,6 @@ jobs:
       # Instala browsers do Playwright
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
-
-      # Log variáveis de ambiente do Firebase antes dos testes
-      - name: Debug Firebase env
-        run: |
-          echo "API_KEY: $NEXT_PUBLIC_FIREBASE_API_KEY"
-          echo "AUTH_DOMAIN: $NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN"
-          echo "PROJECT_ID: $NEXT_PUBLIC_FIREBASE_PROJECT_ID"
-          echo "STORAGE_BUCKET: $NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET"
-          echo "MESSAGING_SENDER_ID: $NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID"
-          echo "APP_ID: $NEXT_PUBLIC_FIREBASE_APP_ID"
 
       # Roda os testes E2E
       - name: Run Playwright tests
