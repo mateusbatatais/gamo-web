@@ -78,7 +78,10 @@ jobs:
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
 
-      
+      # Instala browsers do Playwright
+      - name: Install Playwright Browsers
+        run: pnpm exec playwright install --with-deps
+
       # Roda os testes E2E
       - name: Run Playwright tests
         run: pnpm exec playwright test
