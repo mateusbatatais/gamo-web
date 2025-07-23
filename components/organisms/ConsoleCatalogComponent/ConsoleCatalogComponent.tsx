@@ -1,3 +1,5 @@
+//components/organisms/ConsoleCatalogComponent/ConsoleCatalogComponent.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -14,6 +16,7 @@ import { ConsoleCardSkeleton } from "@/components/molecules/ConsoleCard/ConsoleC
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { useTranslations } from "next-intl";
+import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -276,7 +279,9 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
       <div className="w-full lg:w-3/4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="w-full sm:w-auto flex-1"></div>
+          <div className="w-full sm:w-auto flex-1">
+            <SearchBar compact />
+          </div>
           <div className="flex items-center justify-between sm:justify-end gap-4">
             <SortSelect
               options={SORT_OPTIONS}

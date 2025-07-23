@@ -1,4 +1,4 @@
-// app/site/catalog/page.tsx
+// app/site/console-catalog/page.tsx
 "use client";
 
 import { useSearchParams } from "next/navigation";

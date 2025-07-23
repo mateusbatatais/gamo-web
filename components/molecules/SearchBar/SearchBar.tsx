@@ -124,7 +124,13 @@ export function SearchBar({ className, variant = "page", compact = false }: Sear
             inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}
           />
-          <Button onClick={handleSearch} variant="primary" className="ml-2" label="Buscar" />
+          <Button
+            onClick={handleSearch}
+            variant="primary"
+            className="ml-2"
+            label="Buscar"
+            size={compact ? "sm" : "md"}
+          />
         </div>
       )}
     </div>
