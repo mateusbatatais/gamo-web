@@ -50,11 +50,11 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
     const platformsParam = searchParams.get("platforms");
 
     if (genresParam) {
-      setSelectedGenres(genresParam.split(","));
+      setSelectedGenres(genresParam ? genresParam.split(",") : []);
     }
 
     if (platformsParam) {
-      setSelectedPlatforms(platformsParam.split(","));
+      setSelectedPlatforms(platformsParam ? platformsParam.split(",") : []);
     }
   }, []);
 
