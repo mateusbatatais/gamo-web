@@ -8,7 +8,6 @@ import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
 import LocaleSwitcher from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
-import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import {
   Menu,
   X,
@@ -71,7 +70,7 @@ export default function Header() {
       id: "games",
       label: t("catalog.games"),
       icon: <Gamepad2 size={16} />,
-      onClick: () => router.push("/games-catalog"),
+      onClick: () => router.push("/game-catalog"),
     },
   ];
 
@@ -147,14 +146,12 @@ export default function Header() {
               isScrolled ? "max-w-md w-full" : "max-w-xl w-full",
             )}
           >
-            <SearchBar variant="header" compact={isScrolled} />
+            {/* Removido por mudança de fluxo*/}
           </div>
 
           <div className="flex items-center space-x-2 md:space-x-4">
             {/* Barra de busca - mobile */}
-            <div className="md:hidden">
-              <SearchBar variant="header" />
-            </div>
+            <div className="md:hidden">{/* Removido por mudança de fluxo*/}</div>
 
             <Button
               onClick={toggleMenu}
