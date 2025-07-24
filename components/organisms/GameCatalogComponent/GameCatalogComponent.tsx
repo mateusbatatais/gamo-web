@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { apiFetch } from "@/utils/api";
 import GameCard from "@/components/molecules/GameCard/GameCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import clsx from "clsx";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
@@ -29,76 +29,119 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
   const [totalPages, setTotalPages] = useState<number>(1);
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
-  const [sort, setSort] = useState<string>("popularity-desc");
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const t = useTranslations();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const SORT_OPTIONS: SortOption[] = [
-    { value: "title-asc", label: t("order.nameAsc") },
-    { value: "title-desc", label: t("order.nameDesc") },
+    { value: "name-asc", label: t("order.nameAsc") },
+    { value: "name-desc", label: t("order.nameDesc") },
     { value: "releaseDate-asc", label: t("order.releaseDateAsc") },
     { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
     { value: "popularity-desc", label: t("order.popularityDesc") },
   ];
 
-  const searchParams = useSearchParams();
+  // Obter parâmetros da URL
   const searchQuery = searchParams.get("search") || "";
+  const sortParam = searchParams.get("sort") || "popularity-desc";
+  const genresParam = searchParams.get("genres") || "";
+  const platformsParam = searchParams.get("platforms") || "";
 
-  useEffect(() => {
-    const genresParam = searchParams.get("genres");
-    const platformsParam = searchParams.get("platforms");
+  // Inicializar estados a partir da URL
+  const [sort, setSort] = useState<string>(sortParam);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(
+    genresParam ? genresParam.split(",") : [],
+  );
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(
+    platformsParam ? platformsParam.split(",") : [],
+  );
 
-    if (genresParam) {
-      setSelectedGenres(genresParam ? genresParam.split(",") : []);
-    }
+  // Atualizar URL quando filtros mudam
+  const updateURL = useCallback(
+    (updates: { genres?: string[]; platforms?: string[]; sort?: string; page?: number }) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    if (platformsParam) {
-      setSelectedPlatforms(platformsParam ? platformsParam.split(",") : []);
-    }
-  }, []);
+      // Atualizar parâmetros
+      if (updates.genres !== undefined) {
+        if (updates.genres.length > 0) {
+          params.set("genres", updates.genres.join(","));
+        } else {
+          params.delete("genres");
+        }
+      }
 
-  const handleGenreChange = (genres: string[]) => {
-    setSelectedGenres(genres);
-    updateURL({ genres });
-  };
+      if (updates.platforms !== undefined) {
+        if (updates.platforms.length > 0) {
+          params.set("platforms", updates.platforms.join(","));
+        } else {
+          params.delete("platforms");
+        }
+      }
 
-  const handlePlatformChange = (platforms: string[]) => {
-    setSelectedPlatforms(platforms);
-    updateURL({ platforms });
-  };
+      if (updates.sort !== undefined) {
+        params.set("sort", updates.sort);
+      }
 
-  const clearFilters = () => {
+      if (updates.page !== undefined) {
+        params.set("page", updates.page.toString());
+      }
+
+      // Sempre resetar para página 1 ao mudar filtros
+      if (
+        updates.genres !== undefined ||
+        updates.platforms !== undefined ||
+        updates.sort !== undefined
+      ) {
+        params.set("page", "1");
+      }
+
+      // Atualizar URL sem recarregar a página
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    },
+    [searchParams, router, pathname],
+  );
+
+  // Handlers para mudanças de filtro
+  const handleGenreChange = useCallback(
+    (genres: string[]) => {
+      setSelectedGenres(genres);
+      updateURL({ genres, page: 1 });
+    },
+    [updateURL],
+  );
+
+  const handlePlatformChange = useCallback(
+    (platforms: string[]) => {
+      setSelectedPlatforms(platforms);
+      updateURL({ platforms, page: 1 });
+    },
+    [updateURL],
+  );
+
+  const handleSortChange = useCallback(
+    (newSort: string) => {
+      setSort(newSort);
+      localStorage.setItem("game-catalog-sort", newSort);
+      updateURL({ sort: newSort, page: 1 });
+    },
+    [updateURL],
+  );
+
+  const clearFilters = useCallback(() => {
     setSelectedGenres([]);
     setSelectedPlatforms([]);
     updateURL({ genres: [], platforms: [] });
-  };
+  }, [updateURL]);
 
-  const updateURL = (filters: { genres?: string[]; platforms?: string[] }) => {
-    const params = new URLSearchParams({
-      locale,
-      page: "1",
-      perPage: perPage.toString(),
-      search: searchQuery,
-      sort,
-    });
+  const handlePageChange = useCallback(
+    (newPage: number) => {
+      updateURL({ page: newPage });
+    },
+    [updateURL],
+  );
 
-    if (filters.genres && filters.genres.length > 0) {
-      params.set("genres", filters.genres.join(","));
-    } else {
-      params.delete("genres");
-    }
-
-    if (filters.platforms && filters.platforms.length > 0) {
-      params.set("platforms", filters.platforms.join(","));
-    } else {
-      params.delete("platforms");
-    }
-
-    window.history.pushState({}, "", `/game-catalog?${params.toString()}`);
-    setLoading(true);
-  };
-
+  // Buscar jogos
   useEffect(() => {
     const fetchGames = async () => {
       try {
@@ -108,16 +151,11 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
           locale,
           page: page.toString(),
           perPage: perPage.toString(),
+          sort,
+          ...(searchQuery && { search: searchQuery }),
+          ...(selectedGenres.length > 0 && { genres: selectedGenres.join(",") }),
+          ...(selectedPlatforms.length > 0 && { platforms: selectedPlatforms.join(",") }),
         });
-
-        if (sort) params.append("sort", sort);
-        if (searchQuery) params.append("search", searchQuery);
-        if (selectedGenres.length > 0) {
-          params.append("genres", selectedGenres.join(","));
-        }
-        if (selectedPlatforms.length > 0) {
-          params.append("platforms", selectedPlatforms.join(","));
-        }
 
         const data: GameListResponse = await apiFetch(`/games?${params.toString()}`);
         setGames(data);
@@ -133,34 +171,14 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
     fetchGames();
   }, [locale, page, perPage, searchQuery, sort, selectedGenres, selectedPlatforms]);
 
+  // Restaurar preferências de visualização
   useEffect(() => {
     const savedView = localStorage.getItem("game-catalog-view") as ViewType | null;
     if (savedView) setView(savedView);
-  }, []);
 
-  useEffect(() => {
     const savedSort = localStorage.getItem("game-catalog-sort");
     if (savedSort) setSort(savedSort);
   }, []);
-
-  const handleSortChange = (newSort: string) => {
-    setSort(newSort);
-    localStorage.setItem("game-catalog-sort", newSort);
-    setLoading(true);
-  };
-
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams({
-      page: newPage.toString(),
-      perPage: perPage.toString(),
-      search: searchQuery,
-      sort,
-      ...(selectedGenres.length > 0 && { genres: selectedGenres.join(",") }),
-      ...(selectedPlatforms.length > 0 && { platforms: selectedPlatforms.join(",") }),
-    });
-
-    window.location.search = params.toString();
-  };
 
   if (loading) {
     return (
