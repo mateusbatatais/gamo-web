@@ -30,6 +30,22 @@
       "8": "8ª Geração",
       "9": "9ª Geração",
       "label": "Filtrar por Geração"
+    },
+    "genres": {
+      "label": "Gêneros",
+      "action": "Ação",
+      "adventure": "Aventura",
+      "rpg": "RPG",
+      "strategy": "Estratégia",
+      "sports": "Esportes"
+    },
+    "platforms": {
+      "label": "Plataformas",
+      "pc": "PC",
+      "playstation": "PlayStation",
+      "xbox": "Xbox",
+      "nintendo": "Nintendo",
+      "mobile": "Mobile"
     }
   },
   "order": {
