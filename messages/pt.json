@@ -53,7 +53,8 @@
     "nameDesc": "Nome (Z-A)",
     "releaseDateAsc": "Data de Lançamento (Mais antigos)",
     "releaseDateDesc": "Data de Lançamento (Mais recentes)",
-    "popularityDesc": "Mais populares"
+    "popularityDesc": "Mais populares",
+    "scoreDesc": "Melhor avaliados"
   },
   "Header": {
     "altLogo": "Logo Gamo",

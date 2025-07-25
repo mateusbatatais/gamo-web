@@ -12,9 +12,17 @@ interface SearchBarProps {
   className?: string;
   variant?: "header" | "page";
   compact?: boolean;
+  searchPath: string; // Caminho base para busca, ex: '/game-catalog' ou '/console-catalog'
+  placeholder?: string; // Placeholder customizável
 }
 
-export function SearchBar({ className, variant = "page", compact = false }: SearchBarProps) {
+export function SearchBar({
+  className,
+  variant = "page",
+  compact = false,
+  searchPath,
+  placeholder = "Buscar...",
+}: SearchBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("search") || "");
@@ -31,7 +39,7 @@ export function SearchBar({ className, variant = "page", compact = false }: Sear
       params.delete("search");
     }
 
-    router.push(`/console-catalog?${params.toString()}`);
+    router.push(`${searchPath}?${params.toString()}`);
 
     // Recolher a busca em mobile após pesquisa
     if (variant === "header" && isExpanded) {
@@ -71,7 +79,7 @@ export function SearchBar({ className, variant = "page", compact = false }: Sear
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Buscar consoles..."
+            placeholder={placeholder}
             className="flex-grow"
             inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}
@@ -92,7 +100,7 @@ export function SearchBar({ className, variant = "page", compact = false }: Sear
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Buscar consoles..."
+              placeholder={placeholder}
               className="flex-grow"
               inputSize={compact ? "sm" : "md"}
               icon={<Search size={18} />}
@@ -119,7 +127,7 @@ export function SearchBar({ className, variant = "page", compact = false }: Sear
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Buscar consoles..."
+            placeholder={placeholder}
             className="flex-grow"
             inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}

@@ -39,12 +39,12 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
     { value: "name-desc", label: t("order.nameDesc") },
     { value: "releaseDate-asc", label: t("order.releaseDateAsc") },
     { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
-    { value: "popularity-desc", label: t("order.popularityDesc") },
+    { value: "score-desc", label: t("order.scoreDesc") },
   ];
 
   // Obter parâmetros da URL
   const searchQuery = searchParams.get("search") || "";
-  const sortParam = searchParams.get("sort") || "popularity-desc";
+  const sortParam = searchParams.get("sort") || "score-desc";
   const genresParam = searchParams.get("genres") || "";
   const platformsParam = searchParams.get("platforms") || "";
 
@@ -263,7 +263,7 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
       <div className="w-full lg:w-3/4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="w-full sm:w-auto flex-1">
-            <SearchBar compact />
+            <SearchBar compact searchPath="/game-catalog" placeholder="Buscar jogos..." />
           </div>
           <div className="flex items-center justify-between sm:justify-end gap-4">
             <SortSelect

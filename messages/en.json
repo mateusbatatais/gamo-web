@@ -53,7 +53,8 @@
     "nameDesc": "Name (Z-A)",
     "releaseDateAsc": "Release Date (Oldest)",
     "releaseDateDesc": "Release Date (Newest)",
-    "popularityDesc": "Most Popular"
+    "popularityDesc": "Most Popular",
+    "scoreDesc": "Best Rated"
   },
   "Header": {
     "altLogo": "Gamo Logo",

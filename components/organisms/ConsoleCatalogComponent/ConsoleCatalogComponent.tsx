@@ -280,7 +280,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       <div className="w-full lg:w-3/4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="w-full sm:w-auto flex-1">
-            <SearchBar compact />
+            <SearchBar compact searchPath="/console-catalog" placeholder="Buscar consoles..." />
           </div>
           <div className="flex items-center justify-between sm:justify-end gap-4">
             <SortSelect
