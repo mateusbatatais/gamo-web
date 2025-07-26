@@ -47,19 +47,17 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
   const sortParam = searchParams.get("sort") || "score-desc";
   const genresParam = searchParams.get("genres") || "";
   const platformsParam = searchParams.get("platforms") || "";
-
-  // Inicializar estados a partir da URL
   const [sort, setSort] = useState<string>(sortParam);
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(
-    genresParam ? genresParam.split(",") : [],
+  const [selectedGenres, setSelectedGenres] = useState<number[]>(
+    genresParam ? genresParam.split(",").map(Number) : [],
   );
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(
-    platformsParam ? platformsParam.split(",") : [],
+  const [selectedPlatforms, setSelectedPlatforms] = useState<number[]>(
+    platformsParam ? platformsParam.split(",").map(Number) : [],
   );
 
   // Atualizar URL quando filtros mudam
   const updateURL = useCallback(
-    (updates: { genres?: string[]; platforms?: string[]; sort?: string; page?: number }) => {
+    (updates: { genres?: number[]; platforms?: number[]; sort?: string; page?: number }) => {
       const params = new URLSearchParams(searchParams.toString());
 
       // Atualizar parâmetros
@@ -104,7 +102,7 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
 
   // Handlers para mudanças de filtro
   const handleGenreChange = useCallback(
-    (genres: string[]) => {
+    (genres: number[]) => {
       setSelectedGenres(genres);
       updateURL({ genres, page: 1 });
     },
@@ -112,7 +110,7 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
   );
 
   const handlePlatformChange = useCallback(
-    (platforms: string[]) => {
+    (platforms: number[]) => {
       setSelectedPlatforms(platforms);
       updateURL({ platforms, page: 1 });
     },

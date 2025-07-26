@@ -5,10 +5,10 @@ import GenreFilter from "./GenreFilter/GenreFilter";
 import PlatformFilter from "./PlatformFilter/PlatformFilter";
 
 interface GameFilterContainerProps {
-  onGenreChange: (selectedGenres: string[]) => void;
-  onPlatformChange: (selectedPlatforms: string[]) => void;
-  selectedGenres: string[];
-  selectedPlatforms: string[];
+  onGenreChange: (selectedGenres: number[]) => void;
+  onPlatformChange: (selectedPlatforms: number[]) => void;
+  selectedGenres: number[];
+  selectedPlatforms: number[];
   clearFilters: () => void;
   className?: string;
 }
