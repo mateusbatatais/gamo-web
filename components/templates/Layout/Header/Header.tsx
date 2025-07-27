@@ -59,18 +59,21 @@ export default function Header() {
       label: t("catalog.consoles"),
       icon: <Gamepad size={16} />,
       onClick: () => router.push("/console-catalog"),
+      mob_link: "console-catalog",
     },
     {
       id: "accessories",
       label: t("catalog.accessories"),
       icon: <Joystick size={16} />,
-      onClick: () => router.push("/accessories-catalog"),
+      onClick: () => router.push("/accessorie-catalog"),
+      mob_link: "accessorie-catalog",
     },
     {
       id: "games",
       label: t("catalog.games"),
       icon: <Gamepad2 size={16} />,
       onClick: () => router.push("/game-catalog"),
+      mob_link: "game-catalog",
     },
   ];
 
@@ -146,12 +149,12 @@ export default function Header() {
               isScrolled ? "max-w-md w-full" : "max-w-xl w-full",
             )}
           >
-            {/* Removido por mudança de fluxo*/}
+            {/* Filtro Removido por mudança de fluxo*/}
           </div>
 
           <div className="flex items-center space-x-2 md:space-x-4">
             {/* Barra de busca - mobile */}
-            <div className="md:hidden">{/* Removido por mudança de fluxo*/}</div>
+            <div className="md:hidden">{/* Filtro Removido por mudança de fluxo*/}</div>
 
             <Button
               onClick={toggleMenu}
@@ -226,7 +229,7 @@ export default function Header() {
                 <h3>{t("catalog.title")}</h3>
                 <div className="pl-4 mt-2 space-y-3">
                   {catalogItems.map((item) => (
-                    <Link key={item.id} href={item.id!} onClick={() => setIsMenuOpen(false)}>
+                    <Link key={item.id} href={item.mob_link!} onClick={() => setIsMenuOpen(false)}>
                       <div className="flex items-center gap-2 py-1 ">
                         {item.icon}
                         <span>{item.label}</span>
