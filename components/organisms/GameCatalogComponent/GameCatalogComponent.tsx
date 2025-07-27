@@ -17,12 +17,11 @@ import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
 
 interface GameCatalogComponentProps {
-  locale: string;
   page: number;
   perPage: number;
 }
 
-const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentProps) => {
+const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
   const [games, setGames] = useState<GameListResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -146,7 +145,6 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
         setLoading(true);
 
         const params = new URLSearchParams({
-          locale,
           page: page.toString(),
           perPage: perPage.toString(),
           sort,
@@ -157,10 +155,9 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
 
         const data: GameListResponse = await apiFetch(`/games?${params.toString()}`);
 
-        // Mapear os jogos para incluir título traduzido
         const mappedItems = data.items.map((game) => ({
           ...game,
-          title: game.translations[0]?.title || game.slug,
+          name: game.name || game.slug,
         }));
 
         setGames({ ...data, items: mappedItems });
@@ -174,7 +171,7 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
     };
 
     fetchGames();
-  }, [locale, page, perPage, searchQuery, sort, selectedGenres, selectedPlatforms]);
+  }, [page, perPage, searchQuery, sort, selectedGenres, selectedPlatforms]);
 
   // Restaurar preferências de visualização
   useEffect(() => {
@@ -343,7 +340,7 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
               {games.items.map((game) => (
                 <GameCard
                   key={game.id}
-                  title={game.title}
+                  title={game.name}
                   imageUrl={game.imageUrl || ""}
                   platforms={game.platforms}
                   slug={game.slug}

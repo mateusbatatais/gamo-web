@@ -1,3 +1,4 @@
+// game.d.ts
 export interface GameListResponse {
   items: GameListItem[];
   meta: {
@@ -10,12 +11,13 @@ export interface GameListResponse {
 
 export interface GameListItem {
   id: number;
-  title: string;
+  name: string; // Alterado de title para name
   slug: string;
   imageUrl: string | null;
   releaseDate: string | null;
-  platforms: { id: number; name: string; slug: string }[];
-  genres: { id: number; name: string; slug: string }[];
+  platforms: number[]; // Agora é array de IDs
+  genres: number[]; // Agora é array de IDs
   developer?: string;
-  translations: { locale: string; title: string }[];
+  description?: string; // Novo campo
+  // Removido translations
 }
