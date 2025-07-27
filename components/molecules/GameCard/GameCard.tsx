@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl";
 export interface GameCardProps {
   title: string;
   imageUrl: string;
-  platforms?: string[];
+  platforms?: { id: number; name: string; slug: string }[];
   slug: string;
   releaseDate?: string;
   developer?: string;
@@ -18,7 +18,7 @@ export interface GameCardProps {
 const GameCard = ({
   title,
   imageUrl,
-  platforms,
+  platforms = [], // Alterado para array de objetos
   slug,
   releaseDate,
   developer,
@@ -74,7 +74,7 @@ const GameCard = ({
               {developer && <p className="text-sm text-gray-600 dark:text-gray-300">{developer}</p>}
               {platforms && platforms.length > 0 && (
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  {platforms.join(", ")}
+                  {platforms.map((p) => p.name).join(", ")} {/* Alterado para mapear os nomes */}
                 </p>
               )}
               {releaseDate && (

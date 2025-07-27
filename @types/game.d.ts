@@ -1,11 +1,10 @@
 export interface GameListResponse {
   items: GameListItem[];
   meta: {
-    totalItems: number;
-    itemCount: number;
-    itemsPerPage: number;
+    total: number;
+    page: number;
+    perPage: number;
     totalPages: number;
-    currentPage: number;
   };
 }
 
@@ -14,7 +13,9 @@ export interface GameListItem {
   title: string;
   slug: string;
   imageUrl: string | null;
-  releaseDate: string;
-  platforms: string[];
-  developer: string;
+  releaseDate: string | null;
+  platforms: { id: number; name: string; slug: string }[];
+  genres: { id: number; name: string; slug: string }[];
+  developer?: string;
+  translations: { locale: string; title: string }[];
 }

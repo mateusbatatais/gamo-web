@@ -156,7 +156,14 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
         });
 
         const data: GameListResponse = await apiFetch(`/games?${params.toString()}`);
-        setGames(data);
+
+        // Mapear os jogos para incluir título traduzido
+        const mappedItems = data.items.map((game) => ({
+          ...game,
+          title: game.translations[0]?.title || game.slug,
+        }));
+
+        setGames({ ...data, items: mappedItems });
         setTotalPages(data.meta.totalPages);
         setError("");
       } catch {
@@ -340,7 +347,7 @@ const GameCatalogComponent = ({ locale, page, perPage }: GameCatalogComponentPro
                   imageUrl={game.imageUrl || ""}
                   platforms={game.platforms}
                   slug={game.slug}
-                  releaseDate={game.releaseDate}
+                  releaseDate={game.releaseDate || ""}
                   developer={game.developer}
                   orientation={view === "grid" ? "vertical" : "horizontal"}
                 />
