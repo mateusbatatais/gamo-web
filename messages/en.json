@@ -355,23 +355,23 @@
     "collectionButton": "View collection",
     "tip": "Collector tip: Make sure the disc is clean and free of deep scratches"
   },
-    "GameDetails": {
-    "notFound": "Jogo não encontrado",
-    "noImage": "Imagem não disponível",
-    "releaseDate": "Data de lançamento",
+  "GameDetails": {
+    "notFound": "Game not found",
+    "noImage": "Image not available",
+    "releaseDate": "Release date",
     "metacritic": "Metacritic",
-    "rating": "Avaliação",
-    "year": "Ano",
-    "relatedGames": "Jogos Relacionados",
-    "series": "Série",
+    "rating": "Rating",
+    "year": "Year",
+    "relatedGames": "Related Games",
+    "series": "Series",
     "dlcs": "DLCs",
-    "additions": "Expansões",
-    "parents": "Jogos Originais",
-    "screenshots": "Capturas de Tela",
-    "stats": "Estatísticas da Comunidade",
-    "owned": "Possuem",
-    "playing": "Jogando",
-    "beaten": "Completaram",
-    "dropped": "Abandonaram"
+    "additions": "Expansions",
+    "parents": "Original Games",
+    "screenshots": "Screenshots",
+    "stats": "Community Stats",
+    "owned": "Owned",
+    "playing": "Playing",
+    "beaten": "Beaten",
+    "dropped": "Dropped"
   }
 }
