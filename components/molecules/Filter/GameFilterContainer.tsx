@@ -23,8 +23,8 @@ const GameFilterContainer = ({
 }: GameFilterContainerProps) => {
   return (
     <div className={clsx("space-y-6", className)}>
-      <GenreFilter selectedGenres={selectedGenres} onGenreChange={onGenreChange} />
       <PlatformFilter selectedPlatforms={selectedPlatforms} onPlatformChange={onPlatformChange} />
+      <GenreFilter selectedGenres={selectedGenres} onGenreChange={onGenreChange} />
       <Button onClick={clearFilters} variant="outline" className="w-full" label="Limpar filtros" />
     </div>
   );

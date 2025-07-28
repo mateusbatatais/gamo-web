@@ -266,7 +266,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
   return (
     <div className="flex flex-col lg:flex-row">
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
-        <div className="sticky top-[70px]">
+        <div className="sticky top-[70px] overflow-y-auto h-[calc(100vh-70px)] pe-2">
           <FilterContainer
             onBrandChange={handleBrandChange}
             onGenerationChange={handleGenerationChange}

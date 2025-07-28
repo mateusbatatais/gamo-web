@@ -251,7 +251,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     <div className="flex flex-col lg:flex-row">
       {/* Filtros para desktop */}
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
-        <div className="sticky top-[70px]">
+        <div className="sticky top-[70px] overflow-y-auto h-[calc(100vh-70px)] pe-2">
           <GameFilterContainer
             onGenreChange={handleGenreChange}
             onPlatformChange={handlePlatformChange}
