@@ -40,6 +40,7 @@ export const ViewToggle = ({
         aria-label="Grid view"
         icon={<LayoutGrid size={20} />}
         data-testid="button-grid-view"
+        className="!p-1.5"
         size="sm"
       ></Button>
       <Button
@@ -48,6 +49,7 @@ export const ViewToggle = ({
         aria-label="List view"
         icon={<List size={20} />}
         data-testid="button-list-view"
+        className="!p-1.5"
         size="sm"
       ></Button>
     </div>

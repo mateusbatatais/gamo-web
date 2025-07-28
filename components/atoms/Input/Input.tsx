@@ -5,7 +5,7 @@ import React, { InputHTMLAttributes, ReactNode, forwardRef, useState } from "rea
 import clsx from "clsx";
 import { Eye, EyeOff } from "lucide-react";
 
-type InputSize = "sm" | "md" | "lg";
+type InputSize = "sm" | "md" | "lg" | "xl";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -16,9 +16,10 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const sizeClasses: Record<InputSize, string> = {
-  sm: "text-sm px-2 py-1",
-  md: "text-base px-3 py-2",
-  lg: "text-lg px-4 py-3",
+  sm: "py-1.5 px-2.5 text-sm",
+  md: "py-2 px-3 text-base",
+  lg: "py-2.5 px-4 text-lg",
+  xl: "py-3 px-5 text-xl",
 };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
