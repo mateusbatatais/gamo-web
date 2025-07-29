@@ -15,6 +15,12 @@ interface GameInfoProps {
 export default function GameInfo({ game }: GameInfoProps) {
   const t = useTranslations("GameDetails");
   const [imageError, setImageError] = useState(false);
+  const [expandedDescription, setExpandedDescription] = useState(false);
+  const maxLength = 150;
+  const description = game.description ?? "";
+  const truncatedDescription =
+    description.slice(0, maxLength) + (description.length > maxLength ? "..." : "");
+  const shouldShowReadMore = description.length > maxLength;
 
   return (
     <Card className="mb-8">
@@ -48,8 +54,22 @@ export default function GameInfo({ game }: GameInfoProps) {
           )}
 
           {game.description && (
-            <div className="prose max-w-none mb-6">
-              <p>{game.description}</p>
+            <div className="mt-3">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                {expandedDescription ? game.description : truncatedDescription}
+              </p>
+              {shouldShowReadMore && (
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setExpandedDescription(!expandedDescription);
+                  }}
+                  className="text-primary-600 dark:text-primary-400 text-sm font-medium mt-1 hover:underline focus:outline-none"
+                >
+                  {expandedDescription ? "Ver menos" : "Ver mais"}
+                </button>
+              )}
             </div>
           )}
 
