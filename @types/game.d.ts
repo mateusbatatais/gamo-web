@@ -16,9 +16,12 @@ export interface GameListItem {
   imageUrl: string | null;
   releaseDate: string | null;
   platforms: number[]; // Agora é array de IDs
+  parentPlatforms: number[]; // Agora é array de IDs
   genres: number[]; // Agora é array de IDs
   developer?: string;
   description?: string; // Novo campo
+  metacritic?: number | null; // Novo campo opcional
+  shortScreenshots?: string[]; // Novo campo opcional
 }
 
 export interface MinimalGame {

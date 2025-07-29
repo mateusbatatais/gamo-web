@@ -373,5 +373,15 @@
     "playing": "Jogando",
     "beaten": "Completaram",
     "dropped": "Abandonaram"
+  },
+  "gameCard": {
+    "noImage": "Imagem não disponível",
+    "releaseDate": "Data de lançamento",
+    "developer": "Desenvolvedor",
+    "genres": "Gêneros",
+    "addToCollection": "Adicionar à coleção",
+    "market": "Mercado",
+    "details": "Detalhes",
+    "addToWishlist": "Adicionar à lista de desejos"
   }
 }

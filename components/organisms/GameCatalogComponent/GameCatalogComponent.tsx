@@ -342,11 +342,13 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
                   key={game.id}
                   title={game.name}
                   imageUrl={game.imageUrl || ""}
-                  platforms={game.platforms}
+                  platforms={game.parentPlatforms}
                   slug={game.slug}
                   releaseDate={game.releaseDate || ""}
+                  metacritic={game.metacritic}
                   developer={game.developer}
                   orientation={view === "grid" ? "vertical" : "horizontal"}
+                  shortScreenshots={game.shortScreenshots}
                 />
               ))}
             </div>

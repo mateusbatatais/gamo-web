@@ -175,11 +175,10 @@ const PlatformFilter = ({ selectedPlatforms, onPlatformChange }: PlatformFilterP
         </div>
       ))}
 
-      {/* Grupo "Outros" - somente se houver plataformas */}
       {otherPlatforms.length > 0 && (
         <div className="mb-2 mt-3">
           <button
-            className="flex items-center w-full text-left font-medium text-gray-800 hover:text-gray-900"
+            className="flex items-center w-full text-left font-medium text-gray-800 dark:text-gray-200"
             onClick={() => toggleGroup("others")}
             aria-expanded={!!expandedGroups["others"]}
           >
