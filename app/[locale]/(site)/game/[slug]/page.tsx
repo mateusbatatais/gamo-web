@@ -68,7 +68,7 @@ export default function GameDetailPage() {
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
             {t("series")} ({data.relations.series.length})
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
             {data.relations.series.map((game) => (
               <RelationCard key={game.id} game={game} />
             ))}
