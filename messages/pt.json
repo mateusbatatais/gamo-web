@@ -382,6 +382,7 @@
     "addToCollection": "Adicionar à coleção",
     "market": "Mercado",
     "details": "Detalhes",
-    "addToWishlist": "Adicionar à lista de desejos"
+    "addToWishlist": "Adicionar à lista de desejos",
+    "noReleaseDate": "Data de lançamento não disponível"
   }
 }
