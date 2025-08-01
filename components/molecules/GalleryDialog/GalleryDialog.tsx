@@ -1,12 +1,10 @@
 // components/molecules/GalleryDialog.tsx
-
 import { Dialog as MuiDialog, IconButton } from "@mui/material";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 
-// Definindo o tipo para o componente Dialog
 interface GalleryDialogProps {
   open: boolean;
   onClose: () => void;
@@ -24,30 +22,49 @@ export const GalleryDialog = ({
 }: GalleryDialogProps) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isLoading, setIsLoading] = useState(true);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // Verifica se a imagem já está carregada
+  const isImageLoaded = () => {
+    return imageRef.current?.complete && imageRef.current?.naturalHeight !== 0;
+  };
 
   useEffect(() => {
-    setCurrentIndex(initialIndex);
-    setIsLoading(true); // Inicia o carregamento ao mudar de imagem
-  }, [initialIndex]);
+    if (open) {
+      setCurrentIndex(initialIndex);
+      setIsLoading(true);
+    }
+  }, [open, initialIndex]);
 
   const handlePrev = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
-    setIsLoading(true); // Ativa o loading ao mudar a imagem
+    const newIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1;
+    setCurrentIndex(newIndex);
+    setIsLoading(true);
   };
 
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
-    setIsLoading(true); // Ativa o loading ao mudar a imagem
+    const newIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0;
+    setCurrentIndex(newIndex);
+    setIsLoading(true);
   };
 
   const handleThumbnailClick = (index: number) => {
+    if (index === currentIndex) return; // Não faz nada se for a mesma imagem
+
     setCurrentIndex(index);
-    setIsLoading(true); // Ativa o loading ao clicar em miniatura
+    setIsLoading(true);
   };
 
   const handleImageLoad = () => {
-    setIsLoading(false); // Desativa o loading quando a imagem carrega
+    setIsLoading(false);
   };
+
+  // Verifica se a imagem já está carregada após a mudança
+  useEffect(() => {
+    if (isImageLoaded()) {
+      setIsLoading(false);
+    }
+  }, [currentIndex]);
 
   return (
     <MuiDialog
@@ -62,6 +79,9 @@ export const GalleryDialog = ({
           background: "var(--color-neutral-50)",
           color: "var(--color-neutral-900)",
           maxHeight: "90vh",
+          height: "90vh",
+          display: "flex",
+          flexDirection: "column",
           "@apply dark:bg-gray-800 dark:text-neutral-100": {},
           overflow: "hidden",
         },
@@ -86,7 +106,7 @@ export const GalleryDialog = ({
         <X className="text-white" size={24} />
       </IconButton>
 
-      <div className="relative flex flex-col items-center bg-neutral-50 dark:bg-gray-800">
+      <div className="relative flex flex-col items-center bg-neutral-50 dark:bg-gray-800 flex-grow">
         {/* Botões de navegação flutuantes */}
         <IconButton
           aria-label="previous"
@@ -132,15 +152,16 @@ export const GalleryDialog = ({
         )}
 
         {/* Imagem principal */}
-        <div className="relative w-full aspect-video max-h-[80vh]">
+        <div className="relative w-full h-full flex items-center justify-center">
           <Image
+            ref={imageRef}
             src={images[currentIndex]}
             alt={`${gameName} screenshot ${currentIndex + 1}`}
             fill
             className="object-contain"
             sizes="(max-width: 768px) 100vw, 80vw"
-            onLoad={handleImageLoad} // Detecta quando a imagem carregou
-            onError={() => setIsLoading(false)} // Em caso de erro, remove o loading
+            onLoad={handleImageLoad}
+            onError={() => setIsLoading(false)}
           />
         </div>
 
@@ -150,9 +171,8 @@ export const GalleryDialog = ({
         </div>
       </div>
 
-      {/* Miniaturas na parte inferior */}
       <div className="p-2 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 overflow-x-auto">
-        <div className="flex justify-center gap-2 py-2">
+        <div className="flex justify-center gap-2 py-2 min-w-max">
           {images.map((img, index) => (
             <button
               key={index}
