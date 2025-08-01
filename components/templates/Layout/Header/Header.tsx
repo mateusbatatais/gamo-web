@@ -59,21 +59,21 @@ export default function Header() {
       label: t("catalog.consoles"),
       icon: <Gamepad size={16} />,
       onClick: () => router.push("/console-catalog"),
-      mob_link: "console-catalog",
+      mob_link: "/console-catalog",
     },
     {
       id: "accessories",
       label: t("catalog.accessories"),
       icon: <Joystick size={16} />,
       onClick: () => router.push("/accessorie-catalog"),
-      mob_link: "accessorie-catalog",
+      mob_link: "/accessorie-catalog",
     },
     {
       id: "games",
       label: t("catalog.games"),
       icon: <Gamepad2 size={16} />,
       onClick: () => router.push("/game-catalog"),
-      mob_link: "game-catalog",
+      mob_link: "/game-catalog",
     },
   ];
 

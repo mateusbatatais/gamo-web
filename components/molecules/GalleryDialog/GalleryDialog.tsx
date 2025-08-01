@@ -1,9 +1,10 @@
 // components/molecules/GalleryDialog.tsx
-import { Dialog as MuiDialog, IconButton } from "@mui/material";
+import { Dialog as MuiDialog } from "@mui/material";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import clsx from "clsx";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
+import { Button } from "@/components/atoms/Button/Button";
 
 interface GalleryDialogProps {
   open: boolean;
@@ -24,7 +25,6 @@ export const GalleryDialog = ({
   const [isLoading, setIsLoading] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
 
-  // Verifica se a imagem já está carregada
   const isImageLoaded = () => {
     return imageRef.current?.complete && imageRef.current?.naturalHeight !== 0;
   };
@@ -49,7 +49,7 @@ export const GalleryDialog = ({
   };
 
   const handleThumbnailClick = (index: number) => {
-    if (index === currentIndex) return; // Não faz nada se for a mesma imagem
+    if (index === currentIndex) return;
 
     setCurrentIndex(index);
     setIsLoading(true);
@@ -59,7 +59,6 @@ export const GalleryDialog = ({
     setIsLoading(false);
   };
 
-  // Verifica se a imagem já está carregada após a mudança
   useEffect(() => {
     if (isImageLoaded()) {
       setIsLoading(false);
@@ -87,71 +86,40 @@ export const GalleryDialog = ({
         },
       }}
     >
-      {/* Botão de fechar flutuante */}
-      <IconButton
-        aria-label="close"
+      <Button
+        variant="transparent"
+        className="absolute top-4 right-4 z-30"
         onClick={onClose}
-        className="
-          absolute top-4 right-4 z-30
-          text-white hover:text-white
-          bg-black bg-opacity-50 hover:bg-opacity-75
-          dark:bg-opacity-50 dark:hover:bg-opacity-75
-          p-1.5
-        "
-        sx={{
-          position: "absolute",
-          zIndex: 1300,
-        }}
-      >
-        <X className="text-white" size={24} />
-      </IconButton>
+        aria-label="close"
+        icon={<X size={24} />}
+      ></Button>
 
       <div className="relative flex flex-col items-center bg-neutral-50 dark:bg-gray-800 flex-grow">
-        {/* Botões de navegação flutuantes */}
-        <IconButton
+        <Button
+          icon={<ChevronLeft size={30} />}
           aria-label="previous"
           onClick={handlePrev}
+          size="sm"
+          variant="outline"
           className="
-            absolute left-4 top-1/2 transform -translate-y-1/2 z-20
-            text-white hover:text-white
-            bg-black bg-opacity-50 hover:bg-opacity-75
-            dark:bg-opacity-50 dark:hover:bg-opacity-75
-            p-2
-          "
-          sx={{
-            position: "absolute",
-            zIndex: 1200,
-          }}
-        >
-          <ChevronLeft size={30} />
-        </IconButton>
-
-        <IconButton
+            absolute left-4 top-1/2 transform -translate-y-1/2 z-20"
+        ></Button>
+        <Button
+          icon={<ChevronRight size={30} />}
           aria-label="next"
           onClick={handleNext}
+          size="sm"
+          variant="outline"
           className="
-            absolute right-4 top-1/2 transform -translate-y-1/2 z-20
-            text-white hover:text-white
-            bg-black bg-opacity-50 hover:bg-opacity-75
-            dark:bg-opacity-50 dark:hover:bg-opacity-75
-            p-2
-          "
-          sx={{
-            position: "absolute",
-            zIndex: 1200,
-          }}
-        >
-          <ChevronRight size={30} />
-        </IconButton>
+            absolute right-4 top-1/2 transform -translate-y-1/2 z-20"
+        ></Button>
 
-        {/* Overlay de loading */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-10 bg-black bg-opacity-30">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
           </div>
         )}
 
-        {/* Imagem principal */}
         <div className="relative w-full h-full flex items-center justify-center">
           <Image
             ref={imageRef}
@@ -165,7 +133,6 @@ export const GalleryDialog = ({
           />
         </div>
 
-        {/* Contador de imagens */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm z-20">
           {currentIndex + 1} / {images.length}
         </div>
