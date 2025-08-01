@@ -7,6 +7,7 @@ import { Card } from "@/components/atoms/Card/Card";
 import { Gamepad } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { GameWithStats } from "@/@types/game";
+import { PlatformIcons } from "@/components/molecules/RenderPlatformIcons/RenderPlatformIcons";
 
 interface GameInfoProps {
   game: GameWithStats;
@@ -52,6 +53,7 @@ export default function GameInfo({ game }: GameInfoProps) {
               {game.esrbRating}
             </Badge>
           )}
+          {game.parentPlatforms.length && <PlatformIcons platforms={game.parentPlatforms} />}
 
           {game.description && (
             <div className="mt-3">
