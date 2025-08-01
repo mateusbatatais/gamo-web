@@ -13,11 +13,9 @@ interface RelationCardProps {
 export function RelationCard({ game }: RelationCardProps) {
   return (
     <Link href={`/game/${game.slug}`} passHref>
-      <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 !p-0 relative cursor-pointer h-40 group">
-        {/* Overlay gradiente para o texto */}
+      <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 !p-0 relative cursor-pointer h-20 group">
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent z-10" />
 
-        {/* Overlay adicional no hover */}
         <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/20 transition-all duration-300 z-20" />
 
         {game.imageUrl ? (

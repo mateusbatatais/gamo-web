@@ -5,12 +5,13 @@ import { useTranslations } from "next-intl";
 import useGameDetails from "@/hooks/useGameDetails";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import GameInfo from "@/components/organisms/GameInfo/GameInfo";
 import { RelationCard } from "@/components/molecules/RelationCard/RelationCard";
 import Image from "next/image";
 import { GameInfoSkeleton } from "@/components/organisms/GameInfo/GameInfo.skeleton";
+import { GalleryDialog } from "@/components/molecules/GalleryDialog/GalleryDialog";
 
 export default function GameDetailPage() {
   const params = useParams();
@@ -20,26 +21,30 @@ export default function GameDetailPage() {
   const { data, loading, error } = useGameDetails(slug || "");
   const { showToast } = useToast();
 
+  // Estados para o modal da galeria
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
   useEffect(() => {
     if (error) {
       showToast(error || t("notFound"), "danger");
     }
   }, [error, t, showToast]);
 
-  if (!loading && !data) {
-    return (
-      <div className="container mx-auto">
-        <Card>
-          <div className="text-center py-12 text-gray-500">{t("notFound")}</div>
-        </Card>
-      </div>
-    );
-  }
+  const handleOpenGallery = (index: number) => {
+    setSelectedImageIndex(index);
+    setGalleryOpen(true);
+  };
+
+  const handleCloseGallery = () => {
+    setGalleryOpen(false);
+    // Se quiser resetar o índice ao fechar, descomente a linha abaixo:
+    // setSelectedImageIndex(0);
+  };
 
   return (
     <div className="container mx-auto max-w-6xl">
       {loading ? <GameInfoSkeleton /> : data ? <GameInfo game={data} /> : null}
-
       {data?.shortScreenshots && data.shortScreenshots.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
@@ -47,7 +52,13 @@ export default function GameDetailPage() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {data.shortScreenshots.map((screenshot, index) => (
-              <Card key={index} className="overflow-hidden !p-0">
+              <button
+                type="button"
+                key={index}
+                className="overflow-hidden rounded-lg cursor-pointer transform transition-transform hover:scale-[1.02] shadow-sm border border-gray-200 dark:border-gray-700 focus:outline-none"
+                onClick={() => handleOpenGallery(index)}
+                aria-label={`${data.name} screenshot ${index + 1}`}
+              >
                 <div className="aspect-video relative">
                   <Image
                     src={screenshot}
@@ -57,10 +68,20 @@ export default function GameDetailPage() {
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                   />
                 </div>
-              </Card>
+              </button>
             ))}
           </div>
         </section>
+      )}
+
+      {data?.shortScreenshots && data.shortScreenshots.length > 0 && (
+        <GalleryDialog
+          open={galleryOpen}
+          onClose={handleCloseGallery}
+          images={data.shortScreenshots}
+          initialIndex={selectedImageIndex}
+          gameName={data.name || ""}
+        />
       )}
 
       {data?.relations?.series && data.relations.series.length > 0 && (
@@ -75,8 +96,6 @@ export default function GameDetailPage() {
           </div>
         </section>
       )}
-
-      {/* Relações: DLCs e Expansões */}
       {data?.relations?.additions && data.relations.additions.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
@@ -90,7 +109,6 @@ export default function GameDetailPage() {
         </section>
       )}
 
-      {/* Relações: Jogos Parent */}
       {data?.relations?.parents && data.relations.parents.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
@@ -104,7 +122,6 @@ export default function GameDetailPage() {
         </section>
       )}
 
-      {/* Seção de estatísticas */}
       {!loading && data && (
         <Card className="bg-gray-50 dark:bg-gray-800">
           <h2 className="text-2xl font-bold mb-4">{t("stats")}</h2>
