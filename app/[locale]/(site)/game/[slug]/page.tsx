@@ -12,16 +12,18 @@ import { RelationCard } from "@/components/molecules/RelationCard/RelationCard";
 import Image from "next/image";
 import { GameInfoSkeleton } from "@/components/organisms/GameInfo/GameInfo.skeleton";
 import { GalleryDialog } from "@/components/molecules/GalleryDialog/GalleryDialog";
+import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
+import { Gamepad } from "lucide-react";
 
 export default function GameDetailPage() {
   const params = useParams();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const { setItems } = useBreadcrumbs();
 
   const t = useTranslations("GameDetails");
   const { data, loading, error } = useGameDetails(slug || "");
   const { showToast } = useToast();
 
-  // Estados para o modal da galeria
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
@@ -38,9 +40,20 @@ export default function GameDetailPage() {
 
   const handleCloseGallery = () => {
     setGalleryOpen(false);
-    // Se quiser resetar o índice ao fechar, descomente a linha abaixo:
-    // setSelectedImageIndex(0);
   };
+
+  useEffect(() => {
+    setItems([
+      {
+        label: t("catalog"),
+        href: "/game-catalog",
+        icon: <Gamepad size={16} className="text-primary-500" />,
+      },
+      { label: data?.name || "" },
+    ]);
+
+    return () => setItems([]);
+  }, [setItems, t, data?.name]);
 
   return (
     <div className="container mx-auto max-w-6xl">

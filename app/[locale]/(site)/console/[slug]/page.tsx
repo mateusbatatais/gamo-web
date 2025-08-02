@@ -11,6 +11,8 @@ import { useEffect } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import { ConsoleInfoSkeleton } from "@/components/organisms/ConsoleInfo/ConsoleInfo.skeleton";
 import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
+import { Joystick } from "lucide-react";
+import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -20,12 +22,26 @@ export default function ConsoleDetailPage() {
   const t = useTranslations("ConsoleDetails");
   const { data, loading, error } = useConsoleDetails(slug || "", locale || "pt");
   const { showToast } = useToast();
+  const { setItems } = useBreadcrumbs();
 
   useEffect(() => {
     if (error) {
       showToast(error || t("notFound"), "danger");
     }
   }, [error, t, showToast]);
+
+  useEffect(() => {
+    setItems([
+      {
+        label: t("catalog"),
+        href: "/console-catalog",
+        icon: <Joystick size={16} className="text-primary-500" />,
+      },
+      { label: data?.consoleName + " " + data?.name || "" },
+    ]);
+
+    return () => setItems([]);
+  }, [setItems, t, data]);
 
   if (!loading && !data) {
     return (

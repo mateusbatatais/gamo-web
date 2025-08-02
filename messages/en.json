@@ -5,6 +5,16 @@
     "email": "Email: {email}",
     "role": "Role: {role}"
   },
+  "Breadcrumbs": {
+    "game-catalog": "Game Catalog",
+    "console-catalog": "Consoles Catalog",
+    "games": "Games",
+    "accessories": "Accessories",
+    "skins": "Skins",
+    "collections": "Collections",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
   "common": {
     "logout": "Logout",
     "loading": "Loading...",
@@ -230,6 +240,7 @@
     "confirmCrop": "Confirm Crop"
   },
   "ConsoleDetails": {
+    "catalog": "Console Catalog",
     "brand": "Brand",
     "generation": "Generation",
     "type": "Type",
@@ -356,6 +367,7 @@
     "tip": "Collector tip: Make sure the disc is clean and free of deep scratches"
   },
   "GameDetails": {
+    "catalog": "Game Catalog",
     "notFound": "Game not found",
     "noImage": "Image not available",
     "releaseDate": "Release date",
@@ -385,6 +397,5 @@
     "deleteError": "Failed to delete item",
     "editSuccess": "Item updated successfully",
     "noReleaseDate": "No release date available"
-
   }
 }

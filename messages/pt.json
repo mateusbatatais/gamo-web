@@ -14,6 +14,15 @@
     "notEdited": "Ajuste o corte",
     "siteKeywords": "jogos,coleções, gamer"
   },
+  "Breadcrumbs": {
+    "game-catalog": "Catálogo de Jogos",
+    "console-catalog": "Catálogo de Consoles",
+    "accessories": "Acessórios",
+    "skins": "Skins",
+    "collections": "Coleções",
+    "profile": "Perfil",
+    "settings": "Configurações"
+  },
   "filters": {
     "label": "Filtros",
     "brand": {
@@ -230,6 +239,7 @@
     "confirmCrop": "Confirmar Crop"
   },
   "ConsoleDetails": {
+    "catalog": "Catálogo de Consoles",
     "brand": "Marca",
     "generation": "Geração",
     "type": "Tipo",
@@ -355,7 +365,8 @@
     "collectionButton": "Ver coleção",
     "tip": "Dica de colecionador: Verifique se o disco está limpo e sem riscos profundos"
   },
-    "GameDetails": {
+  "GameDetails": {
+    "catalog": "Catálogo de games",
     "notFound": "Jogo não encontrado",
     "noImage": "Imagem não disponível",
     "releaseDate": "Data de lançamento",
