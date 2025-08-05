@@ -97,38 +97,38 @@ export default function GameDetailPage() {
         />
       )}
 
-      {data?.relations?.series && data.relations.series.length > 0 && (
+      {data?.series?.games && data.series?.games.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
-            {t("series")} ({data.relations.series.length})
+            {t("series")} ({data.series.games.length})
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {data.relations.series.map((game) => (
+            {data.series.games.map((game) => (
               <RelationCard key={game.id} game={game} />
             ))}
           </div>
         </section>
       )}
-      {data?.relations?.additions && data.relations.additions.length > 0 && (
+      {data?.children && data.children.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
-            {t("additions")} ({data.relations.additions.length})
+            {t("additions")} ({data.children.length})
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data.relations.additions.map((game) => (
+            {data.children.map((game) => (
               <RelationCard key={game.id} game={game} />
             ))}
           </div>
         </section>
       )}
 
-      {data?.relations?.parents && data.relations.parents.length > 0 && (
+      {data?.parents && data.parents.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
-            {t("parents")} ({data.relations.parents.length})
+            {t("parents")} ({data.parents.length})
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {data.relations.parents.map((game) => (
+            {data.parents.map((game) => (
               <RelationCard key={game.id} game={game} />
             ))}
           </div>

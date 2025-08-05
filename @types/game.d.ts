@@ -26,15 +26,9 @@ export interface GameListItem {
 
 export interface MinimalGame {
   id: number;
-  slug: string;
   name: string;
   imageUrl?: string | null;
-}
-
-export interface GameRelations {
-  series: MinimalGame[];
-  additions: MinimalGame[];
-  parents: MinimalGame[];
+  slug: string;
 }
 
 export interface GameDetails {
@@ -56,7 +50,9 @@ export interface GameDetails {
   tags: number[];
   shortScreenshots: string[];
   esrbRating: string | null;
-  relations?: GameRelations; // Novo campo
+  children?: MinimalGame[];
+  parents?: MinimalGame[];
+  series?: SeriesResponse | null;
 }
 
 export interface GameWithStats extends GameDetails {
@@ -64,4 +60,11 @@ export interface GameWithStats extends GameDetails {
   dropped?: number;
   owned?: number;
   playing?: number;
+}
+
+export interface SeriesResponse {
+  id: number;
+  name: string;
+  slug: string;
+  games: MinimalGame[];
 }
