@@ -15,6 +15,7 @@ import { GameListResponse } from "@/@types/game";
 import { GameCardSkeleton } from "@/components/molecules/GameCard/GameCard.skeleton";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
+import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 
 interface GameCatalogComponentProps {
   page: number;
@@ -32,6 +33,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { setItems } = useBreadcrumbs();
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
@@ -181,6 +183,16 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     const savedSort = localStorage.getItem("game-catalog-sort");
     if (savedSort) setSort(savedSort);
   }, []);
+
+  useEffect(() => {
+    setItems([
+      {
+        label: t("Breadcrumbs.game-catalog"),
+      },
+    ]);
+
+    return () => setItems([]);
+  }, [setItems]);
 
   if (loading) {
     return (

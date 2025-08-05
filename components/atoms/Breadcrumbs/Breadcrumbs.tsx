@@ -14,7 +14,6 @@ import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import { BreadcrumbItem, useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { MoreVert } from "@mui/icons-material";
-import { useTranslations } from "next-intl"; // Importe o hook de traduções
 import { HomeIcon } from "lucide-react";
 
 interface BreadcrumbsProps {
@@ -27,9 +26,9 @@ export function Breadcrumbs({ condensed = false, maxItems = 3 }: BreadcrumbsProp
   const { items } = useBreadcrumbs();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const t = useTranslations("Breadcrumbs"); // Hook de traduções
 
-  const breadcrumbs = items.length > 0 ? items : generateBreadcrumbs(pathname, t);
+  // Usar apenas itens do contexto ou estrutura básica sem formatação
+  const breadcrumbs = items.length > 0 ? items : generateBasicBreadcrumbs(pathname);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -94,7 +93,6 @@ export function Breadcrumbs({ condensed = false, maxItems = 3 }: BreadcrumbsProp
 
         <span className="text-neutral-400 dark:text-neutral-500 mx-1">/</span>
       </Box>
-
       <Menu
         anchorEl={anchorEl}
         open={open}
@@ -119,7 +117,6 @@ export function Breadcrumbs({ condensed = false, maxItems = 3 }: BreadcrumbsProp
           </MenuItem>
         ))}
       </Menu>
-
       <BreadcrumbItemRenderer breadcrumb={breadcrumbs[breadcrumbs.length - 1]} isLast={true} />
     </div>
   );
@@ -151,7 +148,7 @@ function BreadcrumbItemRenderer({
   );
 }
 
-function generateBreadcrumbs(pathname: string, t: (key: string) => string): BreadcrumbItem[] {
+function generateBasicBreadcrumbs(pathname: string): BreadcrumbItem[] {
   // Remove o locale da URL (ex: /pt/console → /console)
   const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(\/|$)/, "/");
   const segments = pathWithoutLocale.split("/").filter(Boolean);
@@ -160,16 +157,9 @@ function generateBreadcrumbs(pathname: string, t: (key: string) => string): Brea
     const href = "/" + segments.slice(0, index + 1).join("/");
     const isLast = index === segments.length - 1;
 
-    // Traduz o segmento ou formata como título
-    const label =
-      t(segment) ||
-      segment
-        .split("-")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ");
-
+    // Usar o segmento cru SEM formatação
     return {
-      label,
+      label: segment,
       href: isLast ? undefined : href,
     };
   });

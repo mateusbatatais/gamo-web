@@ -34,7 +34,6 @@ export const PlatformIcons = ({ platforms }: RenderPlatformIconsProps) => {
     <div className="flex items-center space-x-1 mt-2">
       {platforms.map((platformId) => {
         const platform = platformIcons[platformId];
-        console.log("Platform ID:", platformId, "Platform Data:", platform);
         if (!platform) return null;
         return (
           <div key={platformId} className="h-3 w-3 sm:w-5 sm:h-5 relative">

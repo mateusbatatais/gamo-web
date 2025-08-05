@@ -6,6 +6,7 @@
     "role": "Role: {role}"
   },
   "Breadcrumbs": {
+    "game": "Game",
     "game-catalog": "Game Catalog",
     "console-catalog": "Consoles Catalog",
     "games": "Games",
@@ -387,15 +388,14 @@
     "dropped": "Dropped"
   },
   "gameCard": {
-    "viewDetails": "View Details",
-    "viewCollection": "View Collection",
-    "addToCollection": "Add to Collection",
-    "editItem": "Edit Item",
-    "deleteItem": "Delete Item",
-    "deleteConfirm": "Are you sure you want to delete this item? This action cannot be undone.",
-    "deleteSuccess": "Item deleted successfully",
-    "deleteError": "Failed to delete item",
-    "editSuccess": "Item updated successfully",
-    "noReleaseDate": "No release date available"
+    "noImage": "Imagem não disponível",
+    "releaseDate": "Data de lançamento",
+    "developer": "Desenvolvedor",
+    "genres": "Gêneros",
+    "addToCollection": "Adicionar à coleção",
+    "market": "Mercado",
+    "details": "Detalhes",
+    "addToWishlist": "Adicionar à lista de desejos",
+    "noReleaseDate": "Data de lançamento não disponível"
   }
 }
