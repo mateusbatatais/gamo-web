@@ -143,7 +143,7 @@ function BreadcrumbItemRenderer({
       className={clsx("text-inherit flex items-center gap-1", isLast ? "font-medium" : "")}
     >
       {breadcrumb.icon && <span className="flex-shrink-0">{breadcrumb.icon}</span>}
-      <span className="line-clamp-1">{breadcrumb.label}</span>
+      <span className="line-clamp-1 dark:text-gray-400">{breadcrumb.label}</span>
     </Typography>
   );
 }
