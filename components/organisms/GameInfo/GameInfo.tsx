@@ -85,28 +85,26 @@ export default function GameInfo({ game }: GameInfoProps) {
             <InfoItem label={t("year")} value={game.year || "-"} />
           </div>
 
-          {game.relations && (
-            <div className="mt-6">
-              <h3 className="text-xl font-semibold mb-3">{t("relatedGames")}</h3>
-              <div className="flex flex-wrap gap-2">
-                {game.relations.series.length > 0 && (
-                  <Badge variant="soft">
-                    {t("series")}: {game.relations.series.length}
-                  </Badge>
-                )}
-                {game.relations.additions.length > 0 && (
-                  <Badge variant="soft">
-                    {t("dlcs")}: {game.relations.additions.length}
-                  </Badge>
-                )}
-                {game.relations.parents.length > 0 && (
-                  <Badge variant="soft">
-                    {t("parents")}: {game.relations.parents.length}
-                  </Badge>
-                )}
-              </div>
+          <div className="mt-6">
+            <h3 className="text-xl font-semibold mb-3">{t("relatedGames")}</h3>
+            <div className="flex flex-wrap gap-2">
+              {game.series?.games && game.series.games.length > 0 && (
+                <Badge variant="soft">
+                  {t("series")}: {game.series.games.length}
+                </Badge>
+              )}
+              {game.children && game.children.length > 0 && (
+                <Badge variant="soft">
+                  {t("dlcs")}: {game.children.length}
+                </Badge>
+              )}
+              {game.parents && game.parents.length > 0 && (
+                <Badge variant="soft">
+                  {t("parents")}: {game.parents.length}
+                </Badge>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </Card>
