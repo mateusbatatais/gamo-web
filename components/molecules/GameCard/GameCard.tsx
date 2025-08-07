@@ -4,10 +4,11 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, ShoppingCart, Star, Calendar } from "lucide-react";
+import { Plus, Star, Calendar, HeartPlus, Tag } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Gamepad } from "lucide-react";
 import { PlatformIcons } from "../RenderPlatformIcons/RenderPlatformIcons";
+import { Tooltip } from "@/components/atoms/Tooltip/Tooltip";
 
 export interface GameCardProps {
   title: string;
@@ -77,7 +78,12 @@ const GameCard = ({
         aria-label={title}
         onMouseMove={handleMouseMove}
       >
-        {metacritic && <Badge className="absolute top-2 right-2 z-10">{metacritic}</Badge>}
+        {metacritic && (
+          <Badge className="absolute top-2 right-2 z-10 gap-1">
+            <Star size={12} />
+            {metacritic}
+          </Badge>
+        )}
 
         {isHovered && allImages.length > 1 && (
           <div className="absolute bottom-2 left-0 right-0 z-20 px-2">
@@ -160,24 +166,30 @@ const GameCard = ({
             </div>
 
             <div className="flex justify-end ">
-              <Button
-                variant="transparent"
-                size="sm"
-                icon={<Star size={18} />}
-                aria-label={t("addToWishlist")}
-              />
-              <Button
-                variant="transparent"
-                size="sm"
-                icon={<Plus size={18} />}
-                aria-label={t("addToCollection")}
-              />
-              <Button
-                variant="transparent"
-                size="sm"
-                icon={<ShoppingCart size={18} />}
-                aria-label={t("market")}
-              />
+              <Tooltip title={t("addToFavorites")}>
+                <Button
+                  variant="transparent"
+                  size="sm"
+                  icon={<HeartPlus size={18} />}
+                  aria-label={t("addToFavorites")}
+                />
+              </Tooltip>
+              <Tooltip title={t("addToCollection")}>
+                <Button
+                  variant="transparent"
+                  size="sm"
+                  icon={<Plus size={18} />}
+                  aria-label={t("addToCollection")}
+                />
+              </Tooltip>
+              <Tooltip title={t("market")}>
+                <Button
+                  variant="transparent"
+                  size="sm"
+                  icon={<Tag size={18} />}
+                  aria-label={t("market")}
+                />
+              </Tooltip>
             </div>
           </div>
 

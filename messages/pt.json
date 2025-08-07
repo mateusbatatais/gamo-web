@@ -392,9 +392,9 @@
     "developer": "Desenvolvedor",
     "genres": "Gêneros",
     "addToCollection": "Adicionar à coleção",
-    "market": "Mercado",
+    "market": "Compra e venda",
     "details": "Detalhes",
-    "addToWishlist": "Adicionar à lista de desejos",
+    "addToFavorites": "Adicionar aos favoritos",
     "noReleaseDate": "Data de lançamento não disponível"
   }
 }

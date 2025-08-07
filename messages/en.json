@@ -388,14 +388,14 @@
     "dropped": "Dropped"
   },
   "gameCard": {
-    "noImage": "Imagem não disponível",
-    "releaseDate": "Data de lançamento",
-    "developer": "Desenvolvedor",
-    "genres": "Gêneros",
-    "addToCollection": "Adicionar à coleção",
-    "market": "Mercado",
-    "details": "Detalhes",
-    "addToWishlist": "Adicionar à lista de desejos",
-    "noReleaseDate": "Data de lançamento não disponível"
+    "noImage": "Image not available",
+    "releaseDate": "Release date",
+    "developer": "Developer",
+    "genres": "Genres",
+    "addToCollection": "Add to collection",
+    "market": "Buy and sell",
+    "details": "Details",
+    "addToFavorites": "Add to wishlist",
+    "noReleaseDate": "Release date not available"
   }
 }
