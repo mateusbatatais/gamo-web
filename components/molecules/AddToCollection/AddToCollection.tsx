@@ -6,7 +6,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { DollarSign, Plus } from "lucide-react";
+import { HeartPlus, Tag } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
 import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
@@ -73,7 +73,7 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
         size="sm"
         onClick={() => handleAction("OWNED")}
         loading={loading}
-        icon={<Plus size={16} />}
+        icon={<HeartPlus size={16} />}
         label="Adicionar à coleção"
         className="w-full"
       />
@@ -83,7 +83,7 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
           variant="outline"
           size="sm"
           onClick={() => handleAction("TRADE")}
-          icon={<DollarSign size={16} />}
+          icon={<Tag size={16} />}
           label="Compra e venda"
           className="flex-1"
         />

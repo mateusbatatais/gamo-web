@@ -17,6 +17,7 @@ import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewTogg
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { useTranslations } from "next-intl";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
+import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -33,6 +34,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
   const [view, setView] = useState<ViewType>("grid");
   const [sort, setSort] = useState<string>("releaseDate-desc");
   const t = useTranslations();
+  const { setItems } = useBreadcrumbs();
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
@@ -198,6 +200,16 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
     window.location.search = params.toString();
   };
+
+  useEffect(() => {
+    setItems([
+      {
+        label: t("Breadcrumbs.console-catalog"),
+      },
+    ]);
+
+    return () => setItems([]);
+  }, [setItems, t]);
 
   if (loading) {
     return (

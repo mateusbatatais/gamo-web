@@ -192,7 +192,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     ]);
 
     return () => setItems([]);
-  }, [setItems]);
+  }, [setItems, t]);
 
   if (loading) {
     return (
@@ -352,6 +352,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
               {games.items.map((game) => (
                 <GameCard
                   key={game.id}
+                  id={game.id}
                   title={game.name}
                   imageUrl={game.imageUrl || ""}
                   platforms={game.parentPlatforms}

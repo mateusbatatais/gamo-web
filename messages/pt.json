@@ -391,10 +391,12 @@
     "releaseDate": "Data de lançamento",
     "developer": "Desenvolvedor",
     "genres": "Gêneros",
-    "addToCollection": "Adicionar à coleção",
-    "market": "Compra e venda",
     "details": "Detalhes",
-    "addToFavorites": "Adicionar aos favoritos",
     "noReleaseDate": "Data de lançamento não disponível"
+  },
+  "CardActions": {
+    "market": "Vender/Comprar",
+    "addToFavorites": "Adicionar aos favoritos",
+    "addToCollection": "Adicionar à coleção"
   }
 }
