@@ -1,16 +1,16 @@
-import { Button } from "@/components/atoms/Button/Button";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { useState, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { Plus, Star, Calendar, HeartPlus, Tag } from "lucide-react";
+import { Star, Calendar } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Gamepad } from "lucide-react";
 import { PlatformIcons } from "../RenderPlatformIcons/RenderPlatformIcons";
-import { Tooltip } from "@/components/atoms/Tooltip/Tooltip";
+import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 
 export interface GameCardProps {
+  id: number;
   title: string;
   imageUrl: string;
   platforms?: number[];
@@ -25,6 +25,7 @@ export interface GameCardProps {
 }
 
 const GameCard = ({
+  id,
   title,
   imageUrl,
   platforms = [],
@@ -60,6 +61,18 @@ const GameCard = ({
   const handleMouseLeave = () => {
     setIsHovered(false);
     setCurrentImageIndex(0);
+  };
+
+  const handleAddToFavorites = () => {
+    console.log("Adicionar jogo aos favoritos:", id);
+  };
+
+  const handleAddToCollection = () => {
+    console.log("Adicionar jogo à coleção:", id);
+  };
+
+  const handleMarketClick = () => {
+    console.log("Ver mercado do jogo:", id);
   };
 
   return (
@@ -166,30 +179,23 @@ const GameCard = ({
             </div>
 
             <div className="flex justify-end ">
-              <Tooltip title={t("addToFavorites")}>
-                <Button
-                  variant="transparent"
-                  size="sm"
-                  icon={<HeartPlus size={18} />}
-                  aria-label={t("addToFavorites")}
-                />
-              </Tooltip>
-              <Tooltip title={t("addToCollection")}>
-                <Button
-                  variant="transparent"
-                  size="sm"
-                  icon={<Plus size={18} />}
-                  aria-label={t("addToCollection")}
-                />
-              </Tooltip>
-              <Tooltip title={t("market")}>
-                <Button
-                  variant="transparent"
-                  size="sm"
-                  icon={<Tag size={18} />}
-                  aria-label={t("market")}
-                />
-              </Tooltip>
+              <CardActionButtons
+                actions={[
+                  {
+                    key: "favorite",
+                    active: true,
+                    onClick: handleAddToFavorites,
+                  },
+                  {
+                    key: "collection",
+                    onClick: handleAddToCollection,
+                  },
+                  {
+                    key: "market",
+                    onClick: handleMarketClick,
+                  },
+                ]}
+              />
             </div>
           </div>
 
