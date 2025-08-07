@@ -19,9 +19,10 @@ interface ActionButton {
 
 interface CardActionButtonsProps {
   actions?: Partial<ActionButton>[];
+  loading?: boolean;
 }
 
-export function CardActionButtons({ actions }: CardActionButtonsProps) {
+export function CardActionButtons({ actions, loading }: CardActionButtonsProps) {
   const t = useTranslations("CardActions");
 
   // Ações padrão que podem ser sobrescritas
@@ -34,6 +35,7 @@ export function CardActionButtons({ actions }: CardActionButtonsProps) {
       buttonProps: {
         variant: "transparent",
         size: "sm",
+        loading: loading,
       },
       active: false,
       activeColor: "#ee8f0b",
@@ -47,6 +49,7 @@ export function CardActionButtons({ actions }: CardActionButtonsProps) {
       buttonProps: {
         variant: "transparent",
         size: "sm",
+        loading: loading,
       },
       active: false,
       activeColor: "#ee8f0b",
@@ -60,6 +63,7 @@ export function CardActionButtons({ actions }: CardActionButtonsProps) {
       buttonProps: {
         variant: "transparent",
         size: "sm",
+        loading: loading,
       },
       active: false,
       activeColor: "#ee8f0b",

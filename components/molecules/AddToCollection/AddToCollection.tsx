@@ -2,14 +2,13 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/atoms/Button/Button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { HeartPlus, Tag } from "lucide-react";
 import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
 import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
+import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 
 interface Props {
   consoleVariantId: number;
@@ -25,7 +24,7 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
 
-  const handleAction = (type: "OWNED" | "TRADE") => {
+  const handleAction = (type: "OWNED" | "TRADE" | "FAVORITE") => {
     if (!user) {
       router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
       return;
@@ -67,27 +66,25 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <Button
-        variant="primary"
-        size="sm"
-        onClick={() => handleAction("OWNED")}
+    <div className="flex justify-end">
+      <CardActionButtons
         loading={loading}
-        icon={<HeartPlus size={16} />}
-        label="Adicionar à coleção"
-        className="w-full"
+        actions={[
+          {
+            key: "favorite",
+            active: true,
+            onClick: () => handleAction("FAVORITE"),
+          },
+          {
+            key: "collection",
+            onClick: () => handleAction("OWNED"),
+          },
+          {
+            key: "market",
+            onClick: () => handleAction("TRADE"),
+          },
+        ]}
       />
-
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleAction("TRADE")}
-          icon={<Tag size={16} />}
-          label="Compra e venda"
-          className="flex-1"
-        />
-      </div>
 
       <Dialog
         open={isModalOpen}

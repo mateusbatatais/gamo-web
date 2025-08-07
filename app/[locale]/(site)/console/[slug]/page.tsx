@@ -70,7 +70,7 @@ export default function ConsoleDetailPage() {
           </div>
         ) : data ? (
           data.skins.length > 0 ? (
-            <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+            <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
               {data.skins.map((skin) => (
                 <SkinCard
                   key={skin.id}
