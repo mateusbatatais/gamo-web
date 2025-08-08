@@ -1,8 +1,8 @@
 // app/[locale]/(auth)/login/page.tsx
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { Link } from "@/i18n/navigation";
@@ -13,6 +13,9 @@ import { useToast } from "@/contexts/ToastContext";
 import { FieldError } from "@/@types/forms";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/account";
+
   const t = useTranslations();
   const router = useRouter();
   const { login } = useAuth();
@@ -23,6 +26,21 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    const handlePendingAction = (event: CustomEvent) => {
+      const action = event.detail;
+      if (action.type === "ADD_TO_COLLECTION") {
+        console.log("Retomando ação:", action.payload);
+      }
+    };
+
+    window.addEventListener("pendingActionExecuted", handlePendingAction as EventListener);
+
+    return () => {
+      window.removeEventListener("pendingActionExecuted", handlePendingAction as EventListener);
+    };
+  }, []);
 
   const loginConfig = {
     fields: [
@@ -88,7 +106,7 @@ export default function LoginPage() {
         body: { email: values.email, password: values.password },
       });
 
-      login(data.token);
+      login(data.token, returnUrl);
       showToast(t("login.success"), "success");
       router.push("/account");
     } catch (err: unknown) {
@@ -139,10 +157,12 @@ export default function LoginPage() {
               <SocialLoginButton
                 provider="google"
                 onError={(error) => showToast(error.message, "danger")}
+                returnUrl={returnUrl}
               />
               <SocialLoginButton
                 provider="microsoft"
                 onError={(error) => showToast(error.message, "danger")}
+                returnUrl={returnUrl}
               />
             </div>
             <div className="mt-6 flex justify-between text-sm">

@@ -13,6 +13,7 @@ interface SocialLoginButtonProps {
   className?: string;
   onSuccess?: (token: string) => void;
   onError?: (error: Error) => void;
+  returnUrl?: string;
 }
 
 export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
@@ -20,6 +21,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   className = "",
   onSuccess,
   onError,
+  returnUrl,
 }) => {
   const { showToast } = useToast();
 
@@ -46,6 +48,9 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
       }
       showToast("Bem vindo!", "success");
       if (onSuccess) onSuccess(token);
+      if (returnUrl) {
+        window.location.href = returnUrl;
+      }
     } catch (error) {
       showToast(error instanceof Error ? error.message : String(error), "danger");
       if (onError) onError(error as Error);

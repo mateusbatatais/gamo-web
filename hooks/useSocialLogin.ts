@@ -44,7 +44,13 @@ export const useSocialLogin = ({ provider, errorMessages = {} }: SocialLoginOpti
       });
 
       login(backendResponse.token);
-      router.push("/account");
+      const returnUrl = new URLSearchParams(window.location.search).get("returnUrl");
+
+      if (returnUrl) {
+        router.push(returnUrl);
+      } else {
+        router.push("/account");
+      }
       return backendResponse.token;
     } catch (error) {
       console.error("Social login failed:", error);

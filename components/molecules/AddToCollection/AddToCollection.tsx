@@ -9,6 +9,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
 import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
 import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
+import { usePendingAction } from "@/contexts/PendingActionContext";
 
 interface Props {
   consoleVariantId: number;
@@ -23,9 +24,15 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
+  const { setPendingAction } = usePendingAction();
 
   const handleAction = (type: "OWNED" | "TRADE" | "FAVORITE") => {
     if (!user) {
+      setPendingAction({
+        type: "ADD_TO_COLLECTION",
+        payload: { type, consoleVariantId, skinId, consoleId },
+      });
+
       router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
       return;
     }

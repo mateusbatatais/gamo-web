@@ -21,7 +21,7 @@ interface AuthContextType {
   user: AuthUser | null;
   token: string | null;
   initialized: boolean;
-  login: (newToken: string) => void;
+  login: (newToken: string, redirectPath?: string) => void;
   logout: () => void;
   updateUser: (userData: Partial<AuthUser>) => void; // Novo método
 }
@@ -71,10 +71,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Função para login: grava token em localStorage e atualiza estado imediatamente
-  function login(newToken: string) {
+  function login(newToken: string, redirectPath?: string) {
     localStorage.setItem("gamo_token", newToken);
-    setTokenCookie(newToken); // <-- Adicionar cookie
-
+    setTokenCookie(newToken);
     setToken(newToken);
     try {
       const decoded = jwtDecode<AuthUser>(newToken);
@@ -87,6 +86,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profileImage: decoded.profileImage || "",
         hasPassword: decoded.hasPassword,
       });
+
+      setTimeout(() => {
+        router.push(redirectPath || `/${locale}/account`);
+      }, 0);
     } catch {
       setUser(null);
     }
