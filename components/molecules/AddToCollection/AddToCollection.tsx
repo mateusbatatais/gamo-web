@@ -10,6 +10,7 @@ import { apiFetch } from "@/utils/api";
 import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
 import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
+import { useModalUrl } from "@/hooks/useModalUrl";
 
 interface Props {
   consoleVariantId: number;
@@ -21,26 +22,27 @@ interface Props {
 export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSuccess }: Props) {
   const { user, token } = useAuth();
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
   const { setPendingAction } = usePendingAction();
+  const { isOpen, openModal, closeModal } = useModalUrl(`add-to-collection-${skinId}`);
 
-  const handleAction = (type: "OWNED" | "TRADE" | "FAVORITE") => {
+  const handleAction = (type: "OWNED" | "TRADE") => {
     if (!user) {
       setPendingAction({
         type: "ADD_TO_COLLECTION",
         payload: { type, consoleVariantId, skinId, consoleId },
       });
 
-      router.push(`/login?returnUrl=${encodeURIComponent(window.location.pathname)}`);
+      const returnUrl = `${window.location.pathname}${window.location.search}`;
+      router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
       return;
     }
 
     if (type === "OWNED") {
       addToCollectionDirectly();
     } else {
-      setIsModalOpen(true);
+      openModal();
     }
   };
 
@@ -80,7 +82,7 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
           {
             key: "favorite",
             active: true,
-            onClick: () => handleAction("FAVORITE"),
+            onClick: () => console.log("implementar na proxima feature"),
           },
           {
             key: "collection",
@@ -93,18 +95,17 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
         ]}
       />
 
-      <Dialog
-        open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={"Adicionar à coleção"}
-      >
+      <Dialog open={isOpen} onClose={closeModal} title={"Adicionar à coleção"}>
         <ConsoleForm
           mode="create"
           consoleId={consoleId}
           consoleVariantId={consoleVariantId}
           skinId={skinId}
-          onSuccess={() => setIsModalOpen(false)}
-          onCancel={() => setIsModalOpen(false)}
+          onSuccess={() => {
+            closeModal();
+            onAddSuccess?.();
+          }}
+          onCancel={closeModal}
         />
       </Dialog>
     </div>

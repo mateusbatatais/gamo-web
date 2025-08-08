@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dialog as MuiDialog,
   DialogProps as MuiDialogProps,
@@ -14,6 +14,7 @@ import {
 import { Button, ButtonProps } from "../Button/Button";
 import clsx from "clsx";
 import { X } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export type DialogSize = "sm" | "md" | "lg" | "xl";
 
@@ -29,6 +30,7 @@ interface DialogProps extends Omit<MuiDialogProps, "maxWidth"> {
     confirm?: ButtonProps;
     cancel?: ButtonProps;
   };
+  modalId?: string; // Identificador único para o modal
 }
 
 const sizeMap: Record<DialogSize, MuiDialogProps["maxWidth"]> = {
@@ -49,11 +51,39 @@ export function Dialog({
   closeButtonVariant = "icon",
   actionButtons,
   className,
+  modalId, // Nova prop
+
   ...props
 }: DialogProps) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const shouldOpen = modalId && searchParams.get("modal") === modalId;
+
+  // Fecha o modal e remove o parâmetro da URL
+  const handleCloseModal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("modal");
+    router.replace(`${pathname}?${params.toString()}`);
+    onClose?.();
+  };
+
+  // Abre o modal e atualiza a URL
+  const openModal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("modal", modalId!);
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
+  // Sincroniza o estado do modal com a URL
+  useEffect(() => {
+    if (modalId && shouldOpen && !props.open) {
+      openModal();
+    }
+  }, [modalId, shouldOpen]);
   return (
     <MuiDialog
-      onClose={onClose}
       fullWidth
       maxWidth={sizeMap[size]}
       {...props}
@@ -68,6 +98,8 @@ export function Dialog({
         },
         ...props.sx,
       }}
+      onClose={handleCloseModal}
+      open={!!shouldOpen || !!props.open}
     >
       <DialogTitle className="flex items-center gap-2 m-0 p-3 border-b border-neutral-200 dark:border-neutral-700 dark:bg-gray-800">
         {icon && <Box className="text-primary-500 dark:text-primary-400">{icon}</Box>}
