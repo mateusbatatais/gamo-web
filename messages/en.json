@@ -323,7 +323,14 @@
     "editSuccess": "Item updated successfully",
     "editItem": "Edit Item",
     "deleteItem": "Delete Item",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "noGames": "No games in the collection",
+    "gamesCollection": "Game Collection",
+    "media": {
+      "PHYSICAL": "Physical",
+      "DIGITAL": "Digital"
+    },
+    "rating": "Rating"
   },
   "ConsoleForm": {
     "mainPhoto": "Main Photo",
@@ -355,6 +362,46 @@
     "editSuccess": "Item updated successfully!",
     "error": "An error occurred",
     "uploadError": "Error uploading image"
+  },
+  "GameForm": {
+    "mainPhoto": "Main Photo",
+    "description": "Description",
+    "descriptionPlaceholder": "Details about your game...",
+    "media": "Media",
+    "status": "Status",
+    "progress": "Progress (0-10)",
+    "progressPlaceholder": "E.g.: 7.5",
+    "rating": "Rating (0-10)",
+    "ratingPlaceholder": "E.g.: 9.0",
+    "review": "Review",
+    "reviewPlaceholder": "Your opinion about the game...",
+    "abandoned": "Abandoned",
+    "tradeSection": "Trade/Sale Details",
+    "condition": "Condition",
+    "price": "Price",
+    "pricePlaceholder": "$0.00",
+    "extras": "Extras",
+    "acceptsTrade": "Accepts trade",
+    "hasBox": "Has box",
+    "hasManual": "Has manual",
+    "additionalPhotos": "Additional photos",
+    "addPhoto": "Add photo",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "addToCollection": "Add to collection",
+    "saveChanges": "Save changes",
+    "createSuccess": "Game added to collection!",
+    "editSuccess": "Game updated successfully!",
+    "error": "An error occurred",
+    "uploadError": "Error uploading image",
+    "conditionNew": "New",
+    "conditionUsed": "Used",
+    "conditionRefurbished": "Refurbished",
+    "statusOwned": "In collection",
+    "statusSelling": "Selling",
+    "statusLookingFor": "Looking for",
+    "mediaPhysical": "Physical",
+    "mediaDigital": "Digital"
   },
   "HomePage": {
     "construction": "Under construction"

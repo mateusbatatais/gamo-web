@@ -31,3 +31,24 @@ export interface UserConsolePublic {
 export interface ConsoleStatus {
   Status: "PUBLISHED" | "SELLING" | "SOLD" | "ARCHIVED";
 }
+
+export interface UserGamePublic {
+  id: number;
+  gameId: number;
+  status: Status;
+  rating: number;
+  progress: number;
+  review: string;
+  abandoned: boolean;
+  media: "PHYSICAL" | "DIGITAL";
+  gameTitle: string;
+  description: string;
+  gameImageUrl: string;
+  price: number | null;
+  hasBox: boolean | null;
+  hasManual: boolean | null;
+  condition?: "NEW" | "USED" | "REFURBISHED";
+  acceptsTrade: boolean | null;
+  photoMain: string | null;
+  photos: string[] | null;
+}

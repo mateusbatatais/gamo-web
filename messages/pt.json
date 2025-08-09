@@ -322,7 +322,14 @@
     "editSuccess": "Item atualizado com sucesso",
     "editItem": "Editar item",
     "deleteItem": "Excluir item",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "noGames": "Nenhum jogo na coleção",
+    "gamesCollection": "Coleção de Jogos",
+    "media": {
+      "PHYSICAL": "Físico",
+      "DIGITAL": "Digital"
+    },
+    "rating": "Avaliação"
   },
   "ConsoleForm": {
     "mainPhoto": "Foto principal",
@@ -354,6 +361,46 @@
     "editSuccess": "Item atualizado com sucesso!",
     "error": "Ocorreu um erro",
     "uploadError": "Erro ao fazer upload da imagem"
+  },
+  "GameForm": {
+    "mainPhoto": "Foto principal",
+    "description": "Descrição",
+    "descriptionPlaceholder": "Detalhes sobre seu jogo...",
+    "media": "Mídia",
+    "status": "Status",
+    "progress": "Progresso (0-10)",
+    "progressPlaceholder": "Ex: 7.5",
+    "rating": "Avaliação (0-10)",
+    "ratingPlaceholder": "Ex: 9.0",
+    "review": "Análise",
+    "reviewPlaceholder": "Sua opinião sobre o jogo...",
+    "abandoned": "Abandonado",
+    "tradeSection": "Detalhes de Troca/Venda",
+    "condition": "Condição",
+    "price": "Preço",
+    "pricePlaceholder": "R$ 0,00",
+    "extras": "Extras",
+    "acceptsTrade": "Aceita troca",
+    "hasBox": "Tem caixa",
+    "hasManual": "Tem manual",
+    "additionalPhotos": "Fotos adicionais",
+    "addPhoto": "Adicionar foto",
+    "cancel": "Cancelar",
+    "saving": "Salvando...",
+    "addToCollection": "Adicionar à coleção",
+    "saveChanges": "Salvar alterações",
+    "createSuccess": "Jogo adicionado à coleção!",
+    "editSuccess": "Jogo atualizado com sucesso!",
+    "error": "Ocorreu um erro",
+    "uploadError": "Erro ao enviar imagem",
+    "conditionNew": "Novo",
+    "conditionUsed": "Usado",
+    "conditionRefurbished": "Recondicionado",
+    "statusOwned": "Na coleção",
+    "statusSelling": "Vendendo",
+    "statusLookingFor": "Procurando",
+    "mediaPhysical": "Física",
+    "mediaDigital": "Digital"
   },
   "HomePage": {
     "construction": "Em construção"

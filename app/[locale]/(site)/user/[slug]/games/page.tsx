@@ -1,14 +1,29 @@
 // app/[locale]/user/[slug]/games/page.tsx
 import { Suspense } from "react";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
+import { getServerSession } from "@/lib/auth";
+import { revalidateTag } from "next/cache";
+import { PublicProfileGameGrid } from "@/components/organisms/PublicProfileGameGrid/PublicProfileGameGrid";
+import { getUserGamesPublic } from "@/lib/api/publicProfile";
 
-export default function GamesPage() {
+interface GamesPageProps {
+  params: Record<string, string>;
+}
+
+export default async function GamesPage({ params }: GamesPageProps) {
+  const { slug, locale } = params;
+  const games = await getUserGamesPublic(slug, locale);
+  const session = await getServerSession();
+  const isOwner = session?.slug === slug;
+
+  const revalidate = async () => {
+    "use server";
+    revalidateTag(`user-games-${slug}`);
+  };
+
   return (
     <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
-      <>
-        <h2 className="text-xl font-bold mb-4 dark:text-white">Games Collection</h2>
-        <p className="text-center py-8 text-gray-500 dark:text-gray-400">Games list coming soon</p>
-      </>
+      <PublicProfileGameGrid games={games} isOwner={isOwner} revalidate={revalidate} />
     </Suspense>
   );
 }

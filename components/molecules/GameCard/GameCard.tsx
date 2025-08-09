@@ -7,7 +7,7 @@ import { Star, Calendar } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Gamepad } from "lucide-react";
 import { PlatformIcons } from "../RenderPlatformIcons/RenderPlatformIcons";
-import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
+import { AddGameToCollection } from "../AddGameToCollection/AddGameToCollection";
 
 export interface GameCardProps {
   id: number;
@@ -61,18 +61,6 @@ const GameCard = ({
   const handleMouseLeave = () => {
     setIsHovered(false);
     setCurrentImageIndex(0);
-  };
-
-  const handleAddToFavorites = () => {
-    console.log("Adicionar jogo aos favoritos:", id);
-  };
-
-  const handleAddToCollection = () => {
-    console.log("Adicionar jogo à coleção:", id);
-  };
-
-  const handleMarketClick = () => {
-    console.log("Ver mercado do jogo:", id);
   };
 
   return (
@@ -177,24 +165,12 @@ const GameCard = ({
                 <span>-</span>
               )}
             </div>
-
-            <div className="flex justify-end ">
-              <CardActionButtons
-                actions={[
-                  {
-                    key: "favorite",
-                    active: true,
-                    onClick: handleAddToFavorites,
-                  },
-                  {
-                    key: "collection",
-                    onClick: handleAddToCollection,
-                  },
-                  {
-                    key: "market",
-                    onClick: handleMarketClick,
-                  },
-                ]}
+            <div className="flex justify-end">
+              <AddGameToCollection
+                gameId={id}
+                onAddSuccess={() => {
+                  // Feedback visual, se necessário
+                }}
               />
             </div>
           </div>
