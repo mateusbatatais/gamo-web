@@ -410,7 +410,8 @@
     "description": "Parece que esta página não está na sua coleção. Talvez tenha sido vendida, trocada ou esteja em outro console.",
     "imageAlt": "Erro de console de videogame",
     "homeButton": "Voltar à página inicial",
-    "collectionButton": "Ver coleção",
+    "gameCollectionButton": "Ver coleção de games",
+    "consoleCollectionButton": "Ver coleção de consoles",
     "tip": "Dica de colecionador: Verifique se o disco está limpo e sem riscos profundos"
   },
   "GameDetails": {

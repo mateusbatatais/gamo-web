@@ -411,7 +411,8 @@
     "description": "It looks like this page is not in your collection. It may have been sold, traded, or is on another console.",
     "imageAlt": "Video game console error",
     "homeButton": "Back to home page",
-    "collectionButton": "View collection",
+    "gameCollectionButton": "View game collection",
+    "consoleCollectionButton": "View console collection",
     "tip": "Collector tip: Make sure the disc is clean and free of deep scratches"
   },
   "GameDetails": {

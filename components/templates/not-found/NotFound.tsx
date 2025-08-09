@@ -62,7 +62,11 @@ export default function NotFound() {
               </Link>
 
               <Link href="/console-catalog">
-                <Button variant="secondary">{t("collectionButton")}</Button>
+                <Button variant="secondary">{t("GameCollectionButton")}</Button>
+              </Link>
+
+              <Link href="/console-games">
+                <Button variant="secondary">{t("ConsoleollectionButton")}</Button>
               </Link>
             </div>
           </div>
