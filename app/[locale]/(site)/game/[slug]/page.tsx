@@ -3,8 +3,7 @@
 
 import { useTranslations } from "next-intl";
 import useGameDetails from "@/hooks/useGameDetails";
-import { useParams } from "next/navigation";
-import { useToast } from "@/contexts/ToastContext";
+import { notFound, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import GameInfo from "@/components/organisms/GameInfo/GameInfo";
@@ -22,16 +21,15 @@ export default function GameDetailPage() {
 
   const t = useTranslations("GameDetails");
   const { data, loading, error } = useGameDetails(slug || "");
-  const { showToast } = useToast();
 
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     if (error) {
-      showToast(error || t("notFound"), "danger");
+      notFound();
     }
-  }, [error, t, showToast]);
+  }, [error]);
 
   const handleOpenGallery = (index: number) => {
     setSelectedImageIndex(index);
