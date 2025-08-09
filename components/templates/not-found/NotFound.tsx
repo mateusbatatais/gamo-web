@@ -8,6 +8,7 @@ import Header from "@/components/templates/Layout/Header/Header";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Button } from "@/components/atoms/Button/Button";
 import "../../../app/globals.scss";
+import { Gamepad, Joystick } from "lucide-react";
 
 export default function NotFound() {
   const t = useTranslations("NotFound");
@@ -62,11 +63,15 @@ export default function NotFound() {
               </Link>
 
               <Link href="/console-catalog">
-                <Button variant="secondary">{t("gameCollectionButton")}</Button>
+                <Button variant="secondary" icon={<Joystick />}>
+                  {t("gameCollectionButton")}
+                </Button>
               </Link>
 
               <Link href="/console-games">
-                <Button variant="secondary">{t("consoleCollectionButton")}</Button>
+                <Button variant="secondary" icon={<Gamepad />}>
+                  {t("consoleCollectionButton")}
+                </Button>
               </Link>
             </div>
           </div>
