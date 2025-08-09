@@ -442,7 +442,7 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
               multiple
               onChange={(e) => handleImageUpload(e, "additional")}
             />
-          </div>{" "}
+          </div>
         </div>
       </Collapse>
       {currentCropImage && (

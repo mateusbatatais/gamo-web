@@ -22,6 +22,7 @@ export interface GameCardProps {
   shortScreenshots?: string[];
   orientation?: "vertical" | "horizontal";
   genreMap?: Record<number, string>;
+  isFavorite?: boolean;
 }
 
 const GameCard = ({
@@ -37,6 +38,7 @@ const GameCard = ({
   shortScreenshots = [],
   orientation = "vertical",
   genreMap = {},
+  isFavorite,
 }: GameCardProps) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -168,6 +170,7 @@ const GameCard = ({
             <div className="flex justify-end">
               <AddGameToCollection
                 gameId={id}
+                isFavorite={isFavorite}
                 onAddSuccess={() => {
                   // Feedback visual, se necessário
                 }}

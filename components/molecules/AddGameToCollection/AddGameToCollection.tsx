@@ -15,9 +15,10 @@ import { GameForm } from "../GameForm/GameForm";
 interface Props {
   gameId: number;
   onAddSuccess?: () => void;
+  isFavorite?: boolean;
 }
 
-export function AddGameToCollection({ gameId, onAddSuccess }: Props) {
+export function AddGameToCollection({ gameId, onAddSuccess, isFavorite }: Props) {
   const { user, token } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -77,7 +78,7 @@ export function AddGameToCollection({ gameId, onAddSuccess }: Props) {
         actions={[
           {
             key: "favorite",
-            active: true,
+            active: isFavorite || false,
             onClick: () => console.log("implementar na proxima feature"),
           },
           {
