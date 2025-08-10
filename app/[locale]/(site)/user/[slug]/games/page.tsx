@@ -7,11 +7,15 @@ import { PublicProfileGameGrid } from "@/components/organisms/PublicProfileGameG
 import { getUserGamesPublic } from "@/lib/api/publicProfile";
 
 interface GamesPageProps {
-  params: Record<string, string>;
+  params: Promise<{
+    slug: string;
+    locale: string;
+  }>;
 }
 
 export default async function GamesPage({ params }: GamesPageProps) {
-  const { slug, locale } = params;
+  const { slug, locale } = await params;
+
   const games = await getUserGamesPublic(slug, locale);
   const session = await getServerSession();
   const isOwner = session?.slug === slug;
