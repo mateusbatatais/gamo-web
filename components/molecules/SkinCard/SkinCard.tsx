@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { normalizeImageUrl } from "@/utils/validate-url";
-import { AddToCollection } from "../AddToCollection/AddToCollection";
+import { AddConsoleToCollection } from "../AddConsoleToCollection/AddConsoleToCollection";
 import { Card } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Monitor } from "lucide-react";
@@ -85,7 +85,7 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
         </div>
 
         <div className="mt-4">
-          <AddToCollection
+          <AddConsoleToCollection
             consoleId={consoleId}
             consoleVariantId={consoleVariantId}
             skinId={skin.id}

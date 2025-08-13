@@ -14,7 +14,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { apiFetch } from "@/utils/api";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { GameForm } from "@/components/molecules/GameForm/GameForm";
+import { GameForm } from "@/components/organisms/GameForm/GameForm";
 
 export const PublicProfileGameCard = ({
   game,

@@ -19,7 +19,12 @@ interface Props {
   onAddSuccess?: () => void;
 }
 
-export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSuccess }: Props) {
+export function AddConsoleToCollection({
+  consoleVariantId,
+  skinId,
+  consoleId,
+  onAddSuccess,
+}: Props) {
   const { user, token } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);

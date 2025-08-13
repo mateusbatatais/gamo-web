@@ -10,7 +10,7 @@ import { apiFetch } from "@/utils/api";
 import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
-import { GameForm } from "../GameForm/GameForm";
+import { GameForm } from "../../organisms/GameForm/GameForm";
 import { useFavorite } from "@/hooks/useFavorite";
 
 interface Props {
