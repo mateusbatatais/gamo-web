@@ -11,6 +11,7 @@ const defaultProps = {
   description:
     "The PlayStation 5 (PS5) is a home video game console developed by Sony Interactive Entertainment. It is the successor to the PlayStation 4 and was released in November 2020.",
   slug: "playstation-5",
+  variantId: 1,
 };
 
 const meta: Meta<typeof ConsoleCard> = {
