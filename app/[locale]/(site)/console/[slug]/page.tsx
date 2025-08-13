@@ -7,12 +7,14 @@ import ConsoleInfo from "@/components/organisms/ConsoleInfo/ConsoleInfo";
 import SkinCard from "@/components/molecules/SkinCard/SkinCard";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import { ConsoleInfoSkeleton } from "@/components/organisms/ConsoleInfo/ConsoleInfo.skeleton";
 import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
 import { Joystick } from "lucide-react";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
+import { useFavorite } from "@/hooks/useFavorite";
+import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -24,6 +26,23 @@ export default function ConsoleDetailPage() {
   const { showToast } = useToast();
   const { setItems } = useBreadcrumbs();
 
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
+
+  const handleToggleFavorite = async () => {
+    if (!data) return;
+    const { added } = await toggleFavorite({
+      itemId: data.id,
+      itemType: "CONSOLE",
+    });
+    setIsFavorite(added);
+  };
+
+  useEffect(() => {
+    if (data) {
+      setIsFavorite(data.isFavorite || false);
+    }
+  }, [data]);
   useEffect(() => {
     if (error) {
       showToast(error || t("notFound"), "danger");
@@ -55,7 +74,27 @@ export default function ConsoleDetailPage() {
 
   return (
     <div className="container mx-auto max-w-6xl">
-      {loading ? <ConsoleInfoSkeleton /> : data ? <ConsoleInfo consoleVariant={data} /> : null}
+      {loading ? (
+        <ConsoleInfoSkeleton />
+      ) : data ? (
+        <div className="relative">
+          <div className="absolute top-4 right-4 z-10">
+            <CardActionButtons
+              loading={loading}
+              favoriteLoading={favoriteLoading}
+              actions={[
+                {
+                  key: "favorite",
+                  active: isFavorite,
+                  onClick: handleToggleFavorite,
+                },
+              ]}
+            />
+          </div>
+
+          <ConsoleInfo consoleVariant={data} />
+        </div>
+      ) : null}
 
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">

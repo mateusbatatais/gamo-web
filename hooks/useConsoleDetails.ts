@@ -4,19 +4,24 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/utils/api";
 import { ConsoleVariantDetail } from "@/@types/console";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function useConsoleDetails(slug: string, locale: string) {
   const [data, setData] = useState<ConsoleVariantDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { token, initialized } = useAuth();
 
   useEffect(() => {
+    if (!initialized) return;
     if (!slug) return;
 
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await apiFetch<ConsoleVariantDetail>(`/consoles/${slug}?locale=${locale}`);
+        const result = await apiFetch<ConsoleVariantDetail>(`/consoles/${slug}?locale=${locale}`, {
+          token,
+        });
         setData(result);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -30,7 +35,7 @@ export default function useConsoleDetails(slug: string, locale: string) {
     };
 
     fetchData();
-  }, [slug, locale]);
+  }, [slug, locale, initialized, token]);
 
   return { data, loading, error };
 }

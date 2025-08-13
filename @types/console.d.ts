@@ -39,6 +39,7 @@ interface ConsoleVariantDetail {
   launchDate: string | null;
   storage: string | null;
   skins: SkinDetail[];
+  isFavorite?: boolean;
 }
 
 interface SkinDetail {

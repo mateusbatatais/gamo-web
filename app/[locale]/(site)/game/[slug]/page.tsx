@@ -13,6 +13,8 @@ import { GameInfoSkeleton } from "@/components/organisms/GameInfo/GameInfo.skele
 import { GalleryDialog } from "@/components/molecules/GalleryDialog/GalleryDialog";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { Gamepad } from "lucide-react";
+import { useFavorite } from "@/hooks/useFavorite";
+import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 
 export default function GameDetailPage() {
   const params = useParams();
@@ -25,11 +27,29 @@ export default function GameDetailPage() {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
+
+  useEffect(() => {
+    if (data) {
+      setIsFavorite(data.isFavorite || false);
+    }
+  }, [data]);
+
   useEffect(() => {
     if (error) {
       notFound();
     }
   }, [error]);
+
+  const handleToggleFavorite = async () => {
+    if (!data) return;
+    const { added } = await toggleFavorite({
+      itemId: data.id,
+      itemType: "GAME",
+    });
+    setIsFavorite(added);
+  };
 
   const handleOpenGallery = (index: number) => {
     setSelectedImageIndex(index);
@@ -55,7 +75,27 @@ export default function GameDetailPage() {
 
   return (
     <div className="container mx-auto max-w-6xl">
-      {loading ? <GameInfoSkeleton /> : data ? <GameInfo game={data} /> : null}
+      {loading ? (
+        <GameInfoSkeleton />
+      ) : data ? (
+        <div className="relative">
+          <div className="absolute top-4 right-4 z-10">
+            <CardActionButtons
+              loading={loading}
+              favoriteLoading={favoriteLoading}
+              actions={[
+                {
+                  key: "favorite",
+                  active: isFavorite,
+                  onClick: handleToggleFavorite,
+                },
+              ]}
+            />
+          </div>
+
+          <GameInfo game={data} />
+        </div>
+      ) : null}
       {data?.shortScreenshots && data.shortScreenshots.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">

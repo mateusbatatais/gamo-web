@@ -54,6 +54,7 @@ export interface GameDetails {
   children?: MinimalGame[];
   parents?: MinimalGame[];
   series?: SeriesResponse | null;
+  isFavorite?: boolean;
 }
 
 export interface GameWithStats extends GameDetails {

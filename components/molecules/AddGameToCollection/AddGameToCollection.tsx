@@ -11,6 +11,7 @@ import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { GameForm } from "../GameForm/GameForm";
+import { useFavorite } from "@/hooks/useFavorite";
 
 interface Props {
   gameId: number;
@@ -31,42 +32,14 @@ export function AddGameToCollection({
   const { showToast } = useToast();
   const { setPendingAction } = usePendingAction();
   const { isOpen, openModal, closeModal } = useModalUrl(`add-game-to-collection-${gameId}`);
-  const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
 
   const handleFavorite = async () => {
-    if (!user) {
-      setPendingAction({
-        type: "TOGGLE_FAVORITE",
-        payload: { gameId },
-      });
-      const returnUrl = `${window.location.pathname}${window.location.search}`;
-      router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-      return;
-    }
-
-    setFavoriteLoading(true);
-    try {
-      const response = await apiFetch<{
-        code: "FAVORITE_ADDED" | "FAVORITE_REMOVED";
-        message: string;
-      }>("/favorites", {
-        method: "POST",
-        token,
-        body: {
-          itemId: gameId,
-          itemType: "GAME",
-        },
-      });
-
-      const newFavoriteState = response.code === "FAVORITE_ADDED";
-      onFavoriteToggle?.(newFavoriteState);
-      showToast(response.message, "success");
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Erro ao atualizar favorito";
-      showToast(message, "danger");
-    } finally {
-      setFavoriteLoading(false);
-    }
+    const { added } = await toggleFavorite({
+      itemId: gameId,
+      itemType: "GAME",
+    });
+    onFavoriteToggle?.(added);
   };
 
   const handleAction = (type: "OWNED" | "TRADE") => {

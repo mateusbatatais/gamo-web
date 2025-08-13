@@ -1,4 +1,5 @@
 import { GameDetails, GameWithStats, SeriesResponse } from "@/@types/game";
+import { useAuth } from "@/contexts/AuthContext";
 import { apiFetch } from "@/utils/api";
 import { useState, useEffect } from "react";
 
@@ -36,8 +37,11 @@ export default function useGameDetails(slug: string) {
   const [data, setData] = useState<GameWithStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const { token, initialized } = useAuth();
 
   useEffect(() => {
+    if (!initialized) return;
+
     if (!slug) {
       setError("Slug is required");
       setLoading(false);
@@ -48,8 +52,7 @@ export default function useGameDetails(slug: string) {
       try {
         setLoading(true);
 
-        // Buscar detalhes principais do jogo
-        const gameData = await apiFetch<GameDetails>(`/games/${slug}`);
+        const gameData = await apiFetch<GameDetails>(`/games/${slug}`, { token });
 
         // Buscar série se existir slug de série
         let series: SeriesResponse | null = null;
@@ -74,7 +77,7 @@ export default function useGameDetails(slug: string) {
     };
 
     fetchData();
-  }, [slug]);
+  }, [slug, initialized, token]);
 
   return { data, loading, error };
 }
