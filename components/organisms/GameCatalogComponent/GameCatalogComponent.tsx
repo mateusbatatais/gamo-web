@@ -16,6 +16,7 @@ import { GameCardSkeleton } from "@/components/molecules/GameCard/GameCard.skele
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface GameCatalogComponentProps {
   page: number;
@@ -34,6 +35,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { setItems } = useBreadcrumbs();
+  const { token, initialized } = useAuth();
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
@@ -143,6 +145,8 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
   // Buscar jogos
   useEffect(() => {
     const fetchGames = async () => {
+      if (!initialized) return;
+
       try {
         setLoading(true);
 
@@ -155,7 +159,9 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
           ...(selectedPlatforms.length > 0 && { platforms: selectedPlatforms.join(",") }),
         });
 
-        const data: GameListResponse = await apiFetch(`/games?${params.toString()}`);
+        const data: GameListResponse = await apiFetch(`/games?${params.toString()}`, {
+          token,
+        });
 
         const mappedItems = data.items.map((game) => ({
           ...game,
@@ -173,7 +179,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     };
 
     fetchGames();
-  }, [page, perPage, searchQuery, sort, selectedGenres, selectedPlatforms]);
+  }, [page, perPage, searchQuery, sort, selectedGenres, selectedPlatforms, initialized, token]);
 
   // Restaurar preferências de visualização
   useEffect(() => {
@@ -362,6 +368,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
                   developer={game.developer}
                   orientation={view === "grid" ? "vertical" : "horizontal"}
                   shortScreenshots={game.shortScreenshots}
+                  isFavorite={game.isFavorite}
                 />
               ))}
             </div>

@@ -25,6 +25,17 @@ export interface GameCardProps {
   isFavorite?: boolean;
 }
 
+const useAddToCollectionFeedback = () => {
+  const [recentlyAdded, setRecentlyAdded] = useState<number | null>(null);
+
+  const triggerFeedback = (skinId: number) => {
+    setRecentlyAdded(skinId);
+    setTimeout(() => setRecentlyAdded(null), 2000); // Remove o feedback após 2 segundos
+  };
+
+  return { recentlyAdded, triggerFeedback };
+};
+
 const GameCard = ({
   id,
   title,
@@ -38,13 +49,19 @@ const GameCard = ({
   shortScreenshots = [],
   orientation = "vertical",
   genreMap = {},
-  isFavorite,
+  isFavorite: initialIsFavorite = false,
 }: GameCardProps) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("gameCard");
+  const [isFavorite, setIsFavorite] = useState(initialIsFavorite);
+  const { recentlyAdded, triggerFeedback } = useAddToCollectionFeedback();
+
+  const handleFavoriteToggle = (newState: boolean) => {
+    setIsFavorite(newState);
+  };
 
   const genreNames = genres.map((id) => genreMap[id] || "").filter(Boolean);
 
@@ -77,6 +94,7 @@ const GameCard = ({
           "border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm transition-all duration-300 group",
           orientation === "vertical" ? "w-full" : "w-full flex",
           isHovered ? "!shadow-2xl borde-b-none" : "shadow-sm",
+          recentlyAdded === id ? "ring-2 ring-green-500 scale-[1.02] shadow-xl" : "",
         )}
         aria-label={title}
         onMouseMove={handleMouseMove}
@@ -171,9 +189,8 @@ const GameCard = ({
               <AddGameToCollection
                 gameId={id}
                 isFavorite={isFavorite}
-                onAddSuccess={() => {
-                  // Feedback visual, se necessário
-                }}
+                onFavoriteToggle={handleFavoriteToggle}
+                onAddSuccess={() => triggerFeedback(id)}
               />
             </div>
           </div>

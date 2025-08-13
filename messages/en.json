@@ -445,7 +445,8 @@
   },
   "CardActions": {
     "market": "Sell/Buy",
-    "addToFavorites": "Add to wishlist",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
     "addToCollection": "Add to collection"
   }
 }

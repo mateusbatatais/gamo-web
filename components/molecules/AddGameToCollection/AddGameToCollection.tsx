@@ -16,15 +16,58 @@ interface Props {
   gameId: number;
   onAddSuccess?: () => void;
   isFavorite?: boolean;
+  onFavoriteToggle?: (newState: boolean) => void; // Novo callback
 }
 
-export function AddGameToCollection({ gameId, onAddSuccess, isFavorite }: Props) {
+export function AddGameToCollection({
+  gameId,
+  onAddSuccess,
+  isFavorite = false,
+  onFavoriteToggle,
+}: Props) {
   const { user, token } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { showToast } = useToast();
   const { setPendingAction } = usePendingAction();
   const { isOpen, openModal, closeModal } = useModalUrl(`add-game-to-collection-${gameId}`);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  const handleFavorite = async () => {
+    if (!user) {
+      setPendingAction({
+        type: "TOGGLE_FAVORITE",
+        payload: { gameId },
+      });
+      const returnUrl = `${window.location.pathname}${window.location.search}`;
+      router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
+      return;
+    }
+
+    setFavoriteLoading(true);
+    try {
+      const response = await apiFetch<{
+        code: "FAVORITE_ADDED" | "FAVORITE_REMOVED";
+        message: string;
+      }>("/favorites", {
+        method: "POST",
+        token,
+        body: {
+          itemId: gameId,
+          itemType: "GAME",
+        },
+      });
+
+      const newFavoriteState = response.code === "FAVORITE_ADDED";
+      onFavoriteToggle?.(newFavoriteState);
+      showToast(response.message, "success");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Erro ao atualizar favorito";
+      showToast(message, "danger");
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
 
   const handleAction = (type: "OWNED" | "TRADE") => {
     if (!user) {
@@ -75,11 +118,12 @@ export function AddGameToCollection({ gameId, onAddSuccess, isFavorite }: Props)
     <div className="flex justify-end">
       <CardActionButtons
         loading={loading}
+        favoriteLoading={favoriteLoading}
         actions={[
           {
             key: "favorite",
-            active: isFavorite || false,
-            onClick: () => console.log("implementar na proxima feature"),
+            active: isFavorite,
+            onClick: handleFavorite,
           },
           {
             key: "collection",

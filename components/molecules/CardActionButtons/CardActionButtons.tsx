@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Button, ButtonProps } from "@/components/atoms/Button/Button";
 import { Tooltip } from "@/components/atoms/Tooltip/Tooltip";
 import LibraryAddOutlinedIcon from "@mui/icons-material/LibraryAddOutlined";
+import { Spinner } from "@/components/atoms/Spinner/Spinner";
 
 type IconType = React.ElementType;
 
@@ -23,9 +24,10 @@ interface ActionButton {
 interface CardActionButtonsProps {
   actions?: Partial<ActionButton>[];
   loading?: boolean;
+  favoriteLoading?: boolean;
 }
 
-export function CardActionButtons({ actions, loading }: CardActionButtonsProps) {
+export function CardActionButtons({ actions, loading, favoriteLoading }: CardActionButtonsProps) {
   const t = useTranslations("CardActions");
 
   const defaultActions: ActionButton[] = [
@@ -61,17 +63,52 @@ export function CardActionButtons({ actions, loading }: CardActionButtonsProps) 
     },
   ];
 
-  const finalActions = defaultActions.map((defaultAction) => {
-    const customAction = actions?.find((a) => a.key === defaultAction.key);
-    return {
-      ...defaultAction,
-      ...customAction,
-      icon: customAction?.icon || defaultAction.icon,
-      active: customAction?.active ?? defaultAction.active,
-      activeColor: customAction?.activeColor || defaultAction.activeColor,
-      inactiveColor: customAction?.inactiveColor || defaultAction.inactiveColor,
-    };
-  });
+  const safeActions = actions ?? [];
+
+  const finalActions = actions
+    ? defaultActions
+        .filter((action) => safeActions.some((a) => a.key === action.key))
+        .map((defaultAction) => {
+          const customAction = safeActions.find((a) => a.key === defaultAction.key);
+          const actionLoading = customAction?.key === "favorite" ? favoriteLoading : loading;
+
+          return {
+            ...defaultAction,
+            ...customAction,
+            icon: customAction?.icon || defaultAction.icon,
+            active: customAction?.active ?? defaultAction.active,
+            activeColor: customAction?.activeColor || defaultAction.activeColor,
+            inactiveColor: customAction?.inactiveColor || defaultAction.inactiveColor,
+            loading: actionLoading,
+            tooltipKey:
+              defaultAction.key === "favorite"
+                ? (customAction?.active ?? defaultAction.active)
+                  ? "removeFromFavorites"
+                  : "addToFavorites"
+                : customAction?.tooltipKey || defaultAction.tooltipKey,
+          };
+        })
+    : defaultActions.map((defaultAction) => {
+        // comportamento original
+        const customAction = safeActions.find((a) => a.key === defaultAction.key);
+        const actionLoading = customAction?.key === "favorite" ? favoriteLoading : loading;
+
+        return {
+          ...defaultAction,
+          ...customAction,
+          icon: customAction?.icon || defaultAction.icon,
+          active: customAction?.active ?? defaultAction.active,
+          activeColor: customAction?.activeColor || defaultAction.activeColor,
+          inactiveColor: customAction?.inactiveColor || defaultAction.inactiveColor,
+          loading: actionLoading,
+          tooltipKey:
+            defaultAction.key === "favorite"
+              ? (customAction?.active ?? defaultAction.active)
+                ? "removeFromFavorites"
+                : "addToFavorites"
+              : customAction?.tooltipKey || defaultAction.tooltipKey,
+        };
+      });
 
   return (
     <div className="flex gap-1">
@@ -84,14 +121,19 @@ export function CardActionButtons({ actions, loading }: CardActionButtonsProps) 
             <Button
               variant="secondary"
               icon={
-                <IconComponent
-                  {...(isLucideIcon(IconComponent)
-                    ? { size: 18, color: iconColor }
-                    : { fontSize: "small", style: { color: iconColor, width: 18, height: 18 } })}
-                />
+                action.loading ? (
+                  <Spinner />
+                ) : (
+                  <IconComponent
+                    {...(isLucideIcon(IconComponent)
+                      ? { size: 18, color: iconColor }
+                      : { fontSize: "small", style: { color: iconColor, width: 18, height: 18 } })}
+                  />
+                )
               }
               aria-label={t(action.tooltipKey)}
               onClick={action.onClick}
+              disabled={action.loading}
               {...action.buttonProps}
               className={clsx(action.buttonProps?.className, action.active && "")}
             />

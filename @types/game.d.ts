@@ -22,6 +22,7 @@ export interface GameListItem {
   description?: string; // Novo campo
   metacritic?: number | null; // Novo campo opcional
   shortScreenshots?: string[]; // Novo campo opcional
+  isFavorite?: boolean;
 }
 
 export interface MinimalGame {
