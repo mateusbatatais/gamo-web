@@ -21,6 +21,7 @@ export interface ConsoleVariant {
   releaseDate?: string | null;
   storage?: string | null;
   skins: SkinDetail[];
+  isFavorite?: boolean;
 }
 
 interface ConsoleVariantDetail {

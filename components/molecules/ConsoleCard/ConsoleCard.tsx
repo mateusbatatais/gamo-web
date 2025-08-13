@@ -9,6 +9,8 @@ import { Monitor, Gamepad } from "lucide-react";
 import { ConsoleCardSkeleton } from "./ConsoleCard.skeleton";
 import { normalizeImageUrl } from "@/utils/validate-url";
 import { useTranslations } from "next-intl";
+import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
+import { useFavorite } from "@/hooks/useFavorite";
 
 export interface ConsoleCardProps {
   name: string;
@@ -25,6 +27,9 @@ export interface ConsoleCardProps {
   orientation?: "vertical" | "horizontal";
   badge?: ReactNode;
   children?: ReactNode;
+  variantId: number;
+  isFavorite?: boolean;
+  onFavoriteToggle?: (newState: boolean) => void;
 }
 
 const ConsoleCard = ({
@@ -42,13 +47,25 @@ const ConsoleCard = ({
   orientation = "vertical",
   badge,
   children,
+  variantId, // Novo: ID da variante
+  isFavorite = false,
+  onFavoriteToggle,
 }: ConsoleCardProps) => {
   const [imageError, setImageError] = useState(false);
   const t = useTranslations("");
+  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
 
   if (loading) {
     return <ConsoleCardSkeleton />;
   }
+
+  const handleFavorite = async () => {
+    const { added } = await toggleFavorite({
+      itemId: variantId,
+      itemType: "CONSOLE",
+    });
+    onFavoriteToggle?.(added);
+  };
 
   return (
     <article
@@ -113,14 +130,28 @@ const ConsoleCard = ({
           </p>
         )}
 
-        <Link href={`/console/${slug}`} className="block">
-          <Button
-            variant={buttonVariant}
-            status={buttonStatus}
-            className="w-full mt-auto"
-            label={buttonLabel}
-          />
-        </Link>
+        <div className="flex justify-between items-center mt-4">
+          <Link href={`/console/${slug}`} className="flex-1">
+            <Button
+              variant={buttonVariant}
+              status={buttonStatus}
+              className="w-full"
+              label={buttonLabel}
+            />
+          </Link>
+          <div className="ml-2">
+            <CardActionButtons
+              favoriteLoading={favoriteLoading}
+              actions={[
+                {
+                  key: "favorite",
+                  active: isFavorite,
+                  onClick: handleFavorite,
+                },
+              ]}
+            />
+          </div>
+        </div>
       </div>
     </article>
   );

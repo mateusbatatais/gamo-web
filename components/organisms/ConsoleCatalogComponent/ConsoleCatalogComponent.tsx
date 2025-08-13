@@ -18,6 +18,7 @@ import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSe
 import { useTranslations } from "next-intl";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -35,6 +36,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
   const [sort, setSort] = useState<string>("releaseDate-desc");
   const t = useTranslations();
   const { setItems } = useBreadcrumbs();
+  const { token, initialized } = useAuth();
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
@@ -111,6 +113,8 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
   useEffect(() => {
     const fetchConsoleVariants = async () => {
+      if (!initialized) return;
+
       try {
         setLoading(true);
 
@@ -134,7 +138,9 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
           params.append("search", searchQuery);
         }
 
-        const data: ConsoleVariantsResponse = await apiFetch(`/consoles?${params.toString()}`);
+        const data: ConsoleVariantsResponse = await apiFetch(`/consoles?${params.toString()}`, {
+          token,
+        });
         setConsoleVariants(data);
         setTotalPages(data.meta.totalPages);
         setError("");
@@ -151,7 +157,17 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     };
 
     fetchConsoleVariants();
-  }, [selectedBrands, selectedGenerations, locale, page, perPage, searchQuery, sort]);
+  }, [
+    selectedBrands,
+    selectedGenerations,
+    locale,
+    page,
+    perPage,
+    searchQuery,
+    sort,
+    token,
+    initialized,
+  ]);
 
   useEffect(() => {
     const savedView = localStorage.getItem("catalog-view") as ViewType | null;
@@ -372,6 +388,17 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
                   description={variant.consoleDescription || ""}
                   slug={variant.slug}
                   orientation={view === "grid" ? "vertical" : "horizontal"}
+                  variantId={variant.id}
+                  isFavorite={variant.isFavorite}
+                  onFavoriteToggle={(newState) => {
+                    setConsoleVariants((prev) => {
+                      if (!prev) return null;
+                      const updatedItems = prev.items.map((item) =>
+                        item.id === variant.id ? { ...item, isFavorite: newState } : item,
+                      );
+                      return { ...prev, items: updatedItems };
+                    });
+                  }}
                 />
               ))}
             </div>

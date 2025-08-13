@@ -80,11 +80,6 @@ export function AddToCollection({ consoleVariantId, skinId, consoleId, onAddSucc
         loading={loading}
         actions={[
           {
-            key: "favorite",
-            active: true,
-            onClick: () => console.log("implementar na proxima feature"),
-          },
-          {
             key: "collection",
             onClick: () => handleAction("OWNED"),
           },
