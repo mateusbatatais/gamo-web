@@ -24,7 +24,7 @@ export default function ResetPasswordPage() {
   const { mutate: resetPassword, isPending: loading, isSuccess } = useResetPassword();
 
   useEffect(() => {
-    if (!token) {
+    if (!token || token.length < 20) {
       router.replace("/recover");
     }
   }, [token, router]);

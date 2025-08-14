@@ -26,6 +26,19 @@ interface AuthContextType {
   updateUser: (userData: Partial<AuthUser>) => void; // Novo método
 }
 
+const decodeToken = (token: string): AuthUser => {
+  const decoded = jwtDecode<AuthUser>(token);
+  return {
+    ...decoded,
+    name: decoded.name || "",
+    slug: decoded.slug || "",
+    role: decoded.role || "",
+    email: decoded.email || "",
+    profileImage: decoded.profileImage || "",
+    hasPassword: decoded.hasPassword,
+  };
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 function setTokenCookie(token: string) {
@@ -50,18 +63,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (stored) {
       setToken(stored);
       try {
-        const decoded = jwtDecode<AuthUser>(stored);
-        setUser({
-          ...decoded,
-          name: decoded.name || "",
-          slug: decoded.slug || "",
-          role: decoded.role || "",
-          email: decoded.email || "",
-          profileImage: decoded.profileImage || "",
-          hasPassword: decoded.hasPassword,
-        });
+        setUser(decodeToken(stored));
       } catch {
-        // Se o decode falhar, removemos qualquer valor inválido
         localStorage.removeItem("gamo_token");
         setToken(null);
         setUser(null);
@@ -76,20 +79,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTokenCookie(newToken);
     setToken(newToken);
     try {
-      const decoded = jwtDecode<AuthUser>(newToken);
-      setUser({
-        ...decoded,
-        name: decoded.name || "",
-        slug: decoded.slug || "",
-        role: decoded.role || "",
-        email: decoded.email || "",
-        profileImage: decoded.profileImage || "",
-        hasPassword: decoded.hasPassword,
-      });
-
-      setTimeout(() => {
-        router.push(redirectPath || `/${locale}/account`);
-      }, 0);
+      setUser(decodeToken(newToken));
+      router.push(redirectPath || `/${locale}/account`);
     } catch {
       setUser(null);
     }
@@ -121,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         initialized,
         login,
         logout,
-        updateUser, // Incluído no contexto
+        updateUser,
       }}
     >
       {children}

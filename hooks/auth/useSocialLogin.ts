@@ -27,9 +27,13 @@ export const useSocialLogin = ({ provider, errorMessages = {} }: SocialLoginOpti
   const router = useRouter();
   const locale = useLocale();
 
+  const getProvider = () => {
+    return provider === "Google" ? googleProvider : microsoftProvider;
+  };
+
   const mutation = useMutation<SocialLoginResponse, Error, void>({
     mutationFn: async () => {
-      const selectedProvider = provider === "Google" ? googleProvider : microsoftProvider;
+      const selectedProvider = getProvider();
       const result = await signInWithPopup(auth, selectedProvider);
       const idToken = await result.user.getIdToken();
 
