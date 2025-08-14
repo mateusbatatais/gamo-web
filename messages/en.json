@@ -101,7 +101,10 @@
       "emailInvalid": "Invalid email format",
       "passwordRequired": "Password required",
       "passwordMinLength": "Password must be at least 8 characters",
-      "userNotFound": "User not found"
+      "userNotFound": "User not found",
+      "socialPopupClosed": "Modal was closed",
+      "socialAccountExists": "Account already exists",
+      "socialLoginFailed": "Login fail. Try again"
     },
     "errorGeneric": "Login failed. Please try again.",
     "success": "Login successful!",

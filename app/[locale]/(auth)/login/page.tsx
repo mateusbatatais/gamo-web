@@ -1,4 +1,3 @@
-// app/[locale]/(auth)/login/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,10 +6,9 @@ import { useTranslations } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
-import { apiFetch } from "@/utils/api";
-import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 import { FieldError } from "@/@types/forms";
+import { useLogin } from "@/hooks/auth/useLogin";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();
@@ -18,14 +16,14 @@ export default function LoginPage() {
 
   const t = useTranslations();
   const router = useRouter();
-  const { login } = useAuth();
   const { showToast } = useToast();
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, FieldError>>({});
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
+
+  const { mutate: login, isPending: loading } = useLogin();
 
   useEffect(() => {
     const handlePendingAction = (event: CustomEvent) => {
@@ -66,7 +64,6 @@ export default function LoginPage() {
   const handleValueChange = (name: string, value: string) => {
     setValues((prev) => ({ ...prev, [name]: value }));
 
-    // Limpa o erro quando o usuário começa a digitar
     if (errors[name]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -76,12 +73,9 @@ export default function LoginPage() {
     }
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setErrors({});
-
-    // Validação básica
+  const validateForm = () => {
     const newErrors: Record<string, FieldError> = {};
+
     if (!values.email.trim()) {
       newErrors.email = { message: t("login.errors.emailRequired") };
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
@@ -94,41 +88,51 @@ export default function LoginPage() {
       newErrors.password = { message: t("login.errors.passwordMinLength") };
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setLoading(false);
+    return newErrors;
+  };
+
+  const handleSubmit = () => {
+    const formErrors = validateForm();
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
       return;
     }
 
-    try {
-      const data = await apiFetch<{ token: string }>("/auth/login", {
-        method: "POST",
-        body: { email: values.email, password: values.password },
-      });
+    login(values, {
+      onSuccess: () => {
+        showToast(t("login.success"), "success");
+        router.push(returnUrl);
+      },
+      onError: (error) => {
+        const newErrors: Record<string, FieldError> = {};
 
-      login(data.token, returnUrl);
-      showToast(t("login.success"), "success");
-      router.push("/account");
-    } catch (err: unknown) {
-      let errorCode: string | undefined = undefined;
-      if (typeof err === "object" && err !== null && "code" in err) {
-        errorCode = (err as { code?: string }).code;
-      }
+        // Tratamento seguro do erro
+        if (error.errors) {
+          // Se houver erros de campo específicos da API
+          setErrors(error.errors);
+        } else if (error.code) {
+          // Erros globais da API
+          switch (error.code) {
+            case "INVALID_CREDENTIALS":
+              newErrors.password = { message: t("login.errors.invalidCredentials") };
+              break;
+            case "USER_NOT_FOUND":
+              newErrors.email = { message: t("login.errors.userNotFound") };
+              break;
+            case "EMAIL_NOT_VERIFIED":
+              newErrors.general = { message: t("login.errors.emailNotVerified") };
+              break;
+            default:
+              newErrors.general = { message: error.message || t("login.errorGeneric") };
+          }
+        } else {
+          newErrors.general = { message: t("login.errorGeneric") };
+        }
 
-      if (errorCode === "INVALID_CREDENTIALS") {
-        newErrors.password = { message: t("login.errors.invalidCredentials") };
-      } else if (errorCode === "USER_NOT_FOUND") {
-        newErrors.email = { message: t("login.errors.userNotFound") };
-      } else if (errorCode === "EMAIL_NOT_VERIFIED") {
-        newErrors.general = { message: t("login.errors.emailNotVerified") };
-      } else {
-        newErrors.general = { message: t("login.errorGeneric") };
-      }
-
-      setErrors(newErrors);
-    } finally {
-      setLoading(false);
-    }
+        setErrors(newErrors);
+      },
+    });
   };
 
   return (

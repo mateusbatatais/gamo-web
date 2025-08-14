@@ -100,7 +100,10 @@
       "emailInvalid": "Formato de e-mail inválido",
       "passwordRequired": "Senha obrigatória",
       "passwordMinLength": "Senha deve ter pelo menos 8 caracteres",
-      "userNotFound": "Usuário não encontrado"
+      "userNotFound": "Usuário não encontrado",
+      "socialPopupClosed": "Modal foi fechado",
+      "socialAccountExists": "A conta já existe",
+      "socialLoginFailed": "O login falhou. Tente novamente"
     },
     "errorGeneric": "Falha ao fazer login. Por favor, tente novamente.",
     "success": "Login realizado com sucesso!",

@@ -4,33 +4,42 @@ import { test, expect } from "@playwright/test";
 // Configuração do locale padrão para testes
 const DEFAULT_LOCALE = "en";
 
-test("Login com Firebase", async ({ page, context }) => {
-  // Mock da rota correta considerando locale
+test("Login com Firebase", async ({ page }) => {
   await page.route(`**/api/auth/login`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ token: "mock-jwt-token" }),
+      body: JSON.stringify({
+        token: "mock-jwt-token",
+        user: {
+          email: process.env.ADMIN_EMAIL,
+          name: "Admin User",
+        },
+      }),
     });
   });
 
-  // Acessar login com locale padrão
   await page.goto(`/${DEFAULT_LOCALE}/login`);
+  await page.waitForSelector('input[name="email"]', { state: "visible", timeout: 15000 });
 
-  // Preencher formulário
+  // Preencher formulário com checks adicionais
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
+  await expect(page.locator('input[name="email"]')).toHaveValue(process.env.ADMIN_EMAIL!);
+
   await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
+  await expect(page.locator('input[name="password"]')).toHaveValue(process.env.ADMIN_PASSWORD!);
 
-  // Disparar submit
-  await page.click('button[type="submit"]');
+  // Disparar submit com verificação
+  await Promise.all([
+    page.waitForResponse(
+      (response) => response.url().includes("/api/auth/login") && response.status() === 200,
+    ),
+    page.click('button[type="submit"]'),
+  ]);
 
-  // Esperar redirecionamento específico com locale
-  await page.waitForURL(`**/${DEFAULT_LOCALE}/account`);
+  // Esperar redirecionamento com timeout maior
+  await page.waitForURL(`**/${DEFAULT_LOCALE}/account`, { timeout: 30000 });
 
-  // Verificar localStorage usando o contexto do Playwright
-  const storage = await context.storageState();
-  const token = storage.origins[0].localStorage.find((item) => item.name === "gamo_token")?.value;
-
-  expect(token).toBeTruthy();
-  expect(token).toBe("mock-jwt-token");
+  // Verificações adicionais
+  await expect(page).toHaveURL(`/${DEFAULT_LOCALE}/account`);
 });

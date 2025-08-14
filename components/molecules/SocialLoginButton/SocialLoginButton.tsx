@@ -1,4 +1,3 @@
-// src/components/molecules/SocialLoginButton/SocialLoginButton.tsx
 "use client";
 
 import React from "react";
@@ -7,7 +6,8 @@ import { useTranslations } from "next-intl";
 import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
 import { MicrosoftIcon } from "@/components/atoms/Icons/MicrosoftIcon";
 import { useToast } from "@/contexts/ToastContext";
-import { useSocialLogin } from "@/hooks/useSocialLogin";
+import { useSocialLogin } from "@/hooks/auth/useSocialLogin";
+
 interface SocialLoginButtonProps {
   provider: "google" | "microsoft" | "apple";
   className?: string;
@@ -24,40 +24,39 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   returnUrl,
 }) => {
   const { showToast } = useToast();
+  const t = useTranslations("login");
 
-  const { login: googleLogin, loading: googleLoading } = useSocialLogin({ provider: "Google" });
-  const { login: microsoftLogin, loading: microsoftLoading } = useSocialLogin({
-    provider: "Microsoft",
+  const { login, loading, error } = useSocialLogin({
+    provider: provider === "google" ? "Google" : "Microsoft",
+    errorMessages: {
+      popupClosedByUser: t("errors.socialPopupClosed"),
+      accountExistsWithDifferentCredential: t("errors.socialAccountExists"),
+      default: t("errors.socialLoginFailed"),
+    },
   });
 
-  const loading =
-    provider === "google" ? googleLoading : provider === "microsoft" ? microsoftLoading : false;
-
-  const t = useTranslations("login");
+  React.useEffect(() => {
+    if (error) {
+      showToast(error.message, "danger");
+      onError?.(error);
+    }
+  }, [error, showToast, onError]);
 
   const handleLogin = async () => {
     try {
-      let token;
-      if (provider === "google") {
-        token = await googleLogin();
-      } else if (provider === "microsoft") {
-        token = await microsoftLogin();
-      } else {
-        showToast("Provedor não suportado", "success");
-        throw new Error("Provedor não suportado");
+      const token = await login();
+      if (token) {
+        showToast(t("welcome"), "success");
+        onSuccess?.(token);
+        if (returnUrl) {
+          window.location.href = returnUrl;
+        }
       }
-      showToast("Bem vindo!", "success");
-      if (onSuccess) onSuccess(token);
-      if (returnUrl) {
-        window.location.href = returnUrl;
-      }
-    } catch (error) {
-      showToast(error instanceof Error ? error.message : String(error), "danger");
-      if (onError) onError(error as Error);
+    } catch {
+      // Errors are already handled by the effect above
     }
   };
 
-  // Configurações específicas por provider
   const providerConfig = {
     google: {
       text: t("googleButton"),
@@ -83,6 +82,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   return (
     <button
       onClick={handleLogin}
+      type="button"
       disabled={loading}
       className={`w-full flex items-center justify-center cursor-pointer ${classes} ${className}`}
       aria-label={text}

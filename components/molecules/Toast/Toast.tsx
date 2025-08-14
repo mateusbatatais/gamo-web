@@ -3,6 +3,7 @@
 
 import React, { useEffect } from "react";
 import { CircleX } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export type ToastType =
   | "success"
@@ -19,6 +20,7 @@ export interface ToastProps {
   message: string;
   durationMs?: number;
   onClose?: () => void;
+  needTranslate?: boolean;
 }
 
 const typeVariants: Record<ToastType, string> = {
@@ -32,7 +34,15 @@ const typeVariants: Record<ToastType, string> = {
   neutral: "bg-neutral-100 border-l-4 border-neutral-500 text-neutral-800",
 };
 
-export default function Toast({ type = "info", message, durationMs = 5000, onClose }: ToastProps) {
+export default function Toast({
+  type = "info",
+  message,
+  durationMs = 5000,
+  onClose,
+  needTranslate = false,
+}: ToastProps) {
+  const t = useTranslations();
+
   useEffect(() => {
     if (durationMs > 0) {
       const timer = setTimeout(() => {
@@ -42,6 +52,8 @@ export default function Toast({ type = "info", message, durationMs = 5000, onClo
     }
   }, [durationMs, onClose]);
 
+  const displayMessage = needTranslate ? t(message) : message;
+
   return (
     <div
       role="alert"
@@ -49,7 +61,7 @@ export default function Toast({ type = "info", message, durationMs = 5000, onClo
       data-testid="toast-container"
     >
       <div className="flex-1 pr-2">
-        <p className="break-words">{message}</p>
+        <p className="break-words">{displayMessage}</p>
       </div>
       <button
         onClick={() => onClose?.()}

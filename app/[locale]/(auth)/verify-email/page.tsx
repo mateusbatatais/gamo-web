@@ -7,6 +7,9 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useToast } from "@/contexts/ToastContext";
+import { useMutation } from "@tanstack/react-query";
+
+type VerificationStatus = "loading" | "success" | "error" | "expired" | "noToken";
 
 export default function VerifyEmailPage() {
   const t = useTranslations("verifyEmail");
@@ -14,61 +17,51 @@ export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const { showToast } = useToast();
 
-  const [status, setStatus] = useState<"loading" | "success" | "error" | "expired" | "noToken">(
-    "loading",
-  );
+  const [status, setStatus] = useState<VerificationStatus>("loading");
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    async function verify() {
-      const token = searchParams.get("token");
-      if (!token) {
-        setStatus("noToken");
-        setMessage(t("noTokenProvided"));
-        return;
-      }
-
+  const { mutate: verifyEmail } = useMutation({
+    mutationFn: async (token: string) => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email?token=${token}`,
+      );
+      if (!res.ok) throw await res.json();
+      return res.json();
+    },
+    onSuccess: () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-email?token=${token}`,
-        );
-        const data = await res.json();
-
-        if (!res.ok) {
-          if (data.code === "INVALID_OR_EXPIRED_TOKEN") {
-            setStatus("expired");
-            setMessage(t("expiredMessage"));
-            showToast(t("expiredMessage"), "warning");
-          } else {
-            setStatus("error");
-            setMessage(data.message || t("errorGeneric"));
-            showToast(data.message || t("errorGeneric"), "danger");
-          }
-        } else {
-          try {
-            localStorage.removeItem("gamo_token");
-          } catch {}
-
-          setStatus("success");
-          setMessage(t("successMessage"));
-          showToast(t("successMessage"), "success");
-        }
-      } catch {
+        localStorage.removeItem("gamo_token");
+      } catch {}
+      setStatus("success");
+      setMessage(t("successMessage"));
+      showToast(t("successMessage"), "success");
+    },
+    onError: (error: { code?: string; message?: string }) => {
+      if (error.code === "INVALID_OR_EXPIRED_TOKEN") {
+        setStatus("expired");
+        setMessage(t("expiredMessage"));
+        showToast(t("expiredMessage"), "warning");
+      } else {
         setStatus("error");
-        setMessage(t("errorGeneric"));
-        showToast(t("errorGeneric"), "danger");
+        setMessage(error.message || t("errorGeneric"));
+        showToast(error.message || t("errorGeneric"), "danger");
       }
-    }
+    },
+  });
 
-    verify();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useEffect(() => {
+    const token = searchParams.get("token");
+    if (!token) {
+      setStatus("noToken");
+      setMessage(t("noTokenProvided"));
+      return;
+    }
+    verifyEmail(token);
+  }, [searchParams, verifyEmail, t]);
 
   useEffect(() => {
     if (status === "success") {
-      const timeout = setTimeout(() => {
-        router.push(`/login`);
-      }, 2000);
+      const timeout = setTimeout(() => router.push(`/login`), 2000);
       return () => clearTimeout(timeout);
     }
   }, [status, router]);

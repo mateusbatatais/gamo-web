@@ -2,27 +2,26 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl"; // Adicionei useLocale
+import { useTranslations, useLocale } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
-import { apiFetch } from "@/utils/api";
 import { useToast } from "@/contexts/ToastContext";
 import { FieldError } from "@/@types/forms";
+import { useSignup } from "@/hooks/auth/useSignup";
 
 export default function SignupPage() {
   const t = useTranslations();
-  const router = useRouter();
   const { showToast } = useToast();
-  const locale = useLocale(); // Obtém o locale atual
-  const [loading, setLoading] = useState(false);
+  const locale = useLocale();
   const [errors, setErrors] = useState<Record<string, FieldError>>({});
   const [values, setValues] = useState({
     name: "",
     email: "",
     password: "",
   });
+
+  const { mutate: signup, isPending: loading } = useSignup();
 
   const signupConfig = {
     fields: [
@@ -82,52 +81,27 @@ export default function SignupPage() {
     return newErrors;
   };
 
-  const handleApiError = (err: unknown, newErrors: Record<string, FieldError>) => {
-    let errorCode: string | undefined = undefined;
-    if (typeof err === "object" && err !== null && "code" in err) {
-      errorCode = (err as { code?: string }).code;
-    }
-    if (errorCode === "USER_CREATED_EMAIL_FAILED") {
-      showToast(t("signup.emailSendError"), "warning");
-      router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
-    } else if (errorCode === "EMAIL_ALREADY_EXISTS") {
-      newErrors.email = { message: t("signup.errors.emailExists") };
-      setErrors(newErrors);
-    } else {
-      newErrors.general = { message: t("signup.errorGeneric") };
-      setErrors(newErrors);
-    }
-  };
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    setErrors({});
+  const handleSubmit = () => {
     const newErrors = validateFields();
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
-      setLoading(false);
       return;
     }
 
-    try {
-      const response = await apiFetch<{ userId: string; code?: string }>("/auth/signup", {
-        method: "POST",
-        body: { ...values, locale },
-      });
-
-      if (response.code === "USER_CREATED_EMAIL_FAILED") {
-        showToast(t("signup.emailSendError"), "warning");
-      } else {
-        showToast(t("signup.success.title"), "success");
-      }
-
-      router.push(`/signup/success?email=${encodeURIComponent(values.email)}`);
-    } catch (err: unknown) {
-      handleApiError(err, {});
-    } finally {
-      setLoading(false);
-    }
+    signup(
+      { ...values, locale },
+      {
+        onError: (error) => {
+          const newErrors: Record<string, FieldError> = {};
+          if (error.code === "EMAIL_ALREADY_EXISTS") {
+            newErrors.email = { message: t("signup.errors.emailExists") };
+          } else {
+            newErrors.general = { message: t("signup.errorGeneric") };
+          }
+          setErrors(newErrors);
+        },
+      },
+    );
   };
 
   return (
@@ -148,9 +122,7 @@ export default function SignupPage() {
           <>
             <div className="my-4 flex items-center">
               <hr className="flex-1 border-gray-300 dark:border-gray-700" />
-              <span className="px-2 text-gray-500 text-sm dark:text-gray-400">
-                {t("login.or")}{" "}
-              </span>
+              <span className="px-2 text-gray-500 text-sm dark:text-gray-400">{t("login.or")}</span>
               <hr className="flex-1 border-gray-300 dark:border-gray-700" />
             </div>
             <div className="flex flex-col gap-2">

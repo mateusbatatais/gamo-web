@@ -1,33 +1,31 @@
-// app/[locale]/reset-password/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
-import { apiFetch } from "@/utils/api";
-import { useToast } from "@/contexts/ToastContext";
 import { FieldError } from "@/@types/forms";
 import { SuccessCard } from "@/components/molecules/SuccessCard/SuccessCard";
+import { useResetPassword } from "@/hooks/auth/useResetPassword";
 
 export default function ResetPasswordPage() {
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { showToast } = useToast();
+
   const token = searchParams.get("token") || "";
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, FieldError>>({});
   const [values, setValues] = useState({
     newPassword: "",
     confirmPassword: "",
   });
 
+  const { mutate: resetPassword, isPending: loading, isSuccess } = useResetPassword();
+
   useEffect(() => {
     if (!token) {
-      router.replace(`/recover`);
+      router.replace("/recover");
     }
   }, [token, router]);
 
@@ -65,12 +63,9 @@ export default function ResetPasswordPage() {
     }
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-    setErrors({});
-
-    // Validação básica
+  const validateForm = () => {
     const newErrors: Record<string, FieldError> = {};
+
     if (!values.newPassword) {
       newErrors.newPassword = { message: t("resetPassword.errors.required") };
     } else if (values.newPassword.length < 6) {
@@ -83,43 +78,33 @@ export default function ResetPasswordPage() {
       newErrors.confirmPassword = { message: t("resetPassword.errors.passwordMismatch") };
     }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setLoading(false);
+    return newErrors;
+  };
+
+  const handleSubmit = () => {
+    const formErrors = validateForm();
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
       return;
     }
 
-    try {
-      await apiFetch("/auth/reset-password", {
-        method: "POST",
-        body: {
-          token,
-          newPassword: values.newPassword,
-          locale,
+    resetPassword(
+      { token, newPassword: values.newPassword, locale },
+      {
+        onError: (error) => {
+          const newErrors: Record<string, FieldError> = {};
+          if (error.code === "INVALID_OR_EXPIRED_TOKEN") {
+            newErrors.general = { message: t("resetPassword.errors.invalidOrExpiredToken") };
+          } else {
+            newErrors.general = { message: t("resetPassword.errorGeneric") };
+          }
+          setErrors(newErrors);
         },
-      });
-
-      setSuccess(true);
-      showToast(t("resetPassword.successMessage"), "success");
-    } catch (err: unknown) {
-      let errorCode: string | undefined = undefined;
-      if (err && typeof err === "object" && "code" in err) {
-        errorCode = (err as { code?: string }).code;
-      }
-
-      if (errorCode === "INVALID_OR_EXPIRED_TOKEN") {
-        newErrors.general = { message: t("resetPassword.errors.invalidOrExpiredToken") };
-      } else {
-        newErrors.general = { message: t("resetPassword.errorGeneric") };
-      }
-
-      setErrors(newErrors);
-    } finally {
-      setLoading(false);
-    }
+      },
+    );
   };
 
-  if (success) {
+  if (isSuccess) {
     return (
       <SuccessCard
         title={t("resetPassword.successTitle")}

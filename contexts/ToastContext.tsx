@@ -9,10 +9,16 @@ interface ToastMessage {
   message: string;
   type: ToastType;
   duration?: number;
+  needTranslate?: boolean;
 }
 
 interface ToastContextType {
-  showToast: (message: string, type?: ToastType, duration?: number) => void;
+  showToast: (
+    message: string,
+    type?: ToastType,
+    duration?: number,
+    needTranslate?: boolean,
+  ) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -20,9 +26,17 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  const showToast = (message: string, type: ToastType = "info", duration: number = 5000) => {
+  const showToast = (
+    message: string,
+    type: ToastType = "info",
+    duration: number = 5000,
+    needTranslate: boolean = false,
+  ) => {
     const id = Math.random().toString(36).substr(2, 9);
-    setToasts((currentToasts) => [...currentToasts, { id, message, type, duration }]);
+    setToasts((currentToasts) => [
+      ...currentToasts,
+      { id, message, type, duration, needTranslate },
+    ]);
 
     setTimeout(() => {
       removeToast(id);
@@ -44,6 +58,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             message={toast.message}
             durationMs={toast.duration}
             onClose={() => removeToast(toast.id)}
+            needTranslate={toast.needTranslate}
           />
         ))}
       </div>
