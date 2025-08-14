@@ -2,128 +2,95 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useTranslations } from "next-intl";
-import { apiFetch } from "@/utils/api";
 import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
-import { useToast } from "@/contexts/ToastContext"; // Novo hook importado
+import { useToast } from "@/contexts/ToastContext";
 import { Card } from "@/components/atoms/Card/Card";
-
-interface ChangePasswordPayload {
-  currentPassword: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
-
-interface ApiError extends Error {
-  code?: string;
-}
+import { useAccount } from "@/hooks/account/useUserAccount";
 
 export default function ChangePasswordForm() {
-  const { token, logout } = useAuth();
+  const { changePasswordMutation } = useAccount();
+  const { showToast } = useToast();
+  const t = useTranslations("account.changePasswordForm");
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const t = useTranslations("account.changePasswordForm");
-  const { showToast } = useToast();
-
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
+    setFormError(null);
 
+    // Validação do formulário
     if (newPassword !== confirmNewPassword) {
       const msg = t("passwordsDoNotMatch");
-      setErrorMsg(msg);
+      setFormError(msg);
       showToast(msg, "warning");
       return;
     }
 
-    setLoading(true);
-
-    try {
-      const payload: ChangePasswordPayload = {
-        currentPassword,
-        newPassword,
-        confirmNewPassword,
-      };
-
-      await apiFetch<unknown>("/user/profile/password", {
-        token,
-        method: "PUT",
-        body: payload,
-      });
-
-      const successMsg = t("passwordChanged");
-      showToast(successMsg, "success");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
-    } catch (err: unknown) {
-      const apiErr = err as ApiError;
-      if (apiErr.code === "UNAUTHORIZED") {
-        logout();
-        return;
-      }
-      console.error(apiErr);
-      const message = apiErr.message || t("changeError");
-      setErrorMsg(message);
-      showToast(message, "danger");
-    } finally {
-      setLoading(false);
-    }
-  }
+    changePasswordMutation.mutate(
+      { currentPassword, newPassword, confirmNewPassword },
+      {
+        onSuccess: () => {
+          showToast(t("passwordChanged"), "success");
+          // Resetar os campos após sucesso
+          setCurrentPassword("");
+          setNewPassword("");
+          setConfirmNewPassword("");
+        },
+        onError: (error) => {
+          const message = error.message || t("changeError");
+          setFormError(message);
+          showToast(message, "danger");
+        },
+      },
+    );
+  };
 
   return (
     <Card>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Input
-            data-testid="input-current-password"
-            label={t("currentPassword")}
-            type="password"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-            className="w-full"
-          />
-        </div>
+        <Input
+          data-testid="input-current-password"
+          label={t("currentPassword")}
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          required
+          error={formError ?? undefined}
+          className="w-full"
+        />
 
-        <div>
-          <Input
-            data-testid="input-new-password"
-            label={t("newPassword")}
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-            className="w-full"
-          />
-        </div>
+        <Input
+          data-testid="input-new-password"
+          label={t("newPassword")}
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          required
+          error={formError ?? undefined}
+          className="w-full"
+        />
 
-        <div>
-          <Input
-            data-testid="input-confirm-password"
-            label={t("confirmNewPassword")}
-            type="password"
-            value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-            required
-            error={errorMsg ?? undefined}
-            className="w-full"
-          />
-        </div>
+        <Input
+          data-testid="input-confirm-password"
+          label={t("confirmNewPassword")}
+          type="password"
+          value={confirmNewPassword}
+          onChange={(e) => setConfirmNewPassword(e.target.value)}
+          required
+          error={formError ?? undefined}
+          className="w-full"
+        />
 
         <Button
           type="submit"
-          disabled={loading}
+          disabled={changePasswordMutation.isPending}
           className="mt-2"
-          label={loading ? t("changing") : t("changePassword")}
+          label={changePasswordMutation.isPending ? t("changing") : t("changePassword")}
           data-testid="button-change-password"
         />
       </form>

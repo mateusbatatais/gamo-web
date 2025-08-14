@@ -1,10 +1,8 @@
 // components/Account/AccountDetailsForm/AccountDetailsForm.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
+import React, { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { apiFetch } from "@/utils/api";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
@@ -13,122 +11,72 @@ import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlac
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { useToast } from "@/contexts/ToastContext";
 import { Card } from "@/components/atoms/Card/Card";
-
-interface UserDetailsPayload {
-  name: string;
-  email: string;
-  slug: string;
-  description: string;
-  profileImage?: string;
-}
-
-interface ApiError extends Error {
-  code?: string;
-}
+import { useAccount } from "@/hooks/account/useUserAccount";
 
 export default function AccountDetailsForm() {
-  const { token, user, logout, updateUser } = useAuth(); // Adicionado updateUser
-  const [name, setName] = useState(user?.name || "");
-  const [slug, setSlug] = useState(user?.slug || "");
-  const [email, setEmail] = useState(user?.email || "");
+  const { profileQuery, updateProfileMutation, uploadProfileImage } = useAccount();
+  const { showToast } = useToast();
+  const t = useTranslations("account.detailsForm");
+
+  // Estados locais para o formulário
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(user?.profileImage || null);
 
-  const t = useTranslations("account.detailsForm");
-  const { showToast } = useToast();
+  // Preenche os campos quando os dados são carregados
+  React.useEffect(() => {
+    if (profileQuery.data) {
+      setName(profileQuery.data.name);
+      setSlug(profileQuery.data.slug);
+      setEmail(profileQuery.data.email);
+      setDescription(profileQuery.data.description ?? "");
+    }
+  }, [profileQuery.data]);
 
-  useEffect(() => {
-    if (!token) return;
-    apiFetch<{
-      name: string;
-      slug: string;
-      email: string;
-      description?: string;
-      profileImage?: string;
-    }>("/user/profile", { token })
-      .then((data) => {
-        setName(data.name);
-        setSlug(data.slug);
-        setEmail(data.email);
-        setDescription(data.description ?? "");
-        setPreviewUrl(data.profileImage || null);
-      })
-      .catch((err) => {
-        const apiErr = err as ApiError;
-        if (apiErr.code === "UNAUTHORIZED") return void logout();
-        setErrorMsg(t("fetchError"));
-        showToast(t("fetchError"), "danger");
-      });
-  }, [token, logout, t, showToast]);
+  // Gerenciamento do preview da imagem
+  const previewUrl = profileQuery.data?.profileImage || null;
 
-  useEffect(() => {
-    if (!croppedBlob) return;
-    const url = URL.createObjectURL(croppedBlob);
-    setPreviewUrl(url);
+  const handleCroppedImage = useCallback((blob: Blob) => {
+    setCroppedBlob(blob);
     setFileSrc(null);
-    return () => URL.revokeObjectURL(url);
-  }, [croppedBlob]);
+  }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg(null);
-    setLoading(true);
 
     try {
       let profileImageUrl = previewUrl;
-      if (croppedBlob) {
-        const formData = new FormData();
-        formData.append("file", croppedBlob, "profile.jpg");
 
-        const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/uploads/profile`, {
-          method: "POST",
-          headers: { Authorization: token ? `Bearer ${token}` : "" },
-          body: formData,
-        });
-        if (!uploadRes.ok) throw new Error("Upload failed");
-        const json = (await uploadRes.json()) as { url: string };
-        profileImageUrl = json.url;
+      // Upload da nova imagem se existir
+      if (croppedBlob) {
+        const uploadResult = await uploadProfileImage.mutateAsync(croppedBlob);
+        profileImageUrl = uploadResult.url;
       }
 
-      const payload: UserDetailsPayload = {
+      // Atualiza o perfil
+      await updateProfileMutation.mutateAsync({
         name,
-        email,
-        description,
         slug,
+        description,
+        email,
         ...(profileImageUrl ? { profileImage: profileImageUrl } : {}),
-      };
-
-      await apiFetch("/user/profile", {
-        token,
-        method: "PUT",
-        body: payload,
-      });
-
-      updateUser({
-        name,
-        slug,
-        email,
-        description,
-        profileImage: profileImageUrl || "",
       });
 
       showToast(t("updateSuccess"), "success");
-    } catch (err: unknown) {
-      const apiErr = err as ApiError;
-      if (apiErr.code === "UNAUTHORIZED") return void logout();
-      const msg = apiErr.message || t("updateError");
-      setErrorMsg(msg);
-      showToast(msg, "danger");
-    } finally {
-      setLoading(false);
-      if (croppedBlob) {
-        setCroppedBlob(null);
-      }
+    } catch {
+      showToast(t("updateError"), "danger");
     }
+  };
+
+  if (profileQuery.isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (profileQuery.isError) {
+    return <div>Error loading profile</div>;
   }
 
   return (
@@ -137,7 +85,7 @@ export default function AccountDetailsForm() {
         <ImageCropper
           src={fileSrc}
           aspect={1}
-          onBlobReady={setCroppedBlob}
+          onBlobReady={handleCroppedImage}
           setFileSrc={setFileSrc}
           onCancel={() => setFileSrc(null)}
         />
@@ -145,8 +93,8 @@ export default function AccountDetailsForm() {
 
       {!fileSrc && (
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-col md:flex-row gap-6 mt-4 ">
-            <div className="flex flex-col  items-center ">
+          <div className="flex flex-col md:flex-row gap-6 mt-4">
+            <div className="flex flex-col items-center">
               {previewUrl ? (
                 <Image
                   src={previewUrl}
@@ -175,7 +123,6 @@ export default function AccountDetailsForm() {
                   const file = e.target.files?.[0];
                   if (file) {
                     setFileSrc(URL.createObjectURL(file));
-                    setPreviewUrl(null);
                   }
                 }}
               />
@@ -189,7 +136,6 @@ export default function AccountDetailsForm() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                error={errorMsg ?? undefined}
               />
 
               <Input
@@ -200,7 +146,6 @@ export default function AccountDetailsForm() {
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
                 required
-                error={errorMsg ?? undefined}
               />
 
               <Input
@@ -211,26 +156,27 @@ export default function AccountDetailsForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                error={errorMsg ?? undefined}
               />
 
-              <div>
-                <Textarea
-                  data-testid="input-textarea-description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full border p-2 rounded h-24"
-                  placeholder={t("descriptionPlaceholder")}
-                  label={t("description")}
-                />
-              </div>
+              <Textarea
+                data-testid="input-textarea-description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full border p-2 rounded h-24"
+                placeholder={t("descriptionPlaceholder")}
+                label={t("description")}
+              />
             </Card>
           </div>
           <div className="mt-6 flex justify-end">
             <Button
               type="submit"
-              disabled={loading}
-              label={loading ? t("saving") : t("saveChanges")}
+              disabled={updateProfileMutation.isPending || uploadProfileImage.isPending}
+              label={
+                updateProfileMutation.isPending || uploadProfileImage.isPending
+                  ? t("saving")
+                  : t("saveChanges")
+              }
               data-testid="button-save"
             />
           </div>
