@@ -1,23 +1,21 @@
 // components/molecules/AddGameToCollection/AddGameToCollection.tsx
 "use client";
 
-import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { useToast } from "@/contexts/ToastContext";
-import { apiFetch } from "@/utils/api";
 import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { GameForm } from "../../organisms/GameForm/GameForm";
 import { useFavorite } from "@/hooks/useFavorite";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 
 interface Props {
   gameId: number;
   onAddSuccess?: () => void;
   isFavorite?: boolean;
-  onFavoriteToggle?: (newState: boolean) => void; // Novo callback
+  onFavoriteToggle?: (newState: boolean) => void;
 }
 
 export function AddGameToCollection({
@@ -26,13 +24,12 @@ export function AddGameToCollection({
   isFavorite = false,
   onFavoriteToggle,
 }: Props) {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const { showToast } = useToast();
   const { setPendingAction } = usePendingAction();
   const { isOpen, openModal, closeModal } = useModalUrl(`add-game-to-collection-${gameId}`);
-  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
+  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
+  const { createUserGame, isPending } = useUserGameMutation();
 
   const handleFavorite = async () => {
     const { added } = await toggleFavorite({
@@ -62,35 +59,18 @@ export function AddGameToCollection({
   };
 
   const addToCollectionDirectly = async () => {
-    setLoading(true);
-    try {
-      // Chamada API para adicionar jogo com status "OWNED" e valores padrão
-      await apiFetch("/user-games", {
-        method: "POST",
-        token,
-        body: {
-          gameId,
-          status: "OWNED",
-          media: "PHYSICAL",
-        },
-      });
-      onAddSuccess?.();
-      showToast("Jogo adicionado à coleção", "success");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        showToast(err.message, "danger");
-      } else {
-        showToast("Erro ao adicionar jogo", "danger");
-      }
-    } finally {
-      setLoading(false);
-    }
+    await createUserGame({
+      gameId,
+      status: "OWNED",
+      media: "PHYSICAL",
+    });
+    onAddSuccess?.();
   };
 
   return (
     <div className="flex justify-end">
       <CardActionButtons
-        loading={loading}
+        loading={isPending}
         favoriteLoading={favoriteLoading}
         actions={[
           {

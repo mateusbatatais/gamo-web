@@ -1,16 +1,14 @@
 // components/molecules/AddToCollection/AddToCollection.tsx
 "use client";
 
-import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { useToast } from "@/contexts/ToastContext";
-import { apiFetch } from "@/utils/api";
-import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
 import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
+import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
+import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
 
 interface Props {
   consoleVariantId: number;
@@ -25,12 +23,11 @@ export function AddConsoleToCollection({
   consoleId,
   onAddSuccess,
 }: Props) {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const { showToast } = useToast();
   const { setPendingAction } = usePendingAction();
   const { isOpen, openModal, closeModal } = useModalUrl(`add-to-collection-${skinId}`);
+  const { createUserConsole, isPending } = useUserConsoleMutation();
 
   const handleAction = (type: "OWNED" | "TRADE") => {
     if (!user) {
@@ -52,37 +49,20 @@ export function AddConsoleToCollection({
   };
 
   const addToCollectionDirectly = async () => {
-    setLoading(true);
-    try {
-      // Chamada API simplificada para OWNED
-      await apiFetch("/user-consoles", {
-        method: "POST",
-        token,
-        body: {
-          consoleVariantId,
-          consoleId,
-          skinId,
-          status: "OWNED",
-          condition: "USED",
-        },
-      });
-      onAddSuccess?.();
-      showToast("Adicionado a coleção", "success");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        showToast(err.message, "danger");
-      } else {
-        showToast("err.message", "danger");
-      }
-    } finally {
-      setLoading(false);
-    }
+    await createUserConsole({
+      consoleVariantId,
+      consoleId,
+      skinId,
+      status: "OWNED",
+      condition: "USED",
+    });
+    onAddSuccess?.();
   };
 
   return (
     <div className="flex justify-end">
       <CardActionButtons
-        loading={loading}
+        loading={isPending}
         actions={[
           {
             key: "collection",
