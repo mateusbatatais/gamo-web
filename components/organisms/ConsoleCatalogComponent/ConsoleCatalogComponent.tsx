@@ -1,10 +1,7 @@
-//components/organisms/ConsoleCatalogComponent/ConsoleCatalogComponent.tsx
-
+// components/organisms/ConsoleCatalogComponent/ConsoleCatalogComponent.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-import { apiFetch } from "@/utils/api";
-import { ConsoleVariantsResponse } from "@/@types/console";
 import FilterContainer from "@/components/molecules/Filter/Filter";
 import ConsoleCard from "@/components/molecules/ConsoleCard/ConsoleCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
@@ -18,7 +15,7 @@ import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSe
 import { useTranslations } from "next-intl";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
-import { useAuth } from "@/contexts/AuthContext";
+import { useConsoles } from "@/hooks/useConsoles";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -27,24 +24,11 @@ interface ConsoleCatalogComponentProps {
 }
 
 const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogComponentProps) => {
-  const [consoleVariants, setConsoleVariants] = useState<ConsoleVariantsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [totalPages, setTotalPages] = useState<number>(1);
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const [sort, setSort] = useState<string>("releaseDate-desc");
   const t = useTranslations();
   const { setItems } = useBreadcrumbs();
-  const { token, initialized } = useAuth();
-
-  const SORT_OPTIONS: SortOption[] = [
-    { value: "name-asc", label: t("order.nameAsc") },
-    { value: "name-desc", label: t("order.nameDesc") },
-    { value: "releaseDate-asc", label: t("order.releaseDateAsc") },
-    { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
-    { value: "popularity-desc", label: t("order.popularityDesc") },
-  ];
 
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
@@ -57,9 +41,31 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     searchParams.get("generation")?.split(",").filter(Boolean) || [],
   );
 
+  const {
+    data: consoleVariants,
+    isLoading,
+    error,
+    isPreviousData,
+  } = useConsoles({
+    locale,
+    page,
+    perPage,
+    sort,
+    selectedBrands,
+    selectedGenerations,
+    searchQuery,
+  });
+
+  const SORT_OPTIONS: SortOption[] = [
+    { value: "name-asc", label: t("order.nameAsc") },
+    { value: "name-desc", label: t("order.nameDesc") },
+    { value: "releaseDate-asc", label: t("order.releaseDateAsc") },
+    { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
+    { value: "popularity-desc", label: t("order.popularityDesc") },
+  ];
+
   const handleBrandChange = (brands: string[]) => {
     setSelectedBrands(brands);
-    setLoading(true);
 
     const params = new URLSearchParams({
       locale,
@@ -79,7 +85,6 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
   const handleGenerationChange = (generations: string[]) => {
     setSelectedGenerations(generations);
-    setLoading(true);
 
     const params = new URLSearchParams({
       locale,
@@ -87,6 +92,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       perPage: perPage.toString(),
       brand: selectedBrands.join(","),
       search: searchQuery,
+      sort,
     });
 
     if (generations.length > 0) {
@@ -99,84 +105,24 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
   const clearFilters = () => {
     setSelectedBrands([]);
     setSelectedGenerations([]);
-    setLoading(true);
 
     const params = new URLSearchParams({
       locale,
       page: "1",
       perPage: perPage.toString(),
       search: searchQuery,
+      sort,
     });
 
     window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
   useEffect(() => {
-    const fetchConsoleVariants = async () => {
-      if (!initialized) return;
-
-      try {
-        setLoading(true);
-
-        const params = new URLSearchParams({
-          locale,
-          page: page.toString(),
-          perPage: perPage.toString(),
-        });
-
-        if (sort) params.append("sort", sort);
-
-        if (selectedBrands.length > 0) {
-          params.append("brand", selectedBrands.join(","));
-        }
-
-        if (selectedGenerations.length > 0) {
-          params.append("generation", selectedGenerations.join(","));
-        }
-
-        if (searchQuery) {
-          params.append("search", searchQuery);
-        }
-
-        const data: ConsoleVariantsResponse = await apiFetch(`/consoles?${params.toString()}`, {
-          token,
-        });
-        setConsoleVariants(data);
-        setTotalPages(data.meta.totalPages);
-        setError("");
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An error occurred while fetching the console variants.");
-        }
-      } finally {
-        setLoading(false);
-        setLoading(false);
-      }
-    };
-
-    fetchConsoleVariants();
-  }, [
-    selectedBrands,
-    selectedGenerations,
-    locale,
-    page,
-    perPage,
-    searchQuery,
-    sort,
-    token,
-    initialized,
-  ]);
-
-  useEffect(() => {
     const savedView = localStorage.getItem("catalog-view") as ViewType | null;
     if (savedView) {
       setView(savedView);
     }
-  }, []);
 
-  useEffect(() => {
     const savedSort = localStorage.getItem("catalog-sort");
     if (savedSort) {
       setSort(savedSort);
@@ -186,7 +132,6 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
   const handleSortChange = (newSort: string) => {
     setSort(newSort);
     localStorage.setItem("catalog-sort", newSort);
-    setLoading(true);
 
     const params = new URLSearchParams({
       locale,
@@ -202,8 +147,6 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
   };
 
   const handlePageChange = (newPage: number) => {
-    setLoading(true);
-
     const params = new URLSearchParams({
       brand: selectedBrands.join(","),
       locale,
@@ -227,11 +170,12 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     return () => setItems([]);
   }, [setItems, t]);
 
-  if (loading) {
+  if (isLoading && !isPreviousData) {
     return (
       <div className="flex flex-col lg:flex-row">
+        {/* Skeleton para filtros */}
         <div className="hidden lg:block w-full lg:w-1/4 pr-4">
-          <div className="sticky top-[70px] ">
+          <div className="sticky top-[70px]">
             <div className="space-y-6">
               <div>
                 <Skeleton className="h-6 w-1/2 mb-3" animated />
@@ -293,6 +237,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
   return (
     <div className="flex flex-col lg:flex-row">
+      {/* Filtros para desktop */}
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
         <div className="sticky top-[70px] overflow-y-auto h-[calc(100vh-70px)] pe-2">
           <FilterContainer
@@ -305,6 +250,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
         </div>
       </div>
 
+      {/* Conteúdo principal */}
       <div className="w-full lg:w-3/4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="w-full sm:w-auto flex-1">
@@ -362,13 +308,13 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
         {error ? (
           <EmptyState
             title="Erro ao carregar dados"
-            description={error}
+            description={error.message}
             variant="card"
             size="lg"
             actionText="Tentar novamente"
             onAction={() => window.location.reload()}
           />
-        ) : consoleVariants && consoleVariants.items.length > 0 ? (
+        ) : consoleVariants?.items && consoleVariants.items.length > 0 ? (
           <>
             <div
               className={
@@ -380,7 +326,6 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
               {consoleVariants.items.map((variant) => (
                 <ConsoleCard
                   key={variant.id}
-                  loading={loading}
                   name={variant.name}
                   consoleName={variant.consoleName}
                   brand={variant.brand.slug}
@@ -390,22 +335,13 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
                   orientation={view === "grid" ? "vertical" : "horizontal"}
                   variantId={variant.id}
                   isFavorite={variant.isFavorite}
-                  onFavoriteToggle={(newState) => {
-                    setConsoleVariants((prev) => {
-                      if (!prev) return null;
-                      const updatedItems = prev.items.map((item) =>
-                        item.id === variant.id ? { ...item, isFavorite: newState } : item,
-                      );
-                      return { ...prev, items: updatedItems };
-                    });
-                  }}
                 />
               ))}
             </div>
             <div className="mt-8">
               <Pagination
                 currentPage={page}
-                totalPages={totalPages}
+                totalPages={consoleVariants.meta.totalPages}
                 onPageChange={handlePageChange}
               />
             </div>

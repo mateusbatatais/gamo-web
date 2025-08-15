@@ -1,7 +1,7 @@
+// components/organisms/GameCatalogComponent/GameCatalogComponent.tsx
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { apiFetch } from "@/utils/api";
 import GameCard from "@/components/molecules/GameCard/GameCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
@@ -11,12 +11,11 @@ import clsx from "clsx";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { useTranslations } from "next-intl";
-import { GameListResponse } from "@/@types/game";
 import { GameCardSkeleton } from "@/components/molecules/GameCard/GameCard.skeleton";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
-import { useAuth } from "@/contexts/AuthContext";
+import { useGames } from "@/hooks/useGames";
 
 interface GameCatalogComponentProps {
   page: number;
@@ -24,10 +23,6 @@ interface GameCatalogComponentProps {
 }
 
 const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
-  const [games, setGames] = useState<GameListResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [totalPages, setTotalPages] = useState<number>(1);
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const t = useTranslations();
@@ -35,7 +30,6 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { setItems } = useBreadcrumbs();
-  const { token, initialized } = useAuth();
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
@@ -58,12 +52,25 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     platformsParam ? platformsParam.split(",").map(Number) : [],
   );
 
+  const {
+    data: games,
+    isLoading,
+    error,
+    isPreviousData,
+  } = useGames({
+    page,
+    perPage,
+    sort,
+    selectedGenres,
+    selectedPlatforms,
+    searchQuery,
+  });
+
   // Atualizar URL quando filtros mudam
   const updateURL = useCallback(
     (updates: { genres?: number[]; platforms?: number[]; sort?: string; page?: number }) => {
       const params = new URLSearchParams(searchParams.toString());
 
-      // Atualizar parâmetros
       if (updates.genres !== undefined) {
         if (updates.genres.length > 0) {
           params.set("genres", updates.genres.join(","));
@@ -88,7 +95,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
         params.set("page", updates.page.toString());
       }
 
-      // Sempre resetar para página 1 ao mudar filtros
+      // Resetar para página 1 ao mudar filtros
       if (
         updates.genres !== undefined ||
         updates.platforms !== undefined ||
@@ -97,7 +104,6 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
         params.set("page", "1");
       }
 
-      // Atualizar URL sem recarregar a página
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [searchParams, router, pathname],
@@ -142,45 +148,6 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     [updateURL],
   );
 
-  // Buscar jogos
-  useEffect(() => {
-    const fetchGames = async () => {
-      if (!initialized) return;
-
-      try {
-        setLoading(true);
-
-        const params = new URLSearchParams({
-          page: page.toString(),
-          perPage: perPage.toString(),
-          sort,
-          ...(searchQuery && { search: searchQuery }),
-          ...(selectedGenres.length > 0 && { genres: selectedGenres.join(",") }),
-          ...(selectedPlatforms.length > 0 && { platforms: selectedPlatforms.join(",") }),
-        });
-
-        const data: GameListResponse = await apiFetch(`/games?${params.toString()}`, {
-          token,
-        });
-
-        const mappedItems = data.items.map((game) => ({
-          ...game,
-          name: game.name || game.slug,
-        }));
-
-        setGames({ ...data, items: mappedItems });
-        setTotalPages(data.meta.totalPages);
-        setError("");
-      } catch {
-        setError("An error occurred while fetching games.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGames();
-  }, [page, perPage, searchQuery, sort, selectedGenres, selectedPlatforms, initialized, token]);
-
   // Restaurar preferências de visualização
   useEffect(() => {
     const savedView = localStorage.getItem("game-catalog-view") as ViewType | null;
@@ -200,7 +167,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     return () => setItems([]);
   }, [setItems, t]);
 
-  if (loading) {
+  if (isLoading && !isPreviousData) {
     return (
       <div className="flex flex-col lg:flex-row">
         {/* Skeleton para filtros */}
@@ -340,13 +307,13 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
         {error ? (
           <EmptyState
             title="Erro ao carregar dados"
-            description={error}
+            description={error.message}
             variant="card"
             size="lg"
             actionText="Tentar novamente"
             onAction={() => window.location.reload()}
           />
-        ) : games && games.items.length > 0 ? (
+        ) : games?.items && games.items.length > 0 ? (
           <>
             <div
               className={clsx(
@@ -375,7 +342,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
             <div className="mt-8">
               <Pagination
                 currentPage={page}
-                totalPages={totalPages}
+                totalPages={games.meta.totalPages}
                 onPageChange={handlePageChange}
               />
             </div>
