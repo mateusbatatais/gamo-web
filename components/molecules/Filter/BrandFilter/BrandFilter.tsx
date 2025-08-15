@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { apiFetch } from "@/utils/api";
+"use client";
+
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
+import useBrands from "@/hooks/filters/useBrands";
 
 interface BrandFilterProps {
   selectedBrands: string[];
@@ -10,36 +11,19 @@ interface BrandFilterProps {
 }
 
 const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
-  const [brands, setBrands] = useState<{ value: string; label: string }[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { data: brands, isLoading, error } = useBrands();
   const t = useTranslations();
 
-  useEffect(() => {
-    const fetchBrands = async () => {
-      setLoading(true);
-      try {
-        const data = await apiFetch<{ slug: string; id: number }[]>("/brands");
-        const formattedBrands = data.map((brand) => ({
-          value: brand.slug,
-          label: brand.slug ? brand.slug.charAt(0).toUpperCase() + brand.slug.slice(1) : "",
-        }));
-        setBrands(formattedBrands);
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError("An error occurred while fetching brands.");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = event.target;
+    const newSelectedBrands = checked
+      ? [...selectedBrands, value]
+      : selectedBrands.filter((brand) => brand !== value);
 
-    fetchBrands();
-  }, []);
+    onBrandChange(newSelectedBrands);
+  };
 
-  if (loading)
+  if (isLoading)
     return (
       <div>
         <Skeleton className="h-6 w-1/2 mb-3" animated />
@@ -53,16 +37,9 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
         </div>
       </div>
     );
-  if (error) return <div>{error}</div>;
 
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, checked } = event.target;
-    const newSelectedBrands = checked
-      ? [...selectedBrands, value]
-      : selectedBrands.filter((brand) => brand !== value);
-
-    onBrandChange(newSelectedBrands);
-  };
+  if (error) return <div>{error.message}</div>;
+  if (!brands) return null;
 
   return (
     <div className="mb-4">
@@ -70,14 +47,14 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
         {t("filters.brand.label")}
       </p>
       {brands.map((brand) => (
-        <div key={brand.value} className="flex items-center">
+        <div key={brand.slug} className="flex items-center">
           <Checkbox
-            data-testid={`checkbox-${brand.value}`}
+            data-testid={`checkbox-${brand.slug}`}
             name="brand"
-            value={brand.value}
-            checked={selectedBrands.includes(brand.value)}
+            value={brand.slug}
+            checked={selectedBrands.includes(brand.slug)}
             onChange={handleCheckboxChange}
-            label={brand.label}
+            label={brand.slug.charAt(0).toUpperCase() + brand.slug.slice(1)}
           />
         </div>
       ))}

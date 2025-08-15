@@ -1,53 +1,27 @@
-import { useState, useEffect } from "react";
-import { apiFetch } from "@/utils/api";
+"use client";
+
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import usePlatforms from "@/hooks/filters/usePlatforms";
 
 interface PlatformFilterProps {
   selectedPlatforms: number[];
   onPlatformChange: (selectedPlatforms: number[]) => void;
 }
 
-interface CachedData<T> {
-  timestamp: number;
-  data: T;
-}
-
-interface Platform {
-  id: number;
-  name: string;
-}
-
-interface ParentPlatform {
-  id: number;
-  name: string;
-  slug: string;
-  platforms: Platform[];
-}
-
-interface PlatformResponse {
-  count: number;
-  results: ParentPlatform[];
-}
-
-const PLATFORM_CACHE_KEY = "platformsData";
-const COLLAPSE_STATE_KEY = "platformCollapseState";
+const PLATFORM_GROUPS_COLLAPSE_KEY = "platformGroupsCollapse";
 
 const PlatformFilter = ({ selectedPlatforms, onPlatformChange }: PlatformFilterProps) => {
-  const [platformGroups, setPlatformGroups] = useState<ParentPlatform[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  // Inicializar o estado diretamente com o localStorage
+  const { data: platformsData, isLoading, error } = usePlatforms();
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = localStorage.getItem(COLLAPSE_STATE_KEY);
+        const saved = localStorage.getItem(PLATFORM_GROUPS_COLLAPSE_KEY);
         return saved ? JSON.parse(saved) : {};
-      } catch (e) {
-        console.error("Failed to parse collapse state", e);
+      } catch {
         return {};
       }
     }
@@ -60,50 +34,13 @@ const PlatformFilter = ({ selectedPlatforms, onPlatformChange }: PlatformFilterP
   const prioritySlugs = ["playstation", "xbox", "nintendo", "sega"];
 
   // Salvar estado de collapse no localStorage quando mudar
-  useEffect(() => {
-    localStorage.setItem(COLLAPSE_STATE_KEY, JSON.stringify(expandedGroups));
-  }, [expandedGroups]);
-
-  useEffect(() => {
-    const fetchPlatforms = async () => {
-      setLoading(true);
-      setError("");
-
-      const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000;
-      const now = Date.now();
-
-      // Verificar cache de dados
-      const cachedData = localStorage.getItem(PLATFORM_CACHE_KEY);
-
-      if (cachedData) {
-        const parsedCache: CachedData<PlatformResponse> = JSON.parse(cachedData);
-        if (now - parsedCache.timestamp < ONE_MONTH_MS) {
-          setPlatformGroups(parsedCache.data.results);
-          setLoading(false);
-          return;
-        }
-      }
-
-      try {
-        const data = await apiFetch<PlatformResponse>("/games/platforms");
-
-        // Atualizar cache
-        const cache: CachedData<PlatformResponse> = {
-          timestamp: now,
-          data: data,
-        };
-        localStorage.setItem(PLATFORM_CACHE_KEY, JSON.stringify(cache));
-
-        setPlatformGroups(data.results);
-      } catch (error: unknown) {
-        setError(error instanceof Error ? error.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPlatforms();
-  }, []);
+  const toggleGroup = (slug: string) => {
+    setExpandedGroups((prev) => {
+      const newState = { ...prev, [slug]: !prev[slug] };
+      localStorage.setItem(PLATFORM_GROUPS_COLLAPSE_KEY, JSON.stringify(newState));
+      return newState;
+    });
+  };
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
@@ -115,21 +52,15 @@ const PlatformFilter = ({ selectedPlatforms, onPlatformChange }: PlatformFilterP
     onPlatformChange(newSelectedPlatforms);
   };
 
-  const toggleGroup = (slug: string) => {
-    setExpandedGroups((prev) => ({
-      ...prev,
-      [slug]: !prev[slug],
-    }));
-  };
-
-  if (loading) return <PlatformSkeleton />;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <PlatformSkeleton />;
+  if (error) return <div>{error.message}</div>;
+  if (!platformsData) return null;
 
   // Separar grupos prioritários e outros
-  const priorityGroups = platformGroups.filter((group) => prioritySlugs.includes(group.slug));
-
-  // Juntar todas as plataformas de grupos não prioritários
-  const otherPlatforms = platformGroups
+  const priorityGroups = platformsData.results.filter((group) =>
+    prioritySlugs.includes(group.slug),
+  );
+  const otherPlatforms = platformsData.results
     .filter((group) => !prioritySlugs.includes(group.slug))
     .flatMap((group) => group.platforms)
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -142,9 +73,9 @@ const PlatformFilter = ({ selectedPlatforms, onPlatformChange }: PlatformFilterP
 
       {/* Grupos prioritários */}
       {priorityGroups.map((group) => (
-        <div key={group.slug} className="mb-2 border-b border-gray-200 dark:border-gray-800 pb-2 ">
+        <div key={group.slug} className="mb-2 border-b border-gray-200 dark:border-gray-800 pb-2">
           <button
-            className="flex items-center w-full text-left font-medium text-gray-800 dark:text-gray-200 "
+            className="flex items-center w-full text-left font-medium text-gray-800 dark:text-gray-200"
             onClick={() => toggleGroup(group.slug)}
             aria-expanded={!!expandedGroups[group.slug]}
           >
@@ -212,7 +143,6 @@ const PlatformFilter = ({ selectedPlatforms, onPlatformChange }: PlatformFilterP
   );
 };
 
-// Componente de Skeleton atualizado
 const PlatformSkeleton = () => (
   <div>
     <Skeleton className="h-6 w-1/2 mb-3" animated />
