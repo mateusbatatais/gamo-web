@@ -29,7 +29,7 @@ const useAddToCollectionFeedback = () => {
 
   const triggerFeedback = (skinId: number) => {
     setRecentlyAdded(skinId);
-    setTimeout(() => setRecentlyAdded(null), 2000); // Remove o feedback após 2 segundos
+    setTimeout(() => setRecentlyAdded(null), 2000);
   };
 
   return { recentlyAdded, triggerFeedback };

@@ -27,29 +27,24 @@ export default function GameDetailPage() {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const [isFavorite, setIsFavorite] = useState(false);
-  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
+  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
 
-  useEffect(() => {
-    if (data) {
-      setIsFavorite(data.isFavorite || false);
-    }
-  }, [data]);
+  const handleToggleFavorite = async () => {
+    if (!data) return;
+
+    try {
+      await toggleFavorite({
+        itemId: data.id,
+        itemType: "GAME",
+      });
+    } catch {}
+  };
 
   useEffect(() => {
     if (error) {
       notFound();
     }
   }, [error]);
-
-  const handleToggleFavorite = async () => {
-    if (!data) return;
-    const { added } = await toggleFavorite({
-      itemId: data.id,
-      itemType: "GAME",
-    });
-    setIsFavorite(added);
-  };
 
   const handleOpenGallery = (index: number) => {
     setSelectedImageIndex(index);
@@ -86,7 +81,7 @@ export default function GameDetailPage() {
               actions={[
                 {
                   key: "favorite",
-                  active: isFavorite,
+                  active: data.isFavorite,
                   onClick: handleToggleFavorite,
                 },
               ]}
