@@ -6,12 +6,12 @@ import { Select } from "@/components/atoms/Select/Select";
 import { Input } from "@/components/atoms/Input/Input";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { GameFormData } from "@/@types/userGame";
-import { UserConsoleUpdate } from "@/@types/userConsole";
+import { ConsoleFormData } from "@/@types/userConsole";
 
 interface TradeSectionProps {
   conditionOptions: { value: string; label: string }[];
   statusOptions: { value: string; label: string }[];
-  formData: GameFormData | UserConsoleUpdate;
+  formData: GameFormData | ConsoleFormData;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   t: (key: string) => string;
   showPrice?: boolean;

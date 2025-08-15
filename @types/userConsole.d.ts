@@ -26,3 +26,13 @@ export type UserConsoleInput = {
   photoMain?: string;
   photos?: string[];
 };
+
+export interface ConsoleFormData {
+  description: string;
+  status: Status;
+  price: string;
+  hasBox: boolean;
+  hasManual: boolean;
+  condition: Condition;
+  acceptsTrade: boolean;
+}
