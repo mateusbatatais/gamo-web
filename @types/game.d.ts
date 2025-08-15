@@ -58,10 +58,18 @@ export interface GameDetails {
 }
 
 export interface GameWithStats extends GameDetails {
-  beaten?: number;
-  dropped?: number;
-  owned?: number;
-  playing?: number;
+  series?: {
+    games: GameRelation[];
+    slug: string;
+  } | null;
+  children?: GameRelation[];
+  parents?: GameRelation[];
+  shortScreenshots?: string[];
+  isFavorite?: boolean;
+  owned?: boolean;
+  playing?: boolean;
+  beaten?: boolean;
+  dropped?: boolean;
 }
 
 export interface SeriesResponse {

@@ -1,83 +1,54 @@
+// src/hooks/useGameDetails.ts
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { GameDetails, GameWithStats, SeriesResponse } from "@/@types/game";
+import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
-import { apiFetch } from "@/utils/api";
-import { useState, useEffect } from "react";
-
-// Função para buscar série com cache
-const fetchCachedSeries = async (slug: string) => {
-  const ONE_MONTH = 30 * 24 * 60 * 60 * 1000; // 1 mês em ms
-
-  // Verificar cache válido
-  const cachedData = localStorage.getItem(slug);
-  if (cachedData) {
-    const { timestamp, data } = JSON.parse(cachedData);
-    if (Date.now() - timestamp < ONE_MONTH) {
-      return data;
-    }
-  }
-
-  // Buscar da API se cache inválido/inexistente
-  try {
-    const series = await apiFetch<SeriesResponse>(`/games/series/${slug}`);
-    localStorage.setItem(
-      slug,
-      JSON.stringify({
-        timestamp: Date.now(),
-        data: series,
-      }),
-    );
-    return series;
-  } catch (error) {
-    console.error("Failed to fetch series:", error);
-    return null;
-  }
-};
 
 export default function useGameDetails(slug: string) {
-  const [data, setData] = useState<GameWithStats | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const { token, initialized } = useAuth();
+  const { apiFetch } = useApiClient();
+  const { initialized } = useAuth();
 
-  useEffect(() => {
-    if (!initialized) return;
+  const gameQuery = useQuery({
+    queryKey: ["gameDetails", slug],
+    queryFn: async () => {
+      if (!slug) throw new Error("Slug is required");
+      return apiFetch<GameDetails>(`/games/${slug}`);
+    },
+    enabled: !!slug && initialized,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    retry: (failureCount, error) => {
+      if (error.message.includes("404")) return false;
+      return failureCount < 3;
+    },
+  });
 
-    if (!slug) {
-      setError("Slug is required");
-      setLoading(false);
-      return;
-    }
+  const seriesQuery = useQuery({
+    queryKey: ["gameSeries", gameQuery.data?.series?.slug],
+    queryFn: async () => {
+      const seriesSlug = gameQuery.data?.series?.slug;
+      if (!seriesSlug) return null;
+      return apiFetch<SeriesResponse>(`/games/series/${seriesSlug}`);
+    },
+    enabled: !!gameQuery.data?.series?.slug,
+    staleTime: 24 * 60 * 60 * 1000, // 1 dia para dados de série
+  });
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+  // Combine os dados quando ambos estiverem disponíveis
+  const combinedData: GameWithStats | undefined = gameQuery.data && {
+    ...gameQuery.data,
+    series: seriesQuery.data || null,
+  };
 
-        const gameData = await apiFetch<GameDetails>(`/games/${slug}`, { token });
-
-        // Buscar série se existir slug de série
-        let series: SeriesResponse | null = null;
-        if (gameData.series?.slug) {
-          series = await fetchCachedSeries(gameData.series.slug);
-        }
-
-        // Combinar dados
-        setData({
-          ...gameData,
-          series,
-        });
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [slug, initialized, token]);
-
-  return { data, loading, error };
+  return {
+    data: combinedData,
+    isLoading: gameQuery.isLoading || seriesQuery.isLoading,
+    isError: gameQuery.isError || seriesQuery.isError,
+    error: gameQuery.error || seriesQuery.error,
+    refetch: () => {
+      gameQuery.refetch();
+      seriesQuery.refetch();
+    },
+  };
 }
