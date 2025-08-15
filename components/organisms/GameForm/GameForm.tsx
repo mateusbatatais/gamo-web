@@ -1,4 +1,4 @@
-// components/organisms/GameForm/GameForm.tsx
+// src/components/organisms/GameForm/GameForm.tsx
 "use client";
 
 import React, { ChangeEvent, useState } from "react";
@@ -10,13 +10,11 @@ import { Select } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
-import { useAuth } from "@/contexts/AuthContext";
-import { apiFetch } from "@/utils/api";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
-
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 interface GameFormProps {
   mode: "create" | "edit";
   gameId: number;
@@ -40,10 +38,9 @@ interface GameFormProps {
   onSuccess: () => void;
   onCancel?: () => void;
 }
-
 export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: GameFormProps) => {
   const t = useTranslations("GameForm");
-  const { token } = useAuth();
+  const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
   const {
     photoMain,
@@ -51,8 +48,7 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
     currentCropImage,
     mainFileInputRef,
     additionalFileInputRef,
-    loading,
-    setLoading,
+    loading: uploadLoading,
     handleImageUpload,
     handleCropComplete,
     removeImage,
@@ -91,7 +87,6 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       const { mainPhotoUrl, additionalUrls } = await uploadImages();
@@ -115,23 +110,13 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
       };
 
       if (mode === "create") {
-        await apiFetch("/user-games", {
-          method: "POST",
-          token,
-          body: payload,
-        });
+        await createUserGame(payload);
       } else if (mode === "edit" && initialData?.id) {
-        await apiFetch(`/user-games/${initialData.id}`, {
-          method: "PUT",
-          token,
-          body: payload,
-        });
+        await updateUserGame({ id: initialData.id, data: payload });
       }
 
       onSuccess();
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   };
 
   const conditionOptions = [
@@ -278,9 +263,13 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
         <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
         <Button
           type="submit"
-          loading={loading}
+          loading={isPending || uploadLoading}
           label={
-            loading ? t("saving") : mode === "create" ? t("addToCollection") : t("saveChanges")
+            isPending || uploadLoading
+              ? t("saving")
+              : mode === "create"
+                ? t("addToCollection")
+                : t("saveChanges")
           }
         />
       </div>

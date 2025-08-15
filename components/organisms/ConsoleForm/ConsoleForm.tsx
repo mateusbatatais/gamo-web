@@ -1,4 +1,4 @@
-// components/organisms/ConsoleForm/ConsoleForm.tsx
+// src/components/organisms/ConsoleForm/ConsoleForm.tsx
 "use client";
 
 import React, { ChangeEvent, useState } from "react";
@@ -7,14 +7,11 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
-import { useAuth } from "@/contexts/AuthContext";
-import { apiFetch } from "@/utils/api";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
-import { UserConsoleInput, UserConsoleUpdate } from "@/@types/userConsole";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
-
+import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
 interface ConsoleFormProps {
   mode: "create" | "edit";
   consoleId: number;
@@ -46,7 +43,7 @@ export const ConsoleForm = ({
   onCancel,
 }: ConsoleFormProps) => {
   const t = useTranslations("ConsoleForm");
-  const { token } = useAuth();
+  const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
 
   const {
     photoMain,
@@ -54,8 +51,7 @@ export const ConsoleForm = ({
     currentCropImage,
     mainFileInputRef,
     additionalFileInputRef,
-    loading,
-    setLoading,
+    loading: uploadLoading,
     handleImageUpload,
     handleCropComplete,
     removeImage,
@@ -89,12 +85,11 @@ export const ConsoleForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
       const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
-      const payload: UserConsoleInput | UserConsoleUpdate = {
+      const payload = {
         consoleId,
         consoleVariantId,
         skinId: skinId || undefined,
@@ -110,22 +105,14 @@ export const ConsoleForm = ({
       };
 
       if (mode === "create") {
-        await apiFetch("/user-consoles", {
-          method: "POST",
-          token,
-          body: payload,
-        });
+        await createUserConsole(payload);
       } else if (mode === "edit" && initialData?.id) {
-        await apiFetch(`/user-consoles/${initialData.id}`, {
-          method: "PUT",
-          token,
-          body: payload,
-        });
+        await updateUserConsole({ id: initialData.id, data: payload });
       }
 
       onSuccess();
-    } finally {
-      setLoading(false);
+    } catch {
+      // O erro já é tratado no hook
     }
   };
 
@@ -140,7 +127,6 @@ export const ConsoleForm = ({
     { value: "SELLING", label: t("statusSelling") },
     { value: "LOOKING_FOR", label: t("statusLookingFor") },
   ];
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col gap-4">
@@ -208,9 +194,13 @@ export const ConsoleForm = ({
         <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
         <Button
           type="submit"
-          loading={loading}
+          loading={isPending || uploadLoading}
           label={
-            loading ? t("saving") : mode === "create" ? t("addToCollection") : t("saveChanges")
+            isPending || uploadLoading
+              ? t("saving")
+              : mode === "create"
+                ? t("addToCollection")
+                : t("saveChanges")
           }
         />
       </div>

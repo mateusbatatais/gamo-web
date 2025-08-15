@@ -1,15 +1,20 @@
-// hooks/useCollectionForm.ts
+// src/hooks/useCollectionForm.ts
 "use client";
 
 import { useState, useRef, ChangeEvent } from "react";
 import { useToast } from "@/contexts/ToastContext";
-import { useAuth } from "@/contexts/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import { useApiClient } from "@/lib/api-client";
+
+interface ConsoleRes {
+  url: string;
+}
 
 export const useCollectionForm = (initialPhotos: string[] = [], initialMainPhoto?: string) => {
-  const { token } = useAuth();
+  const { apiFetch } = useApiClient();
   const { showToast } = useToast();
 
-  // Estados para as imagens
+  // Estados para as imagens (mantidos igual)
   const [photoMain, setPhotoMain] = useState<{ url: string; blob: Blob | null } | null>(
     initialMainPhoto ? { url: initialMainPhoto, blob: null } : null,
   );
@@ -24,8 +29,26 @@ export const useCollectionForm = (initialPhotos: string[] = [], initialMainPhoto
 
   const mainFileInputRef = useRef<HTMLInputElement>(null);
   const additionalFileInputRef = useRef<HTMLInputElement>(null);
-  const [loading, setLoading] = useState(false);
 
+  const uploadMutation = useMutation({
+    mutationFn: async (blob: Blob) => {
+      const formData = new FormData();
+      formData.append("file", blob, `collection-${Date.now()}.jpg`);
+
+      // Remova o headers: {} pois o apiFetch já cuida disso
+      const response = await apiFetch<ConsoleRes>("/uploads/collection", {
+        method: "POST",
+        body: formData, // Isso será detectado como FormData
+      });
+
+      return response.url as string;
+    },
+    onError: (error: Error) => {
+      showToast(error.message || "Erro ao fazer upload da imagem", "danger");
+    },
+  });
+
+  // Funções mantidas, mas usando a mutation
   const handleImageUpload = async (
     e: ChangeEvent<HTMLInputElement>,
     type: "main" | "additional",
@@ -52,12 +75,11 @@ export const useCollectionForm = (initialPhotos: string[] = [], initialMainPhoto
       }
       setAdditionalPhotos((prev) => [...prev, ...newPhotos]);
     }
-    e.target.value = ""; // Reset input
+    e.target.value = "";
   };
 
   const handleCropComplete = (blob: Blob) => {
     if (!currentCropImage) return;
-
     const url = URL.createObjectURL(blob);
 
     if (currentCropImage.type === "main") {
@@ -67,7 +89,6 @@ export const useCollectionForm = (initialPhotos: string[] = [], initialMainPhoto
         prev.map((photo, index) => (index === currentCropImage.index ? { url, blob } : photo)),
       );
     }
-
     setCurrentCropImage(null);
   };
 
@@ -79,50 +100,20 @@ export const useCollectionForm = (initialPhotos: string[] = [], initialMainPhoto
     }
   };
 
-  const uploadToCloudinary = async (blob: Blob, type: "main" | "additional" = "additional") => {
-    try {
-      const formData = new FormData();
-      formData.append("file", blob, `${type}-${Date.now()}.jpg`);
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/uploads/collection`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message);
-      }
-
-      const data = await response.json();
-      return data.url;
-    } catch (error) {
-      showToast(
-        (error instanceof Error ? error.message : String(error)) || "Error uploading image",
-        "danger",
-      );
-      return null;
-    }
-  };
-
   const uploadImages = async () => {
-    // Upload da foto principal (se houver blob novo)
+    // Upload da foto principal
     let mainPhotoUrl = photoMain?.url || null;
     if (photoMain?.blob) {
-      mainPhotoUrl = await uploadToCloudinary(photoMain.blob, "main");
+      mainPhotoUrl = await uploadMutation.mutateAsync(photoMain.blob);
     }
 
     // Upload das fotos adicionais
     const additionalUrls: string[] = [];
     for (const photo of additionalPhotos) {
       if (photo.blob) {
-        const url = await uploadToCloudinary(photo.blob);
+        const url = await uploadMutation.mutateAsync(photo.blob);
         if (url) additionalUrls.push(url);
       } else {
-        // Se não tem blob, é porque já está salva (URL existente)
         additionalUrls.push(photo.url);
       }
     }
@@ -136,8 +127,7 @@ export const useCollectionForm = (initialPhotos: string[] = [], initialMainPhoto
     currentCropImage,
     mainFileInputRef,
     additionalFileInputRef,
-    loading,
-    setLoading,
+    loading: uploadMutation.isPending,
     handleImageUpload,
     handleCropComplete,
     removeImage,

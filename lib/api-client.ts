@@ -16,8 +16,8 @@ export function useApiClient() {
   const apiFetch = async <T>(path: string, opts?: ApiFetchOptions): Promise<T> => {
     const { method = "GET", body, headers: customHeaders = {}, token: customToken } = opts || {};
 
+    // Headers básicos (sem Content-Type por padrão)
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
       ...customHeaders,
     };
 
@@ -27,10 +27,24 @@ export function useApiClient() {
       headers["Authorization"] = `Bearer ${authToken}`;
     }
 
+    // Determina se o body é FormData
+    const isFormData = body instanceof FormData;
+
+    // Se não for FormData, adiciona Content-Type JSON
+    if (!isFormData && !headers["Content-Type"]) {
+      headers["Content-Type"] = "application/json";
+    }
+
+    // Prepara o corpo da requisição
+    let requestBody: BodyInit | null = null;
+    if (body != null) {
+      requestBody = isFormData ? (body as FormData) : JSON.stringify(body);
+    }
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api${path}`, {
       method,
       headers,
-      body: body != null ? JSON.stringify(body) : undefined,
+      body: requestBody,
       mode: "cors",
       credentials: "include",
     });
