@@ -1,3 +1,5 @@
+//userConsole.d.ts
+
 export type UserConsoleUpdate = {
   description?: string;
   status?: "OWNED" | "SELLING" | "LOOKING_FOR";
