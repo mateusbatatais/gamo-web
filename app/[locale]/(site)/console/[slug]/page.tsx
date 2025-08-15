@@ -7,7 +7,7 @@ import ConsoleInfo from "@/components/organisms/ConsoleInfo/ConsoleInfo";
 import SkinCard from "@/components/molecules/SkinCard/SkinCard";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import { ConsoleInfoSkeleton } from "@/components/organisms/ConsoleInfo/ConsoleInfo.skeleton";
 import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
@@ -22,32 +22,28 @@ export default function ConsoleDetailPage() {
   const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
 
   const t = useTranslations("ConsoleDetails");
-  const { data, loading, error } = useConsoleDetails(slug || "", locale || "pt");
+  const { data, isLoading, isError, error } = useConsoleDetails(slug || "", locale || "pt");
   const { showToast } = useToast();
   const { setItems } = useBreadcrumbs();
 
-  const [isFavorite, setIsFavorite] = useState(false);
-  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
+  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
 
   const handleToggleFavorite = async () => {
     if (!data) return;
-    const { added } = await toggleFavorite({
-      itemId: data.id,
-      itemType: "CONSOLE",
-    });
-    setIsFavorite(added);
+
+    try {
+      await toggleFavorite({
+        itemId: data.id,
+        itemType: "CONSOLE",
+      });
+    } catch {}
   };
 
   useEffect(() => {
-    if (data) {
-      setIsFavorite(data.isFavorite || false);
+    if (isError && error) {
+      showToast(error.message || t("notFound"), "danger");
     }
-  }, [data]);
-  useEffect(() => {
-    if (error) {
-      showToast(error || t("notFound"), "danger");
-    }
-  }, [error, t, showToast]);
+  }, [isError, error, t, showToast]);
 
   useEffect(() => {
     setItems([
@@ -62,7 +58,25 @@ export default function ConsoleDetailPage() {
     return () => setItems([]);
   }, [setItems, t, data]);
 
-  if (!loading && !data) {
+  if (isLoading) {
+    return (
+      <div className="container mx-auto max-w-6xl">
+        <ConsoleInfoSkeleton />
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
+            {t("availableSkins")}
+          </h2>
+          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+            {[...Array(4)].map((_, index) => (
+              <SkinCardSkeleton key={index} />
+            ))}
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (!isLoading && !data) {
     return (
       <div className="container mx-auto">
         <Card>
@@ -72,71 +86,59 @@ export default function ConsoleDetailPage() {
     );
   }
 
+  if (!data) return null;
+
   return (
     <div className="container mx-auto max-w-6xl">
-      {loading ? (
-        <ConsoleInfoSkeleton />
-      ) : data ? (
-        <div className="relative">
-          <div className="absolute top-4 right-4 z-10">
-            <CardActionButtons
-              loading={loading}
-              favoriteLoading={favoriteLoading}
-              actions={[
-                {
-                  key: "favorite",
-                  active: isFavorite,
-                  onClick: handleToggleFavorite,
-                },
-              ]}
-            />
-          </div>
-
-          <ConsoleInfo consoleVariant={data} />
+      <div className="relative">
+        <div className="absolute top-4 right-4 z-10">
+          <CardActionButtons
+            loading={isLoading}
+            favoriteLoading={favoriteLoading}
+            actions={[
+              {
+                key: "favorite",
+                active: data.isFavorite,
+                onClick: handleToggleFavorite,
+              },
+            ]}
+          />
         </div>
-      ) : null}
+
+        <ConsoleInfo consoleVariant={data} />
+      </div>
 
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
-          {t("availableSkins")} {!loading && data ? `(${data.skins.length})` : ""}
+          {t("availableSkins")} ({data.skins.length})
         </h2>
 
-        {loading ? (
-          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {[...Array(4)].map((_, index) => (
-              <SkinCardSkeleton key={index} />
+        {data.skins.length > 0 ? (
+          <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+            {data.skins.map((skin) => (
+              <SkinCard
+                key={skin.id}
+                skin={skin}
+                consoleId={data.consoleId}
+                consoleVariantId={data.id}
+              />
             ))}
           </div>
-        ) : data ? (
-          data.skins.length > 0 ? (
-            <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-              {data.skins.map((skin) => (
-                <SkinCard
-                  key={skin.id}
-                  skin={skin}
-                  consoleId={data.consoleId}
-                  consoleVariantId={data.id}
-                />
-              ))}
+        ) : (
+          <Card>
+            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
+              {t("noSkinsAvailable")}
             </div>
-          ) : (
-            <Card>
-              <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-                {t("noSkinsAvailable")}
-              </div>
-            </Card>
-          )
-        ) : null}
+          </Card>
+        )}
       </section>
 
-      {!loading && (
-        <Card className="bg-gray-50 dark:bg-gray-800">
-          <h2 className="text-2xl font-bold mb-4">Mercado</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Colocar itens desse modelo que estão a venda
-          </p>
-        </Card>
-      )}
+      <Card className="bg-gray-50 dark:bg-gray-800">
+        <h2 className="text-2xl font-bold mb-4">Mercado</h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Colocar itens desse modelo que estão a venda
+        </p>
+      </Card>
     </div>
   );
 }

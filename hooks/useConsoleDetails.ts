@@ -1,41 +1,30 @@
+// hooks/useConsoleDetails.ts
 "use client";
 
-// hooks/useConsoleDetails.ts
-import { useState, useEffect } from "react";
-import { apiFetch } from "@/utils/api";
+import { useQuery } from "@tanstack/react-query";
 import { ConsoleVariantDetail } from "@/@types/console";
+import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function useConsoleDetails(slug: string, locale: string) {
-  const [data, setData] = useState<ConsoleVariantDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { token, initialized } = useAuth();
+  const { apiFetch } = useApiClient();
+  const { initialized } = useAuth();
 
-  useEffect(() => {
-    if (!initialized) return;
-    if (!slug) return;
+  return useQuery<ConsoleVariantDetail, Error>({
+    queryKey: ["consoleDetails", slug, locale],
+    queryFn: async () => {
+      if (!slug || !initialized) throw new Error("Missing required parameters");
 
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const result = await apiFetch<ConsoleVariantDetail>(`/consoles/${slug}?locale=${locale}`, {
-          token,
-        });
-        setData(result);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An error occurred");
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [slug, locale, initialized, token]);
-
-  return { data, loading, error };
+      return apiFetch(`/consoles/${slug}?locale=${locale}`, {
+        // Não precisamos mais passar token explicitamente aqui
+        // pois o useApiClient já injeta o token do contexto
+      });
+    },
+    enabled: !!slug && initialized,
+    staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error) => {
+      if (error.message.includes("404")) return false;
+      return failureCount < 3;
+    },
+  });
 }
