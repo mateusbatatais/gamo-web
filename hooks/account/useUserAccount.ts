@@ -52,9 +52,6 @@ export function useAccount() {
       return apiFetch<{ url: string }>("/uploads/profile", {
         method: "POST",
         body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
       });
     },
   });
