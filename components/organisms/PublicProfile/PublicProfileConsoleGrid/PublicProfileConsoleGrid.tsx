@@ -1,24 +1,63 @@
 // components/organisms/PublicProfile/PublicProfileConsoleGrid/PublicProfileConsoleGrid.tsx
+"use client";
+
 import React from "react";
 import { useTranslations } from "next-intl";
-import { UserConsolePublic } from "@/@types/publicProfile";
-import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
 import { Card } from "@/components/atoms/Card/Card";
+import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
+import { useUserConsolesPublic } from "@/hooks/usePublicProfile";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 
 interface PublicProfileConsoleGridProps {
-  consoles: UserConsolePublic[];
+  slug: string;
+  locale: string;
   isOwner?: boolean;
-  revalidate: () => Promise<void>;
 }
 
+const queryClient = new QueryClient();
+
 export const PublicProfileConsoleGrid = ({
-  consoles,
+  slug,
+  locale,
   isOwner = false,
-  revalidate,
+}: PublicProfileConsoleGridProps) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PublicProfileConsoleGridContent slug={slug} locale={locale} isOwner={isOwner} />
+    </QueryClientProvider>
+  );
+};
+
+const PublicProfileConsoleGridContent = ({
+  slug,
+  locale,
+  isOwner,
 }: PublicProfileConsoleGridProps) => {
   const t = useTranslations("PublicProfile");
+  const { data: consoles, isLoading, error } = useUserConsolesPublic(slug, locale);
 
-  if (consoles.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-64 w-full rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <div className="text-center py-12">
+          <p className="text-gray-500 dark:text-gray-400">{t("errorLoading")}</p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (!consoles || consoles.length === 0) {
     return (
       <Card>
         <div className="text-center py-12">
@@ -36,7 +75,7 @@ export const PublicProfileConsoleGrid = ({
       acc[consoleItem.status].push(consoleItem);
       return acc;
     },
-    {} as Record<string, UserConsolePublic[]>,
+    {} as Record<string, typeof consoles>,
   );
 
   const ownedConsoles = groupedConsoles["OWNED"] || [];
@@ -51,8 +90,7 @@ export const PublicProfileConsoleGrid = ({
           <PublicProfileConsoleCard
             key={`owned-${consoleItem.id}`}
             consoleItem={consoleItem}
-            isOwner={isOwner}
-            revalidate={revalidate}
+            isOwner={isOwner || false}
           />
         ))}
       </div>
@@ -65,8 +103,7 @@ export const PublicProfileConsoleGrid = ({
           <PublicProfileConsoleCard
             key={`selling-${consoleItem.id}`}
             consoleItem={consoleItem}
-            isOwner={isOwner}
-            revalidate={revalidate}
+            isOwner={isOwner || false}
           />
         ))}
       </div>
@@ -78,8 +115,7 @@ export const PublicProfileConsoleGrid = ({
           <PublicProfileConsoleCard
             key={`lookingfor-${consoleItem.id}`}
             consoleItem={consoleItem}
-            isOwner={isOwner}
-            revalidate={revalidate}
+            isOwner={isOwner || false}
           />
         ))}
       </div>

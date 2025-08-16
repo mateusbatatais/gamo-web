@@ -9,44 +9,27 @@ import { ConsoleStatus, UserConsolePublic } from "@/@types/publicProfile";
 import { Card } from "@/components/atoms/Card/Card";
 import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/contexts/ToastContext";
-import { apiFetch } from "@/utils/api";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { ConsoleForm } from "../../ConsoleForm/ConsoleForm";
+import { useQueryClient } from "@tanstack/react-query";
+import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 
 export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
-  revalidate,
 }: {
   consoleItem: UserConsolePublic & { status: ConsoleStatus["Status"] };
   isOwner: boolean;
-  revalidate: () => Promise<void>;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { token } = useAuth();
-  const { showToast } = useToast();
+  const queryClient = useQueryClient();
+  const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
 
-  const handleDelete = async () => {
-    setLoading(true);
-    try {
-      await apiFetch(`/user-consoles/${consoleItem.id}`, {
-        method: "DELETE",
-        token,
-      });
-      await revalidate();
-      showToast(t("deleteSuccess"), "success");
-    } catch {
-      showToast(t("deleteError"), "danger");
-    } finally {
-      setLoading(false);
-      setShowDeleteModal(false);
-    }
+  const handleDelete = () => {
+    deleteConsole(consoleItem.id);
   };
 
   return (
@@ -60,15 +43,15 @@ export const PublicProfileConsoleCard = ({
               icon={<Pencil size={16} />}
               variant="transparent"
               size="sm"
-            ></Button>
+            />
             <Button
               onClick={() => setShowDeleteModal(true)}
-              disabled={loading}
+              disabled={isPending}
               variant="transparent"
               aria-label={t("deleteItem")}
               icon={<Trash size={16} />}
               size="sm"
-            ></Button>
+            />
           </div>
         )}
 
@@ -164,9 +147,11 @@ export const PublicProfileConsoleCard = ({
             photoMain: consoleItem.photoMain,
             photos: consoleItem.photos,
           }}
-          onSuccess={async () => {
+          onSuccess={() => {
             setShowEditModal(false);
-            await revalidate();
+            queryClient.invalidateQueries({
+              queryKey: ["userConsolesPublic", consoleItem.user.slug],
+            });
           }}
           onCancel={() => setShowEditModal(false)}
         />
@@ -180,6 +165,7 @@ export const PublicProfileConsoleCard = ({
         message={t("deleteMessage")}
         confirmText={t("deleteConfirm")}
         cancelText={t("cancel")}
+        isLoading={isPending}
       />
     </>
   );

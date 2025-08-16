@@ -11,6 +11,7 @@ interface ConfirmationModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
+  isLoading?: boolean;
 }
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -21,6 +22,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   message,
   confirmText = "Confirmar",
   cancelText = "Cancelar",
+  isLoading,
 }) => {
   return (
     <Dialog open={isOpen} onClose={onClose} title={title}>
@@ -30,7 +32,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <Button variant="transparent" onClick={onClose}>
             {cancelText}
           </Button>
-          <Button status="danger" onClick={onConfirm}>
+          <Button status="danger" onClick={onConfirm} loading={isLoading}>
             {confirmText}
           </Button>
         </div>

@@ -9,44 +9,29 @@ import { UserGamePublic } from "@/@types/publicProfile";
 import { Card } from "@/components/atoms/Card/Card";
 import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/contexts/ToastContext";
-import { apiFetch } from "@/utils/api";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { GameForm } from "@/components/organisms/GameForm/GameForm";
+import { useDeleteUserGame } from "@/hooks/usePublicProfile";
 
 export const PublicProfileGameCard = ({
   game,
   isOwner,
-  revalidate,
+  slug,
 }: {
   game: UserGamePublic;
   isOwner: boolean;
-  revalidate: () => Promise<void>;
+  slug: string;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const { token } = useAuth();
-  const { showToast } = useToast();
+  const { mutate: deleteGame, isPending } = useDeleteUserGame();
 
-  const handleDelete = async () => {
-    setLoading(true);
-    try {
-      await apiFetch(`/user-games/${game.id}`, {
-        method: "DELETE",
-        token,
-      });
-      await revalidate();
-      showToast(t("deleteSuccess"), "success");
-    } catch {
-      showToast(t("deleteError"), "danger");
-    } finally {
-      setLoading(false);
-      setShowDeleteModal(false);
-    }
+  const handleDelete = () => {
+    deleteGame(game.id, {
+      context: { slug },
+    });
   };
 
   return (
@@ -60,15 +45,15 @@ export const PublicProfileGameCard = ({
               icon={<Pencil size={16} />}
               variant="transparent"
               size="sm"
-            ></Button>
+            />
             <Button
               onClick={() => setShowDeleteModal(true)}
-              disabled={loading}
+              disabled={isPending}
               variant="transparent"
               aria-label={t("deleteItem")}
               icon={<Trash size={16} />}
               size="sm"
-            ></Button>
+            />
           </div>
         )}
 
@@ -178,9 +163,9 @@ export const PublicProfileGameCard = ({
             abandoned: game.abandoned || false,
             media: game.media,
           }}
-          onSuccess={async () => {
+          onSuccess={() => {
             setShowEditModal(false);
-            await revalidate();
+            // A invalidação é tratada pelo próprio GameForm
           }}
           onCancel={() => setShowEditModal(false)}
         />
@@ -194,6 +179,7 @@ export const PublicProfileGameCard = ({
         message={t("deleteMessage")}
         confirmText={t("deleteConfirm")}
         cancelText={t("cancel")}
+        isLoading={isPending}
       />
     </>
   );
