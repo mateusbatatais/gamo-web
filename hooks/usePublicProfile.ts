@@ -3,13 +3,14 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
-import { PublicUserProfile, UserConsolePublic, UserGamePublic } from "@/@types/publicProfile";
 import { useToast } from "@/contexts/ToastContext";
+import { UserConsole, UserGame } from "@/@types/collection.types";
+import { UserProfile } from "@/@types/auth.types";
 
 export function usePublicProfile(slug: string, locale: string) {
   const { apiFetch } = useApiClient();
 
-  return useQuery<PublicUserProfile>({
+  return useQuery<UserProfile>({
     queryKey: ["publicProfile", slug, locale],
     queryFn: () => apiFetch(`/public/profile/${slug}?locale=${locale}`),
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -19,7 +20,7 @@ export function usePublicProfile(slug: string, locale: string) {
 export function useUserConsolesPublic(slug: string, locale: string) {
   const { apiFetch } = useApiClient();
 
-  return useQuery<UserConsolePublic[]>({
+  return useQuery<UserConsole[]>({
     queryKey: ["userConsolesPublic", slug, locale],
     queryFn: () => apiFetch(`/public/profile/${slug}/consoles?locale=${locale}`),
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -29,7 +30,7 @@ export function useUserConsolesPublic(slug: string, locale: string) {
 export function useUserGamesPublic(slug: string, locale: string) {
   const { apiFetch } = useApiClient();
 
-  return useQuery<UserGamePublic[]>({
+  return useQuery<UserGame[]>({
     queryKey: ["userGamesPublic", slug, locale],
     queryFn: () => apiFetch(`/public/profile/${slug}/games?locale=${locale}`),
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -48,10 +49,10 @@ export function useDeleteUserGame() {
       await queryClient.cancelQueries({ queryKey: ["userGamesPublic"] });
 
       // Snapshot do valor anterior
-      const previousGames = queryClient.getQueryData<UserGamePublic[]>(["userGamesPublic"]);
+      const previousGames = queryClient.getQueryData<UserGame[]>(["userGamesPublic"]);
 
       // Remove o item otimisticamente
-      queryClient.setQueryData<UserGamePublic[]>(
+      queryClient.setQueryData<UserGame[]>(
         ["userGamesPublic"],
         (old) => old?.filter((game) => game.id !== id) || [],
       );
@@ -86,11 +87,9 @@ export function useDeleteUserConsole() {
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: ["userConsolesPublic"] });
 
-      const previousConsoles = queryClient.getQueryData<UserConsolePublic[]>([
-        "userConsolesPublic",
-      ]);
+      const previousConsoles = queryClient.getQueryData<UserConsole[]>(["userConsolesPublic"]);
 
-      queryClient.setQueryData<UserConsolePublic[]>(
+      queryClient.setQueryData<UserConsole[]>(
         ["userConsolesPublic"],
         (old) => old?.filter((console) => console.id !== id) || [],
       );

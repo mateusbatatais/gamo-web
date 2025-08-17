@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
-import { FieldError } from "@/@types/forms";
 import { SuccessCard } from "@/components/molecules/SuccessCard/SuccessCard";
 import { useResetPassword } from "@/hooks/auth/useResetPassword";
+import { FieldError } from "@/@types/form.types";
 
 export default function ResetPasswordPage() {
   const t = useTranslations();

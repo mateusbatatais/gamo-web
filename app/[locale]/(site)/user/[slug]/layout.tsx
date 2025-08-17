@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import { ProfileBio } from "@/components/organisms/PublicProfile/ProfileBio/ProfileBio";
 import { FavoriteItem } from "@/components/organisms/PublicProfile/FavoriteItem/FavoriteItem";
 import { FavoriteGames } from "@/components/organisms/PublicProfile/FavoriteGames/FavoriteGames";
+//import { getTranslations } from "next-intl/server";
 import { fetchPublicProfile } from "./publicProfileService";
 
 interface PublicProfileLayoutProps {
@@ -77,3 +78,44 @@ export default async function PublicProfileLayout({ children, params }: PublicPr
     notFound();
   }
 }
+
+// export async function generateMetadata({ params }: PublicProfileLayoutProps) {
+//   const { slug, locale } = await params;
+
+//   try {
+//     const profile = await fetchPublicProfile(slug, locale);
+//     const t = await getTranslations({ locale, namespace: "common" });
+
+//     const userPhoto = profile.profileImage;
+//     const userName = profile.name || slug;
+
+//     return {
+//       title: `${userName} - ${t("siteName")}`,
+//       description: profile.description || t("siteDescription"),
+//       openGraph: {
+//         title: `${userName} - ${t("siteName")}`,
+//         description: profile.description || t("siteDescription"),
+//         url: `https://gamo.games/${locale}/user/${slug}`,
+//         images: [
+//           {
+//             url: userPhoto,
+//             width: 800,
+//             height: 600,
+//             alt: `Foto de perfil de ${userName}`,
+//           },
+//         ],
+//       },
+//       twitter: {
+//         card: "summary_large_image",
+//         title: `${userName} - ${t("siteName")}`,
+//         description: profile.description || t("siteDescription"),
+//         images: userPhoto,
+//       },
+//     };
+//   } catch {
+//     return {
+//       title: "Perfil de Usuário",
+//       description: "Perfil de usuário na plataforma Gamo Games",
+//     };
+//   }
+// }

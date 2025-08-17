@@ -7,8 +7,8 @@ import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
 import { useToast } from "@/contexts/ToastContext";
-import { FieldError } from "@/@types/forms";
 import { useLogin } from "@/hooks/auth/useLogin";
+import { FieldError } from "@/@types/form.types";
 
 export default function LoginPage() {
   const searchParams = useSearchParams();

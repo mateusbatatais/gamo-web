@@ -7,7 +7,7 @@ import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useRouter } from "next/navigation";
 import { useApiClient } from "@/lib/api-client";
-import { FavoriteInput } from "@/@types/favorite";
+import { FavoriteInput } from "@/@types/interaction.types";
 
 interface FavoriteData {
   isFavorite: boolean;

@@ -1,7 +1,7 @@
 // components/organisms/PublicProfile/PublicProfileHeader/PublicProfileHeader.tsx
 import React from "react";
 import { Avatar } from "@/components/atoms/Avatar/Avatar";
-import { PublicUserProfile } from "@/@types/publicProfile";
+import { PublicUserProfile } from "@/@types/auth.types";
 import { Button } from "@/components/atoms/Button/Button";
 import Link from "next/link";
 

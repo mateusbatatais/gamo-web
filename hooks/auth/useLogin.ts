@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { useApiClient } from "@/lib/api-client";
-import { FieldError } from "@/@types/forms";
+import { FieldError } from "@/@types/form.types";
 
 interface LoginCredentials {
   email: string;

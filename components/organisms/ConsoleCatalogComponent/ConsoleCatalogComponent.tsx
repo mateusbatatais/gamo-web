@@ -16,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useConsoles } from "@/hooks/useConsoles";
+import { ConsoleVariant } from "@/@types/catalog.types";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -45,7 +46,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     data: consoleVariants,
     isLoading,
     error,
-    isPreviousData,
+    isPlaceholderData,
   } = useConsoles({
     locale,
     page,
@@ -170,7 +171,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     return () => setItems([]);
   }, [setItems, t]);
 
-  if (isLoading && !isPreviousData) {
+  if (isLoading && !isPlaceholderData) {
     return (
       <div className="flex flex-col lg:flex-row">
         {/* Skeleton para filtros */}
@@ -323,7 +324,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
                   : "flex flex-col space-y-6"
               }
             >
-              {consoleVariants.items.map((variant) => (
+              {consoleVariants.items.map((variant: ConsoleVariant) => (
                 <ConsoleCard
                   key={variant.id}
                   name={variant.name}

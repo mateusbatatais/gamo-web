@@ -53,7 +53,7 @@ const ConsoleCard = ({
 }: ConsoleCardProps) => {
   const [imageError, setImageError] = useState(false);
   const t = useTranslations("");
-  const { toggleFavorite, loading: favoriteLoading } = useFavorite();
+  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
 
   if (loading) {
     return <ConsoleCardSkeleton />;

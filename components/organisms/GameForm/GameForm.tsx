@@ -88,35 +88,33 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const { mainPhotoUrl, additionalUrls } = await uploadImages();
+    const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
-      const payload = {
-        gameId,
-        media: formData.media,
-        description: formData.description || undefined,
-        status: formData.status,
-        price: formData.price ? parseFloat(formData.price) : undefined,
-        hasBox: formData.hasBox,
-        hasManual: formData.hasManual,
-        condition: formData.condition,
-        acceptsTrade: formData.acceptsTrade,
-        photoMain: mainPhotoUrl || undefined,
-        photos: additionalUrls,
-        progress: formData.progress ? parseFloat(formData.progress) : undefined,
-        rating: formData.rating ? parseFloat(formData.rating) : undefined,
-        review: formData.review || undefined,
-        abandoned: formData.abandoned,
-      };
+    const payload = {
+      gameId,
+      media: formData.media,
+      description: formData.description || undefined,
+      status: formData.status,
+      price: formData.price ? parseFloat(formData.price) : undefined,
+      hasBox: formData.hasBox,
+      hasManual: formData.hasManual,
+      condition: formData.condition,
+      acceptsTrade: formData.acceptsTrade,
+      photoMain: mainPhotoUrl || undefined,
+      photos: additionalUrls,
+      progress: formData.progress ? parseFloat(formData.progress) : undefined,
+      rating: formData.rating ? parseFloat(formData.rating) : undefined,
+      review: formData.review || undefined,
+      abandoned: formData.abandoned,
+    };
 
-      if (mode === "create") {
-        await createUserGame(payload);
-      } else if (mode === "edit" && initialData?.id) {
-        await updateUserGame({ id: initialData.id, data: payload });
-      }
+    if (mode === "create") {
+      await createUserGame(payload);
+    } else if (mode === "edit" && initialData?.id) {
+      await updateUserGame({ id: initialData.id, data: payload });
+    }
 
-      onSuccess();
-    } catch {}
+    onSuccess();
   };
 
   const conditionOptions = [

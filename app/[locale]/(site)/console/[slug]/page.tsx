@@ -15,6 +15,7 @@ import { Joystick } from "lucide-react";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useFavorite } from "@/hooks/useFavorite";
 import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
+import { SkinDetail } from "@/@types/catalog.types";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -115,7 +116,7 @@ export default function ConsoleDetailPage() {
 
         {data.skins.length > 0 ? (
           <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {data.skins.map((skin) => (
+            {data.skins.map((skin: SkinDetail) => (
               <SkinCard
                 key={skin.id}
                 skin={skin}

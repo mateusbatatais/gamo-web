@@ -2,9 +2,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { GameDetails, GameWithStats, SeriesResponse } from "@/@types/game";
 import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
+import { Game, GameWithStats } from "@/@types/catalog.types";
+
+interface SeriesResponse {
+  games: Game[];
+  slug?: string;
+  name?: string;
+}
 
 export default function useGameDetails(slug: string) {
   const { apiFetch } = useApiClient();
@@ -14,7 +20,7 @@ export default function useGameDetails(slug: string) {
     queryKey: ["gameDetails", slug],
     queryFn: async () => {
       if (!slug) throw new Error("Slug is required");
-      return apiFetch<GameDetails>(`/games/${slug}`);
+      return apiFetch<GameWithStats>(`/games/${slug}`);
     },
     enabled: !!slug && initialized,
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -35,8 +41,7 @@ export default function useGameDetails(slug: string) {
     staleTime: 24 * 60 * 60 * 1000, // 1 dia para dados de série
   });
 
-  // Combine os dados quando ambos estiverem disponíveis
-  const combinedData: GameWithStats | undefined = gameQuery.data && {
+  const combinedData = gameQuery.data && {
     ...gameQuery.data,
     series: seriesQuery.data || null,
   };

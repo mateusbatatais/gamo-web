@@ -4,7 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
-import { ConsoleVariantsResponse } from "@/@types/console";
+import { ConsoleVariant, PaginatedResponse } from "@/@types/catalog.types";
 
 interface UseConsolesOptions {
   locale: string;
@@ -28,7 +28,7 @@ export function useConsoles({
   const { apiFetch } = useApiClient();
   const { initialized } = useAuth();
 
-  return useQuery<ConsoleVariantsResponse, Error>({
+  return useQuery<PaginatedResponse<ConsoleVariant>, Error>({
     queryKey: [
       "consoles",
       locale,

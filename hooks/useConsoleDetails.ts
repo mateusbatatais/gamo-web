@@ -2,15 +2,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ConsoleVariantDetail } from "@/@types/console";
 import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
+import { ConsoleVariant } from "@/@types/catalog.types";
 
 export default function useConsoleDetails(slug: string, locale: string) {
   const { apiFetch } = useApiClient();
   const { initialized } = useAuth();
 
-  return useQuery<ConsoleVariantDetail, Error>({
+  return useQuery<ConsoleVariant, Error>({
     queryKey: ["consoleDetails", slug, locale],
     queryFn: async () => {
       if (!slug || !initialized) throw new Error("Missing required parameters");

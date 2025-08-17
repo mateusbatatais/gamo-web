@@ -4,7 +4,7 @@
 import React from "react";
 import { Input } from "@/components/atoms/Input/Input";
 import { Button } from "@/components/atoms/Button/Button";
-import { FieldError } from "@/@types/forms";
+import { FieldError } from "@/@types/form.types";
 
 interface FieldConfig {
   name: string;

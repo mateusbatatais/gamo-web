@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
-import { ConsoleStatus, UserConsolePublic } from "@/@types/publicProfile";
 import { Card } from "@/components/atoms/Card/Card";
 import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
@@ -14,12 +13,13 @@ import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { ConsoleForm } from "../../ConsoleForm/ConsoleForm";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
+import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 
 export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
 }: {
-  consoleItem: UserConsolePublic & { status: ConsoleStatus["Status"] };
+  consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
 }) => {
   const t = useTranslations("PublicProfile");
@@ -29,7 +29,7 @@ export const PublicProfileConsoleCard = ({
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
 
   const handleDelete = () => {
-    deleteConsole(consoleItem.id);
+    deleteConsole(consoleItem.id || 0);
   };
 
   return (
@@ -150,7 +150,7 @@ export const PublicProfileConsoleCard = ({
           onSuccess={() => {
             setShowEditModal(false);
             queryClient.invalidateQueries({
-              queryKey: ["userConsolesPublic", consoleItem.user.slug],
+              queryKey: ["userConsolesPublic", consoleItem.user?.slug],
             });
           }}
           onCancel={() => setShowEditModal(false)}

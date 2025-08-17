@@ -4,8 +4,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
-import { UserConsoleInput, UserConsoleUpdate } from "@/@types/userConsole";
 import { useRouter } from "next/navigation";
+import { UserConsole } from "@/@types/collection.types";
 
 export function useUserConsoleMutation() {
   const { apiFetch } = useApiClient();
@@ -13,7 +13,7 @@ export function useUserConsoleMutation() {
   const router = useRouter();
 
   const createMutation = useMutation({
-    mutationFn: async (data: UserConsoleInput) => {
+    mutationFn: async (data: UserConsole) => {
       return apiFetch("/user-consoles", {
         method: "POST",
         body: data,
@@ -29,7 +29,7 @@ export function useUserConsoleMutation() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: UserConsoleUpdate }) => {
+    mutationFn: async ({ id, data }: { id: number; data: UserConsole }) => {
       return apiFetch(`/user-consoles/${id}`, {
         method: "PUT",
         body: data,

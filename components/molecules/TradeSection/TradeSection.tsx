@@ -5,13 +5,12 @@ import React from "react";
 import { Select } from "@/components/atoms/Select/Select";
 import { Input } from "@/components/atoms/Input/Input";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
-import { GameFormData } from "@/@types/userGame";
-import { ConsoleFormData } from "@/@types/userConsole";
+import { CollectionFormData } from "@/@types/form.types";
 
 interface TradeSectionProps {
   conditionOptions: { value: string; label: string }[];
   statusOptions: { value: string; label: string }[];
-  formData: GameFormData | ConsoleFormData;
+  formData: CollectionFormData;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   t: (key: string) => string;
   showPrice?: boolean;

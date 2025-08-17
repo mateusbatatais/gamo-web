@@ -3,12 +3,32 @@ import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import Toast from "./Toast";
 import { describe, it, expect, vi } from "vitest";
+import { NextIntlClientProvider } from "next-intl";
 
 vi.useFakeTimers();
 
+const renderWithIntl = (ui: React.ReactElement) => {
+  const result = render(
+    <NextIntlClientProvider locale="pt" messages={{}}>
+      {ui}
+    </NextIntlClientProvider>,
+  );
+  return {
+    ...result,
+    rerender: (ui: React.ReactElement) =>
+      result.rerender(
+        <NextIntlClientProvider locale="pt" messages={{}}>
+          {ui}
+        </NextIntlClientProvider>,
+      ),
+  };
+};
+
 describe("Toast component", () => {
   it("deve exibir a mensagem correta e classes de estilo para cada tipo", () => {
-    const { rerender } = render(<Toast type="success" message="Tudo certo!" onClose={() => {}} />);
+    const { rerender } = renderWithIntl(
+      <Toast type="success" message="Tudo certo!" onClose={() => {}} />,
+    );
     const container = screen.getByTestId("toast-container");
 
     // Mensagem
@@ -25,7 +45,7 @@ describe("Toast component", () => {
 
   it("chama onClose ao clicar no botão de fechar", () => {
     const handleClose = vi.fn();
-    render(<Toast type="info" message="Informação" onClose={handleClose} />);
+    renderWithIntl(<Toast type="info" message="Informação" onClose={handleClose} />);
 
     const closeButton = screen.getByTestId("toast-close-button");
     fireEvent.click(closeButton);
@@ -34,7 +54,9 @@ describe("Toast component", () => {
 
   it("fecha automaticamente após durationMs", () => {
     const handleClose = vi.fn();
-    render(<Toast type="warning" message="Aviso" durationMs={2000} onClose={handleClose} />);
+    renderWithIntl(
+      <Toast type="warning" message="Aviso" durationMs={2000} onClose={handleClose} />,
+    );
 
     // Avança o timer em 2000ms
     act(() => {
@@ -46,7 +68,7 @@ describe("Toast component", () => {
 
   it("não fecha automaticamente se durationMs for 0", () => {
     const handleClose = vi.fn();
-    render(<Toast type="warning" message="Aviso" durationMs={0} onClose={handleClose} />);
+    renderWithIntl(<Toast type="warning" message="Aviso" durationMs={0} onClose={handleClose} />);
 
     act(() => {
       vi.advanceTimersByTime(5000);

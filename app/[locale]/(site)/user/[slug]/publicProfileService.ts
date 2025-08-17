@@ -1,5 +1,6 @@
 // src/services/publicProfileService.ts
-import { PublicUserProfile } from "@/@types/publicProfile";
+
+import { PublicUserProfile } from "@/@types/auth.types";
 
 export async function fetchPublicProfile(slug: string, locale: string): Promise<PublicUserProfile> {
   const res = await fetch(

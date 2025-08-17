@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import Link from "next/link";
-import { FieldError } from "@/@types/forms";
 import { SuccessCard } from "@/components/molecules/SuccessCard/SuccessCard";
 import { useRecoverPassword } from "@/hooks/auth/useRecoverPassword";
+import { FieldError } from "@/@types/form.types";
 
 export default function RecoverPage() {
   const t = useTranslations();

@@ -86,34 +86,30 @@ export const ConsoleForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const { mainPhotoUrl, additionalUrls } = await uploadImages();
+    const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
-      const payload = {
-        consoleId,
-        consoleVariantId,
-        skinId: skinId || undefined,
-        description: formData.description || undefined,
-        status: formData.status,
-        price: formData.price ? parseFloat(formData.price) : undefined,
-        hasBox: formData.hasBox,
-        hasManual: formData.hasManual,
-        condition: formData.condition,
-        acceptsTrade: formData.acceptsTrade,
-        photoMain: mainPhotoUrl || undefined,
-        photos: additionalUrls,
-      };
+    const payload = {
+      consoleId,
+      consoleVariantId,
+      skinId: skinId || undefined,
+      description: formData.description || undefined,
+      status: formData.status,
+      price: formData.price ? parseFloat(formData.price) : undefined,
+      hasBox: formData.hasBox,
+      hasManual: formData.hasManual,
+      condition: formData.condition,
+      acceptsTrade: formData.acceptsTrade,
+      photoMain: mainPhotoUrl || undefined,
+      photos: additionalUrls,
+    };
 
-      if (mode === "create") {
-        await createUserConsole(payload);
-      } else if (mode === "edit" && initialData?.id) {
-        await updateUserConsole({ id: initialData.id, data: payload });
-      }
-
-      onSuccess();
-    } catch {
-      // O erro já é tratado no hook
+    if (mode === "create") {
+      await createUserConsole(payload);
+    } else if (mode === "edit" && initialData?.id) {
+      await updateUserConsole({ id: initialData.id, data: payload });
     }
+
+    onSuccess();
   };
 
   const conditionOptions = [

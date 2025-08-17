@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
 import { useRouter } from "next/navigation";
-import { UserGameInput, UserGameUpdate } from "@/@types/userGame";
+import { UserGame } from "@/@types/collection.types";
 
 export function useUserGameMutation() {
   const { apiFetch } = useApiClient();
@@ -13,7 +13,7 @@ export function useUserGameMutation() {
   const router = useRouter();
 
   const createMutation = useMutation({
-    mutationFn: async (data: UserGameInput) => {
+    mutationFn: async (data: UserGame) => {
       return apiFetch("/user-games", {
         method: "POST",
         body: data,
@@ -29,7 +29,7 @@ export function useUserGameMutation() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: UserGameUpdate }) => {
+    mutationFn: async ({ id, data }: { id: number; data: UserGame }) => {
       return apiFetch(`/user-games/${id}`, {
         method: "PUT",
         body: data,

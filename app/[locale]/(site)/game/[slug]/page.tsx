@@ -15,6 +15,7 @@ import { Gamepad } from "lucide-react";
 import { useFavorite } from "@/hooks/useFavorite";
 import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 import useGameDetails from "@/hooks/useGameDetails";
+import { Game } from "@/@types/catalog.types";
 
 export default function GameDetailPage() {
   const params = useParams();
@@ -118,7 +119,7 @@ export default function GameDetailPage() {
               {t("screenshots")} ({screenshots.length})
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {screenshots.map((screenshot, index) => (
+              {screenshots.map((screenshot: string, index: number) => (
                 <button
                   type="button"
                   key={index}
@@ -156,7 +157,7 @@ export default function GameDetailPage() {
             {t("series")} ({seriesGames.length})
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {seriesGames.map((game) => (
+            {seriesGames.map((game: Game) => (
               <RelationCard key={game.id} game={game} />
             ))}
           </div>
@@ -169,7 +170,7 @@ export default function GameDetailPage() {
             {t("additions")} ({childrenGames.length})
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {childrenGames.map((game) => (
+            {childrenGames.map((game: Game) => (
               <RelationCard key={game.id} game={game} />
             ))}
           </div>
@@ -182,7 +183,7 @@ export default function GameDetailPage() {
             {t("parents")} ({parentGames.length})
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {parentGames.map((game) => (
+            {parentGames.map((game: Game) => (
               <RelationCard key={game.id} game={game} />
             ))}
           </div>
@@ -193,19 +194,19 @@ export default function GameDetailPage() {
         <h2 className="text-2xl font-bold mb-4">{t("stats")}</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
-            <p className="text-3xl font-bold">{data.owned || 0}</p>
+            <p className="text-3xl font-bold">{0}</p>
             <p>{t("owned")}</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold">{data.playing || 0}</p>
+            <p className="text-3xl font-bold">{0}</p>
             <p>{t("playing")}</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold">{data.beaten || 0}</p>
+            <p className="text-3xl font-bold">{0}</p>
             <p>{t("beaten")}</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold">{data.dropped || 0}</p>
+            <p className="text-3xl font-bold">{0}</p>
             <p>{t("dropped")}</p>
           </div>
         </div>

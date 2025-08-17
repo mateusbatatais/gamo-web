@@ -4,10 +4,10 @@ import Image from "next/image";
 import { Card } from "@/components/atoms/Card/Card";
 import { Gamepad } from "lucide-react";
 import Link from "next/link";
-import { MinimalGame } from "@/@types/game";
+import { Game } from "@/@types/catalog.types";
 
 interface RelationCardProps {
-  game: MinimalGame;
+  game: Game;
 }
 
 export function RelationCard({ game }: RelationCardProps) {

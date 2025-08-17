@@ -16,6 +16,7 @@ import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useGames } from "@/hooks/useGames";
+import { Game } from "@/@types/catalog.types";
 
 interface GameCatalogComponentProps {
   page: number;
@@ -56,7 +57,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     data: games,
     isLoading,
     error,
-    isPreviousData,
+    isPlaceholderData,
   } = useGames({
     page,
     perPage,
@@ -167,7 +168,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
     return () => setItems([]);
   }, [setItems, t]);
 
-  if (isLoading && !isPreviousData) {
+  if (isLoading && !isPlaceholderData) {
     return (
       <div className="flex flex-col lg:flex-row">
         {/* Skeleton para filtros */}
@@ -322,7 +323,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
                   : "flex flex-col space-y-6",
               )}
             >
-              {games.items.map((game) => (
+              {games.items.map((game: Game) => (
                 <GameCard
                   key={game.id}
                   id={game.id}

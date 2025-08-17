@@ -7,7 +7,7 @@ import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
 import { useToast } from "@/contexts/ToastContext";
-import { FieldError } from "@/@types/forms";
+import { FieldError } from "@/@types/form.types";
 import { useSignup } from "@/hooks/auth/useSignup";
 
 export default function SignupPage() {

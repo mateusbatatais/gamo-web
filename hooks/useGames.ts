@@ -4,7 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
-import { GameListResponse } from "@/@types/game";
+import { Game, PaginatedResponse } from "@/@types/catalog.types";
 
 interface UseGamesOptions {
   page: number;
@@ -26,7 +26,7 @@ export function useGames({
   const { apiFetch } = useApiClient();
   const { initialized } = useAuth();
 
-  return useQuery<GameListResponse, Error>({
+  return useQuery<PaginatedResponse<Game>, Error>({
     queryKey: [
       "games",
       page,

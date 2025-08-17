@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
-import { UserGamePublic } from "@/@types/publicProfile";
 import { Card } from "@/components/atoms/Card/Card";
 import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
@@ -13,25 +12,16 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { GameForm } from "@/components/organisms/GameForm/GameForm";
 import { useDeleteUserGame } from "@/hooks/usePublicProfile";
+import { UserGame } from "@/@types/collection.types";
 
-export const PublicProfileGameCard = ({
-  game,
-  isOwner,
-  slug,
-}: {
-  game: UserGamePublic;
-  isOwner: boolean;
-  slug: string;
-}) => {
+export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwner: boolean }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
 
   const handleDelete = () => {
-    deleteGame(game.id, {
-      context: { slug },
-    });
+    deleteGame(game.id || 0);
   };
 
   return (
@@ -61,7 +51,7 @@ export const PublicProfileGameCard = ({
           {game.photoMain ? (
             <Image
               src={game.photoMain}
-              alt={game.gameTitle}
+              alt={game.gameTitle || ""}
               fill
               sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
               className="object-contain"
@@ -70,7 +60,7 @@ export const PublicProfileGameCard = ({
           ) : game.gameImageUrl ? (
             <Image
               src={game.gameImageUrl}
-              alt={game.gameTitle}
+              alt={game.gameTitle || ""}
               fill
               sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
               className="object-contain"

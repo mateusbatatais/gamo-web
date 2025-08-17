@@ -6,8 +6,8 @@ import InfoItem from "@/components/atoms/InfoItem/InfoItem";
 import { Card } from "@/components/atoms/Card/Card";
 import { Gamepad } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
-import { GameWithStats } from "@/@types/game";
 import { PlatformIcons } from "@/components/molecules/RenderPlatformIcons/RenderPlatformIcons";
+import { GameWithStats } from "@/@types/catalog.types";
 
 interface GameInfoProps {
   game: GameWithStats;
@@ -88,9 +88,9 @@ export default function GameInfo({ game }: GameInfoProps) {
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-3">{t("relatedGames")}</h3>
             <div className="flex flex-wrap gap-2">
-              {game.series?.games && game.series.games.length > 0 && (
+              {(game.series?.games?.length ?? 0) > 0 && (
                 <Badge variant="soft">
-                  {t("series")}: {game.series.games.length}
+                  {t("series")}: {game.series?.games?.length ?? 0}
                 </Badge>
               )}
               {game.children && game.children.length > 0 && (

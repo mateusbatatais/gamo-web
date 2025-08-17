@@ -8,6 +8,7 @@ import { PublicProfileGameCard } from "../PublicProfileGameCard/PublicProfileGam
 import { useUserGamesPublic } from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
+import { UserGame } from "@/@types/collection.types";
 
 interface PublicProfileGameGridProps {
   slug: string;
@@ -82,13 +83,8 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     <div>
       <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
       <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-        {ownedGames.map((game) => (
-          <PublicProfileGameCard
-            key={`owned-${game.id}`}
-            game={game}
-            isOwner={isOwner || false}
-            slug={slug}
-          />
+        {ownedGames.map((game: UserGame) => (
+          <PublicProfileGameCard key={`owned-${game.id}`} game={game} isOwner={isOwner || false} />
         ))}
       </div>
 
@@ -96,12 +92,11 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         <>
           <h2 className="text-xl font-semibold my-6 dark:text-white">{t("status.selling")}</h2>
           <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {sellingGames.map((game) => (
+            {sellingGames.map((game: UserGame) => (
               <PublicProfileGameCard
                 key={`selling-${game.id}`}
                 game={game}
                 isOwner={isOwner || false}
-                slug={slug}
               />
             ))}
           </div>
@@ -112,12 +107,11 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         <>
           <h2 className="text-xl font-semibold my-6 dark:text-white">{t("status.lookingFor")}</h2>
           <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {lookingForGames.map((game) => (
+            {lookingForGames.map((game: UserGame) => (
               <PublicProfileGameCard
                 key={`lookingfor-${game.id}`}
                 game={game}
                 isOwner={isOwner || false}
-                slug={slug}
               />
             ))}
           </div>
