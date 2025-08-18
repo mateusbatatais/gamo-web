@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useTranslations } from "next-intl";
 import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
@@ -35,7 +35,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       showToast(error.message, "danger");
       onError?.(error);
@@ -43,17 +43,13 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   }, [error, showToast, onError]);
 
   const handleLogin = async () => {
-    try {
-      const token = await login();
-      if (token) {
-        showToast(t("welcome"), "success");
-        onSuccess?.(token);
-        if (returnUrl) {
-          window.location.href = returnUrl;
-        }
+    const token = await login();
+    if (token) {
+      showToast(t("success"), "success");
+      onSuccess?.(token);
+      if (returnUrl) {
+        window.location.href = returnUrl;
       }
-    } catch {
-      // Errors are already handled by the effect above
     }
   };
 
