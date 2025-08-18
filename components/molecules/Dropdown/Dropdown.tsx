@@ -4,7 +4,7 @@ import { Button, ButtonProps, ButtonVariant, ButtonStatus } from "@/components/a
 import { Menu, MenuItem, MenuProps } from "@mui/material";
 import clsx from "clsx";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import Link from "next/link"; // Import para suporte a links
+import { Link } from "@/i18n/navigation";
 
 export type DropdownSize = "sm" | "md" | "lg" | "xl";
 export type DropdownVariant = ButtonVariant;
@@ -70,7 +70,6 @@ export function Dropdown({
     ...triggerButtonProps,
   };
 
-  // Se não houver trigger customizado, usamos o botão padrão
   const defaultTrigger = (
     <div ref={anchorRef}>
       <Button
