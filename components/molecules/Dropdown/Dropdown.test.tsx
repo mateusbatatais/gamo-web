@@ -4,6 +4,22 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 import { Dropdown } from "./Dropdown";
 
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));
+
 // Mock do MUI para simplificar testes
 vi.mock("@mui/material", async () => {
   const actual = await vi.importActual("@mui/material");

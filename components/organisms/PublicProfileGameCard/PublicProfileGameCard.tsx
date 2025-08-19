@@ -127,12 +127,7 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
         </div>
       </Card>
 
-      <Dialog
-        open={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        title={t("editTitle")}
-        size="xl"
-      >
+      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <GameForm
           mode="edit"
           gameId={game.gameId}

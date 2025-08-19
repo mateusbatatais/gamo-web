@@ -157,7 +157,7 @@ export function Dropdown({
           if (item.href) {
             return (
               <Link key={item.id} href={item.href} passHref>
-                {content}
+                <div className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">{content}</div>
               </Link>
             );
           }
