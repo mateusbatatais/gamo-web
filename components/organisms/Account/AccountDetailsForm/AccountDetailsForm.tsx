@@ -25,6 +25,7 @@ export default function AccountDetailsForm() {
   const [description, setDescription] = useState("");
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
+  const [previewCroppedUrl, setPreviewCroppedUrl] = useState<string | null>(null);
 
   // Preenche os campos quando os dados são carregados
   React.useEffect(() => {
@@ -41,6 +42,7 @@ export default function AccountDetailsForm() {
 
   const handleCroppedImage = useCallback((blob: Blob) => {
     setCroppedBlob(blob);
+    setPreviewCroppedUrl(URL.createObjectURL(blob)); // Cria URL para preview
     setFileSrc(null);
   }, []);
 
@@ -95,7 +97,15 @@ export default function AccountDetailsForm() {
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row gap-6 mt-4">
             <div className="flex flex-col items-center">
-              {previewUrl ? (
+              {previewCroppedUrl ? (
+                <Image
+                  src={previewCroppedUrl}
+                  alt="Avatar preview"
+                  width={128}
+                  height={128}
+                  className="rounded-full object-cover"
+                />
+              ) : previewUrl ? (
                 <Image
                   src={previewUrl}
                   alt="Avatar"

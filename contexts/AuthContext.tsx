@@ -23,7 +23,8 @@ interface AuthContextType {
   initialized: boolean;
   login: (newToken: string, redirectPath?: string) => void;
   logout: () => void;
-  updateUser: (userData: Partial<AuthUser>) => void; // Novo método
+  updateUser: (userData: Partial<AuthUser>) => void;
+  refreshToken: (newToken: string) => void;
 }
 
 const decodeToken = (token: string): AuthUser => {
@@ -104,6 +105,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }
 
+  function refreshToken(newToken: string) {
+    localStorage.setItem("gamo_token", newToken);
+    setTokenCookie(newToken);
+    setToken(newToken);
+    try {
+      setUser(decodeToken(newToken));
+    } catch {
+      setUser(null);
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -113,6 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         logout,
         updateUser,
+        refreshToken,
       }}
     >
       {children}

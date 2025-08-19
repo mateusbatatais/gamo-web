@@ -23,8 +23,7 @@ interface UpdateProfilePayload {
 
 export function useAccount() {
   const { apiFetch } = useApiClient();
-  const { updateUser } = useAuth();
-  const { logout, login } = useAuth();
+  const { logout, login, refreshToken, updateUser } = useAuth();
 
   const profileQuery = useQuery<UserProfile>({
     queryKey: ["account", "profile"],
@@ -34,13 +33,17 @@ export function useAccount() {
 
   const updateProfileMutation = useMutation({
     mutationFn: async (payload: UpdateProfilePayload) => {
-      return apiFetch("/user/profile", {
+      return apiFetch<{
+        token: string; // Novo tipo
+        user: UserProfile;
+      }>("/user/profile", {
         method: "PUT",
         body: payload,
       });
     },
-    onSuccess: (_, variables) => {
-      updateUser(variables);
+    onSuccess: (data) => {
+      updateUser(data.user);
+      refreshToken(data.token);
     },
   });
 

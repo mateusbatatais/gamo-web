@@ -21,9 +21,8 @@ export interface CollectionFormData {
   hasManual: boolean;
   condition: Condition;
   acceptsTrade: boolean;
-  // Campos específicos de jogos
   progress?: string;
-  rating?: string;
+  rating?: number;
   review?: string;
   abandoned?: boolean;
   media?: MediaType;

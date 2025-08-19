@@ -38,5 +38,6 @@ export default function usePlatforms() {
       if (error.message.includes("404")) return false;
       return failureCount < 3;
     },
+    placeholderData: (previousData) => previousData,
   });
 }

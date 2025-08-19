@@ -100,7 +100,7 @@ export default function ImageCropper({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center p-4">
-      <div className="flex-1 flex items-center justify-center w-full overflow-auto">
+      <div className="flex-1 flex items-center justify-center w-full ">
         <ReactCrop
           crop={crop}
           onChange={(c) => setCrop(c)}
@@ -115,7 +115,7 @@ export default function ImageCropper({
             src={src}
             onLoad={onImageLoad}
             crossOrigin="anonymous"
-            className="max-w-full max-h-[70vh] object-contain"
+            className="max-w-full h-[82vh] object-contain"
             data-testid="image-cropper"
           />
         </ReactCrop>

@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
+import { Spinner } from "@/components/atoms/Spinner/Spinner";
 
 interface GalleryDialogProps {
   open: boolean;
@@ -116,7 +117,7 @@ export const GalleryDialog = ({
 
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-10 bg-black bg-opacity-30">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+            <Spinner variant="primary" size={48} />
           </div>
         )}
 

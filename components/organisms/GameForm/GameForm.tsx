@@ -4,7 +4,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
-import { Input } from "@/components/atoms/Input/Input";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Select } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
@@ -15,6 +14,9 @@ import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesU
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import { Rating } from "@/components/atoms/Rating/Rating";
+import { Range } from "@/components/atoms/Range/Range";
+
 interface GameFormProps {
   mode: "create" | "edit";
   gameId: number;
@@ -67,7 +69,7 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
     condition: initialData?.condition || "USED",
     acceptsTrade: initialData?.acceptsTrade || false,
     progress: initialData?.progress ? String(initialData.progress) : "",
-    rating: initialData?.rating ? String(initialData.rating) : "",
+    rating: initialData?.rating ? initialData.rating : 0,
     review: initialData?.review || "",
     abandoned: initialData?.abandoned || false,
     media: initialData?.media || "PHYSICAL",
@@ -103,7 +105,7 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
       photoMain: mainPhotoUrl || undefined,
       photos: additionalUrls,
       progress: formData.progress ? parseFloat(formData.progress) : undefined,
-      rating: formData.rating ? parseFloat(formData.rating) : undefined,
+      rating: formData.rating ? formData.rating : undefined,
       review: formData.review || undefined,
       abandoned: formData.abandoned,
     };
@@ -150,15 +152,6 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
           t={t}
         />
 
-        <Textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          label={t("description")}
-          placeholder={t("descriptionPlaceholder")}
-          rows={4}
-        />
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             name="media"
@@ -178,29 +171,27 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            name="progress"
-            value={formData.progress}
-            onChange={handleChange}
+          <Range
             label={t("progress")}
-            placeholder={t("progressPlaceholder")}
-            type="number"
-            min="0"
-            max="10"
-            step="0.1"
+            value={Number(formData.progress)}
+            onChange={(newValue) =>
+              setFormData((prev) => ({ ...prev, progress: String(newValue) }))
+            }
+            min={0}
+            max={10}
+            step={0.5}
           />
 
-          <Input
-            name="rating"
-            value={formData.rating}
-            onChange={handleChange}
-            label={t("rating")}
-            placeholder={t("ratingPlaceholder")}
-            type="number"
-            min="0"
-            max="10"
-            step="0.1"
-          />
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {t("rating")}
+            </span>
+            <Rating
+              value={formData.rating}
+              onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
+              size="lg"
+            />
+          </div>
         </div>
 
         <Textarea
@@ -229,6 +220,15 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
           t={t}
           showPrice={true}
           showStatus={false}
+        />
+
+        <Textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          label={t("description")}
+          placeholder={t("descriptionPlaceholder")}
+          rows={4}
         />
 
         <div className="mt-4">
