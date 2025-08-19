@@ -14,6 +14,7 @@ export interface GameCardProps {
   title: string;
   imageUrl: string;
   platforms?: number[];
+  parentPlatforms?: number[];
   slug: string;
   releaseDate?: string;
   developer?: string;
@@ -41,6 +42,7 @@ const GameCard = ({
   title,
   imageUrl,
   platforms = [],
+  parentPlatforms = [],
   slug,
   releaseDate,
   developer,
@@ -169,7 +171,7 @@ const GameCard = ({
             </p>
           )}
 
-          {platforms.length && <PlatformIcons platforms={platforms} />}
+          {parentPlatforms.length && <PlatformIcons platforms={parentPlatforms} />}
 
           <div className="sm:flex justify-between mt-3">
             <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
@@ -188,6 +190,7 @@ const GameCard = ({
             <div className="flex justify-end">
               <AddGameToCollection
                 gameId={id}
+                platforms={platforms} // array de IDs
                 isFavorite={isFavorite}
                 onFavoriteToggle={handleFavoriteToggle}
                 onAddSuccess={() => triggerFeedback(id)}

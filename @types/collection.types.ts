@@ -44,4 +44,5 @@ export interface UserGame extends BaseCollectionItem {
   abandoned?: boolean | null;
   gameTitle?: string;
   gameImageUrl?: string;
+  platformId?: number;
 }

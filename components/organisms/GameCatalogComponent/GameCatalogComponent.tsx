@@ -329,7 +329,8 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
                   id={game.id}
                   title={game.name}
                   imageUrl={game.imageUrl || ""}
-                  platforms={game.parentPlatforms}
+                  parentPlatforms={game.parentPlatforms}
+                  platforms={game.platforms}
                   slug={game.slug}
                   releaseDate={game.releaseDate || ""}
                   metacritic={game.metacritic}

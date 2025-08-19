@@ -1,0 +1,153 @@
+// src/components/molecules/SimpleGameForm/SimpleGameForm.tsx
+"use client";
+
+import React, { ChangeEvent, useState } from "react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/atoms/Button/Button";
+import { Select, SelectOption } from "@/components/atoms/Select/Select";
+import { Textarea } from "@/components/atoms/Textarea/Textarea";
+import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
+import { Range } from "@/components/atoms/Range/Range";
+import { Rating } from "@/components/atoms/Rating/Rating";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import { MediaType, UserGame } from "@/@types/collection.types";
+
+interface SimpleGameFormProps {
+  gameId: number;
+  platformOptions: SelectOption[];
+  onSuccess: () => void;
+  onCancel: () => void;
+}
+
+interface SimpleFormState {
+  media: MediaType;
+  progress: string;
+  rating: number;
+  review: string;
+  abandoned: boolean;
+  platformId: number;
+}
+
+export const SimpleGameForm = ({
+  gameId,
+  platformOptions,
+  onSuccess,
+  onCancel,
+}: SimpleGameFormProps) => {
+  const t = useTranslations("GameForm");
+  const { createUserGame, isPending } = useUserGameMutation();
+
+  const [formData, setFormData] = useState<SimpleFormState>({
+    media: "PHYSICAL",
+    progress: "0",
+    rating: 0,
+    review: "",
+    abandoned: false,
+    platformId: Number(platformOptions[0]?.value) || 0,
+  });
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value, type } = e.target;
+
+    setFormData((prev) => {
+      if (type === "checkbox") {
+        return { ...prev, [name]: (e.target as HTMLInputElement).checked } as SimpleFormState;
+      }
+      if (name === "platformId") {
+        return { ...prev, platformId: Number(value) };
+      }
+      if (name === "media") {
+        return { ...prev, media: value as MediaType };
+      }
+      return { ...prev, [name]: value } as SimpleFormState;
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const payload: UserGame = {
+      gameId,
+      media: formData.media,
+      status: "OWNED",
+      abandoned: formData.abandoned,
+      platformId: formData.platformId,
+      ...(formData.progress ? { progress: parseFloat(formData.progress) } : {}),
+      ...(formData.rating ? { rating: formData.rating } : {}),
+      ...(formData.review ? { review: formData.review } : {}),
+    };
+
+    await createUserGame(payload);
+    onSuccess();
+  };
+
+  const mediaOptions: { value: MediaType; label: string }[] = [
+    { value: "PHYSICAL", label: t("mediaPhysical") },
+    { value: "DIGITAL", label: t("mediaDigital") },
+  ];
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <Select
+        name="platformId"
+        value={String(formData.platformId)}
+        onChange={handleChange}
+        label={t("platform")}
+        options={platformOptions}
+      />
+
+      <Select
+        name="media"
+        value={formData.media}
+        onChange={handleChange}
+        label={t("media")}
+        options={mediaOptions}
+      />
+
+      <Range
+        label={t("progress")}
+        value={Number(formData.progress)}
+        onChange={(newValue) => setFormData((prev) => ({ ...prev, progress: String(newValue) }))}
+        min={0}
+        max={10}
+        step={0.5}
+      />
+
+      <div className="flex flex-col gap-1">
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("rating")}</span>
+        <Rating
+          value={formData.rating}
+          onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
+          size="lg"
+        />
+      </div>
+
+      <Textarea
+        name="review"
+        value={formData.review}
+        onChange={handleChange}
+        label={t("review")}
+        placeholder={t("reviewPlaceholder")}
+        rows={3}
+      />
+
+      <Checkbox
+        name="abandoned"
+        checked={formData.abandoned}
+        onChange={handleChange}
+        label={t("abandoned")}
+      />
+
+      <div className="flex justify-end gap-3 pt-4">
+        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
+        <Button
+          type="submit"
+          loading={isPending}
+          label={isPending ? t("saving") : t("addToCollection")}
+        />
+      </div>
+    </form>
+  );
+};

@@ -4,15 +4,18 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
+import { SelectOption } from "@/components/atoms/Select/Select";
 import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
-import { GameForm } from "../../organisms/GameForm/GameForm";
 import { useFavorite } from "@/hooks/useFavorite";
-import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import { SimpleGameForm } from "../SimpleGameForm/SimpleGameForm";
+import { usePlatformsCache } from "@/hooks/usePlatformsCache";
+import { TradeGameForm } from "../TradeGameForm/TradeGameForm";
 
 interface Props {
   gameId: number;
+  platforms: number[];
   onAddSuccess?: () => void;
   isFavorite?: boolean;
   onFavoriteToggle?: (newState: boolean) => void;
@@ -20,6 +23,7 @@ interface Props {
 
 export function AddGameToCollection({
   gameId,
+  platforms,
   onAddSuccess,
   isFavorite = false,
   onFavoriteToggle,
@@ -27,9 +31,18 @@ export function AddGameToCollection({
   const { user } = useAuth();
   const router = useRouter();
   const { setPendingAction } = usePendingAction();
-  const { isOpen, openModal, closeModal } = useModalUrl(`add-game-to-collection-${gameId}`);
+  const {
+    isOpen: isTradeModalOpen,
+    openModal: openTradeModal,
+    closeModal: closeTradeModal,
+  } = useModalUrl(`add-game-to-collection-${gameId}`);
+  const {
+    isOpen: isSimpleModalOpen,
+    openModal: openSimpleModal,
+    closeModal: closeSimpleModal,
+  } = useModalUrl(`add-game-simple-${gameId}`);
   const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
-  const { createUserGame, isPending } = useUserGameMutation();
+  const { platformsMap, isLoading: platformsLoading } = usePlatformsCache();
 
   const handleFavorite = async () => {
     const { added } = await toggleFavorite({
@@ -52,25 +65,23 @@ export function AddGameToCollection({
     }
 
     if (type === "OWNED") {
-      addToCollectionDirectly();
+      openSimpleModal();
     } else {
-      openModal();
+      openTradeModal();
     }
   };
 
-  const addToCollectionDirectly = async () => {
-    await createUserGame({
-      gameId,
-      status: "OWNED",
-      media: "PHYSICAL",
-    });
-    onAddSuccess?.();
-  };
+  const platformOptions: SelectOption[] = platforms
+    .filter((id) => platformsMap[id])
+    .map((id) => ({
+      value: String(id),
+      label: platformsMap[id],
+    }));
 
   return (
     <div className="flex justify-end">
       <CardActionButtons
-        loading={isPending}
+        loading={favoriteLoading}
         favoriteLoading={favoriteLoading}
         actions={[
           {
@@ -89,16 +100,35 @@ export function AddGameToCollection({
         ]}
       />
 
-      <Dialog open={isOpen} onClose={closeModal} title={"Adicionar jogo à coleção"}>
-        <GameForm
-          mode="create"
+      <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar jogo"}>
+        <TradeGameForm
           gameId={gameId}
           onSuccess={() => {
-            closeModal();
+            closeTradeModal();
             onAddSuccess?.();
           }}
-          onCancel={closeModal}
+          onCancel={closeTradeModal}
         />
+      </Dialog>
+
+      <Dialog
+        open={isSimpleModalOpen}
+        onClose={closeSimpleModal}
+        title={"Adicionar jogo à coleção"}
+      >
+        {platformsLoading ? (
+          <div>Carregando plataformas...</div>
+        ) : (
+          <SimpleGameForm
+            gameId={gameId}
+            platformOptions={platformOptions}
+            onSuccess={() => {
+              closeSimpleModal();
+              onAddSuccess?.();
+            }}
+            onCancel={closeSimpleModal}
+          />
+        )}
       </Dialog>
     </div>
   );

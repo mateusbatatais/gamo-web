@@ -1,4 +1,4 @@
-// components/molecules/AddToCollection/AddToCollection.tsx
+// components/molecules/AddConsoleToCollection/AddConsoleToCollection.tsx
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +8,7 @@ import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
-import { ConsoleForm } from "@/components/organisms/ConsoleForm/ConsoleForm";
+import { TradeConsoleForm } from "../TradeConsoleForm/TradeConsoleForm";
 
 interface Props {
   consoleVariantId: number;
@@ -26,7 +26,11 @@ export function AddConsoleToCollection({
   const { user } = useAuth();
   const router = useRouter();
   const { setPendingAction } = usePendingAction();
-  const { isOpen, openModal, closeModal } = useModalUrl(`add-to-collection-${skinId}`);
+  const {
+    isOpen: isTradeModalOpen,
+    openModal: openTradeModal,
+    closeModal: closeTradeModal,
+  } = useModalUrl(`add-to-collection-${skinId}`);
   const { createUserConsole, isPending } = useUserConsoleMutation();
 
   const handleAction = (type: "OWNED" | "TRADE") => {
@@ -44,7 +48,7 @@ export function AddConsoleToCollection({
     if (type === "OWNED") {
       addToCollectionDirectly();
     } else {
-      openModal();
+      openTradeModal();
     }
   };
 
@@ -75,17 +79,16 @@ export function AddConsoleToCollection({
         ]}
       />
 
-      <Dialog open={isOpen} onClose={closeModal} title={"Adicionar à coleção"}>
-        <ConsoleForm
-          mode="create"
+      <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar console"}>
+        <TradeConsoleForm
           consoleId={consoleId}
           consoleVariantId={consoleVariantId}
           skinId={skinId}
           onSuccess={() => {
-            closeModal();
+            closeTradeModal();
             onAddSuccess?.();
           }}
-          onCancel={closeModal}
+          onCancel={closeTradeModal}
         />
       </Dialog>
     </div>
