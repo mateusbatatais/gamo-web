@@ -8,23 +8,7 @@ import { Badge } from "@/components/atoms/Badge/Badge";
 import { Gamepad } from "lucide-react";
 import { PlatformIcons } from "../RenderPlatformIcons/RenderPlatformIcons";
 import { AddGameToCollection } from "../AddGameToCollection/AddGameToCollection";
-
-export interface GameCardProps {
-  id: number;
-  title: string;
-  imageUrl: string;
-  platforms?: number[];
-  parentPlatforms?: number[];
-  slug: string;
-  releaseDate?: string;
-  developer?: string;
-  genres?: number[];
-  metacritic?: number | null;
-  shortScreenshots?: string[];
-  orientation?: "vertical" | "horizontal";
-  genreMap?: Record<number, string>;
-  isFavorite?: boolean;
-}
+import { Game } from "@/@types/catalog.types";
 
 const useAddToCollectionFeedback = () => {
   const [recentlyAdded, setRecentlyAdded] = useState<number | null>(null);
@@ -39,7 +23,7 @@ const useAddToCollectionFeedback = () => {
 
 const GameCard = ({
   id,
-  title,
+  name,
   imageUrl,
   platforms = [],
   parentPlatforms = [],
@@ -52,7 +36,7 @@ const GameCard = ({
   orientation = "vertical",
   genreMap = {},
   isFavorite: initialIsFavorite = false,
-}: GameCardProps) => {
+}: Game) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -98,7 +82,7 @@ const GameCard = ({
           isHovered ? "!shadow-2xl borde-b-none" : "shadow-sm",
           recentlyAdded === id ? "ring-2 ring-green-500 scale-[1.02] shadow-xl" : "",
         )}
-        aria-label={title}
+        aria-label={name}
         onMouseMove={handleMouseMove}
       >
         {metacritic && (
@@ -137,7 +121,7 @@ const GameCard = ({
             <div className="relative w-full h-full">
               <Image
                 src={allImages[currentImageIndex] || ""}
-                alt={`Capa do jogo ${title}`}
+                alt={`Capa do jogo ${name}`}
                 fill
                 className={clsx(
                   "object-cover transition-all duration-500",
@@ -160,7 +144,7 @@ const GameCard = ({
           <div className="flex justify-between items-start min-h-[60px]">
             <Link href={`/game/${slug}`} className="block flex-1">
               <h2 className="font-semibold text-sm md:text-lg text-gray-800 dark:text-gray-100 line-clamp-2 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                {title}
+                {name}
               </h2>
             </Link>
           </div>

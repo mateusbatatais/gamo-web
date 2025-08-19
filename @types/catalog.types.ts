@@ -22,11 +22,13 @@ export interface ConsoleVariant extends BaseCatalogItem {
 export interface Game extends BaseCatalogItem {
   platforms: number[];
   parentPlatforms: number[];
-  genres: number[];
+  genres?: number[];
   developer?: string;
   description?: string;
   metacritic?: number | null;
   shortScreenshots?: string[];
+  orientation?: "vertical" | "horizontal";
+  genreMap?: Record<number, string>;
 }
 
 // Skin de console

@@ -327,7 +327,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
                 <GameCard
                   key={game.id}
                   id={game.id}
-                  title={game.name}
+                  name={game.name}
                   imageUrl={game.imageUrl || ""}
                   parentPlatforms={game.parentPlatforms}
                   platforms={game.platforms}

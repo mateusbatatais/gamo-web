@@ -124,12 +124,7 @@ export const PublicProfileConsoleCard = ({
         </div>
       </Card>
 
-      <Dialog
-        open={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        title={t("editTitle")}
-        size="xl"
-      >
+      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <ConsoleForm
           mode="edit"
           consoleId={consoleItem.consoleId}

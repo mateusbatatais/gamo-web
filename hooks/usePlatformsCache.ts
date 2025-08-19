@@ -15,12 +15,10 @@ export function usePlatformsCache() {
 
   useEffect(() => {
     if (platformsData) {
-      // Criar um mapa plano de todas as plataformas
       const allPlatforms: Platform[] = platformsData.results.flatMap(
         (parentPlatform) => parentPlatform.platforms,
       );
 
-      // Criar um objeto de mapeamento { id: name }
       const newPlatformsMap = allPlatforms.reduce(
         (acc, platform) => {
           acc[platform.id] = platform.name;
@@ -31,7 +29,6 @@ export function usePlatformsCache() {
 
       setPlatformsMap(newPlatformsMap);
 
-      // Salvar no localStorage com timestamp
       const cacheData = {
         data: newPlatformsMap,
         timestamp: Date.now(),
@@ -40,12 +37,10 @@ export function usePlatformsCache() {
     }
   }, [platformsData]);
 
-  // Carregar do cache se disponível
   useEffect(() => {
     const cachedData = localStorage.getItem("platforms-cache");
     if (cachedData) {
       const { data, timestamp } = JSON.parse(cachedData);
-      // Verificar se o cache é válido (1 mês)
       if (Date.now() - timestamp < 30 * 24 * 60 * 60 * 1000) {
         setPlatformsMap(data);
       }
