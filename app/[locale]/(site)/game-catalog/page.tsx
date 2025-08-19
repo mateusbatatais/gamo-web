@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import GameCatalogComponent from "@/components/organisms/GameCatalogComponent/GameCatalogComponent";
+import GameCatalogComponent from "@/components/organisms/_game/GameCatalogComponent/GameCatalogComponent";
 
 const GameCatalogPage = () => {
   const searchParams = useSearchParams();

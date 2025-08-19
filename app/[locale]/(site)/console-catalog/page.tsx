@@ -3,7 +3,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
-import ConsoleCatalogComponent from "@/components/organisms/ConsoleCatalogComponent/ConsoleCatalogComponent";
+import ConsoleCatalogComponent from "@/components/organisms/_console/ConsoleCatalogComponent/ConsoleCatalogComponent";
 
 const CatalogPageWrapper = () => {
   const searchParams = useSearchParams();

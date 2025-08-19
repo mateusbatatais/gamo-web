@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { Star, Calendar } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Gamepad } from "lucide-react";
-import { PlatformIcons } from "../RenderPlatformIcons/RenderPlatformIcons";
+import { PlatformIcons } from "../../RenderPlatformIcons/RenderPlatformIcons";
 import { AddGameToCollection } from "../AddGameToCollection/AddGameToCollection";
 import { Game } from "@/@types/catalog.types";
 

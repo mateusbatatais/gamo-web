@@ -3,13 +3,13 @@
 
 import { useTranslations } from "next-intl";
 import useConsoleDetails from "@/hooks/useConsoleDetails";
-import ConsoleInfo from "@/components/organisms/ConsoleInfo/ConsoleInfo";
+import ConsoleInfo from "@/components/organisms/_console/ConsoleInfo/ConsoleInfo";
 import SkinCard from "@/components/molecules/SkinCard/SkinCard";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
 import { useEffect } from "react";
 import { Card } from "@/components/atoms/Card/Card";
-import { ConsoleInfoSkeleton } from "@/components/organisms/ConsoleInfo/ConsoleInfo.skeleton";
+import { ConsoleInfoSkeleton } from "@/components/organisms/_console/ConsoleInfo/ConsoleInfo.skeleton";
 import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
 import { Joystick } from "lucide-react";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";

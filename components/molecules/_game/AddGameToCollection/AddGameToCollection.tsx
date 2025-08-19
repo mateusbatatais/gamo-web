@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { SelectOption } from "@/components/atoms/Select/Select";
-import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
+import { CardActionButtons } from "../../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { useFavorite } from "@/hooks/useFavorite";

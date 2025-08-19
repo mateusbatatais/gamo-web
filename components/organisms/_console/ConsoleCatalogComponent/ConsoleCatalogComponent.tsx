@@ -1,167 +1,170 @@
-// components/organisms/GameCatalogComponent/GameCatalogComponent.tsx
+// components/organisms/ConsoleCatalogComponent/ConsoleCatalogComponent.tsx
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import GameCard from "@/components/molecules/GameCard/GameCard";
+import { useState, useEffect } from "react";
+import FilterContainer from "@/components/molecules/Filter/Filter";
+import ConsoleCard from "@/components/molecules/_console/ConsoleCard/ConsoleCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
+import { ConsoleCardSkeleton } from "@/components/molecules/_console/ConsoleCard/ConsoleCard.skeleton";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { useTranslations } from "next-intl";
-import { GameCardSkeleton } from "@/components/molecules/GameCard/GameCard.skeleton";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
-import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
-import { useGames } from "@/hooks/useGames";
-import { Game } from "@/@types/catalog.types";
+import { useConsoles } from "@/hooks/useConsoles";
+import { ConsoleVariant } from "@/@types/catalog.types";
 
-interface GameCatalogComponentProps {
+interface ConsoleCatalogComponentProps {
+  locale: string;
   page: number;
   perPage: number;
 }
 
-const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
+const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogComponentProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
+  const [sort, setSort] = useState<string>("releaseDate-desc");
   const t = useTranslations();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { setItems } = useBreadcrumbs();
+
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(
+    searchParams.get("brand")?.split(",").filter(Boolean) || [],
+  );
+
+  const [selectedGenerations, setSelectedGenerations] = useState<string[]>(
+    searchParams.get("generation")?.split(",").filter(Boolean) || [],
+  );
+
+  const {
+    data: consoleVariants,
+    isLoading,
+    error,
+    isPlaceholderData,
+  } = useConsoles({
+    locale,
+    page,
+    perPage,
+    sort,
+    selectedBrands,
+    selectedGenerations,
+    searchQuery,
+  });
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
     { value: "name-desc", label: t("order.nameDesc") },
     { value: "releaseDate-asc", label: t("order.releaseDateAsc") },
     { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
-    { value: "score-desc", label: t("order.scoreDesc") },
+    { value: "popularity-desc", label: t("order.popularityDesc") },
   ];
 
-  // Obter parâmetros da URL
-  const searchQuery = searchParams.get("search") || "";
-  const sortParam = searchParams.get("sort") || "score-desc";
-  const genresParam = searchParams.get("genres") || "";
-  const platformsParam = searchParams.get("platforms") || "";
-  const [sort, setSort] = useState<string>(sortParam);
-  const [selectedGenres, setSelectedGenres] = useState<number[]>(
-    genresParam ? genresParam.split(",").map(Number) : [],
-  );
-  const [selectedPlatforms, setSelectedPlatforms] = useState<number[]>(
-    platformsParam ? platformsParam.split(",").map(Number) : [],
-  );
+  const handleBrandChange = (brands: string[]) => {
+    setSelectedBrands(brands);
 
-  const {
-    data: games,
-    isLoading,
-    error,
-    isPlaceholderData,
-  } = useGames({
-    page,
-    perPage,
-    sort,
-    selectedGenres,
-    selectedPlatforms,
-    searchQuery,
-  });
+    const params = new URLSearchParams({
+      locale,
+      page: "1",
+      perPage: perPage.toString(),
+      generation: selectedGenerations.join(","),
+      search: searchQuery,
+      sort,
+    });
 
-  // Atualizar URL quando filtros mudam
-  const updateURL = useCallback(
-    (updates: { genres?: number[]; platforms?: number[]; sort?: string; page?: number }) => {
-      const params = new URLSearchParams(searchParams.toString());
+    if (brands.length > 0) {
+      params.set("brand", brands.join(","));
+    }
 
-      if (updates.genres !== undefined) {
-        if (updates.genres.length > 0) {
-          params.set("genres", updates.genres.join(","));
-        } else {
-          params.delete("genres");
-        }
-      }
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
+  };
 
-      if (updates.platforms !== undefined) {
-        if (updates.platforms.length > 0) {
-          params.set("platforms", updates.platforms.join(","));
-        } else {
-          params.delete("platforms");
-        }
-      }
+  const handleGenerationChange = (generations: string[]) => {
+    setSelectedGenerations(generations);
 
-      if (updates.sort !== undefined) {
-        params.set("sort", updates.sort);
-      }
+    const params = new URLSearchParams({
+      locale,
+      page: "1",
+      perPage: perPage.toString(),
+      brand: selectedBrands.join(","),
+      search: searchQuery,
+      sort,
+    });
 
-      if (updates.page !== undefined) {
-        params.set("page", updates.page.toString());
-      }
+    if (generations.length > 0) {
+      params.set("generation", generations.join(","));
+    }
 
-      // Resetar para página 1 ao mudar filtros
-      if (
-        updates.genres !== undefined ||
-        updates.platforms !== undefined ||
-        updates.sort !== undefined
-      ) {
-        params.set("page", "1");
-      }
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
+  };
 
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-    },
-    [searchParams, router, pathname],
-  );
+  const clearFilters = () => {
+    setSelectedBrands([]);
+    setSelectedGenerations([]);
 
-  // Handlers para mudanças de filtro
-  const handleGenreChange = useCallback(
-    (genres: number[]) => {
-      setSelectedGenres(genres);
-      updateURL({ genres, page: 1 });
-    },
-    [updateURL],
-  );
+    const params = new URLSearchParams({
+      locale,
+      page: "1",
+      perPage: perPage.toString(),
+      search: searchQuery,
+      sort,
+    });
 
-  const handlePlatformChange = useCallback(
-    (platforms: number[]) => {
-      setSelectedPlatforms(platforms);
-      updateURL({ platforms, page: 1 });
-    },
-    [updateURL],
-  );
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
+  };
 
-  const handleSortChange = useCallback(
-    (newSort: string) => {
-      setSort(newSort);
-      localStorage.setItem("game-catalog-sort", newSort);
-      updateURL({ sort: newSort, page: 1 });
-    },
-    [updateURL],
-  );
-
-  const clearFilters = useCallback(() => {
-    setSelectedGenres([]);
-    setSelectedPlatforms([]);
-    updateURL({ genres: [], platforms: [] });
-  }, [updateURL]);
-
-  const handlePageChange = useCallback(
-    (newPage: number) => {
-      updateURL({ page: newPage });
-    },
-    [updateURL],
-  );
-
-  // Restaurar preferências de visualização
   useEffect(() => {
-    const savedView = localStorage.getItem("game-catalog-view") as ViewType | null;
-    if (savedView) setView(savedView);
+    const savedView = localStorage.getItem("catalog-view") as ViewType | null;
+    if (savedView) {
+      setView(savedView);
+    }
 
-    const savedSort = localStorage.getItem("game-catalog-sort");
-    if (savedSort) setSort(savedSort);
+    const savedSort = localStorage.getItem("catalog-sort");
+    if (savedSort) {
+      setSort(savedSort);
+    }
   }, []);
+
+  const handleSortChange = (newSort: string) => {
+    setSort(newSort);
+    localStorage.setItem("catalog-sort", newSort);
+
+    const params = new URLSearchParams({
+      locale,
+      page: "1",
+      perPage: perPage.toString(),
+      brand: selectedBrands.join(","),
+      generation: selectedGenerations.join(","),
+      search: searchQuery,
+      sort: newSort,
+    });
+
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams({
+      brand: selectedBrands.join(","),
+      locale,
+      generation: selectedGenerations.join(","),
+      page: newPage.toString(),
+      perPage: perPage.toString(),
+      search: searchQuery,
+      sort,
+    });
+
+    window.location.search = params.toString();
+  };
 
   useEffect(() => {
     setItems([
       {
-        label: t("Breadcrumbs.game-catalog"),
+        label: t("Breadcrumbs.console-catalog"),
       },
     ]);
 
@@ -190,7 +193,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
               <div>
                 <Skeleton className="h-6 w-1/2 mb-3" animated />
                 <div className="space-y-2">
-                  {[...Array(5)].map((_, i) => (
+                  {[...Array(3)].map((_, i) => (
                     <div key={i} className="flex items-center">
                       <Skeleton className="h-4 w-4 mr-2" rounded="sm" animated />
                       <Skeleton className="h-4 w-3/4" animated />
@@ -217,7 +220,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
           </div>
           <div className="grid grid-cols-2 xl:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <GameCardSkeleton key={i} />
+              <ConsoleCardSkeleton key={i} />
             ))}
           </div>
 
@@ -238,20 +241,21 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
       {/* Filtros para desktop */}
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
         <div className="sticky top-[70px] overflow-y-auto h-[calc(100vh-70px)] pe-2">
-          <GameFilterContainer
-            onGenreChange={handleGenreChange}
-            onPlatformChange={handlePlatformChange}
-            selectedGenres={selectedGenres}
-            selectedPlatforms={selectedPlatforms}
+          <FilterContainer
+            onBrandChange={handleBrandChange}
+            onGenerationChange={handleGenerationChange}
+            selectedBrands={selectedBrands}
+            selectedGenerations={selectedGenerations}
             clearFilters={clearFilters}
           />
         </div>
       </div>
 
+      {/* Conteúdo principal */}
       <div className="w-full lg:w-3/4">
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="w-full sm:w-auto flex-1">
-            <SearchBar compact searchPath="/game-catalog" placeholder="Buscar jogos..." />
+            <SearchBar compact searchPath="/console-catalog" placeholder="Buscar consoles..." />
           </div>
           <div className="flex items-center justify-between sm:justify-end gap-4">
             <SortSelect
@@ -260,10 +264,7 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
               onChange={handleSortChange}
               className="w-full sm:w-auto"
             />
-            <ViewToggle
-              onViewChange={(newView) => setView(newView)}
-              storageKey="game-catalog-view"
-            />
+            <ViewToggle onViewChange={(newView) => setView(newView)} storageKey="catalog-view" />
           </div>
         </div>
 
@@ -294,11 +295,11 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
 
           {showFilters && (
             <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow">
-              <GameFilterContainer
-                onGenreChange={handleGenreChange}
-                onPlatformChange={handlePlatformChange}
-                selectedGenres={selectedGenres}
-                selectedPlatforms={selectedPlatforms}
+              <FilterContainer
+                onBrandChange={handleBrandChange}
+                onGenerationChange={handleGenerationChange}
+                selectedBrands={selectedBrands}
+                selectedGenerations={selectedGenerations}
                 clearFilters={clearFilters}
               />
             </div>
@@ -314,45 +315,42 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
             actionText="Tentar novamente"
             onAction={() => window.location.reload()}
           />
-        ) : games?.items && games.items.length > 0 ? (
+        ) : consoleVariants?.items && consoleVariants.items.length > 0 ? (
           <>
             <div
-              className={clsx(
+              className={
                 view === "grid"
                   ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
-                  : "flex flex-col space-y-6",
-              )}
+                  : "flex flex-col space-y-6"
+              }
             >
-              {games.items.map((game: Game) => (
-                <GameCard
-                  key={game.id}
-                  id={game.id}
-                  name={game.name}
-                  imageUrl={game.imageUrl || ""}
-                  parentPlatforms={game.parentPlatforms}
-                  platforms={game.platforms}
-                  slug={game.slug}
-                  releaseDate={game.releaseDate || ""}
-                  metacritic={game.metacritic}
-                  developer={game.developer}
+              {consoleVariants.items.map((variant: ConsoleVariant) => (
+                <ConsoleCard
+                  key={variant.id}
+                  name={variant.name}
+                  consoleName={variant.consoleName}
+                  brand={variant.brand.slug}
+                  imageUrl={variant.imageUrl || "https://via.placeholder.com/150"}
+                  description={variant.consoleDescription || ""}
+                  slug={variant.slug}
                   orientation={view === "grid" ? "vertical" : "horizontal"}
-                  shortScreenshots={game.shortScreenshots}
-                  isFavorite={game.isFavorite}
+                  variantId={variant.id}
+                  isFavorite={variant.isFavorite}
                 />
               ))}
             </div>
             <div className="mt-8">
               <Pagination
                 currentPage={page}
-                totalPages={games.meta.totalPages}
+                totalPages={consoleVariants.meta.totalPages}
                 onPageChange={handlePageChange}
               />
             </div>
           </>
         ) : (
           <EmptyState
-            title="Nenhum jogo encontrado"
-            description="Tente ajustar sua busca ou filtros"
+            title="Nenhum console encontrado"
+            description="Tente ajustar seus filtros de busca"
             variant="card"
             size="lg"
             actionText="Limpar filtros"
@@ -366,4 +364,4 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
   );
 };
 
-export default GameCatalogComponent;
+export default ConsoleCatalogComponent;

@@ -10,7 +10,7 @@ import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { GameForm } from "@/components/organisms/GameForm/GameForm";
+import { GameForm } from "@/components/organisms/_game/GameForm/GameForm";
 import { useDeleteUserGame } from "@/hooks/usePublicProfile";
 import { UserGame } from "@/@types/collection.types";
 

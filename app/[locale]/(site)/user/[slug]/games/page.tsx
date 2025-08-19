@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { getServerSession } from "@/lib/auth";
-import { PublicProfileGameGrid } from "@/components/organisms/PublicProfileGameGrid/PublicProfileGameGrid";
+import { PublicProfileGameGrid } from "@/components/organisms/PublicProfile/PublicProfileGameGrid/PublicProfileGameGrid";
 
 interface GamesPageProps {
   params: Promise<{

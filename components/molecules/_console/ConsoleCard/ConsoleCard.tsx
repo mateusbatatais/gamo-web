@@ -9,7 +9,7 @@ import { Monitor, Gamepad } from "lucide-react";
 import { ConsoleCardSkeleton } from "./ConsoleCard.skeleton";
 import { normalizeImageUrl } from "@/utils/validate-url";
 import { useTranslations } from "next-intl";
-import { CardActionButtons } from "../CardActionButtons/CardActionButtons";
+import { CardActionButtons } from "../../CardActionButtons/CardActionButtons";
 import { useFavorite } from "@/hooks/useFavorite";
 
 export interface ConsoleCardProps {

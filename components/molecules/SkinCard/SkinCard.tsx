@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { normalizeImageUrl } from "@/utils/validate-url";
-import { AddConsoleToCollection } from "../AddConsoleToCollection/AddConsoleToCollection";
+import { AddConsoleToCollection } from "../_console/AddConsoleToCollection/AddConsoleToCollection";
 import { Card } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Monitor } from "lucide-react";

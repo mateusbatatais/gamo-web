@@ -10,7 +10,7 @@ import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { ConsoleForm } from "../../ConsoleForm/ConsoleForm";
+import { ConsoleForm } from "../../_console/ConsoleForm/ConsoleForm";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
