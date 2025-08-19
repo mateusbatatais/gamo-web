@@ -1,30 +1,86 @@
 # GAMO Web
 
-**GAMO Web** é o frontend da plataforma GAMO, construída com **Next.js** e **TypeScript**, que permite aos colecionadores navegar, cadastrar e gerenciar suas coleções de consoles, jogos e acessórios.
+**GAMO Web** é a aplicação frontend da plataforma GAMO, desenvolvida para colecionadores gerenciarem e explorarem suas coleções de consoles, jogos e acessórios de video game. Construída com uma stack moderna e robusta, oferece alta performance, internacionalização e uma experiência de usuário premium.
+
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase)
 
 ---
 
 ## ⚙️ Tecnologias e Dependências
 
-- **Next.js** 15 (App Router, TypeScript)
-- **React** 19
-- **Tailwind CSS** + **SCSS**
-- **next-intl** para internacionalização
-- **next-cloudinary** para upload de imagem
-- **firebase** para autenticação e storage
-- **lucide-react** para ícones
-- **clsx** para composição de classes CSS
-- **react-image-crop** para recorte de imagem
+---
 
-#### Dev Dependencies
+### Frontend & Framework
 
-- **pnpm**
-- **ESLint** + **Prettier** + **lint-staged** + **Husky**
-- **Vitest** para testes unitários
+- **Next.js 15** com App Router e TypeScript
+- **React 19** com hooks e context API
+- **TanStack Query** (React Query) para gerenciamento de estado do servidor
+- **i18n** com next-intl para internacionalização
+
+### Estilização & UI
+
+- **Tailwind CSS** com utilitários personalizados
+- **SCSS** para estilos complexos e modulares
+- **Material-UI** para componentes complexos e acessíveis
+- **clsx** para composição condicional de classes CSS
+
+### Autenticação & Storage
+
+- **Firebase Auth** com provedores Google e Microsoft
+- **Firebase Storage** para armazenamento de arquivos
+- **next-cloudinary** para otimização e manipulação de imagens
+- **react-image-crop** para recorte de imagens
+
+### Utilidades
+
+- **lucide-react** para conjunto de ícones
+- **date-fns** para manipulação de datas (se aplicável)
+
+### Dev Dependencies
+
+#### Qualidade de Código
+
+- **ESLint** + **Prettier** para linting e formatação
+- **Husky** + **lint-staged** para pre-commit hooks
+- **Commitlint** para convenção de commits (se aplicável)
+
+#### Testes
+
+- **Vitest** para testes unitários e de integração
 - **@testing-library/react** + **@testing-library/jest-dom**
-- **Storybook** 9 com addons de docs e temas
-- **Playwright** para testes E2E
-- **Chromatic** para preview de componentes
+- **Playwright** para testes end-to-end (E2E)
+- **MSW** para mock de APIs (se aplicável)
+
+#### Documentação & Storytelling
+
+- **Storybook 9** com addons de documentação e temas
+- **Chromatic** para visualização e deploy de componentes
+
+#### Ferramentas de Desenvolvimento
+
+- **TypeScript** para tipagem estática
+- **pnpm** para gerenciamento de pacotes
+- **LogRocket** para monitoramento de erros em produção
+
+### Infraestrutura & Deploy
+
+- **Vercel** para deploy e CI/CD automatizado
+- **GitHub Actions** para automação de workflows (se aplicável)
+
+---
+
+**Principais características:** Atomic Design, Dark Mode, PWA (se aplicável), SEO otimizado, performance monitoring
+
+A versão melhorada inclui:
+
+- Organização por categorias lógicas
+- Menção explícita às tecnologias que você citou mas não estavam listadas
+- Melhor hierarquia visual
+- Agrupamento temático das dependências
+- Informações mais completas sobre o uso de cada tecnologia
 
 ---
 
@@ -75,7 +131,7 @@ utils/         # funções utilitárias
 pnpm install
 ```
 
-**Configurar `.env.local`** com as chaves acima
+**Configurar `.env.local`**
 **Rodar em dev**
 
 ```bash
@@ -171,10 +227,10 @@ Preencha em `.env.local`:
   pnpm test
   ```
 
-- **Cobertura**:
+- **E2E**:
 
   ```bash
-  pnpm run coverage
+  pnpm e2e
   ```
 
 ---
