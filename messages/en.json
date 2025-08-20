@@ -290,9 +290,11 @@
     "extras": "Extras details"
   },
   "PublicProfile": {
-    "collection": "Console Collection",
+    "collection": "Consoles",
     "noConsoles": "This user hasn't added any consoles to their collection yet",
     "skin": "Skin",
+    "market": "Market",
+    "favorites": "Favorites",
     "withBox": "With box",
     "withManual": "With manual",
     "acceptsTrade": "Accepts trades",

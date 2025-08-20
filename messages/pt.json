@@ -289,9 +289,11 @@
     "extras": "Detalhes extras"
   },
   "PublicProfile": {
-    "collection": "Coleção de Consoles",
+    "collection": "Consoles",
     "noConsoles": "Este usuário ainda não adicionou consoles à sua coleção",
     "skin": "Skin",
+    "market": "Compra e venda",
+    "favorites": "Favoritos",
     "withBox": "Com caixa",
     "withManual": "Com manual",
     "acceptsTrade": "Aceita trocas",
