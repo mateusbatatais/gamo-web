@@ -334,7 +334,31 @@
       "PHYSICAL": "Físico",
       "DIGITAL": "Digital"
     },
-    "rating": "Avaliação"
+    "rating": "Avaliação",
+    "searchConsoles": "Buscar consoles...",
+    "searchGames": "Buscar jogos...",
+    "searchMarket": "Buscar no mercado...",
+    "noMarketItems": "Nenhum item à venda no momento",
+    "consolesForSale": "Consoles à venda",
+    "gamesForSale": "Jogos à venda",
+    "order": {
+      "nameAsc": "Nome (A-Z)",
+      "nameDesc": "Nome (Z-A)",
+      "addedDateDesc": "Data de adição (mais recente)",
+      "addedDateAsc": "Data de adição (mais antiga)",
+      "ratingDesc": "Melhor avaliado",
+      "priceDesc": "Maior preço",
+      "priceAsc": "Menor preço",
+      "titleAsc": "Título (A-Z)",
+      "titleDesc": "Título (Z-A)",
+      "createdAtAsc": "Data de criação (mais antiga)",
+      "createdAtDesc": "Data de criação (mais recente)",
+      "progressAsc": "Progresso (crescente)",
+      "progressDesc": "Progresso (decrescente)",
+      "ratingAsc": "Avaliação (menor primeiro)",
+      "conditionAsc": "Condição (A-Z)",
+      "conditionDesc": "Condição (Z-A)"
+    }
   },
   "ConsoleForm": {
     "mainPhoto": "Foto principal",

@@ -6,6 +6,7 @@ import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
 import { UserConsole, UserGame } from "@/@types/collection.types";
 import { UserProfile } from "@/@types/auth.types";
+import { PaginatedResponse } from "@/@types/catalog.types";
 
 export function usePublicProfile(slug: string, locale: string) {
   const { apiFetch } = useApiClient();
@@ -13,27 +14,59 @@ export function usePublicProfile(slug: string, locale: string) {
   return useQuery<UserProfile>({
     queryKey: ["publicProfile", slug, locale],
     queryFn: () => apiFetch(`/public/profile/${slug}?locale=${locale}`),
-    staleTime: 5 * 60 * 1000, // 5 minutos
+    staleTime: 5 * 60 * 1000,
   });
 }
 
-export function useUserConsolesPublic(slug: string, locale: string) {
+export function useUserConsolesPublic(
+  slug: string,
+  locale: string,
+  status?: string,
+  page: number = 1,
+  perPage: number = 20,
+  sort?: string,
+  search?: string,
+) {
   const { apiFetch } = useApiClient();
 
-  return useQuery<UserConsole[]>({
-    queryKey: ["userConsolesPublic", slug, locale],
-    queryFn: () => apiFetch(`/public/profile/${slug}/consoles?locale=${locale}`),
-    staleTime: 5 * 60 * 1000, // 5 minutos
+  const queryParams = new URLSearchParams();
+  queryParams.append("locale", locale);
+  if (status) queryParams.append("status", status);
+  queryParams.append("page", page.toString());
+  queryParams.append("perPage", perPage.toString());
+  if (sort) queryParams.append("sort", sort);
+  if (search) queryParams.append("search", search);
+
+  return useQuery<PaginatedResponse<UserConsole>>({
+    queryKey: ["userConsolesPublic", slug, locale, status, page, perPage, sort, search],
+    queryFn: () => apiFetch(`/public/profile/${slug}/consoles?${queryParams.toString()}`),
+    staleTime: 5 * 60 * 1000,
   });
 }
 
-export function useUserGamesPublic(slug: string, locale: string) {
+export function useUserGamesPublic(
+  slug: string,
+  locale: string,
+  status?: string,
+  page: number = 1,
+  perPage: number = 20,
+  sort?: string,
+  search?: string,
+) {
   const { apiFetch } = useApiClient();
 
-  return useQuery<UserGame[]>({
-    queryKey: ["userGamesPublic", slug, locale],
-    queryFn: () => apiFetch(`/public/profile/${slug}/games?locale=${locale}`),
-    staleTime: 5 * 60 * 1000, // 5 minutos
+  const queryParams = new URLSearchParams();
+  queryParams.append("locale", locale);
+  if (status) queryParams.append("status", status);
+  queryParams.append("page", page.toString());
+  queryParams.append("perPage", perPage.toString());
+  if (sort) queryParams.append("sort", sort);
+  if (search) queryParams.append("search", search);
+
+  return useQuery<PaginatedResponse<UserGame>>({
+    queryKey: ["userGamesPublic", slug, locale, status, page, perPage, sort, search],
+    queryFn: () => apiFetch(`/public/profile/${slug}/games?${queryParams.toString()}`),
+    staleTime: 5 * 60 * 1000,
   });
 }
 

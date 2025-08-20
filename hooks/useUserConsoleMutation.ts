@@ -1,16 +1,15 @@
 // src/hooks/useUserConsoleMutation.ts
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
-import { useRouter } from "next/navigation";
 import { UserConsole } from "@/@types/collection.types";
 
 export function useUserConsoleMutation() {
   const { apiFetch } = useApiClient();
   const { showToast } = useToast();
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const createMutation = useMutation({
     mutationFn: async (data: UserConsole) => {
@@ -21,7 +20,8 @@ export function useUserConsoleMutation() {
     },
     onSuccess: () => {
       showToast("Console adicionado à coleção com sucesso", "success");
-      router.refresh();
+      // Invalidate todas as queries de consoles públicos
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao adicionar console", "danger");
@@ -37,7 +37,8 @@ export function useUserConsoleMutation() {
     },
     onSuccess: () => {
       showToast("Console atualizado com sucesso", "success");
-      router.refresh();
+      // Invalidate todas as queries de consoles públicos
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao atualizar console", "danger");

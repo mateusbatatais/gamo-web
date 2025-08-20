@@ -1,16 +1,15 @@
 // src/hooks/useUserGameMutation.ts
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
-import { useRouter } from "next/navigation";
 import { UserGame } from "@/@types/collection.types";
 
 export function useUserGameMutation() {
   const { apiFetch } = useApiClient();
   const { showToast } = useToast();
-  const router = useRouter();
+  const queryClient = useQueryClient();
 
   const createMutation = useMutation({
     mutationFn: async (data: UserGame) => {
@@ -21,7 +20,7 @@ export function useUserGameMutation() {
     },
     onSuccess: () => {
       showToast("Jogo adicionado à coleção com sucesso", "success");
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao adicionar jogo", "danger");
@@ -37,7 +36,7 @@ export function useUserGameMutation() {
     },
     onSuccess: () => {
       showToast("Jogo atualizado com sucesso", "success");
-      router.refresh();
+      queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao atualizar jogo", "danger");

@@ -335,7 +335,31 @@
       "PHYSICAL": "Physical",
       "DIGITAL": "Digital"
     },
-    "rating": "Rating"
+    "rating": "Rating",
+    "searchConsoles": "Search Consoles...",
+    "searchGames": "Search Games...",
+    "searchMarket": "Search in Market...",
+    "noMarketItems": "No items for sale at the moment",
+    "consolesForSale": "Consoles for sale",
+    "gamesForSale": "Games for sale",
+    "order": {
+      "nameAsc": "Name (A-Z)",
+      "nameDesc": "Name (Z-A)",
+      "addedDateDesc": "Date Added (Newest)",
+      "addedDateAsc": "Date Added (Oldest)",
+      "ratingDesc": "Highest Rated",
+      "priceDesc": "Highest Price",
+      "priceAsc": "Lowest Price",
+      "titleAsc": "Title (A-Z)",
+      "titleDesc": "Title (Z-A)",
+      "createdAtAsc": "Date Created (Oldest)",
+      "createdAtDesc": "Date Created (Newest)",
+      "progressAsc": "Progress (Ascending)",
+      "progressDesc": "Progress (Descending)",
+      "ratingAsc": "Rating (Lowest first)",
+      "conditionAsc": "Condition (A-Z)",
+      "conditionDesc": "Condition (Z-A)"
+    }
   },
   "ConsoleForm": {
     "mainPhoto": "Main Photo",
