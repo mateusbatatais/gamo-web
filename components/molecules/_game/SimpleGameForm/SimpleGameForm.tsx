@@ -90,38 +90,42 @@ export const SimpleGameForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Select
-        name="platformId"
-        value={String(formData.platformId)}
-        onChange={handleChange}
-        label={t("platform")}
-        options={platformOptions}
-      />
-
-      <Select
-        name="media"
-        value={formData.media}
-        onChange={handleChange}
-        label={t("media")}
-        options={mediaOptions}
-      />
-
-      <Range
-        label={t("progress")}
-        value={Number(formData.progress)}
-        onChange={(newValue) => setFormData((prev) => ({ ...prev, progress: String(newValue) }))}
-        min={0}
-        max={10}
-        step={0.5}
-      />
-
-      <div className="flex flex-col gap-1">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t("rating")}</span>
-        <Rating
-          value={formData.rating}
-          onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
-          size="lg"
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Select
+          name="platformId"
+          value={String(formData.platformId)}
+          onChange={handleChange}
+          label={t("platform")}
+          options={platformOptions}
         />
+        <Select
+          name="media"
+          value={formData.media}
+          onChange={handleChange}
+          label={t("media")}
+          options={mediaOptions}
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Range
+          label={t("progress")}
+          value={Number(formData.progress)}
+          onChange={(newValue) => setFormData((prev) => ({ ...prev, progress: String(newValue) }))}
+          min={0}
+          max={10}
+          step={0.5}
+        />
+
+        <div>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 block">
+            {t("rating")}
+          </span>
+          <Rating
+            value={formData.rating}
+            onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
+            size="lg"
+          />
+        </div>
       </div>
 
       <Textarea

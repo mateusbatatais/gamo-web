@@ -403,7 +403,8 @@
     "statusLookingFor": "Looking for",
     "mediaPhysical": "Physical",
     "mediaDigital": "Digital",
-    "platform": "Platform"
+    "platform": "Platform",
+    "publish": "Publish"
   },
   "HomePage": {
     "construction": "Under construction"

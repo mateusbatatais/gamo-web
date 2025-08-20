@@ -402,7 +402,8 @@
     "statusLookingFor": "Procurando",
     "mediaPhysical": "Física",
     "mediaDigital": "Digital",
-    "platform": "Plataforma"
+    "platform": "Plataforma",
+    "publish": "Publicar"
   },
   "HomePage": {
     "construction": "Em construção"
