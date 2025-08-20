@@ -402,7 +402,8 @@
     "statusSelling": "Selling",
     "statusLookingFor": "Looking for",
     "mediaPhysical": "Physical",
-    "mediaDigital": "Digital"
+    "mediaDigital": "Digital",
+    "platform": "Platform"
   },
   "HomePage": {
     "construction": "Under construction"
