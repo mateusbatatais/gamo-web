@@ -67,8 +67,6 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     { value: "progress-desc", label: t("order.progressDesc") },
     { value: "rating-asc", label: t("order.ratingAsc") },
     { value: "rating-desc", label: t("order.ratingDesc") },
-    { value: "condition-asc", label: t("order.conditionAsc") },
-    { value: "condition-desc", label: t("order.conditionDesc") },
   ];
 
   const handlePageChange = (newPage: number) => {
