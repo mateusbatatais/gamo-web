@@ -129,16 +129,6 @@ const PublicProfileMarketGridContent = ({
 
   const hasItems = (games && games.length > 0) || (consoles && consoles.length > 0);
 
-  if (!hasItems) {
-    return (
-      <Card>
-        <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">{t("noMarketItems")}</p>
-        </div>
-      </Card>
-    );
-  }
-
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -168,6 +158,14 @@ const PublicProfileMarketGridContent = ({
             ))}
           </div>
         </>
+      )}
+
+      {!hasItems && (
+        <Card>
+          <div className="text-center py-12">
+            <p className="text-gray-500 dark:text-gray-400">{t("noMarketItems")}</p>
+          </div>
+        </Card>
       )}
 
       {games && games.length > 0 && (

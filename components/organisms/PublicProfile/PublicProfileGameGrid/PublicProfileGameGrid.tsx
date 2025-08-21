@@ -109,16 +109,6 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     );
   }
 
-  if (!games || games.length === 0) {
-    return (
-      <Card>
-        <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">{t("noGames")}</p>
-        </div>
-      </Card>
-    );
-  }
-
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -133,12 +123,22 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         />
       </div>
 
-      <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
-      <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-        {games.map((game: UserGame) => (
-          <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
-        ))}
-      </div>
+      {!games || games.length === 0 ? (
+        <Card>
+          <div className="text-center py-12">
+            <p className="text-gray-500 dark:text-gray-400">{t("noGames")}</p>
+          </div>
+        </Card>
+      ) : (
+        <>
+          <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
+          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+            {games.map((game: UserGame) => (
+              <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
+            ))}
+          </div>
+        </>
+      )}
 
       {meta && meta.totalPages > 1 && (
         <div className="mt-8">
