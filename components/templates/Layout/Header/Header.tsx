@@ -236,8 +236,9 @@ export default function Header() {
               {user ? (
                 <>
                   {accountItems.map((item) => (
-                    <button
+                    <Link
                       key={item.id}
+                      href={item.href!}
                       onClick={() => {
                         item.onClick?.();
                         setIsMenuOpen(false);
@@ -246,7 +247,7 @@ export default function Header() {
                     >
                       {item.icon}
                       <span>{item.label}</span>
-                    </button>
+                    </Link>
                   ))}
                 </>
               ) : (
