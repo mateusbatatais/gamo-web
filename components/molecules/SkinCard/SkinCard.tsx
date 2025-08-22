@@ -87,6 +87,7 @@ export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCard
         <div className="mt-4">
           <AddConsoleToCollection
             consoleId={consoleId}
+            variantSlug={skin.slug}
             consoleVariantId={consoleVariantId}
             skinId={skin.id}
             onAddSuccess={() => triggerFeedback(skin.id)}

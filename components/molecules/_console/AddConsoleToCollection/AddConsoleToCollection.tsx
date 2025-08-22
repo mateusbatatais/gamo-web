@@ -12,6 +12,7 @@ import { TradeConsoleForm } from "../TradeConsoleForm/TradeConsoleForm";
 
 interface Props {
   consoleVariantId: number;
+  variantSlug: string;
   consoleId: number;
   skinId: number;
   onAddSuccess?: () => void;
@@ -19,6 +20,7 @@ interface Props {
 
 export function AddConsoleToCollection({
   consoleVariantId,
+  variantSlug,
   skinId,
   consoleId,
   onAddSuccess,
@@ -59,6 +61,7 @@ export function AddConsoleToCollection({
       skinId,
       status: "OWNED",
       condition: "USED",
+      variantSlug,
     });
     onAddSuccess?.();
   };
@@ -82,6 +85,7 @@ export function AddConsoleToCollection({
       <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar console"}>
         <TradeConsoleForm
           consoleId={consoleId}
+          variantSlug={variantSlug}
           consoleVariantId={consoleVariantId}
           skinId={skinId}
           onSuccess={() => {

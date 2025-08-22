@@ -9,6 +9,7 @@ import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeForm
 interface TradeConsoleFormProps {
   consoleId: number;
   consoleVariantId: number;
+  variantSlug: string;
   skinId?: number | null;
   initialData?: {
     id?: number;
@@ -29,6 +30,7 @@ interface TradeConsoleFormProps {
 export const TradeConsoleForm = ({
   consoleId,
   consoleVariantId,
+  variantSlug,
   skinId,
   initialData,
   onSuccess,
@@ -40,6 +42,7 @@ export const TradeConsoleForm = ({
   const handleSubmit = async (data: TradeSubmitData<"NEW" | "USED" | "REFURBISHED">) => {
     const payload = {
       consoleId,
+      variantSlug,
       consoleVariantId,
       skinId: skinId || undefined,
       ...data,

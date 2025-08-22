@@ -138,6 +138,7 @@ export const PublicProfileConsoleCard = ({
           mode="edit"
           consoleId={consoleItem.consoleId}
           consoleVariantId={consoleItem.consoleVariantId}
+          variantSlug={consoleItem.variantSlug}
           skinId={consoleItem.skinId}
           initialData={{
             id: consoleItem.id,

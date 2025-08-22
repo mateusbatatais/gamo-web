@@ -16,6 +16,7 @@ interface ConsoleFormProps {
   mode: "create" | "edit";
   consoleId: number;
   consoleVariantId: number;
+  variantSlug: string;
   skinId?: number | null;
   initialData?: {
     id?: number;
@@ -39,6 +40,7 @@ export const ConsoleForm = ({
   consoleVariantId,
   skinId,
   initialData,
+  variantSlug,
   onSuccess,
   onCancel,
 }: ConsoleFormProps) => {
@@ -101,6 +103,7 @@ export const ConsoleForm = ({
       acceptsTrade: formData.acceptsTrade,
       photoMain: mainPhotoUrl || undefined,
       photos: additionalUrls,
+      variantSlug,
     };
 
     if (mode === "create") {
