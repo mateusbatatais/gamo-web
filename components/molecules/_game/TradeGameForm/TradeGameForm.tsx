@@ -1,14 +1,16 @@
 // src/components/organisms/TradeGameForm/TradeGameForm.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { Condition, MediaType } from "@/@types/collection.types";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
+import { Select, SelectOption } from "@/components/atoms/Select/Select";
 
 interface TradeGameFormProps {
   gameId: number;
+  platformOptions?: SelectOption[];
   initialData?: {
     id?: number;
     description?: string | null;
@@ -21,18 +23,29 @@ interface TradeGameFormProps {
     acceptsTrade?: boolean | null;
     photoMain?: string | null;
     photos?: string[] | null;
+    platformId?: number;
   };
   onSuccess: () => void;
   onCancel?: () => void;
 }
 
-export const TradeGameForm = ({ gameId, initialData, onSuccess, onCancel }: TradeGameFormProps) => {
+export const TradeGameForm = ({
+  gameId,
+  platformOptions = [],
+  initialData,
+  onSuccess,
+  onCancel,
+}: TradeGameFormProps) => {
+  const [selectedPlatformId, setSelectedPlatformId] = useState<number>(
+    initialData?.platformId || (platformOptions[0] ? Number(platformOptions[0].value) : 0),
+  );
   const t = useTranslations("GameForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
   const handleSubmit = async (data: TradeSubmitData<Condition>) => {
     const payload = {
       gameId,
+      platformId: selectedPlatformId,
       media: (initialData?.media || "PHYSICAL") as MediaType,
       ...data,
     };
@@ -59,6 +72,17 @@ export const TradeGameForm = ({ gameId, initialData, onSuccess, onCancel }: Trad
       onCancel={onCancel}
       isSubmitting={isPending}
       conditionOptions={conditionOptions}
+      extraFields={
+        platformOptions.length > 0 && (
+          <Select
+            name="platformId"
+            value={selectedPlatformId.toString()}
+            onChange={(e) => setSelectedPlatformId(Number(e.target.value))}
+            label={t("platform")}
+            options={platformOptions}
+          />
+        )
+      }
     />
   );
 };

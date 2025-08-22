@@ -16,10 +16,12 @@ import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImag
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { Rating } from "@/components/atoms/Rating/Rating";
 import { Range } from "@/components/atoms/Range/Range";
+import { SelectOption } from "@/components/atoms/Select/Select";
 
 interface GameFormProps {
   mode: "create" | "edit";
   gameId: number;
+  platformOptions: SelectOption[]; // Adicione esta linha
   initialData?: {
     id?: number;
     description?: string | null;
@@ -36,11 +38,20 @@ interface GameFormProps {
     review?: string | null;
     abandoned?: boolean | null;
     media?: "PHYSICAL" | "DIGITAL";
+    platformId?: number; // Adicione esta linha
   };
   onSuccess: () => void;
   onCancel?: () => void;
 }
-export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: GameFormProps) => {
+
+export const GameForm = ({
+  mode,
+  gameId,
+  platformOptions,
+  initialData,
+  onSuccess,
+  onCancel,
+}: GameFormProps) => {
   const t = useTranslations("GameForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
@@ -73,6 +84,9 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
     review: initialData?.review || "",
     abandoned: initialData?.abandoned || false,
     media: initialData?.media || "PHYSICAL",
+    platformId: initialData?.platformId
+      ? String(initialData.platformId)
+      : platformOptions[0]?.value || "", // Adicione esta linha
   });
 
   const handleChange = (
@@ -95,6 +109,7 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
     const payload = {
       gameId,
       media: formData.media,
+      platformId: formData.platformId ? parseInt(formData.platformId) : undefined, // Adicione esta linha
       description: formData.description || undefined,
       status: formData.status,
       price: formData.price ? parseFloat(formData.price) : undefined,
@@ -154,13 +169,23 @@ export const GameForm = ({ mode, gameId, initialData, onSuccess, onCancel }: Gam
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
+            name="platformId"
+            value={formData.platformId}
+            onChange={handleChange}
+            label={t("platform")}
+            options={platformOptions}
+          />
+
+          <Select
             name="media"
             value={formData.media}
             onChange={handleChange}
             label={t("media")}
             options={mediaOptions}
           />
+        </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select
             name="status"
             value={formData.status}

@@ -37,6 +37,7 @@ export interface TradeSubmitData<C extends string = string> {
   acceptsTrade: boolean;
   photoMain?: string;
   photos: string[];
+  platformId?: number;
 }
 
 export interface TradeFormBaseProps<C extends string = string> {
@@ -47,6 +48,7 @@ export interface TradeFormBaseProps<C extends string = string> {
   onCancel?: () => void;
   isSubmitting?: boolean;
   conditionOptions?: { value: C; label: string }[];
+  extraFields?: React.ReactNode;
 }
 
 interface FormDataType<C extends string = string> {
@@ -67,6 +69,7 @@ export function TradeFormBase<C extends string = string>({
   onCancel,
   isSubmitting,
   conditionOptions,
+  extraFields,
 }: TradeFormBaseProps<C>) {
   const {
     photoMain,
@@ -167,6 +170,8 @@ export function TradeFormBase<C extends string = string>({
             />
           </div>
         </div>
+
+        {extraFields}
 
         <MainImageUpload
           label={t("mainPhoto")}

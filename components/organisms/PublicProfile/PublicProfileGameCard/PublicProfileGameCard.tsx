@@ -31,6 +31,11 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
 
+  const platformOptions = Object.entries(platformsMap).map(([id, name]) => ({
+    value: id,
+    label: name,
+  }));
+
   const handleDelete = () => {
     deleteGame(game.id || 0);
   };
@@ -193,6 +198,7 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
         <GameForm
           mode="edit"
           gameId={game.gameId}
+          platformOptions={platformOptions} // Adicione esta linha
           initialData={{
             id: game.id,
             description: game.description || undefined,
@@ -209,10 +215,10 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
             review: game.review || undefined,
             abandoned: game.abandoned || false,
             media: game.media,
+            platformId: game.platformId,
           }}
           onSuccess={() => {
             setShowEditModal(false);
-            // A invalidação é tratada pelo próprio GameForm
           }}
           onCancel={() => setShowEditModal(false)}
         />

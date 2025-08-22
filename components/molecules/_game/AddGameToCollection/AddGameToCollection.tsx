@@ -102,6 +102,7 @@ export function AddGameToCollection({
 
       <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar jogo"}>
         <TradeGameForm
+          platformOptions={platformOptions}
           gameId={gameId}
           onSuccess={() => {
             closeTradeModal();
