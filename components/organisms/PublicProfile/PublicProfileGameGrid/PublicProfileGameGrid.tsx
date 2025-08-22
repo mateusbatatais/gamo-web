@@ -40,7 +40,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
 
   // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || "6");
+  const perPage = parseInt(searchParams.get("perPage") || "50");
   const sort = searchParams.get("sort") || "title-asc";
   const search = searchParams.get("search") || "";
 
@@ -88,7 +88,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         <div className="mb-6">
           <Skeleton className="h-10 w-full rounded-md" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-64 w-full rounded-xl" />
           ))}
@@ -130,7 +130,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
       ) : (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
-          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {games.map((game: UserGame) => (
               <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
             ))}

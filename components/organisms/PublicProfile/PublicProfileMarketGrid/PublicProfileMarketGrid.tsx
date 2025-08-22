@@ -45,7 +45,7 @@ const PublicProfileMarketGridContent = ({
 
   // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || "20");
+  const perPage = parseInt(searchParams.get("perPage") || "50");
 
   // Ordenação padrão compatível com ambas as APIs
   const defaultSort = "createdAt-desc";
@@ -108,7 +108,7 @@ const PublicProfileMarketGridContent = ({
         <div className="mb-6">
           <Skeleton className="h-10 w-full rounded-md" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(8)].map((_, i) => (
             <Skeleton key={i} className="h-64 w-full rounded-xl" />
           ))}
@@ -146,9 +146,7 @@ const PublicProfileMarketGridContent = ({
       {consoles && consoles.length > 0 && (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("consolesForSale")}</h2>
-          <div
-            className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8`}
-          >
+          <div className={`grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8`}>
             {consoles.map((consoleItem) => (
               <PublicProfileConsoleCard
                 key={consoleItem.id}
@@ -171,7 +169,7 @@ const PublicProfileMarketGridContent = ({
       {games && games.length > 0 && (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesForSale")}</h2>
-          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+          <div className={`grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {games.map((game) => (
               <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
             ))}

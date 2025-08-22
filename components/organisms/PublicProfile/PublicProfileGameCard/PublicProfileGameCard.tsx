@@ -6,19 +6,30 @@ import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
-import { Pencil, Trash } from "lucide-react";
+import {
+  Pencil,
+  Trash,
+  CheckCircle2,
+  Disc3,
+  CloudDownload,
+  ArrowLeftRight,
+  Star,
+} from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { GameForm } from "@/components/organisms/_game/GameForm/GameForm";
 import { useDeleteUserGame } from "@/hooks/usePublicProfile";
 import { UserGame } from "@/@types/collection.types";
+import Link from "next/link";
+import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 
 export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwner: boolean }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
+  const { platformsMap } = usePlatformsCache();
 
   const handleDelete = () => {
     deleteGame(game.id || 0);
@@ -26,9 +37,9 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group">
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-1">
+          <div className="absolute top-2 right-2 flex z-10 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}
@@ -47,14 +58,55 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
           </div>
         )}
 
-        <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
+        <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 items-start">
+          <div
+            className="bg-gray-800/70 text-white p-1.5 rounded-full backdrop-blur-sm"
+            aria-label="Media"
+            title={game.media}
+          >
+            {game.media === "PHYSICAL" ? <Disc3 size={16} /> : <CloudDownload size={16} />}
+          </div>
+
+          {game.progress === 10 && (
+            <div
+              className="bg-green-500 text-white p-1.5 rounded-full"
+              aria-label="Finished"
+              title="Finished"
+            >
+              <CheckCircle2 size={16} />
+            </div>
+          )}
+
+          {game.acceptsTrade && (
+            <div
+              className="bg-amber-500 text-white p-1.5 rounded-full"
+              aria-label="Accepts Trade"
+              title="Accepts Trade"
+            >
+              <ArrowLeftRight size={16} />
+            </div>
+          )}
+
+          {game.rating && (
+            <div
+              className="bg-secondary-500 text-white flex items-center justify-center p-1 rounded-full"
+              aria-label="Rating"
+              title={`Rating ${game.rating / 2}/5`}
+            >
+              <Star size={12} className="fill-current mr-0.5" />
+              <span className="text-xs font-bold">{game.rating / 2}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
           {game.photoMain ? (
             <Image
               src={game.photoMain}
               alt={game.gameTitle || ""}
               fill
               sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-              className="object-contain"
+              className="object-cover"
               priority={true}
             />
           ) : game.gameImageUrl ? (
@@ -63,7 +115,7 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
               alt={game.gameTitle || ""}
               fill
               sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-              className="object-contain"
+              className="object-cover"
               priority={true}
             />
           ) : (
@@ -74,30 +126,46 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
         </div>
 
         <div className="p-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-semibold text-lg dark:text-white line-clamp-1">
-                {game.gameTitle}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">{t(`media.${game.media}`)}</p>
+          <div className="flex justify-between items-start mb-2">
+            <div className="flex-1 min-w-0">
+              <Link href={`/game/${game.gameSlug}`} target="_blank">
+                <h3 className="font-bold text-lg dark:text-white line-clamp-2 hover:text-primary-500">
+                  {game.gameTitle}
+                </h3>
+              </Link>
+              {game.platformId && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  {platformsMap[game.platformId]}
+                </p>
+              )}
             </div>
           </div>
 
-          {game.rating && (
-            <div className="mt-2 flex items-center">
-              <span className="text-sm font-medium dark:text-gray-300">{t("rating")}:</span>
-              <span className="ml-1 font-bold dark:text-white">{game.rating}/10</span>
+          {game.progress && game.progress > 0 && game.progress < 10 ? (
+            <div className="mb-3">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <span>{t("progress")}</span>
+                <span>{game.progress * 10}%</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+                <div
+                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${game.progress * 10}%` }}
+                ></div>
+              </div>
             </div>
-          )}
+          ) : null}
 
-          {game.price && (
-            <p className="mt-2 font-bold dark:text-white">
-              {new Intl.NumberFormat(undefined, {
-                style: "currency",
-                currency: "BRL",
-              }).format(game.price)}
-            </p>
-          )}
+          <div className="flex justify-between items-center mb-3">
+            {game.price && (
+              <p className="font-bold text-secondary-600 dark:text-secondary-400">
+                {new Intl.NumberFormat(undefined, {
+                  style: "currency",
+                  currency: "BRL",
+                }).format(game.price)}
+              </p>
+            )}
+          </div>
 
           <div className="mt-3 flex gap-2 flex-wrap">
             {game.hasBox && !game.hasManual && (
@@ -115,12 +183,6 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
             {game.hasManual && game.hasBox && (
               <Badge status="success" size="sm">
                 CIB
-              </Badge>
-            )}
-
-            {game.acceptsTrade && (
-              <Badge status="warning" size="sm">
-                {t("acceptsTrade")}
               </Badge>
             )}
           </div>

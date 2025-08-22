@@ -21,6 +21,7 @@ interface BaseCollectionItem {
 export interface UserConsole extends BaseCollectionItem {
   consoleId: number;
   consoleVariantId: number;
+  variantSlug: string;
   skinId?: number | null;
   consoleName?: string;
   variantName?: string;
@@ -45,4 +46,5 @@ export interface UserGame extends BaseCollectionItem {
   gameTitle?: string;
   gameImageUrl?: string;
   platformId?: number;
+  gameSlug?: string;
 }

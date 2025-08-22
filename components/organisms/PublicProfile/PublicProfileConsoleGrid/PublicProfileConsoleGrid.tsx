@@ -44,7 +44,7 @@ const PublicProfileConsoleGridContent = ({
 
   // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || "6");
+  const perPage = parseInt(searchParams.get("perPage") || "50");
   const sort = searchParams.get("sort") || "name-asc";
   const search = searchParams.get("search") || "";
 
@@ -87,7 +87,7 @@ const PublicProfileConsoleGridContent = ({
         <div className="mb-6">
           <Skeleton className="h-10 w-full rounded-md" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <Skeleton key={i} className="h-64 w-full rounded-xl" />
           ))}
@@ -129,7 +129,7 @@ const PublicProfileConsoleGridContent = ({
       ) : (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("collection")}</h2>
-          <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {consoles.map((consoleItem: UserConsole) => (
               <PublicProfileConsoleCard
                 key={consoleItem.id}

@@ -342,6 +342,7 @@
     "noMarketItems": "No items for sale at the moment",
     "consolesForSale": "Consoles for sale",
     "gamesForSale": "Games for sale",
+    "progress": "Progress",
     "order": {
       "nameAsc": "Name (A-Z)",
       "nameDesc": "Name (Z-A)",

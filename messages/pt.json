@@ -341,6 +341,7 @@
     "noMarketItems": "Nenhum item à venda no momento",
     "consolesForSale": "Consoles à venda",
     "gamesForSale": "Jogos à venda",
+    "progress": "Progresso",
     "order": {
       "nameAsc": "Nome (A-Z)",
       "nameDesc": "Nome (Z-A)",
