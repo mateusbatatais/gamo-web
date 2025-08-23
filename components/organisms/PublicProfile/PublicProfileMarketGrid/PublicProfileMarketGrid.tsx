@@ -13,6 +13,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
+import { ToggleGroup } from "@/components/molecules/ToggleGroup/ToggleGroup";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -43,9 +44,15 @@ const PublicProfileMarketGridContent = ({
   const searchParams = useSearchParams();
   const router = useRouter();
 
+  const toggleItems = [
+    { value: "selling", label: t("selling") },
+    { value: "looking", label: t("lookingFor") },
+  ];
+
   // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || "50");
+  const type = searchParams.get("type") || "selling"; // Novo parâmetro para tipo de item
 
   // Ordenação padrão compatível com ambas as APIs
   const defaultSort = "createdAt-desc";
@@ -57,18 +64,21 @@ const PublicProfileMarketGridContent = ({
 
   const search = searchParams.get("search") || "";
 
-  // Buscar itens para venda (status SELLING)
+  // Determinar o status baseado no tipo selecionado
+  const status = type === "looking" ? "LOOKING_FOR" : "SELLING";
+
+  // Buscar itens baseado no tipo selecionado
   const {
     data: gamesData,
     isLoading: gamesLoading,
     error: gamesError,
-  } = useUserGamesPublic(slug, locale, "SELLING", page, perPage, sort, search);
+  } = useUserGamesPublic(slug, locale, status, page, perPage, sort, search);
 
   const {
     data: consolesData,
     isLoading: consolesLoading,
     error: consolesError,
-  } = useUserConsolesPublic(slug, locale, "SELLING", page, perPage, sort, search);
+  } = useUserConsolesPublic(slug, locale, status, page, perPage, sort, search);
 
   const isLoading = gamesLoading || consolesLoading;
   const error = gamesError || consolesError;
@@ -102,6 +112,13 @@ const PublicProfileMarketGridContent = ({
     router.push(`?${params.toString()}`);
   };
 
+  const handleTypeChange = (newType: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("type", newType);
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  };
+
   if (isLoading) {
     return (
       <div>
@@ -127,56 +144,88 @@ const PublicProfileMarketGridContent = ({
     );
   }
 
-  const hasItems = (games && games.length > 0) || (consoles && consoles.length > 0);
-
   return (
     <div>
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="w-full sm:w-auto flex-1">
           <SearchBar compact searchPath={`/user/${slug}/market`} placeholder={t("searchMarket")} />
         </div>
-        <SortSelect
-          options={SORT_OPTIONS}
-          value={sort}
-          onChange={handleSortChange}
-          className="w-full sm:w-auto"
-        />
+        <div className="flex gap-4">
+          <ToggleGroup
+            items={toggleItems}
+            value={type}
+            onChange={handleTypeChange}
+            variant="secondary"
+            size="sm"
+          />
+          <SortSelect
+            options={SORT_OPTIONS}
+            value={sort}
+            onChange={handleSortChange}
+            className="w-full sm:w-auto"
+          />
+        </div>
       </div>
 
-      {consoles && consoles.length > 0 && (
+      {type === "selling" ? (
         <>
-          <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("consolesForSale")}</h2>
-          <div className={`grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8`}>
-            {consoles.map((consoleItem) => (
-              <PublicProfileConsoleCard
-                key={consoleItem.id}
-                consoleItem={consoleItem}
-                isOwner={isOwner || false}
-              />
-            ))}
-          </div>
+          {consoles && consoles.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("consolesForSale")}</h2>
+              <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8`}>
+                {consoles.map((consoleItem) => (
+                  <PublicProfileConsoleCard
+                    key={consoleItem.id}
+                    consoleItem={consoleItem}
+                    isOwner={isOwner || false}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {games && games.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesForSale")}</h2>
+              <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+                {games.map((game) => (
+                  <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          {consoles && consoles.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-6 dark:text-white">
+                {t("consolesLookingFor")}
+              </h2>
+              <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8`}>
+                {consoles.map((consoleItem) => (
+                  <PublicProfileConsoleCard
+                    key={consoleItem.id}
+                    consoleItem={consoleItem}
+                    isOwner={isOwner || false}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {games && games.length > 0 && (
+            <>
+              <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesLookingFor")}</h2>
+              <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+                {games.map((game) => (
+                  <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
-
-      {!hasItems && (
-        <Card>
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">{t("noMarketItems")}</p>
-          </div>
-        </Card>
-      )}
-
-      {games && games.length > 0 && (
-        <>
-          <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesForSale")}</h2>
-          <div className={`grid grid-cols-2  md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {games.map((game) => (
-              <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
-            ))}
-          </div>
-        </>
-      )}
-
       {meta && meta.totalPages > 1 && (
         <div className="mt-8">
           <Pagination

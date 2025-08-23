@@ -360,7 +360,11 @@
       "ratingAsc": "Rating (Lowest first)",
       "conditionAsc": "Condition (A-Z)",
       "conditionDesc": "Condition (Z-A)"
-    }
+    },
+    "selling": "Selling",
+    "lookingFor": "Looking For",
+    "consolesLookingFor": "Consoles Looking For",
+    "gamesLookingFor": "Games Looking For"
   },
   "ConsoleForm": {
     "mainPhoto": "Main Photo",

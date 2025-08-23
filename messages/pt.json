@@ -359,7 +359,11 @@
       "ratingAsc": "Avaliação (menor primeiro)",
       "conditionAsc": "Condição (A-Z)",
       "conditionDesc": "Condição (Z-A)"
-    }
+    },
+    "selling": "Vendendo",
+    "lookingFor": "Buscando",
+    "consolesLookingFor": "Consoles buscados",
+    "gamesLookingFor": "Jogos buscados"
   },
   "ConsoleForm": {
     "mainPhoto": "Foto principal",

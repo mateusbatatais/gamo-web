@@ -44,7 +44,7 @@ export const PublicProfileGameCard = ({ game, isOwner }: { game: UserGame; isOwn
     <>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group">
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2 right-2 flex z-1">
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}

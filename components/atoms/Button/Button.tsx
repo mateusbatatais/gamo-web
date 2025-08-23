@@ -36,7 +36,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-primary-500 text-white border border-transparent",
-  secondary: "bg-secondary-500 text-white border border-transparent",
+  secondary: "bg-secondary-500 text-white border border-transparent hover:bg-secondary-600",
   outline: "border bg-transparent",
   transparent: "bg-transparent border-transparent",
 };
