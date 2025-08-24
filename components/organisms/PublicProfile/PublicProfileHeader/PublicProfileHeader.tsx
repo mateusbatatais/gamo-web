@@ -13,17 +13,7 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
   return (
     <div className="flex flex-col md:flex-row items-start gap-6">
       <div className="flex-shrink-0">
-        <Avatar
-          src={profile.profileImage}
-          alt={profile.name}
-          size="xl"
-          className="border-4 border-white dark:border-gray-800 shadow-lg"
-          fallback={
-            <span className="text-5xl text-gray-400 dark:text-gray-300">
-              {profile.name.charAt(0).toUpperCase()}
-            </span>
-          }
-        />
+        <Avatar src={profile.profileImage} alt={profile.name} size="xl" />
       </div>
 
       <div className="flex-grow">

@@ -7,11 +7,11 @@ import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/atoms/Input/Input";
-import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlaceholder";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { useToast } from "@/contexts/ToastContext";
 import { Card } from "@/components/atoms/Card/Card";
 import { useAccount } from "@/hooks/account/useUserAccount";
+import { Avatar } from "@/components/atoms/Avatar/Avatar";
 
 export default function AccountDetailsForm() {
   const { profileQuery, updateProfileMutation, uploadProfileImage } = useAccount();
@@ -114,7 +114,7 @@ export default function AccountDetailsForm() {
                   className="rounded-full object-cover"
                 />
               ) : (
-                <ProfileImagePlaceholder />
+                <Avatar alt={name} size="xl" />
               )}
               <Button
                 type="button"

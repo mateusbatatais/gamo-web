@@ -24,6 +24,7 @@ import {
 import clsx from "clsx";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import { Button } from "@/components/atoms/Button/Button";
+import { Avatar } from "@/components/atoms/Avatar/Avatar";
 
 export default function Header() {
   const t = useTranslations("Header");
@@ -184,17 +185,7 @@ export default function Header() {
               <Dropdown
                 trigger={
                   <div className="flex items-center space-x-1 cursor-pointer">
-                    {user.profileImage ? (
-                      <Image
-                        src={user.profileImage}
-                        alt="User Avatar"
-                        width={32}
-                        height={32}
-                        className="rounded-full border-2 border-transparent hover:border-primary"
-                      />
-                    ) : (
-                      <User size={20} />
-                    )}
+                    <Avatar src={user.profileImage} alt={user.name} size="xs" />
                     <ChevronDown size={16} />
                   </div>
                 }

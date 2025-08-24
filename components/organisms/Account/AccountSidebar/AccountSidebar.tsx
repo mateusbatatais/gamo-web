@@ -19,8 +19,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import ProfileImagePlaceholder from "../ProfileImagePlaceholder/ProfileImagePlaceholder";
-import Image from "next/image";
+import { Avatar } from "@/components/atoms/Avatar/Avatar";
 
 export default function AccountSidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,19 +41,8 @@ export default function AccountSidebar() {
     <>
       <div className="md:hidden flex items-center justify-between w-full p-4 border border-neutral-300 rounded-lg bg-white dark:bg-gray-800 shadow-sm dark:border-gray-700 mb-2">
         <div className="flex items-center gap-3">
-          {user?.profileImage ? (
-            <Image
-              src={user.profileImage}
-              alt="Avatar"
-              width={40}
-              height={40}
-              className="rounded-full object-cover w-10 h-10"
-            />
-          ) : (
-            <div className="w-10 h-10">
-              <ProfileImagePlaceholder size="sm" />
-            </div>
-          )}
+          <Avatar src={user?.profileImage} alt={user?.name} size="sm" />
+
           <p className="font-medium">{user?.name}</p>
         </div>
 
@@ -76,17 +64,7 @@ export default function AccountSidebar() {
       >
         {/* Profile (visível apenas em desktop) */}
         <div className="hidden md:flex flex-col items-center gap-3 mb-6 pb-4 border-b border-neutral-200 dark:border-gray-700">
-          {user?.profileImage ? (
-            <Image
-              src={user.profileImage}
-              alt="Avatar"
-              width={128}
-              height={128}
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <ProfileImagePlaceholder />
-          )}
+          <Avatar src={user?.profileImage} alt={user?.name} size="lg" />
           <div>
             <p className="font-medium">{user?.name}</p>
           </div>
