@@ -48,9 +48,10 @@ export function ToggleGroup({
             size={size}
             variant={variant}
             status={status}
-            className={clsx("transition-all duration-200 !rounded-none", {
-              "!rounded-l-md": isFirst,
-              "!rounded-r-md": isLast,
+            className={clsx("transition-all duration-200", {
+              "rounded-l-md": isFirst,
+              "rounded-r-md": isLast,
+              "rounded-none": !isFirst && !isLast,
               "-ml-px": !isFirst,
               "opacity-100": isSelected,
               "opacity-70 hover:opacity-100": !isSelected,
