@@ -23,22 +23,23 @@ export const ProfileStats = ({ stats }: ProfileStatsProps) => {
         description="Total de jogos na coleção"
         className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/50 dark:to-blue-800/50"
       />
-      <StatCard
-        title={t("playedThisYear")}
-        value={stats.playedThisYear}
-        description="Jogados em 2025"
-        className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/50 dark:to-green-800/50"
-      />
+
       <StatCard
         title={t("backlog")}
         value={stats.backlog}
         description="Jogos na lista de espera"
+        className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/50 dark:to-green-800/50"
+      />
+      <StatCard
+        title={t("totalConsoles")}
+        value={stats.playedThisYear}
+        description="Todos os consoles"
         className="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/50 dark:to-amber-800/50"
       />
       <StatCard
-        title={t("achievements")}
+        title={t("TotalAccessories")}
         value={stats.achievements}
-        description="Conquistas desbloqueadas"
+        description="Todos os acessorios"
         className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/50 dark:to-purple-800/50"
       />
     </div>

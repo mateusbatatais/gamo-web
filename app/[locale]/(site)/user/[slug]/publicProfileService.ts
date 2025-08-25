@@ -6,7 +6,7 @@ export async function fetchPublicProfile(slug: string, locale: string): Promise<
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/public/profile/${slug}?locale=${locale}`,
     {
-      next: { tags: [`profile-${slug}`] }, // Para revalidação sob demanda
+      next: { tags: [`profile-${slug}`] },
     },
   );
 

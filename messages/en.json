@@ -364,7 +364,9 @@
     "selling": "Selling",
     "lookingFor": "Looking For",
     "consolesLookingFor": "Consoles Looking For",
-    "gamesLookingFor": "Games Looking For"
+    "gamesLookingFor": "Games Looking For",
+    "totalConsoles": "Total Consoles",
+    "TotalAccessories": "Total Accessories"
   },
   "ConsoleForm": {
     "mainPhoto": "Main Photo",

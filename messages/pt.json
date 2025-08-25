@@ -363,7 +363,9 @@
     "selling": "Vendendo",
     "lookingFor": "Buscando",
     "consolesLookingFor": "Consoles buscados",
-    "gamesLookingFor": "Jogos buscados"
+    "gamesLookingFor": "Jogos buscados",
+    "totalConsoles": "Total de Consoles",
+    "TotalAccessories": "Total de Acessórios"
   },
   "ConsoleForm": {
     "mainPhoto": "Foto principal",
