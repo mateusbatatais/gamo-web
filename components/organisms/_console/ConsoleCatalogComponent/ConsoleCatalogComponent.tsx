@@ -42,6 +42,16 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     searchParams.get("generation")?.split(",").filter(Boolean) || [],
   );
 
+  const [selectedModels, setSelectedModels] = useState<string[]>(
+    searchParams.get("model")?.split(",").filter(Boolean) || [],
+  );
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(
+    searchParams.get("type")?.split(",").filter(Boolean) || [],
+  );
+  const [selectedAllDigital, setSelectedAllDigital] = useState<boolean>(
+    searchParams.get("allDigital") === "true",
+  );
+
   const {
     data: consoleVariants,
     isLoading,
@@ -54,6 +64,9 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     sort,
     selectedBrands,
     selectedGenerations,
+    selectedModels,
+    selectedTypes,
+    selectedAllDigital,
     searchQuery,
   });
 
@@ -103,9 +116,76 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
+  const handleModelChange = (models: string[]) => {
+    setSelectedModels(models);
+
+    const params = new URLSearchParams({
+      locale,
+      page: "1",
+      perPage: perPage.toString(),
+      brand: selectedBrands.join(","),
+      generation: selectedGenerations.join(","),
+      search: searchQuery,
+      sort,
+    });
+
+    if (models.length > 0) {
+      params.set("model", models.join(","));
+    }
+    if (selectedAllDigital !== undefined) {
+      params.set("allDigital", selectedAllDigital.toString());
+    }
+
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
+  };
+
+  const handleTypeChange = (types: string[]) => {
+    setSelectedTypes(types);
+    updateURL({ type: types.join(",") });
+  };
+
+  const handleAllDigitalChange = (allDigital: boolean) => {
+    setSelectedAllDigital(allDigital);
+    updateURL({ allDigital: allDigital.toString() });
+  };
+
+  const updateURL = (newParams: Record<string, string>) => {
+    const params = new URLSearchParams({
+      locale,
+      page: "1",
+      perPage: perPage.toString(),
+      brand: selectedBrands.join(","),
+      generation: selectedGenerations.join(","),
+      model: selectedModels.join(","),
+      type: selectedTypes.join(","),
+      search: searchQuery,
+      sort,
+    });
+
+    if (selectedAllDigital) {
+      params.set("allDigital", "true");
+    } else {
+      params.delete("allDigital");
+    }
+
+    // Adicione os novos parâmetros
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+
+    window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
+  };
+
   const clearFilters = () => {
     setSelectedBrands([]);
     setSelectedGenerations([]);
+    setSelectedModels([]);
+    setSelectedTypes([]);
+    setSelectedAllDigital(false);
 
     const params = new URLSearchParams({
       locale,
@@ -244,8 +324,14 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
           <FilterContainer
             onBrandChange={handleBrandChange}
             onGenerationChange={handleGenerationChange}
+            onModelChange={handleModelChange}
+            onAllDigitalChange={handleAllDigitalChange}
+            onTypeChange={handleTypeChange}
             selectedBrands={selectedBrands}
             selectedGenerations={selectedGenerations}
+            selectedModels={selectedModels}
+            selectedAllDigital={selectedAllDigital}
+            selectedTypes={selectedTypes}
             clearFilters={clearFilters}
           />
         </div>
@@ -298,8 +384,14 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
               <FilterContainer
                 onBrandChange={handleBrandChange}
                 onGenerationChange={handleGenerationChange}
+                onModelChange={handleModelChange}
+                onAllDigitalChange={handleAllDigitalChange}
+                onTypeChange={handleTypeChange}
                 selectedBrands={selectedBrands}
                 selectedGenerations={selectedGenerations}
+                selectedModels={selectedModels}
+                selectedAllDigital={selectedAllDigital}
+                selectedTypes={selectedTypes}
                 clearFilters={clearFilters}
               />
             </div>

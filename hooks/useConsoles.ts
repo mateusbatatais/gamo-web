@@ -6,6 +6,7 @@ import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
 import { ConsoleVariant, PaginatedResponse } from "@/@types/catalog.types";
 
+// src/hooks/useConsoles.ts
 interface UseConsolesOptions {
   locale: string;
   page: number;
@@ -13,6 +14,9 @@ interface UseConsolesOptions {
   sort?: string;
   selectedBrands?: string[];
   selectedGenerations?: string[];
+  selectedModels?: string[];
+  selectedTypes?: string[];
+  selectedAllDigital?: boolean;
   searchQuery?: string;
 }
 
@@ -23,6 +27,9 @@ export function useConsoles({
   sort = "releaseDate-desc",
   selectedBrands = [],
   selectedGenerations = [],
+  selectedModels = [],
+  selectedTypes = [],
+  selectedAllDigital = false,
   searchQuery = "",
 }: UseConsolesOptions) {
   const { apiFetch } = useApiClient();
@@ -37,6 +44,9 @@ export function useConsoles({
       sort,
       selectedBrands.join(","),
       selectedGenerations.join(","),
+      selectedModels.join(","),
+      selectedTypes.join(","),
+      selectedAllDigital,
       searchQuery,
     ],
     queryFn: async () => {
@@ -52,12 +62,15 @@ export function useConsoles({
       if (selectedBrands.length > 0) params.append("brand", selectedBrands.join(","));
       if (selectedGenerations.length > 0)
         params.append("generation", selectedGenerations.join(","));
+      if (selectedModels.length > 0) params.append("model", selectedModels.join(","));
+      if (selectedTypes.length > 0) params.append("type", selectedTypes.join(","));
+      if (selectedAllDigital) params.append("allDigital", "true");
       if (searchQuery) params.append("search", searchQuery);
 
       return apiFetch(`/consoles?${params.toString()}`);
     },
     enabled: initialized,
-    staleTime: 5 * 60 * 1000, // 5 minutos
-    placeholderData: (previousData) => previousData, // Substitui keepPreviousData
+    staleTime: 5 * 60 * 1000,
+    placeholderData: (previousData) => previousData,
   });
 }

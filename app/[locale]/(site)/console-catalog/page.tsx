@@ -7,7 +7,6 @@ import ConsoleCatalogComponent from "@/components/organisms/_console/ConsoleCata
 
 const CatalogPageWrapper = () => {
   const searchParams = useSearchParams();
-  // const brand = searchParams.get("brand") || "";
   const locale = useLocale();
   const page = parseInt(searchParams.get("page") || "1", 10);
   const perPage = parseInt(searchParams.get("perPage") || "12", 10);
