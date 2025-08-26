@@ -12,6 +12,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
+import { useState } from "react";
+import { Drawer } from "@/components/atoms/Drawer/Drawer";
+import { Settings2 } from "lucide-react";
+import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
+import { Button } from "@/components/atoms/Button/Button";
 
 interface PublicProfileGameGridProps {
   slug: string;
@@ -37,21 +42,32 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
   const t = useTranslations("PublicProfile");
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
-  // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || "50");
   const sort = searchParams.get("sort") || "title-asc";
   const search = searchParams.get("search") || "";
+  const genres = searchParams.get("genres") || "";
+  const platforms = searchParams.get("platforms") || "";
+
+  const [selectedGenres, setSelectedGenres] = useState<number[]>(
+    genres ? genres.split(",").map(Number) : [],
+  );
+  const [selectedPlatforms, setSelectedPlatforms] = useState<number[]>(
+    platforms ? platforms.split(",").map(Number) : [],
+  );
 
   const { data, isLoading, error } = useUserGamesPublic(
     slug,
     locale,
-    "OWNED", // status fixo para coleção
+    "OWNED",
     page,
     perPage,
     sort,
     search,
+    selectedGenres,
+    selectedPlatforms,
   );
 
   const games = data?.items || [];
@@ -78,6 +94,40 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", newSort);
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleGenreChange = (genres: number[]) => {
+    setSelectedGenres(genres);
+    updateURL({ genres: genres.join(",") });
+  };
+
+  const handlePlatformChange = (platforms: number[]) => {
+    setSelectedPlatforms(platforms);
+    updateURL({ platforms: platforms.join(",") });
+  };
+
+  const updateURL = (newParams: Record<string, string>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  };
+
+  const clearFilters = () => {
+    setSelectedGenres([]);
+    setSelectedPlatforms([]);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("genres");
+    params.delete("platforms");
     params.set("page", "1");
     router.push(`?${params.toString()}`);
   };
@@ -113,13 +163,37 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         <div className="w-full sm:w-auto flex-1">
           <SearchBar compact searchPath={`/user/${slug}/games`} placeholder={t("searchGames")} />
         </div>
-        <SortSelect
-          options={SORT_OPTIONS}
-          value={sort}
-          onChange={handleSortChange}
-          className="w-full sm:w-auto"
-        />
+        <div className="flex items-center gap-4">
+          <SortSelect
+            options={SORT_OPTIONS}
+            value={sort}
+            onChange={handleSortChange}
+            className="w-full sm:w-auto"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsFilterDrawerOpen(true)}
+            icon={<Settings2 size={16} />}
+          />
+        </div>
       </div>
+
+      <Drawer
+        open={isFilterDrawerOpen}
+        onClose={() => setIsFilterDrawerOpen(false)}
+        title="Filtrar Jogos"
+        anchor="right"
+        className="w-full max-w-md"
+      >
+        <GameFilterContainer
+          onGenreChange={handleGenreChange}
+          onPlatformChange={handlePlatformChange}
+          selectedGenres={selectedGenres}
+          selectedPlatforms={selectedPlatforms}
+          clearFilters={clearFilters}
+        />
+      </Drawer>
 
       {!games || games.length === 0 ? (
         <Card>

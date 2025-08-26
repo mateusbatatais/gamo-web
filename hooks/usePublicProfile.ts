@@ -75,6 +75,8 @@ export function useUserGamesPublic(
   perPage: number = 20,
   sort?: string,
   search?: string,
+  genres?: number[],
+  platforms?: number[],
 ) {
   const { apiFetch } = useApiClient();
 
@@ -85,9 +87,22 @@ export function useUserGamesPublic(
   queryParams.append("perPage", perPage.toString());
   if (sort) queryParams.append("sort", sort);
   if (search) queryParams.append("search", search);
+  if (genres && genres.length > 0) queryParams.append("genres", genres.join(","));
+  if (platforms && platforms.length > 0) queryParams.append("platforms", platforms.join(","));
 
   return useQuery<PaginatedResponse<UserGame>>({
-    queryKey: ["userGamesPublic", slug, locale, status, page, perPage, sort, search],
+    queryKey: [
+      "userGamesPublic",
+      slug,
+      locale,
+      status,
+      page,
+      perPage,
+      sort,
+      search,
+      genres,
+      platforms,
+    ],
     queryFn: () => apiFetch(`/public/profile/${slug}/games?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,
   });
