@@ -12,6 +12,11 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
+import { useState } from "react";
+import { Drawer } from "@/components/atoms/Drawer/Drawer";
+import { Settings2 } from "lucide-react";
+import { Button } from "@/components/atoms/Button/Button";
+import FilterContainer from "@/components/molecules/Filter/Filter";
 
 interface PublicProfileConsoleGridProps {
   slug: string;
@@ -41,12 +46,33 @@ const PublicProfileConsoleGridContent = ({
   const t = useTranslations("PublicProfile");
   const searchParams = useSearchParams();
   const router = useRouter();
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
   // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || "50");
   const sort = searchParams.get("sort") || "name-asc";
   const search = searchParams.get("search") || "";
+  const brand = searchParams.get("brand") || "";
+  const generation = searchParams.get("generation") || "";
+  const model = searchParams.get("model") || "";
+  const type = searchParams.get("type") || "";
+  const allDigital = searchParams.get("allDigital") || "";
+
+  // Estados para todos os filtros
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(
+    brand ? brand.split(",").filter(Boolean) : [],
+  );
+  const [selectedGenerations, setSelectedGenerations] = useState<string[]>(
+    generation ? generation.split(",").filter(Boolean) : [],
+  );
+  const [selectedModels, setSelectedModels] = useState<string[]>(
+    model ? model.split(",").filter(Boolean) : [],
+  );
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(
+    type ? type.split(",").filter(Boolean) : [],
+  );
+  const [selectedAllDigital, setSelectedAllDigital] = useState<boolean>(allDigital === "true");
 
   const { data, isLoading, error } = useUserConsolesPublic(
     slug,
@@ -56,6 +82,11 @@ const PublicProfileConsoleGridContent = ({
     perPage,
     sort,
     search,
+    selectedBrands.join(","),
+    selectedGenerations.join(","),
+    selectedModels.join(","),
+    selectedTypes.join(","),
+    selectedAllDigital,
   );
 
   const consoles = data?.items || [];
@@ -78,6 +109,61 @@ const PublicProfileConsoleGridContent = ({
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", newSort);
     params.set("page", "1"); // Reset to first page on sort change
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleBrandChange = (brands: string[]) => {
+    setSelectedBrands(brands);
+    updateURL({ brand: brands.join(",") });
+  };
+
+  const handleGenerationChange = (generations: string[]) => {
+    setSelectedGenerations(generations);
+    updateURL({ generation: generations.join(",") });
+  };
+
+  const handleModelChange = (models: string[]) => {
+    setSelectedModels(models);
+    updateURL({ model: models.join(",") });
+  };
+
+  const handleTypeChange = (types: string[]) => {
+    setSelectedTypes(types);
+    updateURL({ type: types.join(",") });
+  };
+
+  const handleAllDigitalChange = (allDigital: boolean) => {
+    setSelectedAllDigital(allDigital);
+    updateURL({ allDigital: allDigital ? "true" : "" });
+  };
+
+  const updateURL = (newParams: Record<string, string>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    params.set("page", "1"); // Reset to first page on filter change
+    router.push(`?${params.toString()}`);
+  };
+
+  const clearFilters = () => {
+    setSelectedBrands([]);
+    setSelectedGenerations([]);
+    setSelectedModels([]);
+    setSelectedTypes([]);
+    setSelectedAllDigital(false);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("brand");
+    params.delete("generation");
+    params.delete("model");
+    params.delete("type");
+    params.delete("allDigital");
+    params.set("page", "1");
     router.push(`?${params.toString()}`);
   };
 
@@ -112,13 +198,44 @@ const PublicProfileConsoleGridContent = ({
         <div className="w-full sm:w-auto flex-1">
           <SearchBar compact searchPath={`/user/${slug}`} placeholder={t("searchConsoles")} />
         </div>
-        <SortSelect
-          options={SORT_OPTIONS}
-          value={sort}
-          onChange={handleSortChange}
-          className="w-full sm:w-auto"
-        />
+        <div className="flex items-center gap-4">
+          <SortSelect
+            options={SORT_OPTIONS}
+            value={sort}
+            onChange={handleSortChange}
+            className="w-full sm:w-auto"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsFilterDrawerOpen(true)}
+            icon={<Settings2 size={16} />}
+          />
+        </div>
       </div>
+
+      {/* Drawer de Filtros */}
+      <Drawer
+        open={isFilterDrawerOpen}
+        onClose={() => setIsFilterDrawerOpen(false)}
+        title="Filtrar Consoles"
+        anchor="right"
+        className="w-full max-w-md"
+      >
+        <FilterContainer
+          onBrandChange={handleBrandChange}
+          onGenerationChange={handleGenerationChange}
+          onModelChange={handleModelChange}
+          onAllDigitalChange={handleAllDigitalChange}
+          onTypeChange={handleTypeChange}
+          selectedBrands={selectedBrands}
+          selectedGenerations={selectedGenerations}
+          selectedModels={selectedModels}
+          selectedAllDigital={selectedAllDigital}
+          selectedTypes={selectedTypes}
+          clearFilters={clearFilters}
+        />
+      </Drawer>
 
       {!consoles || consoles.length === 0 ? (
         <Card>

@@ -97,7 +97,7 @@ const ConsoleCard = ({
               src={normalizeImageUrl(imageUrl)}
               alt={`${name} console`}
               fill
-              className="object-cover"
+              className="object-contain"
               sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
               onError={() => setImageError(true)}
               priority={true}

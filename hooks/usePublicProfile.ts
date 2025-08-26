@@ -26,6 +26,11 @@ export function useUserConsolesPublic(
   perPage: number = 20,
   sort?: string,
   search?: string,
+  brand?: string,
+  generation?: string,
+  model?: string,
+  type?: string,
+  allDigital?: boolean,
 ) {
   const { apiFetch } = useApiClient();
 
@@ -36,14 +41,32 @@ export function useUserConsolesPublic(
   queryParams.append("perPage", perPage.toString());
   if (sort) queryParams.append("sort", sort);
   if (search) queryParams.append("search", search);
+  if (brand) queryParams.append("brand", brand);
+  if (generation) queryParams.append("generation", generation);
+  if (model) queryParams.append("model", model);
+  if (type) queryParams.append("type", type);
+  if (allDigital) queryParams.append("allDigital", "true");
 
   return useQuery<PaginatedResponse<UserConsole>>({
-    queryKey: ["userConsolesPublic", slug, locale, status, page, perPage, sort, search],
+    queryKey: [
+      "userConsolesPublic",
+      slug,
+      locale,
+      status,
+      page,
+      perPage,
+      sort,
+      search,
+      brand,
+      generation,
+      model,
+      type,
+      allDigital,
+    ],
     queryFn: () => apiFetch(`/public/profile/${slug}/consoles?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,
   });
 }
-
 export function useUserGamesPublic(
   slug: string,
   locale: string,
