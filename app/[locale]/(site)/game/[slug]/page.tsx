@@ -3,7 +3,7 @@
 
 import { useTranslations } from "next-intl";
 import { notFound, useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import GameInfo from "@/components/organisms/_game/GameInfo/GameInfo";
 import { RelationCard } from "@/components/molecules/RelationCard/RelationCard";
@@ -12,10 +12,9 @@ import { GameInfoSkeleton } from "@/components/organisms/_game/GameInfo/GameInfo
 import { GalleryDialog } from "@/components/molecules/GalleryDialog/GalleryDialog";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { Gamepad } from "lucide-react";
-import { useFavorite } from "@/hooks/useFavorite";
-import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 import useGameDetails from "@/hooks/useGameDetails";
 import { Game } from "@/@types/catalog.types";
+import { AddGameToCollection } from "@/components/molecules/_game/AddGameToCollection/AddGameToCollection";
 
 export default function GameDetailPage() {
   const params = useParams();
@@ -28,23 +27,15 @@ export default function GameDetailPage() {
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
-  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
-
   const screenshots = data?.shortScreenshots || [];
   const seriesGames = data?.series?.games || [];
   const childrenGames = data?.children || [];
   const parentGames = data?.parents || [];
 
-  const handleToggleFavorite = async () => {
-    if (!data) return;
-
-    try {
-      await toggleFavorite({
-        itemId: data.id,
-        itemType: "GAME",
-      });
-    } catch {}
-  };
+  const [isFavorite, setIsFavorite] = useState(data?.isFavorite || false);
+  const handleFavoriteToggle = useCallback((newState: boolean) => {
+    setIsFavorite(newState);
+  }, []);
 
   const handleOpenGallery = (index: number) => {
     setSelectedImageIndex(index);
@@ -54,6 +45,13 @@ export default function GameDetailPage() {
   const handleCloseGallery = () => {
     setGalleryOpen(false);
   };
+
+  useEffect(() => {
+    if (typeof data?.isFavorite === "boolean" && data.isFavorite !== isFavorite) {
+      setIsFavorite(data.isFavorite);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.isFavorite]);
 
   useEffect(() => {
     if (isError) {
@@ -96,16 +94,11 @@ export default function GameDetailPage() {
     <div className="container mx-auto max-w-6xl">
       <div className="relative">
         <div className="absolute top-4 right-4 z-10">
-          <CardActionButtons
-            loading={isLoading}
-            favoriteLoading={favoriteLoading}
-            actions={[
-              {
-                key: "favorite",
-                active: data.isFavorite || false,
-                onClick: handleToggleFavorite,
-              },
-            ]}
+          <AddGameToCollection
+            gameId={data.id}
+            platforms={data.platforms}
+            isFavorite={isFavorite}
+            onFavoriteToggle={handleFavoriteToggle}
           />
         </div>
 

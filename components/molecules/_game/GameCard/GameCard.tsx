@@ -15,7 +15,7 @@ const useAddToCollectionFeedback = () => {
 
   const triggerFeedback = (skinId: number) => {
     setRecentlyAdded(skinId);
-    setTimeout(() => setRecentlyAdded(null), 2000); // Remove o feedback após 2 segundos
+    setTimeout(() => setRecentlyAdded(null), 2000);
   };
 
   return { recentlyAdded, triggerFeedback };
@@ -174,7 +174,7 @@ const GameCard = ({
             <div className="flex justify-end">
               <AddGameToCollection
                 gameId={id}
-                platforms={platforms} // array de IDs
+                platforms={platforms}
                 isFavorite={isFavorite}
                 onFavoriteToggle={handleFavoriteToggle}
                 onAddSuccess={() => triggerFeedback(id)}
