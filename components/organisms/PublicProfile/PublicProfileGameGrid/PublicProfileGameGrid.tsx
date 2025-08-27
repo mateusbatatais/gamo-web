@@ -14,9 +14,11 @@ import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSe
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { useState } from "react";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
-import { Settings2 } from "lucide-react";
+import { Settings2, Grid3X3, List, Table, ListChecks } from "lucide-react";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
 import { Button } from "@/components/atoms/Button/Button";
+import { Select } from "@/components/atoms/Select/Select";
+import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 
 interface PublicProfileGameGridProps {
   slug: string;
@@ -38,11 +40,14 @@ export const PublicProfileGameGrid = ({
   );
 };
 
+type ViewMode = "grid" | "compact" | "list" | "table";
+
 const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGameGridProps) => {
   const t = useTranslations("PublicProfile");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
 
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || "50");
@@ -85,6 +90,22 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     { value: "rating-desc", label: t("order.ratingDesc") },
   ];
 
+  // Opções de itens por página
+  const PER_PAGE_OPTIONS = [
+    { value: "20", label: "20/pg" },
+    { value: "50", label: "50/pg" },
+    { value: "100", label: "100/pg" },
+    { value: "500", label: "500/pg" },
+  ];
+
+  // Opções de modo de visualização
+  const VIEW_MODE_OPTIONS = [
+    { value: "grid", label: t("viewMode.grid"), icon: <Grid3X3 size={16} /> },
+    { value: "compact", label: t("viewMode.compact"), icon: <ListChecks size={16} /> },
+    { value: "list", label: t("viewMode.list"), icon: <List size={16} /> },
+    { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
+  ];
+
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
@@ -96,6 +117,17 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     params.set("sort", newSort);
     params.set("page", "1");
     router.push(`?${params.toString()}`);
+  };
+
+  const handlePerPageChange = (newPerPage: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("perPage", newPerPage);
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode);
   };
 
   const handleGenreChange = (genres: number[]) => {
@@ -163,12 +195,35 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         <div className="w-full sm:w-auto flex-1">
           <SearchBar compact searchPath={`/user/${slug}/games`} placeholder={t("searchGames")} />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <SortSelect
             options={SORT_OPTIONS}
             value={sort}
             onChange={handleSortChange}
             className="w-full sm:w-auto"
+          />
+          <Select
+            options={PER_PAGE_OPTIONS}
+            value={perPage.toString()}
+            onChange={(e) => handlePerPageChange(e.target.value)}
+            className="w-20"
+            size="sm"
+          />
+          <Dropdown
+            items={VIEW_MODE_OPTIONS.map((option) => ({
+              id: option.value,
+              label: option.label,
+              icon: option.icon,
+              onClick: () => handleViewModeChange(option.value as ViewMode),
+            }))}
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                icon={VIEW_MODE_OPTIONS.find((option) => option.value === viewMode)?.icon}
+              />
+            }
+            menuClassName="min-w-40"
           />
           <Button
             variant="outline"
@@ -204,7 +259,15 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
       ) : (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
-          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
+          <div
+            className={`grid ${
+              viewMode === "grid"
+                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                : viewMode === "compact"
+                  ? "grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+                  : "grid-cols-1"
+            } gap-6`}
+          >
             {games.map((game: UserGame) => (
               <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
             ))}

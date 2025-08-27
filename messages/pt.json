@@ -289,6 +289,12 @@
     "extras": "Detalhes extras"
   },
   "PublicProfile": {
+    "viewMode": {
+      "grid": "Grid",
+      "compact": "Compacto",
+      "list": "Lista",
+      "table": "Tabela"
+    },
     "collection": "Consoles",
     "noConsoles": "Este usuário ainda não adicionou consoles à sua coleção",
     "skin": "Skin",
