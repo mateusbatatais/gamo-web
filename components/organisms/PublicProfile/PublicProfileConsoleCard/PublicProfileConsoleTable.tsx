@@ -1,4 +1,4 @@
-// components/organisms/PublicProfile/PublicProfileGameTable/PublicProfileGameTable.tsx
+// components/organisms/PublicProfile/PublicProfileConsoleTable/PublicProfileConsoleTable.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -8,55 +8,40 @@ import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
-import { GameForm } from "@/components/organisms/_game/GameForm/GameForm";
-import { useDeleteUserGame } from "@/hooks/usePublicProfile";
-import { UserGame } from "@/@types/collection.types";
-import { usePlatformsCache } from "@/hooks/usePlatformsCache";
+import { ConsoleForm } from "../../_console/ConsoleForm/ConsoleForm";
+import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
+import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 
-// Adicione a prop isMarketGrid à interface
-interface PublicProfileGameTableProps {
-  game: UserGame;
+interface PublicProfileConsoleTableProps {
+  consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
   isMarketGrid?: boolean;
 }
 
-export const PublicProfileGameTable = ({
-  game,
+export const PublicProfileConsoleTable = ({
+  consoleItem,
   isOwner,
   isMarketGrid = false,
-}: PublicProfileGameTableProps) => {
+}: PublicProfileConsoleTableProps) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const { mutate: deleteGame, isPending } = useDeleteUserGame();
-  const { platformsMap } = usePlatformsCache();
-
-  const platformOptions = Object.entries(platformsMap).map(([id, name]) => ({
-    value: id,
-    label: name,
-  }));
+  const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
 
   const handleDelete = () => {
-    deleteGame(game.id || 0);
+    deleteConsole(consoleItem.id || 0);
   };
+
   return (
     <>
       <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
         <td className="py-1">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
-              {game.photoMain ? (
+              {consoleItem.photoMain ? (
                 <Image
-                  src={game.photoMain}
-                  alt={game.gameTitle || ""}
-                  fill
-                  sizes="48px"
-                  className="object-cover"
-                />
-              ) : game.gameImageUrl ? (
-                <Image
-                  src={game.gameImageUrl}
-                  alt={game.gameTitle || ""}
+                  src={consoleItem.photoMain}
+                  alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
                   fill
                   sizes="48px"
                   className="object-cover"
@@ -68,53 +53,37 @@ export const PublicProfileGameTable = ({
               )}
             </div>
             <div>
-              <h3 className="font-medium dark:text-white">{game.gameTitle}</h3>
+              <h3 className="font-medium dark:text-white">{consoleItem.consoleName}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{consoleItem.variantName}</p>
             </div>
           </div>
         </td>
-        <td className="p-2">
-          {game.platformId && (
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {platformsMap[game.platformId]}
-            </p>
-          )}
-        </td>
-        {!isMarketGrid && (
-          <td className="p-2">
-            {game.progress && game.progress > 0 ? (
-              <div className="flex items-center gap-2">
-                <span className="text-sm">{game.progress * 10}%</span>
-              </div>
-            ) : (
-              <span className="text-sm text-gray-500">-</span>
-            )}
-          </td>
-        )}
+        <td className="p-2">{consoleItem.skinName}</td>
 
         {isMarketGrid && (
           <>
             <td className="p-2">
-              {game.price ? (
+              {consoleItem.price ? (
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {new Intl.NumberFormat(undefined, {
                     style: "currency",
                     currency: "BRL",
-                  }).format(game.price)}
+                  }).format(consoleItem.price)}
                 </p>
               ) : (
                 <span className="text-sm text-gray-500">-</span>
               )}
             </td>
             <td className="p-2">
-              {game.condition ? (
-                <p className="text-sm text-gray-500 dark:text-gray-400">{game.condition}</p>
+              {consoleItem.condition ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">{consoleItem.condition}</p>
               ) : (
                 <span className="text-sm text-gray-500">-</span>
               )}
             </td>
             <td className="p-2">
               <div className="flex items-center gap-2">
-                {game.acceptsTrade ? (
+                {consoleItem.acceptsTrade ? (
                   <span className="text-sm text-green-600">Sim</span>
                 ) : (
                   <span className="text-sm text-gray-500">Não</span>
@@ -124,13 +93,6 @@ export const PublicProfileGameTable = ({
           </>
         )}
 
-        <td className="p-2">
-          <div className="flex items-center gap-2">
-            <div aria-label="Media" title={game.media}>
-              {game.media}
-            </div>
-          </div>
-        </td>
         {isOwner && (
           <td className="p-2">
             <div className="flex gap-2">
@@ -154,27 +116,23 @@ export const PublicProfileGameTable = ({
       </tr>
 
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
-        <GameForm
+        <ConsoleForm
           mode="edit"
-          gameId={game.gameId}
-          platformOptions={platformOptions}
+          consoleId={consoleItem.consoleId}
+          consoleVariantId={consoleItem.consoleVariantId}
+          variantSlug={consoleItem.variantSlug}
+          skinId={consoleItem.skinId}
           initialData={{
-            id: game.id,
-            description: game.description || undefined,
-            status: game.status,
-            price: game.price || undefined,
-            hasBox: game.hasBox || false,
-            hasManual: game.hasManual || false,
-            condition: game.condition || undefined,
-            acceptsTrade: game.acceptsTrade || false,
-            photoMain: game.photoMain || undefined,
-            photos: game.photos || undefined,
-            progress: game.progress || undefined,
-            rating: game.rating || undefined,
-            review: game.review || undefined,
-            abandoned: game.abandoned || false,
-            media: game.media,
-            platformId: game.platformId,
+            id: consoleItem.id,
+            description: consoleItem.description,
+            status: consoleItem.status,
+            price: consoleItem.price,
+            hasBox: consoleItem.hasBox,
+            hasManual: consoleItem.hasManual,
+            condition: consoleItem.condition,
+            acceptsTrade: consoleItem.acceptsTrade,
+            photoMain: consoleItem.photoMain,
+            photos: consoleItem.photos,
           }}
           onSuccess={() => {
             setShowEditModal(false);

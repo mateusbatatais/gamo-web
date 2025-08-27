@@ -12,11 +12,16 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
-import { Settings2 } from "lucide-react";
+import { Settings2, Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import FilterContainer from "@/components/molecules/Filter/Filter";
+import { Select } from "@/components/atoms/Select/Select";
+import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
+import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";
+import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
+import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
 
 interface PublicProfileConsoleGridProps {
   slug: string;
@@ -38,6 +43,11 @@ export const PublicProfileConsoleGrid = ({
   );
 };
 
+type ViewMode = "grid" | "compact" | "list" | "table";
+
+// Chave para armazenar as preferências no localStorage
+const STORAGE_KEY = "userConsolesViewPreferences";
+
 const PublicProfileConsoleGridContent = ({
   slug,
   locale,
@@ -47,10 +57,37 @@ const PublicProfileConsoleGridContent = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [localPerPage, setLocalPerPage] = useState(50);
+
+  useEffect(() => {
+    const savedPreferences = localStorage.getItem(STORAGE_KEY);
+    if (savedPreferences) {
+      try {
+        const preferences = JSON.parse(savedPreferences);
+        if (preferences.viewMode) {
+          setViewMode(preferences.viewMode);
+        }
+        if (preferences.perPage) {
+          setLocalPerPage(Number(preferences.perPage));
+        }
+      } catch (error) {
+        console.error("Error parsing saved preferences:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const preferences = {
+      viewMode,
+      perPage: localPerPage.toString(),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+  }, [viewMode, localPerPage]);
 
   // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || "50");
+  const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
   const sort = searchParams.get("sort") || "name-asc";
   const search = searchParams.get("search") || "";
   const brand = searchParams.get("brand") || "";
@@ -99,6 +136,19 @@ const PublicProfileConsoleGridContent = ({
     { value: "addedDate-asc", label: t("order.addedDateAsc") },
   ];
 
+  const PER_PAGE_OPTIONS = [
+    { value: "20", label: "20/pg" },
+    { value: "50", label: "50/pg" },
+    { value: "100", label: "100/pg" },
+  ];
+
+  const VIEW_MODE_OPTIONS = [
+    { value: "grid", label: t("viewMode.grid"), icon: <Grid3X3 size={16} /> },
+    { value: "compact", label: t("viewMode.compact"), icon: <ListChecks size={16} /> },
+    { value: "list", label: t("viewMode.list"), icon: <List size={16} /> },
+    { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
+  ];
+
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
@@ -108,8 +158,20 @@ const PublicProfileConsoleGridContent = ({
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", newSort);
-    params.set("page", "1"); // Reset to first page on sort change
+    params.set("page", "1");
     router.push(`?${params.toString()}`);
+  };
+
+  const handlePerPageChange = (newPerPage: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("perPage", newPerPage);
+    params.set("page", "1");
+    setLocalPerPage(Number(newPerPage));
+    router.push(`?${params.toString()}`);
+  };
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode);
   };
 
   const handleBrandChange = (brands: string[]) => {
@@ -146,7 +208,7 @@ const PublicProfileConsoleGridContent = ({
         params.delete(key);
       }
     });
-    params.set("page", "1"); // Reset to first page on filter change
+    params.set("page", "1");
     router.push(`?${params.toString()}`);
   };
 
@@ -198,12 +260,35 @@ const PublicProfileConsoleGridContent = ({
         <div className="w-full sm:w-auto flex-1">
           <SearchBar compact searchPath={`/user/${slug}`} placeholder={t("searchConsoles")} />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           <SortSelect
             options={SORT_OPTIONS}
             value={sort}
             onChange={handleSortChange}
             className="w-full sm:w-auto"
+          />
+          <Select
+            options={PER_PAGE_OPTIONS}
+            value={perPage.toString()}
+            onChange={(e) => handlePerPageChange(e.target.value)}
+            className="w-20"
+            size="sm"
+          />
+          <Dropdown
+            items={VIEW_MODE_OPTIONS.map((option) => ({
+              id: option.value,
+              label: option.label,
+              icon: option.icon,
+              onClick: () => handleViewModeChange(option.value as ViewMode),
+            }))}
+            trigger={
+              <Button
+                variant="outline"
+                size="sm"
+                icon={VIEW_MODE_OPTIONS.find((option) => option.value === viewMode)?.icon}
+              />
+            }
+            menuClassName="min-w-40"
           />
           <Button
             variant="outline"
@@ -246,15 +331,63 @@ const PublicProfileConsoleGridContent = ({
       ) : (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("collection")}</h2>
-          <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {consoles.map((consoleItem: UserConsole) => (
-              <PublicProfileConsoleCard
-                key={consoleItem.id}
-                consoleItem={consoleItem}
-                isOwner={isOwner || false}
-              />
-            ))}
-          </div>
+
+          {viewMode === "table" ? (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="p-2 text-left">Console</th>
+                    <th className="p-2 text-left">Skin</th>
+                    {isOwner && <th className="p-2 text-left">Ações</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {consoles.map((consoleItem: UserConsole) => (
+                    <PublicProfileConsoleTable
+                      key={consoleItem.id}
+                      consoleItem={consoleItem}
+                      isOwner={isOwner || false}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : viewMode === "list" ? (
+            <div className="space-y-4">
+              {consoles.map((consoleItem: UserConsole) => (
+                <PublicProfileConsoleList
+                  key={consoleItem.id}
+                  consoleItem={consoleItem}
+                  isOwner={isOwner || false}
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              className={`grid ${
+                viewMode === "grid"
+                  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
+              } gap-6`}
+            >
+              {consoles.map((consoleItem: UserConsole) =>
+                viewMode === "compact" ? (
+                  <PublicProfileConsoleCompact
+                    key={consoleItem.id}
+                    consoleItem={consoleItem}
+                    isOwner={isOwner || false}
+                  />
+                ) : (
+                  <PublicProfileConsoleCard
+                    key={consoleItem.id}
+                    consoleItem={consoleItem}
+                    isOwner={isOwner || false}
+                  />
+                ),
+              )}
+            </div>
+          )}
         </>
       )}
 
