@@ -1,7 +1,6 @@
 // components/atoms/Tabs/Tabs.stories.tsx
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Tabs, TabItem } from "./Tabs";
-import { Button } from "../Button/Button";
 import { CheckCircle, Star } from "lucide-react";
 import React from "react";
 
@@ -88,8 +87,8 @@ export const CustomStyles: Story = {
       className="border border-neutral-200 dark:border-gray-700 rounded-lg p-4"
       tabListClassName="gap-1"
       tabClassName="rounded-t-lg px-3 py-2"
-      activeTabClassName="bg-primary-50 text-primary-700 border-primary-500 dark:bg-primary-900/30 dark:text-primary-300"
-      inactiveTabClassName="hover:bg-neutral-100 dark:hover:bg-gray-700"
+      activeTabClassName="text-primary-700 border-primary-500 dark:text-primary-300"
+      inactiveTabClassName="hover:text-neutral-900 dark:hover:text-neutral-200 hover:border-neutral-300 dark:hover:border-neutral-600"
       contentClassName="pt-4"
       {...args}
     >
@@ -102,49 +101,6 @@ export const CustomStyles: Story = {
         <div className="p-4 bg-primary-50 dark:bg-primary-900/30 rounded-lg">
           Conteúdo personalizado
         </div>
-      </TabItem>
-    </Tabs>
-  ),
-};
-
-export const ComplexContent: Story = {
-  render: (args) => (
-    <Tabs {...args}>
-      <TabItem label="Formulário">
-        <div className="space-y-4 p-4 bg-neutral-50 dark:bg-gray-800 rounded-lg">
-          <div>
-            <label htmlFor="name" className="block mb-1">
-              Nome
-            </label>
-            <input
-              id="name"
-              type="text"
-              className="w-full px-3 py-2 border rounded-lg"
-              aria-label="Nome"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block mb-1">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              className="w-full px-3 py-2 border rounded-lg"
-              aria-label="Email"
-            />
-          </div>
-          <Button label="Enviar" variant="primary" />
-        </div>
-      </TabItem>
-      <TabItem label="Lista">
-        <ul className="p-4 bg-neutral-50 dark:bg-gray-800 rounded-lg space-y-2">
-          {[1, 2, 3, 4, 5].map((item) => (
-            <li key={item} className="p-2 border-b">
-              Item {item}
-            </li>
-          ))}
-        </ul>
       </TabItem>
     </Tabs>
   ),

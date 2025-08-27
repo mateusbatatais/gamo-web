@@ -3,7 +3,6 @@
 
 import React, { useState, ReactNode, Children, isValidElement, ReactElement } from "react";
 import clsx from "clsx";
-import { Button } from "../Button/Button";
 
 export interface TabItemProps {
   label: string;
@@ -35,8 +34,8 @@ export const Tabs = ({
   tabListClassName,
   tabClassName,
   contentClassName,
-  activeTabClassName = "text-primary-600 !border-primary-500 rounded-none",
-  inactiveTabClassName = "!text-neutral-600 hover:text-neutral-900 dark:!text-neutral-400 dark:hover:text-neutral-200 border-transparent",
+  activeTabClassName = "text-primary-600 dark:text-primary-400 font-semibold border-b-2 border-primary-500",
+  inactiveTabClassName = "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600",
 }: TabsProps) => {
   const [activeTab, setActiveTab] = useState<number>(defaultValue);
 
@@ -61,17 +60,18 @@ export const Tabs = ({
           if (isValidElement<TabItemProps>(child)) {
             const isActive = activeTab === index;
             return (
-              <Button
+              <button
                 key={index}
-                variant="transparent"
-                size="sm"
+                type="button"
+                role="tab"
                 aria-selected={isActive}
                 aria-controls={`tabpanel-${index}`}
                 disabled={child.props.disabled}
                 className={clsx(
-                  "border-b-2",
+                  "px-4 py-2 transition-colors duration-200 cursor-pointer",
                   tabClassName,
                   isActive ? activeTabClassName : inactiveTabClassName,
+                  child.props.disabled && "opacity-50 cursor-not-allowed",
                 )}
                 onClick={() => !child.props.disabled && handleChange(index)}
               >
@@ -79,14 +79,14 @@ export const Tabs = ({
                   {child.props.icon}
                   {child.props.label}
                 </div>
-              </Button>
+              </button>
             );
           }
           return null;
         })}
       </div>
 
-      <div className={clsx("py-2", contentClassName)}>
+      <div className={clsx(contentClassName)}>
         {Children.map(children, (child, index) => {
           if (isValidElement<TabItemProps>(child)) {
             const isActive = activeTab === index;

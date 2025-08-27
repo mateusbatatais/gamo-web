@@ -3,11 +3,12 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { ChevronDown } from "lucide-react";
+import { Tabs, TabItem } from "@/components/atoms/Tabs/Tabs";
 
 interface ProfileNavigationProps {
   slug: string;
@@ -16,6 +17,7 @@ interface ProfileNavigationProps {
 export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
   const t = useTranslations("PublicProfile");
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const sections = [
@@ -28,7 +30,6 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
 
   const pathParts = pathname.split("/");
   const last = pathParts[pathParts.length - 1];
-
   const activeSection = last === slug ? "" : last;
 
   const createSectionUrl = (sectionId: string) => {
@@ -37,33 +38,38 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
 
   const activeSectionLabel = sections.find((s) => s.id === activeSection)?.label || t("collection");
 
+  // Encontra o índice da seção ativa
+  const activeTabIndex = sections.findIndex((s) => s.id === activeSection);
+
+  // Manipulador para mudança de aba - navega para a URL correspondente
+  const handleTabChange = (newValue: number) => {
+    const sectionId = sections[newValue].id;
+    router.push(createSectionUrl(sectionId));
+  };
+
   return (
     <>
-      {/* Desktop Navigation */}
-      <div className="hidden md:flex justify-between border-b border-gray-300 dark:border-gray-700">
-        <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
-          {sections.map((section) => {
-            const href = createSectionUrl(section.id);
-            const isActive = activeSection === section.id;
-            return (
-              <Link
-                key={section.id}
-                href={href}
-                className={clsx(
-                  "px-4 py-2 rounded-t-lg transition-colors whitespace-nowrap",
-                  isActive
-                    ? "bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-400"
-                    : "text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-800",
-                )}
-              >
-                {section.label}
-              </Link>
-            );
-          })}
-        </div>
+      {/* Desktop Navigation usando Tabs com navegação personalizada */}
+      <div className="hidden md:block mt-4">
+        <Tabs
+          defaultValue={activeTabIndex}
+          onChange={handleTabChange}
+          fullWidth
+          tabListClassName="overflow-x-auto scrollbar-hide"
+          tabClassName="px-4 py-2 rounded-none"
+          activeTabClassName="text-primary-600 dark:text-primary-400 font-semibold border-b-2 border-primary-500"
+          inactiveTabClassName="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 border-b-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600"
+        >
+          {sections.map((section) => (
+            <TabItem key={section.id} label={section.label} className="cursor-pointer">
+              {/* Conteúdo vazio pois a navegação é tratada pelo onChange */}
+              <div className="hidden" />
+            </TabItem>
+          ))}
+        </Tabs>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation (mantido igual) */}
       <div className="md:hidden relative">
         <Button
           variant="outline"
@@ -93,8 +99,8 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
                   className={clsx(
                     "flex items-center px-4 py-3 text-sm",
                     isActive
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : "hover:bg-gray-50 dark:hover:bg-gray-800",
+                      ? "bg-gray-100 dark:bg-gray-700 text-primary-600 dark:text-primary-400"
+                      : "hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400",
                   )}
                   onClick={() => setMobileMenuOpen(false)}
                 >

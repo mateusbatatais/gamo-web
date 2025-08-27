@@ -21,6 +21,21 @@ export interface PublicUserProfile {
   slug: string;
   profileImage: string | null;
   description: string | null;
+  accessoriesFavorited: number;
+  accessoriesLookingFor: number;
+  accessoriesSelling: number;
+  accessoriesTotal: number;
+  consolesFavorited: number;
+  consolesLookingFor: number;
+  consolesSelling: number;
+  consolesTotal: number;
+  gamesAbandoned: number;
+  gamesFavorited: number;
+  gamesFinished: number;
+  gamesInProgress: number;
+  gamesLookingFor: number;
+  gamesSelling: number;
+  gamesTotal: number;
 }
 
 export type AuthProvider = "Google" | "Microsoft";
