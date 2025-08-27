@@ -4,6 +4,9 @@
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { PublicProfileGameCard } from "../PublicProfileGameCard/PublicProfileGameCard";
+import { PublicProfileGameCompact } from "../PublicProfileGameCard/PublicProfileGameCompact";
+import { PublicProfileGameList } from "../PublicProfileGameCard/PublicProfileGameList";
+import { PublicProfileGameTable } from "../PublicProfileGameCard/PublicProfileGameTable";
 import { useUserGamesPublic } from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
@@ -259,19 +262,53 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
       ) : (
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
-          <div
-            className={`grid ${
-              viewMode === "grid"
-                ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                : viewMode === "compact"
-                  ? "grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
-                  : "grid-cols-1"
-            } gap-6`}
-          >
-            {games.map((game: UserGame) => (
-              <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
-            ))}
-          </div>
+
+          {viewMode === "table" ? (
+            // Modo Tabela
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="p-4 text-left">Jogo</th>
+                    <th className="p-4 text-left">Progresso</th>
+                    <th className="p-4 text-left">Preço</th>
+                    <th className="p-4 text-left">Status</th>
+                    <th className="p-4 text-left">Detalhes</th>
+                    {isOwner && <th className="p-4 text-left">Ações</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {games.map((game: UserGame) => (
+                    <PublicProfileGameTable key={game.id} game={game} isOwner={isOwner || false} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : viewMode === "list" ? (
+            // Modo Lista
+            <div className="space-y-4">
+              {games.map((game: UserGame) => (
+                <PublicProfileGameList key={game.id} game={game} isOwner={isOwner || false} />
+              ))}
+            </div>
+          ) : (
+            // Modo Grid ou Compacto
+            <div
+              className={`grid ${
+                viewMode === "grid"
+                  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
+              } gap-6`}
+            >
+              {games.map((game: UserGame) =>
+                viewMode === "compact" ? (
+                  <PublicProfileGameCompact key={game.id} game={game} isOwner={isOwner || false} />
+                ) : (
+                  <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
+                ),
+              )}
+            </div>
+          )}
         </>
       )}
 
