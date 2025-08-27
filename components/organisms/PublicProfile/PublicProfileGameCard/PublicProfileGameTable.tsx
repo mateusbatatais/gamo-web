@@ -3,9 +3,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
-import { Pencil, Trash, CheckCircle2, Disc3, CloudDownload, ArrowLeftRight } from "lucide-react";
+import { Pencil, Trash } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -38,7 +37,7 @@ export const PublicProfileGameTable = ({ game, isOwner }: PublicProfileGameTable
   return (
     <>
       <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
-        <td className="p-4">
+        <td className="py-1">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
               {game.photoMain ? (
@@ -65,15 +64,17 @@ export const PublicProfileGameTable = ({ game, isOwner }: PublicProfileGameTable
             </div>
             <div>
               <h3 className="font-medium dark:text-white">{game.gameTitle}</h3>
-              {game.platformId && (
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {platformsMap[game.platformId]}
-                </p>
-              )}
             </div>
           </div>
         </td>
-        <td className="p-4">
+        <td className="p-2">
+          {game.platformId && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              {platformsMap[game.platformId]}
+            </p>
+          )}
+        </td>
+        <td className="p-2">
           {game.progress && game.progress > 0 ? (
             <div className="flex items-center gap-2">
               <span className="text-sm">{game.progress * 10}%</span>
@@ -82,72 +83,15 @@ export const PublicProfileGameTable = ({ game, isOwner }: PublicProfileGameTable
             <span className="text-sm text-gray-500">-</span>
           )}
         </td>
-        <td className="p-4">
-          {game.price ? (
-            <span className="font-bold text-secondary-600 dark:text-secondary-400">
-              {new Intl.NumberFormat(undefined, {
-                style: "currency",
-                currency: "BRL",
-              }).format(game.price)}
-            </span>
-          ) : (
-            <span className="text-sm text-gray-500">-</span>
-          )}
-        </td>
-        <td className="p-4">
+        <td className="p-2">
           <div className="flex items-center gap-2">
-            <div
-              className="bg-gray-800/70 text-white p-1.5 rounded-full backdrop-blur-sm"
-              aria-label="Media"
-              title={game.media}
-            >
-              {game.media === "PHYSICAL" ? <Disc3 size={16} /> : <CloudDownload size={16} />}
+            <div aria-label="Media" title={game.media}>
+              {game.media}
             </div>
-
-            {game.progress === 10 && (
-              <div
-                className="bg-green-500 text-white p-1.5 rounded-full"
-                aria-label="Finished"
-                title="Finished"
-              >
-                <CheckCircle2 size={16} />
-              </div>
-            )}
-
-            {game.acceptsTrade && (
-              <div
-                className="bg-amber-500 text-white p-1.5 rounded-full"
-                aria-label="Accepts Trade"
-                title="Accepts Trade"
-              >
-                <ArrowLeftRight size={16} />
-              </div>
-            )}
-          </div>
-        </td>
-        <td className="p-4">
-          <div className="flex gap-2 flex-wrap">
-            {game.hasBox && !game.hasManual && (
-              <Badge status="info" size="sm">
-                {t("withBox")}
-              </Badge>
-            )}
-
-            {game.hasManual && !game.hasBox && (
-              <Badge status="success" size="sm">
-                {t("withManual")}
-              </Badge>
-            )}
-
-            {game.hasManual && game.hasBox && (
-              <Badge status="success" size="sm">
-                CIB
-              </Badge>
-            )}
           </div>
         </td>
         {isOwner && (
-          <td className="p-4">
+          <td className="p-2">
             <div className="flex gap-2">
               <Button
                 onClick={() => setShowEditModal(true)}

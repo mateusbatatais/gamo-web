@@ -15,7 +15,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
 import { Settings2, Grid3X3, List, Table, ListChecks } from "lucide-react";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
@@ -45,15 +45,44 @@ export const PublicProfileGameGrid = ({
 
 type ViewMode = "grid" | "compact" | "list" | "table";
 
+// Chave para armazenar as preferências no localStorage
+const STORAGE_KEY = "userGamesViewPreferences";
+
 const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGameGridProps) => {
   const t = useTranslations("PublicProfile");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [localPerPage, setLocalPerPage] = useState(50);
+
+  useEffect(() => {
+    const savedPreferences = localStorage.getItem(STORAGE_KEY);
+    if (savedPreferences) {
+      try {
+        const preferences = JSON.parse(savedPreferences);
+        if (preferences.viewMode) {
+          setViewMode(preferences.viewMode);
+        }
+        if (preferences.perPage) {
+          setLocalPerPage(Number(preferences.perPage));
+        }
+      } catch (error) {
+        console.error("Error parsing saved preferences:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const preferences = {
+      viewMode,
+      perPage: localPerPage.toString(),
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+  }, [viewMode, localPerPage]);
 
   const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || "50");
+  const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
   const sort = searchParams.get("sort") || "title-asc";
   const search = searchParams.get("search") || "";
   const genres = searchParams.get("genres") || "";
@@ -98,7 +127,6 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     { value: "20", label: "20/pg" },
     { value: "50", label: "50/pg" },
     { value: "100", label: "100/pg" },
-    { value: "500", label: "500/pg" },
   ];
 
   // Opções de modo de visualização
@@ -126,6 +154,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     const params = new URLSearchParams(searchParams.toString());
     params.set("perPage", newPerPage);
     params.set("page", "1");
+    setLocalPerPage(Number(newPerPage));
     router.push(`?${params.toString()}`);
   };
 
@@ -264,17 +293,15 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("gamesCollection")}</h2>
 
           {viewMode === "table" ? (
-            // Modo Tabela
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <th className="p-4 text-left">Jogo</th>
-                    <th className="p-4 text-left">Progresso</th>
-                    <th className="p-4 text-left">Preço</th>
-                    <th className="p-4 text-left">Status</th>
-                    <th className="p-4 text-left">Detalhes</th>
-                    {isOwner && <th className="p-4 text-left">Ações</th>}
+                    <th className="p-2 text-left">Jogo</th>
+                    <th className="p-2 text-left">Plataforma</th>
+                    <th className="p-2 text-left">Progresso</th>
+                    <th className="p-2 text-left">Status</th>
+                    {isOwner && <th className="p-2 text-left">Ações</th>}
                   </tr>
                 </thead>
                 <tbody>
