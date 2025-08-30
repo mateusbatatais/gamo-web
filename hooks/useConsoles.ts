@@ -18,6 +18,9 @@ interface UseConsolesOptions {
   selectedTypes?: string[];
   selectedAllDigital?: boolean;
   searchQuery?: string;
+  storageRanges?: string[];
+  selectedMediaFormats?: string[];
+  retroCompatible?: boolean;
 }
 
 export function useConsoles({
@@ -31,6 +34,10 @@ export function useConsoles({
   selectedTypes = [],
   selectedAllDigital = false,
   searchQuery = "",
+
+  selectedMediaFormats = [],
+  retroCompatible,
+  storageRanges = [],
 }: UseConsolesOptions) {
   const { apiFetch } = useApiClient();
   const { initialized } = useAuth();
@@ -48,6 +55,9 @@ export function useConsoles({
       selectedTypes.join(","),
       selectedAllDigital,
       searchQuery,
+      selectedMediaFormats.join(","),
+      storageRanges.join(","),
+      retroCompatible,
     ],
     queryFn: async () => {
       if (!initialized) throw new Error("Auth not initialized");
@@ -66,6 +76,16 @@ export function useConsoles({
       if (selectedTypes.length > 0) params.append("type", selectedTypes.join(","));
       if (selectedAllDigital) params.append("allDigital", "true");
       if (searchQuery) params.append("search", searchQuery);
+      if (selectedMediaFormats.length > 0)
+        params.append("mediaFormat", selectedMediaFormats.join(","));
+      if (retroCompatible !== undefined)
+        params.append("retroCompatible", retroCompatible.toString());
+
+      if (storageRanges.length > 0) {
+        const { storageMin, storageMax } = calculateStorageRange(storageRanges);
+        if (storageMin !== undefined) params.append("storageMin", storageMin.toString());
+        if (storageMax !== undefined) params.append("storageMax", storageMax.toString());
+      }
 
       return apiFetch(`/consoles?${params.toString()}`);
     },
@@ -73,4 +93,46 @@ export function useConsoles({
     staleTime: 5 * 60 * 1000,
     placeholderData: (previousData) => previousData,
   });
+}
+
+function calculateStorageRange(ranges: string[]): { storageMin?: number; storageMax?: number } {
+  if (ranges.length === 0) return {};
+
+  // Inicializar com valores extremos
+  let overallMin = Infinity;
+  let overallMax = -Infinity;
+
+  ranges.forEach((range) => {
+    let min: number, max: number;
+
+    switch (range) {
+      case "0-1":
+        min = 0;
+        max = 1;
+        break;
+      case "2-64":
+        min = 2;
+        max = 64;
+        break;
+      case "65-512":
+        min = 65;
+        max = 512;
+        break;
+      case "513-":
+        min = 513;
+        max = Infinity;
+        break;
+      default:
+        return; // Pula ranges desconhecidos
+    }
+
+    // Atualizar os valores gerais
+    overallMin = Math.min(overallMin, min);
+    overallMax = Math.max(overallMax, max);
+  });
+
+  return {
+    storageMin: overallMin === Infinity ? undefined : overallMin,
+    storageMax: overallMax === Infinity || overallMax === -Infinity ? undefined : overallMax,
+  };
 }

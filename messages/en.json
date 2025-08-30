@@ -57,6 +57,20 @@
       "xbox": "Xbox",
       "nintendo": "Nintendo",
       "mobile": "Mobile"
+    },
+    "mediaFormats": {
+      "label": "Formatos de Mídia"
+    },
+    "retroCompatible": {
+      "label": "Retro Compatível",
+      "description": "Mostrar apenas consoles retro compatíveis"
+    },
+    "storage": {
+      "label": "Storage",
+      "upto1gb": "Up to 1GB",
+      "2to64gb": "2GB to 64GB",
+      "65to512gb": "65GB to 512GB",
+      "above513gb": "Above 512GB"
     }
   },
   "order": {
@@ -403,7 +417,9 @@
     "createSuccess": "Item added successfully!",
     "editSuccess": "Item updated successfully!",
     "error": "An error occurred",
-    "uploadError": "Error uploading image"
+    "uploadError": "Error uploading image",
+    "storageOption": "Storage",
+    "publish": "Publish"
   },
   "GameForm": {
     "mainPhoto": "Main Photo",

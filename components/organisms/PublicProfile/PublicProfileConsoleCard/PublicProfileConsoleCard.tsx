@@ -151,6 +151,7 @@ export const PublicProfileConsoleCard = ({
             acceptsTrade: consoleItem.acceptsTrade,
             photoMain: consoleItem.photoMain,
             photos: consoleItem.photos,
+            storageOptionId: consoleItem.storageOption?.id,
           }}
           onSuccess={() => {
             setShowEditModal(false);

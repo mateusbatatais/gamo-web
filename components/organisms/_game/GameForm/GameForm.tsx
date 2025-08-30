@@ -21,7 +21,7 @@ import { SelectOption } from "@/components/atoms/Select/Select";
 interface GameFormProps {
   mode: "create" | "edit";
   gameId: number;
-  platformOptions: SelectOption[]; // Adicione esta linha
+  platformOptions: SelectOption[];
   initialData?: {
     id?: number;
     description?: string | null;
@@ -38,7 +38,7 @@ interface GameFormProps {
     review?: string | null;
     abandoned?: boolean | null;
     media?: "PHYSICAL" | "DIGITAL";
-    platformId?: number; // Adicione esta linha
+    platformId?: number;
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -86,7 +86,7 @@ export const GameForm = ({
     media: initialData?.media || "PHYSICAL",
     platformId: initialData?.platformId
       ? String(initialData.platformId)
-      : platformOptions[0]?.value || "", // Adicione esta linha
+      : platformOptions[0]?.value || "",
   });
 
   const handleChange = (

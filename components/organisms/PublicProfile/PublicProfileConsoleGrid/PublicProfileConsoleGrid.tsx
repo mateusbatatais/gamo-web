@@ -111,6 +111,17 @@ const PublicProfileConsoleGridContent = ({
   );
   const [selectedAllDigital, setSelectedAllDigital] = useState<boolean>(allDigital === "true");
 
+  const [selectedMediaFormats, setSelectedMediaFormats] = useState<string[]>(
+    searchParams.get("mediaFormats")?.split(",").filter(Boolean) || [],
+  );
+  const [retroCompatible, setRetroCompatible] = useState<boolean>(
+    searchParams.get("retroCompatible") === "true",
+  );
+
+  const [selectedStorageRanges, setSelectedStorageRanges] = useState<string[]>(
+    searchParams.get("storage")?.split(",").filter(Boolean) || [],
+  );
+
   const { data, isLoading, error } = useUserConsolesPublic(
     slug,
     locale,
@@ -123,6 +134,9 @@ const PublicProfileConsoleGridContent = ({
     selectedGenerations.join(","),
     selectedModels.join(","),
     selectedTypes.join(","),
+    selectedMediaFormats.join(","),
+    selectedStorageRanges.join(","),
+    retroCompatible,
     selectedAllDigital,
   );
 
@@ -199,6 +213,21 @@ const PublicProfileConsoleGridContent = ({
     updateURL({ allDigital: allDigital ? "true" : "" });
   };
 
+  const handleMediaFormatChange = (formats: string[]) => {
+    setSelectedMediaFormats(formats);
+    updateURL({ mediaFormats: formats.join(",") });
+  };
+
+  const handleRetroCompatibleChange = (isRetroCompatible: boolean) => {
+    setRetroCompatible(isRetroCompatible);
+    updateURL({ retroCompatible: isRetroCompatible.toString() });
+  };
+
+  const handleStorageChange = (ranges: string[]) => {
+    setSelectedStorageRanges(ranges);
+    updateURL({ storage: ranges.join(",") });
+  };
+
   const updateURL = (newParams: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(newParams).forEach(([key, value]) => {
@@ -218,6 +247,9 @@ const PublicProfileConsoleGridContent = ({
     setSelectedModels([]);
     setSelectedTypes([]);
     setSelectedAllDigital(false);
+    setSelectedMediaFormats([]);
+    setRetroCompatible(false);
+    setSelectedStorageRanges([]);
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("brand");
@@ -313,11 +345,17 @@ const PublicProfileConsoleGridContent = ({
           onModelChange={handleModelChange}
           onAllDigitalChange={handleAllDigitalChange}
           onTypeChange={handleTypeChange}
+          onMediaFormatChange={handleMediaFormatChange}
+          onRetroCompatibleChange={handleRetroCompatibleChange}
+          onStorageChange={handleStorageChange}
+          selectedStorageRanges={selectedStorageRanges}
           selectedBrands={selectedBrands}
           selectedGenerations={selectedGenerations}
           selectedModels={selectedModels}
           selectedAllDigital={selectedAllDigital}
           selectedTypes={selectedTypes}
+          selectedMediaFormats={selectedMediaFormats}
+          retroCompatible={retroCompatible}
           clearFilters={clearFilters}
         />
       </Drawer>

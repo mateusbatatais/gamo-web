@@ -6,6 +6,8 @@ import SingleCheckboxFilter from "./SingleCheckboxFilter/SingleCheckboxFilter";
 import TypeFilter from "./TypeFilter/TypeFilter";
 import clsx from "clsx";
 import ModelFilter from "./ModelFilter/ModelFilter";
+import MediaFormatFilter from "./MediaFormatFilter/MediaFormatFilter";
+import StorageFilter from "./StorageFilter/StorageFilter";
 
 interface FilterContainerProps {
   onBrandChange: (selectedBrands: string[]) => void;
@@ -13,12 +15,18 @@ interface FilterContainerProps {
   onAllDigitalChange: (selectedAllDigital: boolean) => void;
   onModelChange: (selectedModels: string[]) => void;
   onTypeChange: (selectedTypes: string[]) => void;
+  onMediaFormatChange: (selectedMediaFormats: string[]) => void;
+  onRetroCompatibleChange: (retroCompatible: boolean) => void;
+  onStorageChange: (selectedRanges: string[]) => void;
+  selectedStorageRanges: string[];
+
   selectedBrands: string[];
   selectedGenerations: string[];
   selectedAllDigital: boolean;
   selectedTypes: string[];
   selectedModels: string[];
-
+  selectedMediaFormats: string[];
+  retroCompatible: boolean;
   clearFilters: () => void;
   className?: string;
 }
@@ -29,11 +37,18 @@ const FilterContainer = ({
   onAllDigitalChange,
   onModelChange,
   onTypeChange,
+  onMediaFormatChange,
+  onRetroCompatibleChange,
+  onStorageChange,
+  selectedStorageRanges,
+
   selectedBrands,
   selectedGenerations,
   selectedAllDigital,
   selectedTypes,
   selectedModels,
+  selectedMediaFormats,
+  retroCompatible,
   clearFilters,
   className,
 }: FilterContainerProps) => {
@@ -46,6 +61,22 @@ const FilterContainer = ({
       />
       <ModelFilter selectedModels={selectedModels} onModelChange={onModelChange} />
       <TypeFilter selectedTypes={selectedTypes} onTypeChange={onTypeChange} />
+
+      <StorageFilter
+        selectedStorageRanges={selectedStorageRanges}
+        onStorageChange={onStorageChange}
+      />
+
+      <MediaFormatFilter
+        selectedMediaFormats={selectedMediaFormats}
+        onMediaFormatChange={onMediaFormatChange}
+      />
+
+      <SingleCheckboxFilter
+        label="Retrocompatível"
+        checked={retroCompatible}
+        onChange={onRetroCompatibleChange}
+      />
       <SingleCheckboxFilter
         label="All Digital"
         checked={selectedAllDigital}

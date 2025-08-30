@@ -27,6 +27,9 @@ export interface UserConsole extends BaseCollectionItem {
   variantName?: string;
   skinName?: string | null;
   customSkin?: string | null;
+  storageOption?: {
+    id: number;
+  };
   user?: {
     id: number;
     name: string;

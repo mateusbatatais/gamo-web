@@ -8,6 +8,40 @@ import { UserConsole, UserGame } from "@/@types/collection.types";
 import { UserProfile } from "@/@types/auth.types";
 import { PaginatedResponse } from "@/@types/catalog.types";
 
+// Função auxiliar para converter ranges de storage em valores numéricos
+function calculateStorageRange(ranges: string[]): { storageMin?: number; storageMax?: number } {
+  if (ranges.length === 0) return {};
+
+  let min = Infinity;
+  let max = -Infinity;
+
+  ranges.forEach((range) => {
+    switch (range) {
+      case "0-1":
+        min = Math.min(min, 0);
+        max = Math.max(max, 1);
+        break;
+      case "2-64":
+        min = Math.min(min, 2);
+        max = Math.max(max, 64);
+        break;
+      case "65-512":
+        min = Math.min(min, 65);
+        max = Math.max(max, 512);
+        break;
+      case "513-":
+        min = Math.min(min, 513);
+        max = Infinity;
+        break;
+    }
+  });
+
+  return {
+    storageMin: min === Infinity ? undefined : min,
+    storageMax: max === Infinity || max === -Infinity ? undefined : max,
+  };
+}
+
 export function usePublicProfile(slug: string, locale: string) {
   const { apiFetch } = useApiClient();
 
@@ -30,6 +64,9 @@ export function useUserConsolesPublic(
   generation?: string,
   model?: string,
   type?: string,
+  mediaFormats?: string, // Novo parâmetro
+  storageRanges?: string, // Novo parâmetro
+  retroCompatible?: boolean, // Novo parâmetro
   allDigital?: boolean,
 ) {
   const { apiFetch } = useApiClient();
@@ -45,6 +82,16 @@ export function useUserConsolesPublic(
   if (generation) queryParams.append("generation", generation);
   if (model) queryParams.append("model", model);
   if (type) queryParams.append("type", type);
+  if (mediaFormats) queryParams.append("mediaFormats", mediaFormats);
+
+  // Converter ranges de storage para storageMin e storageMax
+  const rangesArray = storageRanges ? storageRanges.split(",").filter(Boolean) : [];
+  const { storageMin, storageMax } = calculateStorageRange(rangesArray);
+  if (storageMin !== undefined) queryParams.append("storageMin", storageMin.toString());
+  if (storageMax !== undefined) queryParams.append("storageMax", storageMax.toString());
+
+  if (retroCompatible !== undefined)
+    queryParams.append("retroCompatible", retroCompatible.toString());
   if (allDigital) queryParams.append("allDigital", "true");
 
   return useQuery<PaginatedResponse<UserConsole>>({
@@ -61,6 +108,9 @@ export function useUserConsolesPublic(
       generation,
       model,
       type,
+      mediaFormats,
+      storageRanges,
+      retroCompatible,
       allDigital,
     ],
     queryFn: () => apiFetch(`/public/profile/${slug}/consoles?${queryParams.toString()}`),

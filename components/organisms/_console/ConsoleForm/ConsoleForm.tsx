@@ -12,6 +12,8 @@ import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesU
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
 import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
+import { useStorageOptions } from "@/hooks/useStorageOptions";
+import { Select } from "@/components/atoms/Select/Select";
 interface ConsoleFormProps {
   mode: "create" | "edit";
   consoleId: number;
@@ -29,6 +31,7 @@ interface ConsoleFormProps {
     acceptsTrade?: boolean | null;
     photoMain?: string | null;
     photos?: string[] | null;
+    storageOptionId?: number | null;
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -72,6 +75,12 @@ export const ConsoleForm = ({
     condition: initialData?.condition || "USED",
     acceptsTrade: initialData?.acceptsTrade || false,
   });
+  const { data: storageOptions, isLoading: storageOptionsLoading } =
+    useStorageOptions(consoleVariantId);
+
+  const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number | undefined>(
+    initialData?.storageOptionId ?? undefined,
+  );
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -94,6 +103,7 @@ export const ConsoleForm = ({
       consoleId,
       consoleVariantId,
       skinId: skinId || undefined,
+      storageOptionId: selectedStorageOptionId,
       description: formData.description || undefined,
       status: formData.status,
       price: formData.price ? parseFloat(formData.price) : undefined,
@@ -126,6 +136,13 @@ export const ConsoleForm = ({
     { value: "SELLING", label: t("statusSelling") },
     { value: "LOOKING_FOR", label: t("statusLookingFor") },
   ];
+
+  const storageOptionOptions =
+    storageOptions?.map((option) => ({
+      value: option.id.toString(),
+      label: `${option.value} ${option.unit}${option.note ? ` (${option.note})` : ""}`,
+    })) || [];
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col gap-4">
@@ -142,6 +159,19 @@ export const ConsoleForm = ({
           t={t}
         />
       </div>
+
+      {storageOptionOptions.length > 0 && (
+        <Select
+          name="storageOptionId"
+          value={selectedStorageOptionId?.toString() || ""}
+          onChange={(e) =>
+            setSelectedStorageOptionId(e.target.value ? parseInt(e.target.value) : undefined)
+          }
+          label={t("storageOption")}
+          options={storageOptionOptions}
+          disabled={storageOptionsLoading}
+        />
+      )}
 
       <Collapse title={t("tradeSection")} defaultOpen={formData.status !== "OWNED"}>
         <TradeSection

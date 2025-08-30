@@ -52,6 +52,17 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     searchParams.get("allDigital") === "true",
   );
 
+  const [selectedMediaFormats, setSelectedMediaFormats] = useState<string[]>(
+    searchParams.get("mediaFormats")?.split(",").filter(Boolean) || [],
+  );
+  const [retroCompatible, setRetroCompatible] = useState<boolean>(
+    searchParams.get("retroCompatible") === "true",
+  );
+
+  const [selectedStorageRanges, setSelectedStorageRanges] = useState<string[]>(
+    searchParams.get("storage")?.split(",").filter(Boolean) || [],
+  );
+
   const {
     data: consoleVariants,
     isLoading,
@@ -68,6 +79,9 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     selectedTypes,
     selectedAllDigital,
     searchQuery,
+    selectedMediaFormats,
+    retroCompatible,
+    storageRanges: selectedStorageRanges,
   });
 
   const SORT_OPTIONS: SortOption[] = [
@@ -77,6 +91,11 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     { value: "releaseDate-desc", label: t("order.releaseDateDesc") },
     { value: "popularity-desc", label: t("order.popularityDesc") },
   ];
+
+  const handleStorageChange = (ranges: string[]) => {
+    setSelectedStorageRanges(ranges);
+    updateURL({ storage: ranges.join(",") });
+  };
 
   const handleBrandChange = (brands: string[]) => {
     setSelectedBrands(brands);
@@ -168,7 +187,24 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       params.delete("allDigital");
     }
 
-    // Adicione os novos parâmetros
+    if (selectedMediaFormats.length > 0) {
+      params.set("mediaFormats", selectedMediaFormats.join(","));
+    } else {
+      params.delete("mediaFormats");
+    }
+    if (retroCompatible) {
+      params.set("retroCompatible", "true");
+    } else {
+      params.delete("retroCompatible");
+    }
+
+    if (selectedStorageRanges.length > 0) {
+      params.set("storage", selectedStorageRanges.join(","));
+    } else {
+      params.delete("storage");
+    }
+
+    // Adicione os novos parâmetros do newParams
     Object.entries(newParams).forEach(([key, value]) => {
       if (value) {
         params.set(key, value);
@@ -180,12 +216,25 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
     window.history.pushState({}, "", `/console-catalog?${params.toString()}`);
   };
 
+  const handleMediaFormatChange = (formats: string[]) => {
+    setSelectedMediaFormats(formats);
+    updateURL({ mediaFormats: formats.join(",") });
+  };
+
+  const handleRetroCompatibleChange = (isRetroCompatible: boolean) => {
+    setRetroCompatible(isRetroCompatible);
+    updateURL({ retroCompatible: isRetroCompatible.toString() });
+  };
+
   const clearFilters = () => {
     setSelectedBrands([]);
     setSelectedGenerations([]);
     setSelectedModels([]);
     setSelectedTypes([]);
     setSelectedAllDigital(false);
+    setSelectedMediaFormats([]);
+    setRetroCompatible(false);
+    setSelectedStorageRanges([]);
 
     const params = new URLSearchParams({
       locale,
@@ -327,11 +376,17 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
             onModelChange={handleModelChange}
             onAllDigitalChange={handleAllDigitalChange}
             onTypeChange={handleTypeChange}
+            onMediaFormatChange={handleMediaFormatChange}
+            onRetroCompatibleChange={handleRetroCompatibleChange}
+            onStorageChange={handleStorageChange}
+            selectedStorageRanges={selectedStorageRanges}
             selectedBrands={selectedBrands}
             selectedGenerations={selectedGenerations}
-            selectedModels={selectedModels}
             selectedAllDigital={selectedAllDigital}
             selectedTypes={selectedTypes}
+            selectedModels={selectedModels}
+            selectedMediaFormats={selectedMediaFormats}
+            retroCompatible={retroCompatible}
             clearFilters={clearFilters}
           />
         </div>
@@ -387,11 +442,17 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
                 onModelChange={handleModelChange}
                 onAllDigitalChange={handleAllDigitalChange}
                 onTypeChange={handleTypeChange}
+                onMediaFormatChange={handleMediaFormatChange}
+                onRetroCompatibleChange={handleRetroCompatibleChange}
+                onStorageChange={handleStorageChange}
+                selectedStorageRanges={selectedStorageRanges}
                 selectedBrands={selectedBrands}
                 selectedGenerations={selectedGenerations}
-                selectedModels={selectedModels}
                 selectedAllDigital={selectedAllDigital}
                 selectedTypes={selectedTypes}
+                selectedModels={selectedModels}
+                selectedMediaFormats={selectedMediaFormats}
+                retroCompatible={retroCompatible}
                 clearFilters={clearFilters}
               />
             </div>

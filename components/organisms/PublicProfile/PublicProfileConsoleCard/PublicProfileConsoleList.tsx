@@ -152,6 +152,7 @@ export const PublicProfileConsoleList = ({
             acceptsTrade: consoleItem.acceptsTrade,
             photoMain: consoleItem.photoMain,
             photos: consoleItem.photos,
+            storageOptionId: consoleItem.storageOptionId,
           }}
           onSuccess={() => {
             setShowEditModal(false);
