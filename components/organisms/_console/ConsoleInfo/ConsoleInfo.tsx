@@ -18,6 +18,7 @@ import {
   Download,
   Lightbulb,
   MemoryStick,
+  Disc3,
 } from "lucide-react";
 import { Tooltip } from "@/components/atoms/Tooltip/Tooltip";
 import { Badge } from "@/components/atoms/Badge/Badge";
@@ -182,7 +183,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                 variant={consoleVariant.allDigital ? "soft" : "outline"}
                 className="flex items-center gap-1"
               >
-                <Download size={14} />
+                {consoleVariant.allDigital ? <Download size={14} /> : <Disc3 size={14} />}
                 {consoleVariant.allDigital ? t("allDigital") : t("physicalMedia")}
               </Badge>
 
