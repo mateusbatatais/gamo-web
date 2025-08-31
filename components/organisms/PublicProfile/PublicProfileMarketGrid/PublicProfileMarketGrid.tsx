@@ -20,7 +20,7 @@ import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSe
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { ToggleGroup } from "@/components/molecules/ToggleGroup/ToggleGroup";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
-import { Grid3X3, List, Table, ListChecks, Filter } from "lucide-react";
+import { Grid3X3, List, Table, ListChecks, Settings2 } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import { Select } from "@/components/atoms/Select/Select";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
@@ -416,10 +416,8 @@ const PublicProfileMarketGridContent = ({
               variant="outline"
               size="sm"
               onClick={() => setIsConsoleFilterOpen(true)}
-              icon={<Filter size={16} />}
-            >
-              Filtrar
-            </Button>
+              icon={<Settings2 size={16} />}
+            ></Button>
           </div>
 
           {/* Drawer de Filtros para Consoles */}
@@ -535,10 +533,8 @@ const PublicProfileMarketGridContent = ({
               variant="outline"
               size="sm"
               onClick={() => setIsGameFilterOpen(true)}
-              icon={<Filter size={16} />}
-            >
-              Filtrar
-            </Button>
+              icon={<Settings2 size={16} />}
+            ></Button>
           </div>
 
           {/* Drawer de Filtros para Jogos */}
