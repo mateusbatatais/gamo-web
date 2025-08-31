@@ -69,12 +69,15 @@ const PublicProfileMarketGridContent = ({
   const [gameGenres, setGameGenres] = useState<number[]>([]);
   const [gamePlatforms, setGamePlatforms] = useState<number[]>([]);
 
-  // Estados para filtros de consoles
+  // Estados para filtros de consoles - ATUALIZADO com novos filtros
   const [consoleBrands, setConsoleBrands] = useState<string[]>([]);
   const [consoleGenerations, setConsoleGenerations] = useState<string[]>([]);
   const [consoleModels, setConsoleModels] = useState<string[]>([]);
   const [consoleTypes, setConsoleTypes] = useState<string[]>([]);
   const [consoleAllDigital, setConsoleAllDigital] = useState<boolean>(false);
+  const [consoleMediaFormats, setConsoleMediaFormats] = useState<string[]>([]);
+  const [consoleRetroCompatible, setConsoleRetroCompatible] = useState<boolean>(false);
+  const [consoleStorageRanges, setConsoleStorageRanges] = useState<string[]>([]);
 
   useEffect(() => {
     const savedPreferences = localStorage.getItem(STORAGE_KEY);
@@ -101,7 +104,7 @@ const PublicProfileMarketGridContent = ({
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
   }, [viewMode, localPerPage]);
 
-  // Obter parâmetros da URL
+  // Obter parâmetros da URL - ATUALIZADO para novos filtros
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
   const type = searchParams.get("type") || "selling";
@@ -110,6 +113,26 @@ const PublicProfileMarketGridContent = ({
   const validSortOptions = ["createdAt-asc", "createdAt-desc", "price-asc", "price-desc"];
   const sort = sortParam && validSortOptions.includes(sortParam) ? sortParam : defaultSort;
   const search = searchParams.get("search") || "";
+  const brand = searchParams.get("brand") || "";
+  const generation = searchParams.get("generation") || "";
+  const model = searchParams.get("model") || "";
+  const consoleType = searchParams.get("consoleType") || "";
+  const allDigital = searchParams.get("allDigital") || "";
+  const mediaFormats = searchParams.get("mediaFormats") || "";
+  const retroCompatible = searchParams.get("retroCompatible") || "";
+  const storage = searchParams.get("storage") || "";
+
+  // Inicializar estados dos filtros a partir dos parâmetros da URL
+  useEffect(() => {
+    setConsoleBrands(brand ? brand.split(",").filter(Boolean) : []);
+    setConsoleGenerations(generation ? generation.split(",").filter(Boolean) : []);
+    setConsoleModels(model ? model.split(",").filter(Boolean) : []);
+    setConsoleTypes(consoleType ? consoleType.split(",").filter(Boolean) : []);
+    setConsoleAllDigital(allDigital === "true");
+    setConsoleMediaFormats(mediaFormats ? mediaFormats.split(",").filter(Boolean) : []);
+    setConsoleRetroCompatible(retroCompatible === "true");
+    setConsoleStorageRanges(storage ? storage.split(",").filter(Boolean) : []);
+  }, [brand, generation, model, consoleType, allDigital, mediaFormats, retroCompatible, storage]);
 
   // Determinar o status baseado no tipo selecionado
   const status = type === "looking" ? "LOOKING_FOR" : "SELLING";
@@ -147,6 +170,9 @@ const PublicProfileMarketGridContent = ({
     consoleGenerations.join(","),
     consoleModels.join(","),
     consoleTypes.join(","),
+    consoleMediaFormats.join(","),
+    consoleStorageRanges.join(","),
+    consoleRetroCompatible,
     consoleAllDigital,
   );
 
@@ -226,29 +252,63 @@ const PublicProfileMarketGridContent = ({
     setGamePlatforms(platforms);
   };
 
+  const clearGameFilters = () => {
+    setGameGenres([]);
+    setGamePlatforms([]);
+  };
+
   const handleConsoleBrandChange = (brands: string[]) => {
     setConsoleBrands(brands);
+    updateConsoleURL({ brand: brands.join(",") });
   };
 
   const handleConsoleGenerationChange = (generations: string[]) => {
     setConsoleGenerations(generations);
+    updateConsoleURL({ generation: generations.join(",") });
   };
 
   const handleConsoleModelChange = (models: string[]) => {
     setConsoleModels(models);
+    updateConsoleURL({ model: models.join(",") });
   };
 
   const handleConsoleTypeChange = (types: string[]) => {
     setConsoleTypes(types);
+    updateConsoleURL({ consoleType: types.join(",") });
   };
 
   const handleConsoleAllDigitalChange = (allDigital: boolean) => {
     setConsoleAllDigital(allDigital);
+    updateConsoleURL({ allDigital: allDigital ? "true" : "" });
   };
 
-  const clearGameFilters = () => {
-    setGameGenres([]);
-    setGamePlatforms([]);
+  const handleConsoleMediaFormatChange = (formats: string[]) => {
+    setConsoleMediaFormats(formats);
+    updateConsoleURL({ mediaFormats: formats.join(",") });
+  };
+
+  const handleConsoleRetroCompatibleChange = (isRetroCompatible: boolean) => {
+    setConsoleRetroCompatible(isRetroCompatible);
+    updateConsoleURL({ retroCompatible: isRetroCompatible.toString() });
+  };
+
+  const handleConsoleStorageChange = (ranges: string[]) => {
+    setConsoleStorageRanges(ranges);
+    updateConsoleURL({ storage: ranges.join(",") });
+  };
+
+  // Função para atualizar a URL com filtros de console
+  const updateConsoleURL = (newParams: Record<string, string>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
   };
 
   const clearConsoleFilters = () => {
@@ -257,6 +317,21 @@ const PublicProfileMarketGridContent = ({
     setConsoleModels([]);
     setConsoleTypes([]);
     setConsoleAllDigital(false);
+    setConsoleMediaFormats([]);
+    setConsoleRetroCompatible(false);
+    setConsoleStorageRanges([]);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("brand");
+    params.delete("generation");
+    params.delete("model");
+    params.delete("consoleType");
+    params.delete("allDigital");
+    params.delete("mediaFormats");
+    params.delete("retroCompatible");
+    params.delete("storage");
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
   };
 
   if (isLoading) {
@@ -361,11 +436,17 @@ const PublicProfileMarketGridContent = ({
               onModelChange={handleConsoleModelChange}
               onAllDigitalChange={handleConsoleAllDigitalChange}
               onTypeChange={handleConsoleTypeChange}
+              onMediaFormatChange={handleConsoleMediaFormatChange}
+              onRetroCompatibleChange={handleConsoleRetroCompatibleChange}
+              onStorageChange={handleConsoleStorageChange}
               selectedBrands={consoleBrands}
               selectedGenerations={consoleGenerations}
               selectedModels={consoleModels}
               selectedAllDigital={consoleAllDigital}
               selectedTypes={consoleTypes}
+              selectedMediaFormats={consoleMediaFormats}
+              retroCompatible={consoleRetroCompatible}
+              selectedStorageRanges={consoleStorageRanges}
               clearFilters={clearConsoleFilters}
             />
           </Drawer>

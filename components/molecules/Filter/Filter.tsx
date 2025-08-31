@@ -41,7 +41,6 @@ const FilterContainer = ({
   onRetroCompatibleChange,
   onStorageChange,
   selectedStorageRanges,
-
   selectedBrands,
   selectedGenerations,
   selectedAllDigital,

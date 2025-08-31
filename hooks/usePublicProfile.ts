@@ -64,9 +64,9 @@ export function useUserConsolesPublic(
   generation?: string,
   model?: string,
   type?: string,
-  mediaFormats?: string, // Novo parâmetro
-  storageRanges?: string, // Novo parâmetro
-  retroCompatible?: boolean, // Novo parâmetro
+  mediaFormats?: string,
+  storageRanges?: string,
+  retroCompatible?: boolean,
   allDigital?: boolean,
 ) {
   const { apiFetch } = useApiClient();
