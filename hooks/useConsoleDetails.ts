@@ -15,10 +15,7 @@ export default function useConsoleDetails(slug: string, locale: string) {
     queryFn: async () => {
       if (!slug || !initialized) throw new Error("Missing required parameters");
 
-      return apiFetch(`/consoles/${slug}?locale=${locale}`, {
-        // Não precisamos mais passar token explicitamente aqui
-        // pois o useApiClient já injeta o token do contexto
-      });
+      return apiFetch(`/consoles/${slug}?locale=${locale}`);
     },
     enabled: !!slug && initialized,
     staleTime: 5 * 60 * 1000,

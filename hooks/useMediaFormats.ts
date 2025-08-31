@@ -4,12 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
-
-export interface MediaFormat {
-  slug: string;
-  name: string;
-  id: number;
-}
+import { MediaFormat } from "@/@types/catalog.types";
 
 export default function useMediaFormats() {
   const { apiFetch } = useApiClient();

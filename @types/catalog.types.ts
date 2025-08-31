@@ -16,6 +16,10 @@ export interface ConsoleVariant extends BaseCatalogItem {
   consoleDescription: string;
   storage?: string | null;
   skins: SkinDetail[];
+  storageOptions: StorageOption[];
+  allDigital: boolean;
+  retroCompatible: boolean;
+  mediaFormats: MediaFormat[];
 }
 
 // Jogo
@@ -65,4 +69,17 @@ export interface GameWithStats extends Game {
   } | null;
   children: Game[];
   parents: Game[];
+}
+
+export interface StorageOption {
+  id: number;
+  value: number;
+  unit: string;
+  note: string | null;
+}
+
+export interface MediaFormat {
+  slug: string;
+  name: string;
+  id: number;
 }

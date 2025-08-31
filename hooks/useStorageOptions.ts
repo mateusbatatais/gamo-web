@@ -3,13 +3,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
-
-export interface StorageOption {
-  id: number;
-  value: number;
-  unit: string;
-  note: string | null;
-}
+import { StorageOption } from "@/@types/catalog.types";
 
 export function useStorageOptions(consoleVariantId?: number) {
   const { apiFetch } = useApiClient();
