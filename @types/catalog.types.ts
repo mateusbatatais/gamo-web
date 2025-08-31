@@ -20,6 +20,7 @@ export interface ConsoleVariant extends BaseCatalogItem {
   allDigital: boolean;
   retroCompatible: boolean;
   mediaFormats: MediaFormat[];
+  notes: { id: number; text: string }[];
 }
 
 // Jogo
