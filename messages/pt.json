@@ -71,6 +71,17 @@
       "2to64gb": "De 2 a 64GB",
       "65to512gb": "De 65 a 512GB",
       "above513gb": "Acima de 513GB"
+    },
+    "type": {
+      "label": "Tipo de Acessório"
+    },
+    "subType": {
+      "label": "Subtipo",
+      "selectTypeFirst": "Selecione um tipo primeiro",
+      "noSubTypes": "Nenhum subtipo disponível"
+    },
+    "console": {
+      "label": "Console Compatível"
     }
   },
   "order": {

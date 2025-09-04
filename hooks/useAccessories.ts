@@ -1,3 +1,4 @@
+// hooks/useAccessories.ts
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -23,7 +24,7 @@ export function useAccessories({
   sort = "name-asc",
   selectedTypes = [],
   selectedSubTypes = [],
-  selectedConsoles = [],
+  selectedConsoles = [], // Agora são os slugs dos consoles, não das marcas
   searchQuery = "",
 }: UseAccessoriesOptions) {
   const { apiFetch } = useApiClient();
@@ -38,7 +39,7 @@ export function useAccessories({
       sort,
       selectedTypes.join(","),
       selectedSubTypes.join(","),
-      selectedConsoles.join(","),
+      selectedConsoles.join(","), // Agora são os slugs dos consoles
       searchQuery,
     ],
     queryFn: async () => {
@@ -53,7 +54,7 @@ export function useAccessories({
       if (sort) params.append("sort", sort);
       if (selectedTypes.length > 0) params.append("type", selectedTypes.join(","));
       if (selectedSubTypes.length > 0) params.append("subType", selectedSubTypes.join(","));
-      if (selectedConsoles.length > 0) params.append("console", selectedConsoles.join(","));
+      if (selectedConsoles.length > 0) params.append("console", selectedConsoles.join(",")); // Agora envia os slugs dos consoles
       if (searchQuery) params.append("search", searchQuery);
 
       return apiFetch(`/accessories?${params.toString()}`);

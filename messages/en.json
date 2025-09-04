@@ -72,7 +72,19 @@
       "2to64gb": "2GB to 64GB",
       "65to512gb": "65GB to 512GB",
       "above513gb": "Above 512GB"
-    }
+    },
+    "type": {
+      "label": "Filter by Type"
+    },
+    "subType": {
+      "label": "Filter by Subtype",
+      "selectTypeFirst": "Select a type first",
+      "noSubTypes": "No subtypes available for this type"
+    },
+    "console": {
+      "label": "Filter by Console"
+    },
+    "clearAll": "Clear Filters"
   },
   "order": {
     "nameAsc": "Name (A-Z)",
