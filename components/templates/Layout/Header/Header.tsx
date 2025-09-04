@@ -62,7 +62,7 @@ export default function Header() {
       id: "accessories",
       label: t("catalog.accessories"),
       icon: <Joystick size={16} />,
-      href: "/accessorie-catalog",
+      href: "/accessory-catalog",
     },
     {
       id: "games",

@@ -9,6 +9,7 @@
     "game": "Game",
     "game-catalog": "Game Catalog",
     "console-catalog": "Consoles Catalog",
+    "accessory-catalog": "Accessory Catalog",
     "games": "Games",
     "accessories": "Accessories",
     "skins": "Skins",
@@ -292,6 +293,17 @@
     "specifications": "Technical Specifications",
     "storageAndMedia": "Storage and Media",
     "funFactsAbout": "Fun Facts about the {console}"
+  },
+  "AccessoryDetails": {
+    "catalog": "Accessory Catalog",
+    "notFound": "Accessory not found",
+    "noImage": "Image not available",
+    "description": "Description",
+    "releaseDate": "Release date",
+    "compatibleConsoles": "Compatible Consoles",
+    "availableVariants": "Available Variants",
+    "noVariantsAvailable": "No variants available",
+    "limitedEdition": "Limited Edition"
   },
   "Collection": {
     "condition": "Condition",

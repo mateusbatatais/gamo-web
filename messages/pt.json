@@ -18,6 +18,7 @@
     "game": "Jogo",
     "game-catalog": "Catálogo de Jogos",
     "console-catalog": "Catálogo de Consoles",
+    "accessory-catalog": "Catálogo de Acessórios",
     "accessories": "Acessórios",
     "skins": "Skins",
     "collections": "Coleções",
@@ -291,6 +292,17 @@
     "specifications": "Especificações Técnicas",
     "storageAndMedia": "Armazenamento e Mídia",
     "funFactsAbout": "Curiosidades sobre  {console}"
+  },
+  "AccessoryDetails": {
+    "catalog": "Catálogo",
+    "notFound": "Acessório não encontrado",
+    "noImage": "Sem imagem",
+    "description": "Descrição",
+    "releaseDate": "Data de lançamento",
+    "compatibleConsoles": "Consoles compatíveis",
+    "availableVariants": "Variantes disponíveis",
+    "noVariantsAvailable": "Nenhuma variante disponível",
+    "limitedEdition": "Edição Limitada"
   },
   "Collection": {
     "condition": "Condição",

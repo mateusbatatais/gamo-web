@@ -1,4 +1,4 @@
-export type FavoriteType = "GAME" | "CONSOLE";
+export type FavoriteType = "GAME" | "CONSOLE" | "ACCESSORY";
 
 export interface Favorite {
   id: number;

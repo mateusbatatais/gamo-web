@@ -84,3 +84,42 @@ export interface MediaFormat {
   name: string;
   id: number;
 }
+
+export interface Accessory {
+  id: number;
+  slug: string;
+  type: string;
+  subType?: string;
+  name: string;
+  imageUrl?: string;
+  isFavorite?: boolean;
+}
+
+export interface CompatibleConsole {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+export interface AccessoryDetail extends BaseCatalogItem {
+  type: string;
+  subType?: string;
+  description?: string;
+  releaseDate?: string;
+  consoles: CompatibleConsole[];
+  variants: AccessoryVariantDetail[];
+  isFavorite?: boolean;
+}
+
+export interface AccessoryVariantDetail {
+  id: number;
+  slug: string;
+  name: string;
+  description?: string;
+  editionName?: string;
+  imageUrl?: string;
+  limitedEdition: boolean;
+  releaseDate?: string;
+  material?: string;
+  finish?: string;
+}
