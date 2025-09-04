@@ -25,7 +25,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Select } from "@/components/atoms/Select/Select";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
-import FilterContainer from "@/components/molecules/Filter/Filter";
+import FilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
 
 interface PublicProfileMarketGridProps {
   slug: string;

@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import FilterContainer from "@/components/molecules/Filter/Filter";
+import ConsoleFilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
 import ConsoleCard from "@/components/molecules/_console/ConsoleCard/ConsoleCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
@@ -370,7 +370,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
       {/* Filtros para desktop */}
       <div className="hidden lg:block w-full lg:w-1/4 pr-4">
         <div className="sticky top-[70px] overflow-y-auto h-[calc(100vh-70px)] pe-2">
-          <FilterContainer
+          <ConsoleFilterContainer
             onBrandChange={handleBrandChange}
             onGenerationChange={handleGenerationChange}
             onModelChange={handleModelChange}
@@ -436,7 +436,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
           {showFilters && (
             <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow">
-              <FilterContainer
+              <ConsoleFilterContainer
                 onBrandChange={handleBrandChange}
                 onGenerationChange={handleGenerationChange}
                 onModelChange={handleModelChange}

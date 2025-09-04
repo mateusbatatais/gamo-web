@@ -16,7 +16,7 @@ import { useState, useEffect } from "react";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
 import { Settings2, Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
-import FilterContainer from "@/components/molecules/Filter/Filter";
+import FilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
 import { Select } from "@/components/atoms/Select/Select";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";

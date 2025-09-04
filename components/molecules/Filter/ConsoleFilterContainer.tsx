@@ -1,4 +1,4 @@
-// components/molecules/Filter/FilterContainer.tsx
+// components/molecules/Filter/ConsoleFilterContainer.tsx
 import { Button } from "@/components/atoms/Button/Button";
 import BrandFilter from "./BrandFilter/BrandFilter";
 import GenerationFilter from "./GenerationFilter/GenerationFilter";
@@ -9,7 +9,7 @@ import ModelFilter from "./ModelFilter/ModelFilter";
 import MediaFormatFilter from "./MediaFormatFilter/MediaFormatFilter";
 import StorageFilter from "./StorageFilter/StorageFilter";
 
-interface FilterContainerProps {
+interface ConsoleFilterContainerProps {
   onBrandChange: (selectedBrands: string[]) => void;
   onGenerationChange: (selectedGenerations: string[]) => void;
   onAllDigitalChange: (selectedAllDigital: boolean) => void;
@@ -31,7 +31,7 @@ interface FilterContainerProps {
   className?: string;
 }
 
-const FilterContainer = ({
+const ConsoleFilterContainer = ({
   onBrandChange,
   onGenerationChange,
   onAllDigitalChange,
@@ -50,7 +50,7 @@ const FilterContainer = ({
   retroCompatible,
   clearFilters,
   className,
-}: FilterContainerProps) => {
+}: ConsoleFilterContainerProps) => {
   return (
     <div className={clsx("space-y-6", className)}>
       <BrandFilter selectedBrands={selectedBrands} onBrandChange={onBrandChange} />
@@ -87,4 +87,4 @@ const FilterContainer = ({
   );
 };
 
-export default FilterContainer;
+export default ConsoleFilterContainer;
