@@ -3,11 +3,6 @@ import { ProfileReviews } from "@/components/organisms/PublicProfile/ProfileRevi
 import { Suspense } from "react";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 
-// Gerar parâmetros estáticos
-export async function generateStaticParams() {
-  return [{ slug: "example", locale: "pt" }];
-}
-
 export default async function ReviewsPage() {
   // Dados mockados - substituir por chamada à API
   const reviews = [
