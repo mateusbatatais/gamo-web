@@ -113,6 +113,7 @@ export interface AccessoryDetail extends BaseCatalogItem {
 
 export interface AccessoryVariantDetail {
   id: number;
+  accessoryId: number;
   slug: string;
   name: string;
   description?: string;
