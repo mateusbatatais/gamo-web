@@ -78,6 +78,11 @@ const AccessoryCatalogComponent = ({ locale, page, perPage }: AccessoryCatalogCo
     updateURL({ subType: subTypes.join(",") });
   };
 
+  const handleConsoleChange = (consoles: string[]) => {
+    setSelectedConsoles(consoles);
+    updateURL({ console: consoles.join(",") });
+  };
+
   const updateURL = (newParams: Record<string, string>) => {
     const params = new URLSearchParams({
       locale,
@@ -264,8 +269,10 @@ const AccessoryCatalogComponent = ({ locale, page, perPage }: AccessoryCatalogCo
           <AccessoryFilterContainer
             selectedTypes={selectedTypes}
             selectedSubTypes={selectedSubTypes}
+            selectedConsoles={selectedConsoles}
             onTypeChange={handleTypeChange}
             onSubTypeChange={handleSubTypeChange}
+            onConsoleChange={handleConsoleChange}
             clearFilters={clearFilters}
             locale={locale}
           />
@@ -322,8 +329,10 @@ const AccessoryCatalogComponent = ({ locale, page, perPage }: AccessoryCatalogCo
               <AccessoryFilterContainer
                 selectedTypes={selectedTypes}
                 selectedSubTypes={selectedSubTypes}
+                selectedConsoles={selectedConsoles}
                 onTypeChange={handleTypeChange}
                 onSubTypeChange={handleSubTypeChange}
+                onConsoleChange={handleConsoleChange}
                 clearFilters={clearFilters}
                 locale={locale}
               />
