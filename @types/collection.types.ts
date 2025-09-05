@@ -51,3 +51,28 @@ export interface UserGame extends BaseCollectionItem {
   platformId?: number;
   gameSlug?: string;
 }
+
+export interface UserAccessory {
+  id?: number;
+  accessoryId: number;
+  accessoryVariantId: number;
+  variantSlug: string;
+  description?: string | null;
+  status: CollectionStatus;
+  price?: number | null;
+  hasBox?: boolean | null;
+  hasManual?: boolean | null;
+  condition?: Condition;
+  acceptsTrade?: boolean | null;
+  photoMain?: string | null;
+  photos?: string[] | null;
+  createdAt?: Date;
+  accessoryName?: string;
+  variantName?: string;
+  user?: {
+    id: number;
+    name: string;
+    slug: string;
+    profileImage: string | null;
+  };
+}

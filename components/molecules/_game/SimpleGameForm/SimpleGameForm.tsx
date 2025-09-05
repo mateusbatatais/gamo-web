@@ -34,7 +34,7 @@ export const SimpleGameForm = ({
   onSuccess,
   onCancel,
 }: SimpleGameFormProps) => {
-  const t = useTranslations("GameForm");
+  const t = useTranslations("TradeForm");
   const { createUserGame, isPending } = useUserGameMutation();
 
   const [formData, setFormData] = useState<SimpleFormState>({

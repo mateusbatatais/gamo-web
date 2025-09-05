@@ -52,7 +52,7 @@ export const GameForm = ({
   onSuccess,
   onCancel,
 }: GameFormProps) => {
-  const t = useTranslations("GameForm");
+  const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
   const {

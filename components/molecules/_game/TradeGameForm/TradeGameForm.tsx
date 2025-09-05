@@ -39,7 +39,7 @@ export const TradeGameForm = ({
   const [selectedPlatformId, setSelectedPlatformId] = useState<number>(
     initialData?.platformId || (platformOptions[0] ? Number(platformOptions[0].value) : 0),
   );
-  const t = useTranslations("GameForm");
+  const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
   const handleSubmit = async (data: TradeSubmitData<Condition>) => {

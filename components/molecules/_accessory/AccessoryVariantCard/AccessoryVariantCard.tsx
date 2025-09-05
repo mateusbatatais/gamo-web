@@ -1,5 +1,4 @@
 // components/molecules/AccessoryVariantCard/AccessoryVariantCard.tsx
-
 import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -8,18 +7,36 @@ import { Card } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Package } from "lucide-react";
 import { AccessoryVariantDetail } from "@/@types/catalog.types";
+import { AddAccessoryToCollection } from "../AddAccessoryToCollection/AddAccessoryToCollection";
 
 interface AccessoryVariantCardProps {
   variant: AccessoryVariantDetail;
+  accessoryId: number;
 }
 
-export default function AccessoryVariantCard({ variant }: AccessoryVariantCardProps) {
+const useAddToCollectionFeedback = () => {
+  const [recentlyAdded, setRecentlyAdded] = useState<number | null>(null);
+
+  const triggerFeedback = (variantId: number) => {
+    setRecentlyAdded(variantId);
+    setTimeout(() => setRecentlyAdded(null), 2000);
+  };
+
+  return { recentlyAdded, triggerFeedback };
+};
+
+export default function AccessoryVariantCard({ variant, accessoryId }: AccessoryVariantCardProps) {
   const t = useTranslations("AccessoryDetails");
   const imageUrl = variant.imageUrl;
   const [imageError, setImageError] = useState(false);
+  const { recentlyAdded, triggerFeedback } = useAddToCollectionFeedback();
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 !p-0">
+    <Card
+      className={`overflow-hidden hover:shadow-lg transition-all duration-300 !p-0 ${
+        recentlyAdded === variant.id ? "ring-2 ring-green-500 scale-[1.02] shadow-xl" : ""
+      }`}
+    >
       <div className="h-48 relative">
         {imageError ? (
           <div className="bg-gray-200 rounded-top-xl border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center dark:bg-gray-700 dark:border-gray-600">
@@ -60,6 +77,15 @@ export default function AccessoryVariantCard({ variant }: AccessoryVariantCardPr
         {variant.description && (
           <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{variant.description}</p>
         )}
+
+        <div className="mt-4">
+          <AddAccessoryToCollection
+            accessoryId={accessoryId}
+            accessoryVariantId={variant.id}
+            variantSlug={variant.slug}
+            onAddSuccess={() => triggerFeedback(variant.id)}
+          />
+        </div>
       </div>
     </Card>
   );

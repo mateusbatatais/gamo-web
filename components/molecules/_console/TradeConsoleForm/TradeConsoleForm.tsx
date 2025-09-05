@@ -39,7 +39,7 @@ export const TradeConsoleForm = ({
   onSuccess,
   onCancel,
 }: TradeConsoleFormProps) => {
-  const t = useTranslations("ConsoleForm");
+  const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
   const { data: storageOptions, isLoading: storageOptionsLoading } =
     useStorageOptions(consoleVariantId);

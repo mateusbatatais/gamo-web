@@ -47,7 +47,7 @@ export const ConsoleForm = ({
   onSuccess,
   onCancel,
 }: ConsoleFormProps) => {
-  const t = useTranslations("ConsoleForm");
+  const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
 
   const {
