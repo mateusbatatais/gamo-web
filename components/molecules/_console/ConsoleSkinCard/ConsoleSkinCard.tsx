@@ -1,15 +1,15 @@
-// components/molecules/SkinCard/SkinCard.tsx
+// components/molecules/ConsoleSkinCard/ConsoleSkinCard.tsx
 
 import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { normalizeImageUrl } from "@/utils/validate-url";
-import { AddConsoleToCollection } from "../_console/AddConsoleToCollection/AddConsoleToCollection";
+import { AddConsoleToCollection } from "../AddConsoleToCollection/AddConsoleToCollection";
 import { Card } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Monitor } from "lucide-react";
 
-interface SkinCardProps {
+interface ConsoleSkinCardProps {
   skin: {
     id: number;
     slug: string;
@@ -35,7 +35,11 @@ const useAddToCollectionFeedback = () => {
   return { recentlyAdded, triggerFeedback };
 };
 
-export default function SkinCard({ skin, consoleId, consoleVariantId }: SkinCardProps) {
+export default function ConsoleSkinCard({
+  skin,
+  consoleId,
+  consoleVariantId,
+}: ConsoleSkinCardProps) {
   const t = useTranslations("ConsoleDetails");
   const imageUrl = skin.imageUrl;
   const [imageError, setImageError] = useState(false);

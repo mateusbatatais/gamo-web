@@ -4,13 +4,13 @@
 import { useTranslations } from "next-intl";
 import useConsoleDetails from "@/hooks/useConsoleDetails";
 import ConsoleInfo from "@/components/organisms/_console/ConsoleInfo/ConsoleInfo";
-import SkinCard from "@/components/molecules/SkinCard/SkinCard";
+import ConsoleSkinCard from "@/components/molecules/_console/ConsoleSkinCard/ConsoleSkinCard";
 import { useParams } from "next/navigation";
 import { useToast } from "@/contexts/ToastContext";
 import { useEffect } from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import { ConsoleInfoSkeleton } from "@/components/organisms/_console/ConsoleInfo/ConsoleInfo.skeleton";
-import { SkinCardSkeleton } from "@/components/molecules/SkinCard/SkinCard.skeleton";
+import { ConsoleSkinCardSkeleton } from "@/components/molecules/_console/ConsoleSkinCard/ConsoleSkinCard.skeleton";
 import { Joystick } from "lucide-react";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useFavorite } from "@/hooks/useFavorite";
@@ -69,7 +69,7 @@ export default function ConsoleDetailPage() {
           </h2>
           <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {[...Array(4)].map((_, index) => (
-              <SkinCardSkeleton key={index} />
+              <ConsoleSkinCardSkeleton key={index} />
             ))}
           </div>
         </section>
@@ -117,7 +117,7 @@ export default function ConsoleDetailPage() {
         {data.skins.length > 0 ? (
           <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {data.skins.map((skin: SkinDetail) => (
-              <SkinCard
+              <ConsoleSkinCard
                 key={skin.id}
                 skin={skin}
                 consoleId={data.consoleId}

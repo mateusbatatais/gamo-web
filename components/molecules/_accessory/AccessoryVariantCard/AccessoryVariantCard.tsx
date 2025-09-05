@@ -1,4 +1,4 @@
-// components/molecules/VariantCard/VariantCard.tsx
+// components/molecules/AccessoryVariantCard/AccessoryVariantCard.tsx
 
 import React, { useState } from "react";
 import Image from "next/image";
@@ -9,11 +9,11 @@ import { Badge } from "@/components/atoms/Badge/Badge";
 import { Package } from "lucide-react";
 import { AccessoryVariantDetail } from "@/@types/catalog.types";
 
-interface VariantCardProps {
+interface AccessoryVariantCardProps {
   variant: AccessoryVariantDetail;
 }
 
-export default function VariantCard({ variant }: VariantCardProps) {
+export default function AccessoryVariantCard({ variant }: AccessoryVariantCardProps) {
   const t = useTranslations("AccessoryDetails");
   const imageUrl = variant.imageUrl;
   const [imageError, setImageError] = useState(false);

@@ -1,8 +1,8 @@
-// components/molecules/SkinCard/SkinCard.skeleton.tsx
+// components/molecules/ConsoleSkinCard/ConsoleSkinCard.skeleton.tsx
 import React from "react";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 
-export const SkinCardSkeleton = () => {
+export const ConsoleSkinCardSkeleton = () => {
   return (
     <div className="border border-neutral-300 rounded-lg overflow-hidden shadow-sm">
       <Skeleton className="h-48 w-full" />

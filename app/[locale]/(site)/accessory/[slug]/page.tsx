@@ -12,7 +12,7 @@ import { useFavorite } from "@/hooks/useFavorite";
 import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 import { Gamepad } from "lucide-react";
 import AccessoryInfo from "@/components/organisms/_accessory/AccessoryInfo/AccessoryInfo";
-import VariantCard from "@/components/molecules/_accessory/VariantCard/VariantCard";
+import AccessoryVariantCard from "@/components/molecules/_accessory/AccessoryVariantCard/AccessoryVariantCard";
 
 export default function AccessoryDetailPage() {
   const params = useParams();
@@ -116,7 +116,7 @@ export default function AccessoryDetailPage() {
         {data.variants.length > 0 ? (
           <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
             {data.variants.map((variant) => (
-              <VariantCard key={variant.id} variant={variant} />
+              <AccessoryVariantCard key={variant.id} variant={variant} />
             ))}
           </div>
         ) : (
