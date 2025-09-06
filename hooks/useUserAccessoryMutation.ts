@@ -12,7 +12,7 @@ export function useUserAccessoryMutation() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: async (data: Partial<UserAccessory>) => {
+    mutationFn: async (data: Partial<UserAccessory> & { compatibleUserConsoleIds?: number[] }) => {
       return apiFetch("/user-accessories", {
         method: "POST",
         body: data,

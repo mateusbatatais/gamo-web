@@ -1,4 +1,3 @@
-// components/molecules/AddAccessoryToCollection/AddAccessoryToCollection.tsx
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,8 +6,9 @@ import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { CardActionButtons } from "../../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
-import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { TradeAccessoryForm } from "../TradeAccessoryForm/TradeAccessoryForm";
+import { SimpleAccessoryForm } from "../SimpleAccessoryForm/SimpleAccessoryForm";
+import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 
 interface Props {
   accessoryId: number;
@@ -31,7 +31,12 @@ export function AddAccessoryToCollection({
     openModal: openTradeModal,
     closeModal: closeTradeModal,
   } = useModalUrl(`add-accessory-${accessoryVariantId}`);
-  const { createUserAccessory, isPending } = useUserAccessoryMutation();
+  const {
+    isOpen: isSimpleModalOpen,
+    openModal: openSimpleModal,
+    closeModal: closeSimpleModal,
+  } = useModalUrl(`add-accessory-simple-${accessoryVariantId}`);
+  const { isPending } = useUserAccessoryMutation();
 
   const handleAction = (type: "OWNED" | "TRADE") => {
     if (!user) {
@@ -46,20 +51,10 @@ export function AddAccessoryToCollection({
     }
 
     if (type === "OWNED") {
-      addToCollectionDirectly();
+      openSimpleModal();
     } else {
       openTradeModal();
     }
-  };
-
-  const addToCollectionDirectly = async () => {
-    await createUserAccessory({
-      accessoryId,
-      accessoryVariantId,
-      status: "OWNED",
-      condition: "USED",
-    });
-    onAddSuccess?.();
   };
 
   return (
@@ -88,6 +83,18 @@ export function AddAccessoryToCollection({
             onAddSuccess?.();
           }}
           onCancel={closeTradeModal}
+        />
+      </Dialog>
+
+      <Dialog open={isSimpleModalOpen} onClose={closeSimpleModal} title={"Adicionar à coleção"}>
+        <SimpleAccessoryForm
+          accessoryId={accessoryId}
+          accessoryVariantId={accessoryVariantId}
+          onSuccess={() => {
+            closeSimpleModal();
+            onAddSuccess?.();
+          }}
+          onCancel={closeSimpleModal}
         />
       </Dialog>
     </div>

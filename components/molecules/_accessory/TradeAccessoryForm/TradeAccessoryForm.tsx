@@ -1,7 +1,6 @@
-// components/molecules/TradeAccessoryForm/TradeAccessoryForm.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import TradeFormBase, {
@@ -9,6 +8,9 @@ import TradeFormBase, {
   StatusType,
 } from "@/components/molecules/TradeFormBase/TradeFormBase";
 import { Condition } from "@/@types/collection.types";
+import { useUserConsoles } from "@/hooks/useUserConsoles";
+import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
+import { Spinner } from "@/components/atoms/Spinner/Spinner";
 
 interface TradeAccessoryFormProps {
   accessoryId: number;
@@ -40,6 +42,16 @@ export const TradeAccessoryForm = ({
 }: TradeAccessoryFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserAccessory, updateUserAccessory, isPending } = useUserAccessoryMutation();
+  const { data: userConsoles, isLoading } = useUserConsoles();
+  const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
+
+  const ownedConsoles = userConsoles?.filter((console) => console.status === "OWNED") || [];
+
+  const handleCheckboxChange = (consoleId: number) => {
+    setSelectedConsoleIds((prev) =>
+      prev.includes(consoleId) ? prev.filter((id) => id !== consoleId) : [...prev, consoleId],
+    );
+  };
 
   const handleSubmit = async (data: TradeSubmitData<Condition>) => {
     const payload = {
@@ -47,6 +59,7 @@ export const TradeAccessoryForm = ({
       accessoryVariantId,
       variantSlug,
       ...data,
+      compatibleUserConsoleIds: selectedConsoleIds,
     };
 
     if (initialData?.id) {
@@ -62,6 +75,28 @@ export const TradeAccessoryForm = ({
     { value: "REFURBISHED", label: t("conditionRefurbished") },
   ];
 
+  const extraFields = (
+    <div>
+      <h4 className="font-medium mb-2">{t("compatibleConsoles")}</h4>
+      {isLoading ? (
+        <Spinner />
+      ) : ownedConsoles.length === 0 ? (
+        <p className="text-sm text-gray-500">{t("noConsoles")}</p>
+      ) : (
+        <div className="space-y-2">
+          {ownedConsoles.map((userConsole) => (
+            <Checkbox
+              key={userConsole.id}
+              label={userConsole.name}
+              checked={selectedConsoleIds.includes(userConsole.id)}
+              onChange={() => handleCheckboxChange(userConsole.id)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <TradeFormBase<Condition>
       t={t}
@@ -71,6 +106,7 @@ export const TradeAccessoryForm = ({
       onCancel={onCancel}
       isSubmitting={isPending}
       conditionOptions={conditionOptions}
+      extraFields={extraFields}
     />
   );
 };

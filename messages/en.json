@@ -471,7 +471,15 @@
     "abandoned": "Abandoned",
     "mediaPhysical": "Physical",
     "mediaDigital": "Digital",
-    "platform": "Platform"
+    "platform": "Platform",
+    "compatibleConsoles": "Compatible Consoles",
+    "noConsoles": "No consoles in your collection"
+  },
+  "SimpleAccessoryForm": {
+    "description": "Select the consoles from your collection that are compatible with this accessory:",
+    "noConsoles": "You don't have any consoles in your collection.",
+    "cancel": "Cancel",
+    "add": "Add"
   },
   "HomePage": {
     "construction": "Under construction"
