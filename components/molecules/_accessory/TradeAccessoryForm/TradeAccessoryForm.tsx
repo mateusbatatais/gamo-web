@@ -42,7 +42,7 @@ export const TradeAccessoryForm = ({
 }: TradeAccessoryFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserAccessory, updateUserAccessory, isPending } = useUserAccessoryMutation();
-  const { data: userConsoles, isLoading } = useUserConsoles();
+  const { data: userConsoles, isLoading } = useUserConsoles(accessoryId);
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
 
   const ownedConsoles = userConsoles?.filter((console) => console.status === "OWNED") || [];

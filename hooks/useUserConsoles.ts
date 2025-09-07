@@ -9,13 +9,15 @@ interface UserConsoleSummary {
   status: "OWNED" | "SELLING" | "LOOKING_FOR";
 }
 
-export function useUserConsoles() {
+export function useUserConsoles(accessoryId?: number) {
   const { apiFetch } = useApiClient();
 
   return useQuery({
-    queryKey: ["userConsolesSummary"],
+    queryKey: ["userConsolesSummary", accessoryId],
     queryFn: async (): Promise<UserConsoleSummary[]> => {
-      return apiFetch("/user-consoles/summary");
+      const url = accessoryId ? `/user-consoles/summary/${accessoryId}` : "/user-consoles/summary";
+      return apiFetch(url);
     },
+    enabled: !!accessoryId,
   });
 }

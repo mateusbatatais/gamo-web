@@ -22,7 +22,7 @@ export const SimpleAccessoryForm = ({
   onCancel,
 }: SimpleAccessoryFormProps) => {
   const t = useTranslations("SimpleAccessoryForm");
-  const { data: userConsoles, isLoading } = useUserConsoles();
+  const { data: userConsoles, isLoading } = useUserConsoles(accessoryId);
   const { createUserAccessory, isPending } = useUserAccessoryMutation();
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
 
