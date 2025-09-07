@@ -84,6 +84,8 @@ export function useUserConsolesPublic(
   if (type) queryParams.append("type", type);
   if (mediaFormats) queryParams.append("mediaFormats", mediaFormats);
 
+  queryParams.append("includeAccessories", "true");
+
   // Converter ranges de storage para storageMin e storageMax
   const rangesArray = storageRanges ? storageRanges.split(",").filter(Boolean) : [];
   const { storageMin, storageMax } = calculateStorageRange(rangesArray);
@@ -117,6 +119,7 @@ export function useUserConsolesPublic(
     staleTime: 5 * 60 * 1000,
   });
 }
+
 export function useUserGamesPublic(
   slug: string,
   locale: string,

@@ -36,6 +36,7 @@ export interface UserConsole extends BaseCollectionItem {
     slug: string;
     profileImage: string | null;
   };
+  accessories?: UserAccessory[];
 }
 
 // Jogo na coleção do usuário
