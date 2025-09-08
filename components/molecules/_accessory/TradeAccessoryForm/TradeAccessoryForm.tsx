@@ -15,7 +15,7 @@ import { Spinner } from "@/components/atoms/Spinner/Spinner";
 interface TradeAccessoryFormProps {
   accessoryId: number;
   accessoryVariantId: number;
-  variantSlug: string;
+  accessorySlug: string;
   initialData?: {
     id?: number;
     description?: string | null;
@@ -35,7 +35,7 @@ interface TradeAccessoryFormProps {
 export const TradeAccessoryForm = ({
   accessoryId,
   accessoryVariantId,
-  variantSlug,
+  accessorySlug,
   initialData,
   onSuccess,
   onCancel,
@@ -57,7 +57,7 @@ export const TradeAccessoryForm = ({
     const payload = {
       accessoryId,
       accessoryVariantId,
-      variantSlug,
+      accessorySlug,
       ...data,
       compatibleUserConsoleIds: selectedConsoleIds,
     };

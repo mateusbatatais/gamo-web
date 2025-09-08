@@ -60,7 +60,6 @@ export const PublicProfileConsoleTable = ({
               size="sm"
               aria-expanded={isExpanded}
               onClick={onToggleAccessories}
-              title={isExpanded ? t("hideAccessories") : t("showAccessories")}
             >
               {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             </Button>

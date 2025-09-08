@@ -7,7 +7,7 @@ import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProf
 import { useUserConsolesPublic } from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import { UserConsole } from "@/@types/collection.types";
+import { UserAccessory, UserConsole } from "@/@types/collection.types";
 import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
@@ -292,14 +292,14 @@ const PublicProfileConsoleGridContent = ({
   const tableCols = 1 /*expander*/ + 2 /*Console + Skin*/ + (isOwner ? 1 : 0);
 
   // --------- Renderizadores de acessórios ----------
-  function AccessoriesCard({ acc }: { acc: Accessory }) {
+  function AccessoriesCard({ acc }: { acc: UserAccessory }) {
     return (
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="h-36 bg-gray-100 dark:bg-gray-700 relative">
           {acc.photoMain ? (
             <Image
               src={acc.photoMain}
-              alt={acc.name}
+              alt={acc.variantName || ""}
               fill
               sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
               className="object-cover"
@@ -311,8 +311,8 @@ const PublicProfileConsoleGridContent = ({
           )}
         </div>
         <div className="p-3">
-          <p className="font-medium dark:text-white">{acc.name}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{acc.slug}</p>
+          <p className="font-medium dark:text-white">{acc.variantName}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{acc.accessorySlug}</p>
         </div>
       </div>
     );
@@ -378,7 +378,7 @@ const PublicProfileConsoleGridContent = ({
                   {acc.photoMain ? (
                     <Image
                       src={acc.photoMain}
-                      alt={acc.name}
+                      alt={acc.variantName || ""}
                       fill
                       sizes="56px"
                       className="object-cover"
@@ -390,8 +390,10 @@ const PublicProfileConsoleGridContent = ({
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="font-medium dark:text-white truncate">{acc.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{acc.slug}</p>
+                  <p className="font-medium dark:text-white truncate">{acc.variantName}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {acc.accessorySlug}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -433,7 +435,7 @@ const PublicProfileConsoleGridContent = ({
                         {acc.photoMain ? (
                           <Image
                             src={acc.photoMain}
-                            alt={acc.name}
+                            alt={acc.variantName || ""}
                             fill
                             sizes="40px"
                             className="object-cover"
@@ -444,10 +446,12 @@ const PublicProfileConsoleGridContent = ({
                           </div>
                         )}
                       </div>
-                      <span className="font-medium dark:text-white">{acc.name}</span>
+                      <span className="font-medium dark:text-white">{acc.variantName}</span>
                     </div>
                   </td>
-                  <td className="p-2 text-sm text-gray-600 dark:text-gray-300">{acc.slug}</td>
+                  <td className="p-2 text-sm text-gray-600 dark:text-gray-300">
+                    {acc.accessorySlug}
+                  </td>
                 </tr>
               ))}
             </tbody>

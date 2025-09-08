@@ -57,7 +57,7 @@ export interface UserAccessory {
   id?: number;
   accessoryId: number;
   accessoryVariantId: number;
-  variantSlug: string;
+  accessorySlug: string;
   description?: string | null;
   status: CollectionStatus;
   price?: number | null;

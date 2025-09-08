@@ -76,9 +76,7 @@ export const PublicProfileConsoleCompact = ({
               aria-expanded={!!isExpanded}
               onClick={onToggleAccessories}
               icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            >
-              {isExpanded ? t("hideAccessories") : t("showAccessories")}
-            </Button>
+            ></Button>
           </div>
         )}
 

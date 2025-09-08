@@ -13,14 +13,14 @@ import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 interface Props {
   accessoryId: number;
   accessoryVariantId: number;
-  variantSlug: string;
+  accessorySlug: string;
   onAddSuccess?: () => void;
 }
 
 export function AddAccessoryToCollection({
   accessoryId,
   accessoryVariantId,
-  variantSlug,
+  accessorySlug,
   onAddSuccess,
 }: Props) {
   const { user } = useAuth();
@@ -42,7 +42,7 @@ export function AddAccessoryToCollection({
     if (!user) {
       setPendingAction({
         type: "ADD_ACCESSORY_TO_COLLECTION",
-        payload: { type, accessoryId, accessoryVariantId, variantSlug },
+        payload: { type, accessoryId, accessoryVariantId, accessorySlug },
       });
 
       const returnUrl = `${window.location.pathname}${window.location.search}`;
@@ -77,7 +77,7 @@ export function AddAccessoryToCollection({
         <TradeAccessoryForm
           accessoryId={accessoryId}
           accessoryVariantId={accessoryVariantId}
-          variantSlug={variantSlug}
+          accessorySlug={accessorySlug}
           onSuccess={() => {
             closeTradeModal();
             onAddSuccess?.();
