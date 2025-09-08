@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, ChevronDown, ChevronRight } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -12,16 +12,31 @@ import { ConsoleForm } from "../../_console/ConsoleForm/ConsoleForm";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 
+// Tipos/guard locais (sem any)
+type Accessory = { id: number; name: string; slug: string; photoMain?: string };
+function hasAccessories(
+  item: UserConsole,
+): item is UserConsole & { accessories: ReadonlyArray<Accessory> } {
+  const maybe = item as unknown as { accessories?: unknown };
+  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
+}
+
 interface PublicProfileConsoleTableProps {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
   isMarketGrid?: boolean;
+
+  // suporte ao toggle vindo do Grid
+  isExpanded?: boolean;
+  onToggleAccessories?: () => void;
 }
 
 export const PublicProfileConsoleTable = ({
   consoleItem,
   isOwner,
   isMarketGrid = false,
+  isExpanded = false,
+  onToggleAccessories,
 }: PublicProfileConsoleTableProps) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -32,9 +47,26 @@ export const PublicProfileConsoleTable = ({
     deleteConsole(consoleItem.id || 0);
   };
 
+  const canExpand = hasAccessories(consoleItem);
+
   return (
     <>
       <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+        {/* Coluna do expander - só exibe se houver acessórios */}
+        <td className="p-2 w-10">
+          {onToggleAccessories && canExpand && (
+            <Button
+              variant="transparent"
+              size="sm"
+              aria-expanded={isExpanded}
+              onClick={onToggleAccessories}
+              title={isExpanded ? t("hideAccessories") : t("showAccessories")}
+            >
+              {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            </Button>
+          )}
+        </td>
+
         <td className="py-1">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
@@ -58,6 +90,7 @@ export const PublicProfileConsoleTable = ({
             </div>
           </div>
         </td>
+
         <td className="p-2">{consoleItem.skinName}</td>
 
         {isMarketGrid && (

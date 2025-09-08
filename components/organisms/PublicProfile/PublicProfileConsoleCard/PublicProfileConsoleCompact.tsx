@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/atoms/Card/Card";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, ChevronDown, ChevronUp } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -13,12 +13,25 @@ import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import { useTranslations } from "next-intl";
 
+// Tipos/guard locais (sem any)
+type Accessory = { id: number; name: string; slug: string; photoMain?: string };
+function hasAccessories(
+  item: UserConsole,
+): item is UserConsole & { accessories: ReadonlyArray<Accessory> } {
+  const maybe = item as unknown as { accessories?: unknown };
+  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
+}
+
 export const PublicProfileConsoleCompact = ({
   consoleItem,
   isOwner,
+  isExpanded,
+  onToggleAccessories,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
+  isExpanded?: boolean;
+  onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -29,11 +42,13 @@ export const PublicProfileConsoleCompact = ({
     deleteConsole(consoleItem.id || 0);
   };
 
+  const canExpand = hasAccessories(consoleItem);
+
   return (
     <>
       <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group aspect-square">
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2 right-2 flex z-20 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}
@@ -49,6 +64,21 @@ export const PublicProfileConsoleCompact = ({
               icon={<Trash size={12} />}
               size="sm"
             />
+          </div>
+        )}
+
+        {/* Botão de acessórios - dentro do card (exibe apenas se houver acessórios) */}
+        {canExpand && onToggleAccessories && (
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20">
+            <Button
+              variant="secondary"
+              size="sm"
+              aria-expanded={!!isExpanded}
+              onClick={onToggleAccessories}
+              icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            >
+              {isExpanded ? t("hideAccessories") : t("showAccessories")}
+            </Button>
           </div>
         )}
 
@@ -68,7 +98,7 @@ export const PublicProfileConsoleCompact = ({
           )}
         </div>
 
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100">
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
           <span className="text-white text-xs font-medium text-center px-2 line-clamp-2">
             {consoleItem.consoleName}
             {consoleItem.variantName && ` (${consoleItem.variantName})`}

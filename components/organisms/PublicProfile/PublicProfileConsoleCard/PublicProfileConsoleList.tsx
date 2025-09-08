@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
-import { Pencil, Trash, ArrowLeftRight } from "lucide-react";
+import { Pencil, Trash, ArrowLeftRight, ChevronDown, ChevronUp } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -15,12 +15,25 @@ import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
 
+// Tipos/guard locais (sem any)
+type Accessory = { id: number; name: string; slug: string; photoMain?: string };
+function hasAccessories(
+  item: UserConsole,
+): item is UserConsole & { accessories: ReadonlyArray<Accessory> } {
+  const maybe = item as unknown as { accessories?: unknown };
+  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
+}
+
 export const PublicProfileConsoleList = ({
   consoleItem,
   isOwner,
+  isExpanded,
+  onToggleAccessories,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
+  isExpanded?: boolean;
+  onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -30,6 +43,8 @@ export const PublicProfileConsoleList = ({
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  const canExpand = hasAccessories(consoleItem);
 
   return (
     <>
@@ -64,25 +79,40 @@ export const PublicProfileConsoleList = ({
                 </p>
               </div>
 
-              {isOwner && (
-                <div className="flex gap-2">
+              {/* Ações à direita: mostrar expandir (se houver acessórios) + botões do owner */}
+              <div className="flex gap-2 items-center">
+                {canExpand && onToggleAccessories && (
                   <Button
-                    onClick={() => setShowEditModal(true)}
-                    aria-label={t("editItem")}
-                    icon={<Pencil size={16} />}
-                    variant="transparent"
+                    variant="outline"
                     size="sm"
-                  />
-                  <Button
-                    onClick={() => setShowDeleteModal(true)}
-                    disabled={isPending}
-                    variant="transparent"
-                    aria-label={t("deleteItem")}
-                    icon={<Trash size={16} />}
-                    size="sm"
-                  />
-                </div>
-              )}
+                    aria-expanded={!!isExpanded}
+                    onClick={onToggleAccessories}
+                    icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                  >
+                    {isExpanded ? t("hideAccessories") : t("showAccessories")}
+                  </Button>
+                )}
+
+                {isOwner && (
+                  <>
+                    <Button
+                      onClick={() => setShowEditModal(true)}
+                      aria-label={t("editItem")}
+                      icon={<Pencil size={16} />}
+                      variant="transparent"
+                      size="sm"
+                    />
+                    <Button
+                      onClick={() => setShowDeleteModal(true)}
+                      disabled={isPending}
+                      variant="transparent"
+                      aria-label={t("deleteItem")}
+                      icon={<Trash size={16} />}
+                      size="sm"
+                    />
+                  </>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-4 items-center">

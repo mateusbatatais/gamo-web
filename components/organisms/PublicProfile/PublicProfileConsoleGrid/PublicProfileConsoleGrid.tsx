@@ -1,6 +1,6 @@
-// components/organisms/PublicProfile/PublicProfileConsoleGrid/PublicProfileConsoleGrid.tsx
 "use client";
 
+import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
@@ -12,7 +12,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
-import { useState, useEffect } from "react";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
 import { Settings2, Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
@@ -22,6 +21,57 @@ import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";
 import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
 import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
+import Image from "next/image";
+
+// Tipos/guard locais (sem any)
+interface Accessory {
+  id: number;
+  name: string;
+  slug: string;
+  photoMain?: string;
+}
+function hasAccessories(
+  item: UserConsole,
+): item is UserConsole & { accessories: ReadonlyArray<Accessory> } {
+  const maybe = item as unknown as { accessories?: unknown };
+  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
+}
+
+// Hooks de colunas
+function useResponsiveColumns(): number {
+  const [cols, setCols] = useState<number>(2);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w >= 1024)
+        setCols(4); // lg
+      else if (w >= 768)
+        setCols(3); // md
+      else setCols(2); // base
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return cols;
+}
+
+function useCompactColumns(): number {
+  const [cols, setCols] = useState<number>(3);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w >= 1536) setCols(8);
+      else if (w >= 1024) setCols(6);
+      else if (w >= 768) setCols(4);
+      else setCols(3);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return cols;
+}
 
 interface PublicProfileConsoleGridProps {
   slug: string;
@@ -44,8 +94,6 @@ export const PublicProfileConsoleGrid = ({
 };
 
 type ViewMode = "grid" | "compact" | "list" | "table";
-
-// Chave para armazenar as preferências no localStorage
 const STORAGE_KEY = "userConsolesViewPreferences";
 
 const PublicProfileConsoleGridContent = ({
@@ -61,31 +109,24 @@ const PublicProfileConsoleGridContent = ({
   const [localPerPage, setLocalPerPage] = useState(50);
 
   useEffect(() => {
-    const savedPreferences = localStorage.getItem(STORAGE_KEY);
-    if (savedPreferences) {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
       try {
-        const preferences = JSON.parse(savedPreferences);
-        if (preferences.viewMode) {
-          setViewMode(preferences.viewMode);
-        }
-        if (preferences.perPage) {
-          setLocalPerPage(Number(preferences.perPage));
-        }
-      } catch (error) {
-        console.error("Error parsing saved preferences:", error);
+        const prefs: { viewMode?: ViewMode; perPage?: string } = JSON.parse(saved);
+        if (prefs.viewMode) setViewMode(prefs.viewMode);
+        if (prefs.perPage) setLocalPerPage(Number(prefs.perPage));
+      } catch {
+        // ignore
       }
     }
   }, []);
 
   useEffect(() => {
-    const preferences = {
-      viewMode,
-      perPage: localPerPage.toString(),
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+    const prefs = { viewMode, perPage: localPerPage.toString() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
   }, [viewMode, localPerPage]);
 
-  // Obter parâmetros da URL
+  // URL params
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
   const sort = searchParams.get("sort") || "name-asc";
@@ -96,7 +137,7 @@ const PublicProfileConsoleGridContent = ({
   const type = searchParams.get("type") || "";
   const allDigital = searchParams.get("allDigital") || "";
 
-  // Estados para todos os filtros
+  // Filtros
   const [selectedBrands, setSelectedBrands] = useState<string[]>(
     brand ? brand.split(",").filter(Boolean) : [],
   );
@@ -110,14 +151,12 @@ const PublicProfileConsoleGridContent = ({
     type ? type.split(",").filter(Boolean) : [],
   );
   const [selectedAllDigital, setSelectedAllDigital] = useState<boolean>(allDigital === "true");
-
   const [selectedMediaFormats, setSelectedMediaFormats] = useState<string[]>(
     searchParams.get("mediaFormats")?.split(",").filter(Boolean) || [],
   );
   const [retroCompatible, setRetroCompatible] = useState<boolean>(
     searchParams.get("retroCompatible") === "true",
   );
-
   const [selectedStorageRanges, setSelectedStorageRanges] = useState<string[]>(
     searchParams.get("storage")?.split(",").filter(Boolean) || [],
   );
@@ -125,7 +164,7 @@ const PublicProfileConsoleGridContent = ({
   const { data, isLoading, error } = useUserConsolesPublic(
     slug,
     locale,
-    "OWNED", // status fixo para coleção
+    "OWNED",
     page,
     perPage,
     sort,
@@ -156,13 +195,6 @@ const PublicProfileConsoleGridContent = ({
     { value: "100", label: "100/pg" },
   ];
 
-  const VIEW_MODE_OPTIONS = [
-    { value: "grid", label: t("viewMode.grid"), icon: <Grid3X3 size={16} /> },
-    { value: "compact", label: t("viewMode.compact"), icon: <ListChecks size={16} /> },
-    { value: "list", label: t("viewMode.list"), icon: <List size={16} /> },
-    { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
-  ];
-
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", newPage.toString());
@@ -181,63 +213,6 @@ const PublicProfileConsoleGridContent = ({
     params.set("perPage", newPerPage);
     params.set("page", "1");
     setLocalPerPage(Number(newPerPage));
-    router.push(`?${params.toString()}`);
-  };
-
-  const handleViewModeChange = (mode: ViewMode) => {
-    setViewMode(mode);
-  };
-
-  const handleBrandChange = (brands: string[]) => {
-    setSelectedBrands(brands);
-    updateURL({ brand: brands.join(",") });
-  };
-
-  const handleGenerationChange = (generations: string[]) => {
-    setSelectedGenerations(generations);
-    updateURL({ generation: generations.join(",") });
-  };
-
-  const handleModelChange = (models: string[]) => {
-    setSelectedModels(models);
-    updateURL({ model: models.join(",") });
-  };
-
-  const handleTypeChange = (types: string[]) => {
-    setSelectedTypes(types);
-    updateURL({ type: types.join(",") });
-  };
-
-  const handleAllDigitalChange = (allDigital: boolean) => {
-    setSelectedAllDigital(allDigital);
-    updateURL({ allDigital: allDigital ? "true" : "" });
-  };
-
-  const handleMediaFormatChange = (formats: string[]) => {
-    setSelectedMediaFormats(formats);
-    updateURL({ mediaFormats: formats.join(",") });
-  };
-
-  const handleRetroCompatibleChange = (isRetroCompatible: boolean) => {
-    setRetroCompatible(isRetroCompatible);
-    updateURL({ retroCompatible: isRetroCompatible.toString() });
-  };
-
-  const handleStorageChange = (ranges: string[]) => {
-    setSelectedStorageRanges(ranges);
-    updateURL({ storage: ranges.join(",") });
-  };
-
-  const updateURL = (newParams: Record<string, string>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-    params.set("page", "1");
     router.push(`?${params.toString()}`);
   };
 
@@ -261,6 +236,228 @@ const PublicProfileConsoleGridContent = ({
     router.push(`?${params.toString()}`);
   };
 
+  // --------- Estado do colapse por modo ----------
+  const gridCols = useResponsiveColumns();
+  const [openGridId, setOpenGridId] = useState<number | null>(null);
+  const [openGridRowStart, setOpenGridRowStart] = useState<number | null>(null);
+
+  const selectedGridConsole = useMemo(
+    () => (openGridId != null ? consoles.find((c) => c.id === openGridId) : undefined),
+    [openGridId, consoles],
+  );
+
+  const handleToggleGrid = (index: number, id: number) => {
+    const rowStart = index - (index % gridCols);
+    if (openGridId === id) {
+      setOpenGridId(null);
+      setOpenGridRowStart(null);
+      return;
+    }
+    if (openGridRowStart !== null && rowStart === openGridRowStart) {
+      setOpenGridId(id);
+      return;
+    }
+    setOpenGridId(id);
+    setOpenGridRowStart(rowStart);
+  };
+
+  // COMPACT
+  const compactCols = useCompactColumns();
+  const [openCompactId, setOpenCompactId] = useState<number | null>(null);
+  const [openCompactRowStart, setOpenCompactRowStart] = useState<number | null>(null);
+
+  const handleToggleCompact = (index: number, id: number) => {
+    const rowStart = index - (index % compactCols);
+    if (openCompactId === id) {
+      setOpenCompactId(null);
+      setOpenCompactRowStart(null);
+      return;
+    }
+    if (openCompactRowStart !== null && rowStart === openCompactRowStart) {
+      setOpenCompactId(id);
+      return;
+    }
+    setOpenCompactId(id);
+    setOpenCompactRowStart(rowStart);
+  };
+
+  // LIST
+  const [openListId, setOpenListId] = useState<number | null>(null);
+  const handleToggleList = (id: number) => {
+    setOpenListId((prev) => (prev === id ? null : id));
+  };
+
+  // TABLE
+  const [openTableId, setOpenTableId] = useState<number | null>(null);
+  const tableCols = 1 /*expander*/ + 2 /*Console + Skin*/ + (isOwner ? 1 : 0);
+
+  // --------- Renderizadores de acessórios ----------
+  function AccessoriesCard({ acc }: { acc: Accessory }) {
+    return (
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="h-36 bg-gray-100 dark:bg-gray-700 relative">
+          {acc.photoMain ? (
+            <Image
+              src={acc.photoMain}
+              alt={acc.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-gray-400">
+              <span className="text-2xl">🎮</span>
+            </div>
+          )}
+        </div>
+        <div className="p-3">
+          <p className="font-medium dark:text-white">{acc.name}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400">{acc.slug}</p>
+        </div>
+      </div>
+    );
+  }
+
+  function RenderAccessoriesTitle({ item }: { item?: UserConsole }) {
+    return (
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-semibold dark:text-white">
+          Acessórios
+          {item?.consoleName && (
+            <span className="ml-2 font-normal text-gray-500 dark:text-gray-400">
+              — {item.consoleName}
+            </span>
+          )}
+        </h3>
+      </div>
+    );
+  }
+
+  function renderAccessoriesCompact(item?: UserConsole): React.ReactNode {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <Card className="p-4">
+        <RenderAccessoriesTitle item={item} />
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          {item.accessories.map((acc) => (
+            <div key={acc.id} className="aspect-square">
+              <AccessoriesCard acc={acc} />
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  function renderAccessoriesList(item?: UserConsole): React.ReactNode {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <Card className="p-4">
+        <RenderAccessoriesTitle item={item} />
+        <div className="space-y-3">
+          {item.accessories.map((acc) => (
+            <Card key={acc.id} className="!p-3">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative rounded-md overflow-hidden">
+                  {acc.photoMain ? (
+                    <Image
+                      src={acc.photoMain}
+                      alt={acc.name}
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <span className="text-xl">🎮</span>
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <p className="font-medium dark:text-white truncate">{acc.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{acc.slug}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  function renderAccessoriesTable(item?: UserConsole): React.ReactNode {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <Card className="p-0">
+        <div className="p-4">
+          <RenderAccessoriesTitle item={item} />
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                <th className="p-2 text-left">Acessório</th>
+                <th className="p-2 text-left">Slug</th>
+              </tr>
+            </thead>
+            <tbody>
+              {item.accessories.map((acc) => (
+                <tr key={acc.id} className="border-b border-gray-200 dark:border-gray-700">
+                  <td className="p-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+                        {acc.photoMain ? (
+                          <Image
+                            src={acc.photoMain}
+                            alt={acc.name}
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400">
+                            <span>🎮</span>
+                          </div>
+                        )}
+                      </div>
+                      <span className="font-medium dark:text-white">{acc.name}</span>
+                    </div>
+                  </td>
+                  <td className="p-2 text-sm text-gray-600 dark:text-gray-300">{acc.slug}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    );
+  }
+
+  // --------- UI ---------
   if (isLoading) {
     return (
       <div>
@@ -288,6 +485,7 @@ const PublicProfileConsoleGridContent = ({
 
   return (
     <div>
+      {/* header de filtros/ordenação */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="w-full sm:w-auto flex-1">
           <SearchBar compact searchPath={`/user/${slug}`} placeholder={t("searchConsoles")} />
@@ -307,17 +505,29 @@ const PublicProfileConsoleGridContent = ({
             size="sm"
           />
           <Dropdown
-            items={VIEW_MODE_OPTIONS.map((option) => ({
+            items={[
+              { value: "grid", label: t("viewMode.grid"), icon: <Grid3X3 size={16} /> },
+              { value: "compact", label: t("viewMode.compact"), icon: <ListChecks size={16} /> },
+              { value: "list", label: t("viewMode.list"), icon: <List size={16} /> },
+              { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
+            ].map((option) => ({
               id: option.value,
               label: option.label,
               icon: option.icon,
-              onClick: () => handleViewModeChange(option.value as ViewMode),
+              onClick: () => setViewMode(option.value as ViewMode),
             }))}
             trigger={
               <Button
                 variant="outline"
                 size="sm"
-                icon={VIEW_MODE_OPTIONS.find((option) => option.value === viewMode)?.icon}
+                icon={
+                  [
+                    ["grid", <Grid3X3 size={16} key="g" />],
+                    ["compact", <ListChecks size={16} key="c" />],
+                    ["list", <List size={16} key="l" />],
+                    ["table", <Table size={16} key="t" />],
+                  ].find(([v]) => v === viewMode)?.[1] as React.ReactNode
+                }
               />
             }
             menuClassName="min-w-40"
@@ -340,14 +550,14 @@ const PublicProfileConsoleGridContent = ({
         className="w-full max-w-md"
       >
         <FilterContainer
-          onBrandChange={handleBrandChange}
-          onGenerationChange={handleGenerationChange}
-          onModelChange={handleModelChange}
-          onAllDigitalChange={handleAllDigitalChange}
-          onTypeChange={handleTypeChange}
-          onMediaFormatChange={handleMediaFormatChange}
-          onRetroCompatibleChange={handleRetroCompatibleChange}
-          onStorageChange={handleStorageChange}
+          onBrandChange={setSelectedBrands}
+          onGenerationChange={setSelectedGenerations}
+          onModelChange={setSelectedModels}
+          onAllDigitalChange={setSelectedAllDigital}
+          onTypeChange={setSelectedTypes}
+          onMediaFormatChange={setSelectedMediaFormats}
+          onRetroCompatibleChange={setRetroCompatible}
+          onStorageChange={setSelectedStorageRanges}
           selectedStorageRanges={selectedStorageRanges}
           selectedBrands={selectedBrands}
           selectedGenerations={selectedGenerations}
@@ -360,6 +570,7 @@ const PublicProfileConsoleGridContent = ({
         />
       </Drawer>
 
+      {/* conteúdo */}
       {!consoles || consoles.length === 0 ? (
         <Card>
           <div className="text-center py-12">
@@ -375,55 +586,147 @@ const PublicProfileConsoleGridContent = ({
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="p-2 w-10" /> {/* expander */}
                     <th className="p-2 text-left">Console</th>
                     <th className="p-2 text-left">Skin</th>
                     {isOwner && <th className="p-2 text-left">Ações</th>}
                   </tr>
                 </thead>
                 <tbody>
-                  {consoles.map((consoleItem: UserConsole) => (
-                    <PublicProfileConsoleTable
-                      key={consoleItem.id}
-                      consoleItem={consoleItem}
-                      isOwner={isOwner || false}
-                    />
-                  ))}
+                  {consoles.map((consoleItem: UserConsole) => {
+                    const isExpanded = openTableId === consoleItem.id;
+                    const canExpand = hasAccessories(consoleItem);
+                    return (
+                      <React.Fragment key={consoleItem.id}>
+                        <PublicProfileConsoleTable
+                          consoleItem={consoleItem}
+                          isOwner={isOwner || false}
+                          isExpanded={isExpanded}
+                          onToggleAccessories={
+                            canExpand
+                              ? () =>
+                                  setOpenTableId((prev) =>
+                                    prev === consoleItem.id ? null : (consoleItem.id as number),
+                                  )
+                              : undefined
+                          }
+                        />
+                        {isExpanded && (
+                          <tr className="bg-gray-50 dark:bg-gray-800">
+                            <td colSpan={tableCols} className="p-4">
+                              {renderAccessoriesTable(consoleItem)}
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           ) : viewMode === "list" ? (
             <div className="space-y-4">
-              {consoles.map((consoleItem: UserConsole) => (
-                <PublicProfileConsoleList
-                  key={consoleItem.id}
-                  consoleItem={consoleItem}
-                  isOwner={isOwner || false}
-                />
-              ))}
+              {consoles.map((consoleItem: UserConsole) => {
+                const isOpen = openListId === consoleItem.id;
+                return (
+                  <div key={consoleItem.id} className="flex flex-col gap-2">
+                    <PublicProfileConsoleList
+                      consoleItem={consoleItem}
+                      isOwner={isOwner || false}
+                      isExpanded={isOpen}
+                      onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
+                    />
+                    {isOpen && <div>{renderAccessoriesList(consoleItem)}</div>}
+                  </div>
+                );
+              })}
+            </div>
+          ) : viewMode === "compact" ? (
+            <div className="flex flex-wrap gap-3">
+              {consoles.map((consoleItem: UserConsole, index: number) => {
+                const isOpen = openCompactId === consoleItem.id;
+
+                const rowEndIndex = index - (index % compactCols) + (compactCols - 1);
+                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+
+                const shouldRenderAccessoriesRow =
+                  openCompactRowStart !== null &&
+                  isRowEnd &&
+                  index >= openCompactRowStart &&
+                  index < openCompactRowStart + compactCols;
+
+                return (
+                  <div key={consoleItem.id} className="contents">
+                    <div
+                      className="
+                        box-border min-w-0 flex flex-col
+                        flex-[0_0_calc(33.333%_-_.5rem)]       /* 3 col */
+                        md:flex-[0_0_calc(25%_-_.5625rem)]     /* 4 col */
+                        lg:flex-[0_0_calc(16.666%_-_.625rem)]  /* 6 col */
+                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]  /* 8 col */
+                      "
+                    >
+                      <PublicProfileConsoleCompact
+                        consoleItem={consoleItem}
+                        isOwner={isOwner || false}
+                        isExpanded={isOpen}
+                        onToggleAccessories={() =>
+                          handleToggleCompact(index, consoleItem.id as number)
+                        }
+                      />
+                    </div>
+
+                    {shouldRenderAccessoriesRow && (
+                      <div className="basis-full">
+                        {renderAccessoriesCompact(consoles.find((c) => c.id === openCompactId))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div
-              className={`grid ${
-                viewMode === "grid"
-                  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                  : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
-              } gap-6`}
-            >
-              {consoles.map((consoleItem: UserConsole) =>
-                viewMode === "compact" ? (
-                  <PublicProfileConsoleCompact
-                    key={consoleItem.id}
-                    consoleItem={consoleItem}
-                    isOwner={isOwner || false}
-                  />
-                ) : (
-                  <PublicProfileConsoleCard
-                    key={consoleItem.id}
-                    consoleItem={consoleItem}
-                    isOwner={isOwner || false}
-                  />
-                ),
-              )}
+            <div className="flex flex-wrap gap-6">
+              {consoles.map((consoleItem: UserConsole, index: number) => {
+                const isOpen = openGridId === consoleItem.id;
+                const rowEndIndex = index - (index % gridCols) + (gridCols - 1);
+                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+
+                const shouldRenderAccessoriesRow =
+                  openGridRowStart !== null &&
+                  isRowEnd &&
+                  index >= openGridRowStart &&
+                  index < openGridRowStart + gridCols;
+
+                return (
+                  <div key={consoleItem.id} className="contents">
+                    <div
+                      className="
+                        box-border min-w-0
+                        flex-[0_0_calc(50%_-_.75rem)]
+                        md:flex-[0_0_calc(33.333%_-_1rem)]
+                        lg:flex-[0_0_calc(25%_-_1.125rem)]
+                        flex flex-col
+                      "
+                    >
+                      <PublicProfileConsoleCard
+                        consoleItem={consoleItem}
+                        isOwner={isOwner || false}
+                        isExpanded={isOpen}
+                        onToggleAccessories={() =>
+                          handleToggleGrid(index, consoleItem.id as number)
+                        }
+                      />
+                    </div>
+
+                    {shouldRenderAccessoriesRow && (
+                      <div className="basis-full">
+                        {renderAccessoriesCompact(selectedGridConsole)}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </>

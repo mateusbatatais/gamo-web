@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
-import { ArrowLeftRight, Pencil, Trash } from "lucide-react";
+import { ArrowLeftRight, Pencil, Trash, ChevronDown, ChevronUp } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -16,12 +16,25 @@ import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
 
+// Tipos/guard locais (sem any)
+type Accessory = { id: number; name: string; slug: string; photoMain?: string };
+function hasAccessories(
+  item: UserConsole,
+): item is UserConsole & { accessories: ReadonlyArray<Accessory> } {
+  const maybe = item as unknown as { accessories?: unknown };
+  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
+}
+
 export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
+  isExpanded,
+  onToggleAccessories,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
+  isExpanded?: boolean;
+  onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -32,6 +45,8 @@ export const PublicProfileConsoleCard = ({
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  const canExpand = hasAccessories(consoleItem);
 
   return (
     <>
@@ -130,6 +145,18 @@ export const PublicProfileConsoleCard = ({
               </Badge>
             )}
           </div>
+
+          {canExpand && onToggleAccessories && (
+            <div className="mt-2 flex justify-center">
+              <Button
+                variant="secondary"
+                size="sm"
+                aria-expanded={!!isExpanded}
+                onClick={onToggleAccessories}
+                icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              ></Button>
+            </div>
+          )}
         </div>
       </Card>
 
