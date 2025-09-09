@@ -1,12 +1,29 @@
 // components/organisms/PublicProfile/PublicProfileConsoleCard/PublicProfileConsoleCard.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
-import { ArrowLeftRight, Pencil, Trash, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Pencil,
+  Trash,
+  ChevronDown,
+  ChevronUp,
+  Gamepad,
+  Move3d,
+  RectangleGoggles,
+  Music,
+  ShipWheel,
+  Battery,
+  Headphones,
+  HardDrive,
+  Mouse,
+  Cog,
+  Package,
+} from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -24,6 +41,20 @@ function hasAccessories(
   const maybe = item as unknown as { accessories?: unknown };
   return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
 }
+
+const ACCESSORY_ICONS: Record<string, React.ReactNode> = {
+  controllers: <Gamepad size={16} />,
+  "motion-sensors": <Move3d size={16} />,
+  "vr-ar": <RectangleGoggles size={16} />,
+  instruments: <Music size={16} />,
+  simulation: <ShipWheel size={16} />,
+  "power-charging": <Battery size={16} />,
+  "audio-communication": <Headphones size={16} />,
+  "storage-expansion": <HardDrive size={16} />,
+  "alternative-input": <Mouse size={16} />,
+  "support-organization": <Cog size={16} />,
+  others: <Package size={16} />,
+};
 
 export const PublicProfileConsoleCard = ({
   consoleItem,
@@ -45,6 +76,33 @@ export const PublicProfileConsoleCard = ({
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  const accessorySummary = useMemo(() => {
+    if (!hasAccessories(consoleItem)) return null;
+
+    const typeCounts: Record<string, number> = {};
+
+    consoleItem.accessories.forEach((acc) => {
+      // Use typeSlug se disponível, caso contrário, use 'others'
+      const typeSlug = acc.typeSlug || "others";
+      typeCounts[typeSlug] = (typeCounts[typeSlug] || 0) + 1;
+    });
+
+    // Ordenar por quantidade (decrescente) e pegar os 2 principais
+    const sortedTypes = Object.entries(typeCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 2);
+
+    // Calcular o total de outros tipos
+    const otherCount =
+      Object.keys(typeCounts).length > 2
+        ? Object.values(typeCounts)
+            .slice(2)
+            .reduce((sum, count) => sum + count, 0)
+        : 0;
+
+    return { sortedTypes, otherCount };
+  }, [consoleItem.accessories]);
 
   const canExpand = hasAccessories(consoleItem);
 
@@ -153,8 +211,21 @@ export const PublicProfileConsoleCard = ({
                 size="sm"
                 aria-expanded={!!isExpanded}
                 onClick={onToggleAccessories}
-                icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              ></Button>
+                className="flex items-center gap-2 w-full"
+              >
+                <div className="flex items-center gap-1">
+                  {accessorySummary?.sortedTypes.map(([typeSlug, count]) => (
+                    <div key={typeSlug} className="flex items-center gap-1">
+                      <span className="text-xs">{count}x</span>
+                      {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
+                    </div>
+                  ))}
+                  {accessorySummary && accessorySummary?.otherCount > 0 && (
+                    <span className="text-xs">+{accessorySummary.otherCount}</span>
+                  )}
+                </div>
+                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </Button>
             </div>
           )}
         </div>

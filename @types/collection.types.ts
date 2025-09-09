@@ -73,6 +73,7 @@ export interface UserAccessory {
   compatibleUserConsoleIds?: number[];
   type?: string;
   subType?: string;
+  typeSlug?: string;
   user?: {
     id: number;
     name: string;
