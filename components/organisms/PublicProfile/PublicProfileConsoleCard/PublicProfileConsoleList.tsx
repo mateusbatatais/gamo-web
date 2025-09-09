@@ -81,25 +81,13 @@ export const PublicProfileConsoleList = ({
     const typeCounts: Record<string, number> = {};
 
     consoleItem.accessories.forEach((acc) => {
-      // Use typeSlug se disponível, caso contrário, use 'others'
       const typeSlug = acc.typeSlug || "others";
       typeCounts[typeSlug] = (typeCounts[typeSlug] || 0) + 1;
     });
 
-    // Ordenar por quantidade (decrescente) e pegar os 2 principais
-    const sortedTypes = Object.entries(typeCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 2);
+    const sortedTypes = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
 
-    // Calcular o total de outros tipos
-    const otherCount =
-      Object.keys(typeCounts).length > 2
-        ? Object.values(typeCounts)
-            .slice(2)
-            .reduce((sum, count) => sum + count, 0)
-        : 0;
-
-    return { sortedTypes, otherCount };
+    return { sortedTypes };
   }, [consoleItem.accessories]);
 
   const canExpand = hasAccessories(consoleItem);
@@ -154,9 +142,6 @@ export const PublicProfileConsoleList = ({
                           {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
                         </div>
                       ))}
-                      {accessorySummary && accessorySummary?.otherCount > 0 && (
-                        <span className="text-xs">+{accessorySummary.otherCount}</span>
-                      )}
                     </div>
                     {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </Button>
