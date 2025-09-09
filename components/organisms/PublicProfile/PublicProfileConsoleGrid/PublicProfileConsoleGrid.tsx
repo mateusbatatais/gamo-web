@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
-import { useUserConsolesPublic } from "@/hooks/usePublicProfile";
+import { useUserConsolesPublic, useUserAccessoriesPublic } from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { UserAccessory, UserConsole } from "@/@types/collection.types";
@@ -22,6 +22,10 @@ import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicPro
 import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
 import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
 import Image from "next/image";
+import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
+import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
+import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
+import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 
 // Tipos/guard locais (sem any)
@@ -109,6 +113,11 @@ const PublicProfileConsoleGridContent = ({
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [localPerPage, setLocalPerPage] = useState(50);
 
+  // Estados para acessórios avulsos
+  const [accessoriesPage, setAccessoriesPage] = useState(1);
+  const [accessoriesPerPage, setAccessoriesPerPage] = useState(20);
+  const [accessoriesSort, setAccessoriesSort] = useState("createdAt-desc");
+
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -180,8 +189,16 @@ const PublicProfileConsoleGridContent = ({
     selectedAllDigital,
   );
 
+  const {
+    data: accessoriesData,
+    isLoading: accessoriesLoading,
+    error: accessoriesError,
+  } = useUserAccessoriesPublic(slug, accessoriesPage, accessoriesPerPage, accessoriesSort);
+
   const consoles = data?.items || [];
   const meta = data?.meta;
+  const accessories = accessoriesData?.items || [];
+  const accessoriesMeta = accessoriesData?.meta;
 
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
@@ -194,6 +211,15 @@ const PublicProfileConsoleGridContent = ({
     { value: "20", label: "20/pg" },
     { value: "50", label: "50/pg" },
     { value: "100", label: "100/pg" },
+  ];
+
+  const ACCESSORIES_SORT_OPTIONS = [
+    { value: "name-asc", label: "Nome (A-Z)" },
+    { value: "name-desc", label: "Nome (Z-A)" },
+    { value: "createdAt-desc", label: "Mais recentes" },
+    { value: "createdAt-asc", label: "Mais antigos" },
+    { value: "price-asc", label: "Preço (menor)" },
+    { value: "price-desc", label: "Preço (maior)" },
   ];
 
   const handlePageChange = (newPage: number) => {
@@ -215,6 +241,20 @@ const PublicProfileConsoleGridContent = ({
     params.set("page", "1");
     setLocalPerPage(Number(newPerPage));
     router.push(`?${params.toString()}`);
+  };
+
+  const handleAccessoriesPageChange = (newPage: number) => {
+    setAccessoriesPage(newPage);
+  };
+
+  const handleAccessoriesSortChange = (newSort: string) => {
+    setAccessoriesSort(newSort);
+    setAccessoriesPage(1);
+  };
+
+  const handleAccessoriesPerPageChange = (newPerPage: number) => {
+    setAccessoriesPerPage(newPerPage);
+    setAccessoriesPage(1);
   };
 
   const clearFilters = () => {
@@ -293,10 +333,15 @@ const PublicProfileConsoleGridContent = ({
   const tableCols = 1 /*expander*/ + 2 /*Console + Skin*/ + (isOwner ? 1 : 0);
 
   // --------- Renderizadores de acessórios ----------
-  function AccessoriesCard({ acc }: { acc: UserAccessory }) {
+  function AccessoriesCard({ acc }: { acc: UserAccessory; isOwner: boolean }) {
     return (
       <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="h-36 bg-gray-100 dark:bg-gray-700 relative">
+          <AccessoryActionButtons
+            accessory={acc}
+            isOwner={isOwner || false}
+            customClassName="absolute top-2 right-2"
+          />
           {acc.photoMain ? (
             <Image
               src={acc.photoMain}
@@ -317,7 +362,6 @@ const PublicProfileConsoleGridContent = ({
               <p className="font-medium dark:text-white">{acc.variantName}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">{acc.accessorySlug}</p>
             </div>
-            <AccessoryActionButtons accessory={acc} isOwner={isOwner || false} />
           </div>
         </div>
       </div>
@@ -355,7 +399,7 @@ const PublicProfileConsoleGridContent = ({
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
           {item.accessories.map((acc) => (
             <div key={acc.id} className="aspect-square">
-              <AccessoriesCard acc={acc} />
+              <AccessoriesCard acc={acc} isOwner={isOwner || false} />
             </div>
           ))}
         </div>
@@ -363,7 +407,7 @@ const PublicProfileConsoleGridContent = ({
     );
   }
 
-  function renderAccessoriesList(item?: UserConsole, isOwner?: boolean): React.ReactNode {
+  function renderAccessoriesList(item?: UserConsole): React.ReactNode {
     if (!item || !hasAccessories(item)) {
       return (
         <Card className="p-4">
@@ -401,7 +445,11 @@ const PublicProfileConsoleGridContent = ({
                     {acc.accessorySlug}
                   </p>
                 </div>
-                <AccessoryActionButtons accessory={acc} isOwner={isOwner || false} />
+                <AccessoryActionButtons
+                  accessory={acc}
+                  isOwner={isOwner || false}
+                  customClassName="flex-grow justify-end"
+                />
               </div>
             </Card>
           ))}
@@ -410,7 +458,7 @@ const PublicProfileConsoleGridContent = ({
     );
   }
 
-  function renderAccessoriesTable(item?: UserConsole, isOwner?: boolean): React.ReactNode {
+  function renderAccessoriesTable(item?: UserConsole): React.ReactNode {
     if (!item || !hasAccessories(item)) {
       return (
         <Card className="p-4">
@@ -468,6 +516,66 @@ const PublicProfileConsoleGridContent = ({
       </div>
     );
   }
+
+  // Funções de renderização para acessórios avulsos
+  const renderAccessoriesGrid = (accessories: UserAccessory[]) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {accessories.map((accessory) => (
+        <AccessoryCard key={accessory.id} accessory={accessory} isOwner={isOwner || false} />
+      ))}
+    </div>
+  );
+
+  const renderAccessoriesCompactView = (accessories: UserAccessory[]) => (
+    <div className="flex flex-wrap gap-3">
+      {accessories.map((accessory) => (
+        <div
+          key={accessory.id}
+          className="
+            box-border min-w-0
+            flex-[0_0_calc(33.333%_-_.5rem)]
+            md:flex-[0_0_calc(25%_-_.5625rem)]
+            lg:flex-[0_0_calc(16.666%_-_.625rem)]
+            xl:flex-[0_0_calc(12.5%_-_.65625rem)]
+          "
+        >
+          <AccessoryCompactCard accessory={accessory} isOwner={isOwner || false} />
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderAccessoriesListView = (accessories: UserAccessory[]) => (
+    <div className="space-y-4">
+      {accessories.map((accessory) => (
+        <AccessoryListItem key={accessory.id} accessory={accessory} isOwner={isOwner || false} />
+      ))}
+    </div>
+  );
+
+  const renderAccessoriesTableView = (accessories: UserAccessory[]) => (
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-gray-200 dark:border-gray-700">
+            <th className="p-2 text-left">Acessório</th>
+            <th className="p-2 text-left">Preço</th>
+            <th className="p-2 text-left">Condição</th>
+            {isOwner && <th className="p-2 text-left">Ações</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {accessories.map((accessory) => (
+            <AccessoryTableRow
+              key={accessory.id}
+              accessory={accessory}
+              isOwner={isOwner || false}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 
   // --------- UI ---------
   if (isLoading) {
@@ -626,7 +734,7 @@ const PublicProfileConsoleGridContent = ({
                         {isExpanded && (
                           <tr className="bg-gray-50 dark:bg-gray-800">
                             <td colSpan={tableCols} className="p-4">
-                              {renderAccessoriesTable(consoleItem, isOwner)}
+                              {renderAccessoriesTable(consoleItem)}
                             </td>
                           </tr>
                         )}
@@ -648,7 +756,7 @@ const PublicProfileConsoleGridContent = ({
                       isExpanded={isOpen}
                       onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
                     />
-                    {isOpen && <div>{renderAccessoriesList(consoleItem, isOwner)}</div>}
+                    {isOpen && <div>{renderAccessoriesList(consoleItem)}</div>}
                   </div>
                 );
               })}
@@ -751,6 +859,81 @@ const PublicProfileConsoleGridContent = ({
             totalPages={meta.totalPages}
             onPageChange={handlePageChange}
           />
+        </div>
+      )}
+
+      {/* Seção de Acessórios Avulsos */}
+      {accessoriesLoading && (
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold mb-6 dark:text-white">Acessórios Avulsos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-64 w-full rounded-xl" />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {accessoriesError && (
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold mb-6 dark:text-white">Acessórios Avulsos</h2>
+          <Card>
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400">Erro ao carregar acessórios</p>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {accessoriesData && accessories.length > 0 && (
+        <div className="mt-12">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold dark:text-white">Acessórios Avulsos</h2>
+
+            <div className="flex items-center gap-4">
+              <Select
+                options={ACCESSORIES_SORT_OPTIONS}
+                value={accessoriesSort}
+                onChange={(e) => handleAccessoriesSortChange(e.target.value)}
+                className="w-40"
+                size="sm"
+              />
+
+              <Select
+                options={PER_PAGE_OPTIONS}
+                value={accessoriesPerPage.toString()}
+                onChange={(e) => handleAccessoriesPerPageChange(Number(e.target.value))}
+                className="w-20"
+                size="sm"
+              />
+            </div>
+          </div>
+
+          {viewMode === "grid" && renderAccessoriesGrid(accessories)}
+          {viewMode === "compact" && renderAccessoriesCompactView(accessories)}
+          {viewMode === "list" && renderAccessoriesListView(accessories)}
+          {viewMode === "table" && renderAccessoriesTableView(accessories)}
+
+          {accessoriesMeta && accessoriesMeta.totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={accessoriesPage}
+                totalPages={accessoriesMeta.totalPages}
+                onPageChange={handleAccessoriesPageChange}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {accessoriesData && accessories.length === 0 && (
+        <div className="mt-12">
+          <h2 className="text-xl font-semibold mb-6 dark:text-white">Acessórios Avulsos</h2>
+          <Card>
+            <div className="text-center py-12">
+              <p className="text-gray-500 dark:text-gray-400">Nenhum acessório avulso na coleção</p>
+            </div>
+          </Card>
         </div>
       )}
     </div>

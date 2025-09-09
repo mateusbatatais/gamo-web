@@ -15,9 +15,16 @@ import { useUserAccessory } from "@/hooks/useUserAccessory";
 interface AccessoryActionButtonsProps {
   accessory: UserAccessory;
   isOwner: boolean;
+  compact?: boolean;
+  customClassName?: string;
 }
 
-export const AccessoryActionButtons = ({ accessory, isOwner }: AccessoryActionButtonsProps) => {
+export const AccessoryActionButtons = ({
+  accessory,
+  isOwner,
+  compact = false,
+  customClassName = "",
+}: AccessoryActionButtonsProps) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -34,21 +41,21 @@ export const AccessoryActionButtons = ({ accessory, isOwner }: AccessoryActionBu
 
   return (
     <>
-      <div className="flex gap-2 align-center justify-center">
+      <div className={`${customClassName} flex gap-2 ${compact ? "flex-col" : ""}`}>
         <Button
           onClick={() => setShowEditModal(true)}
           aria-label={t("editItem")}
-          icon={<Pencil size={16} />}
+          icon={<Pencil size={compact ? 12 : 16} />}
           variant="transparent"
-          size="sm"
+          size={compact ? "sm" : "md"}
         />
         <Button
           onClick={() => setShowDeleteModal(true)}
           disabled={isDeletePending}
           variant="transparent"
           aria-label={t("deleteItem")}
-          icon={<Trash size={16} />}
-          size="sm"
+          icon={<Trash size={compact ? 12 : 16} />}
+          size={compact ? "sm" : "md"}
         />
       </div>
 

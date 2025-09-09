@@ -4,7 +4,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
-import { UserConsole, UserGame } from "@/@types/collection.types";
+import { UserAccessory, UserConsole, UserGame } from "@/@types/collection.types";
 import { UserProfile } from "@/@types/auth.types";
 import { PaginatedResponse } from "@/@types/catalog.types";
 
@@ -157,6 +157,26 @@ export function useUserGamesPublic(
       platforms,
     ],
     queryFn: () => apiFetch(`/public/profile/${slug}/games?${queryParams.toString()}`),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useUserAccessoriesPublic(
+  slug: string,
+  page: number = 1,
+  perPage: number = 20,
+  sort?: string,
+) {
+  const { apiFetch } = useApiClient();
+
+  const queryParams = new URLSearchParams();
+  queryParams.append("page", page.toString());
+  queryParams.append("perPage", perPage.toString());
+  if (sort) queryParams.append("sort", sort);
+
+  return useQuery<PaginatedResponse<UserAccessory>>({
+    queryKey: ["userAccessoriesPublic", slug, page, perPage, sort],
+    queryFn: () => apiFetch(`/public/profile/${slug}/accessories?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,
   });
 }

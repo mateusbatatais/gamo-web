@@ -71,6 +71,8 @@ export interface UserAccessory {
   accessoryName?: string;
   variantName?: string;
   compatibleUserConsoleIds?: number[];
+  type?: string;
+  subType?: string;
   user?: {
     id: number;
     name: string;
