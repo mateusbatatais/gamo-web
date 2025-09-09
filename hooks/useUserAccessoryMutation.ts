@@ -21,6 +21,7 @@ export function useUserAccessoryMutation() {
     onSuccess: () => {
       showToast("Acessório adicionado à coleção com sucesso", "success");
       queryClient.invalidateQueries({ queryKey: ["userAccessories"] });
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao adicionar acessório", "danger");
@@ -37,6 +38,7 @@ export function useUserAccessoryMutation() {
     onSuccess: () => {
       showToast("Acessório atualizado com sucesso", "success");
       queryClient.invalidateQueries({ queryKey: ["userAccessories"] });
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao atualizar acessório", "danger");

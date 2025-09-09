@@ -82,7 +82,7 @@ export default function AccessoryVariantCard({ variant, accessoryId }: Accessory
           <AddAccessoryToCollection
             accessoryId={accessoryId}
             accessoryVariantId={variant.id}
-            variantSlug={variant.slug}
+            accessorySlug={variant.slug}
             onAddSuccess={() => triggerFeedback(variant.id)}
           />
         </div>

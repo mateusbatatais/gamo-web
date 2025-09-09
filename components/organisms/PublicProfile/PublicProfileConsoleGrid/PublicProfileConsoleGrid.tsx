@@ -22,6 +22,7 @@ import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicPro
 import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
 import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
 import Image from "next/image";
+import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 
 // Tipos/guard locais (sem any)
 interface Accessory {
@@ -311,8 +312,13 @@ const PublicProfileConsoleGridContent = ({
           )}
         </div>
         <div className="p-3">
-          <p className="font-medium dark:text-white">{acc.variantName}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{acc.accessorySlug}</p>
+          <div className="flex justify-between items-start mb-2">
+            <div className="flex-1">
+              <p className="font-medium dark:text-white">{acc.variantName}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">{acc.accessorySlug}</p>
+            </div>
+            <AccessoryActionButtons accessory={acc} isOwner={isOwner || false} />
+          </div>
         </div>
       </div>
     );
@@ -357,7 +363,7 @@ const PublicProfileConsoleGridContent = ({
     );
   }
 
-  function renderAccessoriesList(item?: UserConsole): React.ReactNode {
+  function renderAccessoriesList(item?: UserConsole, isOwner?: boolean): React.ReactNode {
     if (!item || !hasAccessories(item)) {
       return (
         <Card className="p-4">
@@ -395,6 +401,7 @@ const PublicProfileConsoleGridContent = ({
                     {acc.accessorySlug}
                   </p>
                 </div>
+                <AccessoryActionButtons accessory={acc} isOwner={isOwner || false} />
               </div>
             </Card>
           ))}
@@ -403,7 +410,7 @@ const PublicProfileConsoleGridContent = ({
     );
   }
 
-  function renderAccessoriesTable(item?: UserConsole): React.ReactNode {
+  function renderAccessoriesTable(item?: UserConsole, isOwner?: boolean): React.ReactNode {
     if (!item || !hasAccessories(item)) {
       return (
         <Card className="p-4">
@@ -414,50 +421,51 @@ const PublicProfileConsoleGridContent = ({
       );
     }
     return (
-      <Card className="p-0">
-        <div className="p-4">
-          <RenderAccessoriesTitle item={item} />
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-                <th className="p-2 text-left">Acessório</th>
-                <th className="p-2 text-left">Slug</th>
-              </tr>
-            </thead>
-            <tbody>
-              {item.accessories.map((acc) => (
-                <tr key={acc.id} className="border-b border-gray-200 dark:border-gray-700">
-                  <td className="p-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
-                        {acc.photoMain ? (
-                          <Image
-                            src={acc.photoMain}
-                            alt={acc.variantName || ""}
-                            fill
-                            sizes="40px"
-                            className="object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400">
-                            <span>🎮</span>
-                          </div>
-                        )}
-                      </div>
-                      <span className="font-medium dark:text-white">{acc.variantName}</span>
+      <div className="overflow-x-auto ps-10">
+        <table className="w-full">
+          <thead>
+            <tr className="border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <th className="p-2 text-left">Acessório</th>
+              <th className="p-2 text-left">Slug</th>
+              {isOwner && <th className="p-2 ">Ações</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {item.accessories.map((acc) => (
+              <tr key={acc.id} className="border-b border-gray-200 dark:border-gray-700">
+                <td className="p-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+                      {acc.photoMain ? (
+                        <Image
+                          src={acc.photoMain}
+                          alt={acc.variantName || ""}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <span>🎮</span>
+                        </div>
+                      )}
                     </div>
+                    <span className="font-medium dark:text-white">{acc.variantName}</span>
+                  </div>
+                </td>
+                <td className="p-2 text-sm text-gray-600 dark:text-gray-300">
+                  {acc.accessorySlug}
+                </td>
+                {isOwner && (
+                  <td className="p-2 text-center">
+                    <AccessoryActionButtons accessory={acc} isOwner={isOwner} />
                   </td>
-                  <td className="p-2 text-sm text-gray-600 dark:text-gray-300">
-                    {acc.accessorySlug}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 
@@ -590,7 +598,7 @@ const PublicProfileConsoleGridContent = ({
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
-                    <th className="p-2 w-10" /> {/* expander */}
+                    <th className="p-2 w-10" />
                     <th className="p-2 text-left">Console</th>
                     <th className="p-2 text-left">Skin</th>
                     {isOwner && <th className="p-2 text-left">Ações</th>}
@@ -618,7 +626,7 @@ const PublicProfileConsoleGridContent = ({
                         {isExpanded && (
                           <tr className="bg-gray-50 dark:bg-gray-800">
                             <td colSpan={tableCols} className="p-4">
-                              {renderAccessoriesTable(consoleItem)}
+                              {renderAccessoriesTable(consoleItem, isOwner)}
                             </td>
                           </tr>
                         )}
@@ -640,7 +648,7 @@ const PublicProfileConsoleGridContent = ({
                       isExpanded={isOpen}
                       onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
                     />
-                    {isOpen && <div>{renderAccessoriesList(consoleItem)}</div>}
+                    {isOpen && <div>{renderAccessoriesList(consoleItem, isOwner)}</div>}
                   </div>
                 );
               })}

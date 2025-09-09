@@ -232,3 +232,43 @@ export function useDeleteUserConsole() {
     },
   });
 }
+
+export function useDeleteUserAccessory() {
+  const { apiFetch } = useApiClient();
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      apiFetch(`/user-accessories/${id}`, {
+        method: "DELETE",
+      }),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["userConsolesPublic"] });
+
+      const previousConsoles = queryClient.getQueryData<UserConsole[]>(["userConsolesPublic"]);
+
+      // Atualização otimista - remove o acessório de todos os consoles
+      queryClient.setQueryData<UserConsole[]>(
+        ["userConsolesPublic"],
+        (old) =>
+          old?.map((console) => ({
+            ...console,
+            accessories: console.accessories?.filter((acc) => acc.id !== id) || [],
+          })) || [],
+      );
+
+      return { previousConsoles };
+    },
+    onError: (err, id, context) => {
+      queryClient.setQueryData(["userConsolesPublic"], context?.previousConsoles);
+      showToast("Erro ao excluir acessório", "danger");
+    },
+    onSuccess: () => {
+      showToast("Acessório excluído com sucesso", "success");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
+    },
+  });
+}

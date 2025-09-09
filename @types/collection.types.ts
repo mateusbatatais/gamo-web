@@ -70,6 +70,7 @@ export interface UserAccessory {
   createdAt?: Date;
   accessoryName?: string;
   variantName?: string;
+  compatibleUserConsoleIds?: number[];
   user?: {
     id: number;
     name: string;
