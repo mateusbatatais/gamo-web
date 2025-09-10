@@ -68,6 +68,7 @@ export function useUserConsolesPublic(
   storageRanges?: string,
   retroCompatible?: boolean,
   allDigital?: boolean,
+  accessoryStatus?: string,
 ) {
   const { apiFetch } = useApiClient();
 
@@ -83,6 +84,7 @@ export function useUserConsolesPublic(
   if (model) queryParams.append("model", model);
   if (type) queryParams.append("type", type);
   if (mediaFormats) queryParams.append("mediaFormats", mediaFormats);
+  if (accessoryStatus) queryParams.append("accessoryStatus", accessoryStatus);
 
   queryParams.append("includeAccessories", "true");
 
@@ -114,6 +116,7 @@ export function useUserConsolesPublic(
       storageRanges,
       retroCompatible,
       allDigital,
+      accessoryStatus,
     ],
     queryFn: () => apiFetch(`/public/profile/${slug}/consoles?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,
@@ -166,6 +169,10 @@ export function useUserAccessoriesPublic(
   page: number = 1,
   perPage: number = 20,
   sort?: string,
+  status?: string,
+  types?: string,
+  subTypes?: string,
+  consoles?: string,
 ) {
   const { apiFetch } = useApiClient();
 
@@ -173,14 +180,27 @@ export function useUserAccessoriesPublic(
   queryParams.append("page", page.toString());
   queryParams.append("perPage", perPage.toString());
   if (sort) queryParams.append("sort", sort);
+  if (status) queryParams.append("status", status);
+  if (types) queryParams.append("types", types);
+  if (subTypes) queryParams.append("subTypes", subTypes);
+  if (consoles) queryParams.append("consoles", consoles);
 
   return useQuery<PaginatedResponse<UserAccessory>>({
-    queryKey: ["userAccessoriesPublic", slug, page, perPage, sort],
+    queryKey: [
+      "userAccessoriesPublic",
+      slug,
+      page,
+      perPage,
+      sort,
+      status,
+      types,
+      subTypes,
+      consoles,
+    ],
     queryFn: () => apiFetch(`/public/profile/${slug}/accessories?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,
   });
 }
-
 export function useDeleteUserGame() {
   const { apiFetch } = useApiClient();
   const queryClient = useQueryClient();
@@ -264,30 +284,57 @@ export function useDeleteUserAccessory() {
         method: "DELETE",
       }),
     onMutate: async (id) => {
+      // Cancela queries em andamento para ambos os tipos de acessórios
+      await queryClient.cancelQueries({ queryKey: ["userAccessoriesPublic"] });
       await queryClient.cancelQueries({ queryKey: ["userConsolesPublic"] });
 
-      const previousConsoles = queryClient.getQueryData<UserConsole[]>(["userConsolesPublic"]);
+      // Snapshot do valor anterior para acessórios avulsos
+      const previousAccessories = queryClient.getQueryData<PaginatedResponse<UserAccessory>>([
+        "userAccessoriesPublic",
+      ]);
 
-      // Atualização otimista - remove o acessório de todos os consoles
-      queryClient.setQueryData<UserConsole[]>(
-        ["userConsolesPublic"],
-        (old) =>
-          old?.map((console) => ({
+      // Snapshot do valor anterior para consoles (que contêm acessórios)
+      const previousConsoles = queryClient.getQueryData<PaginatedResponse<UserConsole>>([
+        "userConsolesPublic",
+      ]);
+
+      // Remove o acessório avulso otimisticamente
+      if (previousAccessories) {
+        queryClient.setQueryData<PaginatedResponse<UserAccessory>>(["userAccessoriesPublic"], {
+          ...previousAccessories,
+          items: previousAccessories.items.filter((accessory) => accessory.id !== id),
+        });
+      }
+
+      // Remove o acessório dos consoles otimisticamente
+      if (previousConsoles) {
+        queryClient.setQueryData<PaginatedResponse<UserConsole>>(["userConsolesPublic"], {
+          ...previousConsoles,
+          items: previousConsoles.items.map((console) => ({
             ...console,
-            accessories: console.accessories?.filter((acc) => acc.id !== id) || [],
-          })) || [],
-      );
+            accessories: console.accessories?.filter((acc) => acc.id !== id),
+          })),
+        });
+      }
 
-      return { previousConsoles };
+      return { previousAccessories, previousConsoles };
     },
     onError: (err, id, context) => {
-      queryClient.setQueryData(["userConsolesPublic"], context?.previousConsoles);
+      // Reverte para o valor anterior em caso de erro
+      if (context?.previousAccessories) {
+        queryClient.setQueryData(["userAccessoriesPublic"], context.previousAccessories);
+      }
+      if (context?.previousConsoles) {
+        queryClient.setQueryData(["userConsolesPublic"], context.previousConsoles);
+      }
       showToast("Erro ao excluir acessório", "danger");
     },
     onSuccess: () => {
       showToast("Acessório excluído com sucesso", "success");
     },
     onSettled: () => {
+      // Invalida para garantir sincronização com o servidor
+      queryClient.invalidateQueries({ queryKey: ["userAccessoriesPublic"] });
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
   });

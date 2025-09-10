@@ -78,7 +78,7 @@ export const PublicProfileGameCompact = ({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <span className="text-2xl">🎮</span>
+              <span className="text-2xl">👾</span>
             </div>
           )}
         </div>

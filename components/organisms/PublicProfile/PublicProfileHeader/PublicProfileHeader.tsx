@@ -76,10 +76,13 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
             🏆 Top Collector
           </Badge>
           <Badge className="text-sm" variant="soft">
-            🕹️ {profile.consolesTotal} Consoles
+            🖥️ {profile.consolesTotal} Consoles
           </Badge>
           <Badge className="text-sm" variant="soft">
-            🎮 {profile.gamesTotal} Jogos
+            👾 {profile.gamesTotal} Jogos
+          </Badge>
+          <Badge className="text-sm" variant="soft">
+            🎮 {profile.accessoriesTotal} Acessorios
           </Badge>
           <Badge className="text-sm" variant="soft">
             ❤️ {profile.gamesFavorited} Jogos Favoritos

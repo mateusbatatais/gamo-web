@@ -79,7 +79,7 @@ export const PublicProfileConsoleTable = ({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  <span className="text-xl">🎮</span>
+                  <span className="text-xl">🖥️</span>
                 </div>
               )}
             </div>

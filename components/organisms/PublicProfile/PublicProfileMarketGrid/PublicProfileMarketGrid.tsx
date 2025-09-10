@@ -11,7 +11,11 @@ import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProf
 import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
 import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
 import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";
-import { useUserGamesPublic, useUserConsolesPublic } from "@/hooks/usePublicProfile";
+import {
+  useUserGamesPublic,
+  useUserConsolesPublic,
+  useUserAccessoriesPublic,
+} from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -25,7 +29,12 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Select } from "@/components/atoms/Select/Select";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import GameFilterContainer from "@/components/molecules/Filter/GameFilterContainer";
-import FilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
+import ConsoleFilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
+import AccessoryFilterContainer from "@/components/molecules/Filter/AccessoryFilterContainer";
+import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
+import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
+import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
+import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -64,12 +73,13 @@ const PublicProfileMarketGridContent = ({
   const [localPerPage, setLocalPerPage] = useState(50);
   const [isGameFilterOpen, setIsGameFilterOpen] = useState(false);
   const [isConsoleFilterOpen, setIsConsoleFilterOpen] = useState(false);
+  const [isAccessoryFilterOpen, setIsAccessoryFilterOpen] = useState(false);
 
   // Estados para filtros de jogos
   const [gameGenres, setGameGenres] = useState<number[]>([]);
   const [gamePlatforms, setGamePlatforms] = useState<number[]>([]);
 
-  // Estados para filtros de consoles - ATUALIZADO com novos filtros
+  // Estados para filtros de consoles
   const [consoleBrands, setConsoleBrands] = useState<string[]>([]);
   const [consoleGenerations, setConsoleGenerations] = useState<string[]>([]);
   const [consoleModels, setConsoleModels] = useState<string[]>([]);
@@ -78,6 +88,16 @@ const PublicProfileMarketGridContent = ({
   const [consoleMediaFormats, setConsoleMediaFormats] = useState<string[]>([]);
   const [consoleRetroCompatible, setConsoleRetroCompatible] = useState<boolean>(false);
   const [consoleStorageRanges, setConsoleStorageRanges] = useState<string[]>([]);
+
+  // Estados para filtros de acessórios
+  const [accessoryTypes, setAccessoryTypes] = useState<string[]>([]);
+  const [accessorySubTypes, setAccessorySubTypes] = useState<string[]>([]);
+  const [accessoryConsoles, setAccessoryConsoles] = useState<string[]>([]);
+
+  // Estados para paginação de acessórios
+  const [accessoriesPage, setAccessoriesPage] = useState(1);
+  const [accessoriesPerPage, setAccessoriesPerPage] = useState(20);
+  const [accessoriesSort, setAccessoriesSort] = useState("createdAt-desc");
 
   useEffect(() => {
     const savedPreferences = localStorage.getItem(STORAGE_KEY);
@@ -104,7 +124,7 @@ const PublicProfileMarketGridContent = ({
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
   }, [viewMode, localPerPage]);
 
-  // Obter parâmetros da URL - ATUALIZADO para novos filtros
+  // Obter parâmetros da URL
   const page = parseInt(searchParams.get("page") || "1");
   const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
   const type = searchParams.get("type") || "selling";
@@ -121,6 +141,9 @@ const PublicProfileMarketGridContent = ({
   const mediaFormats = searchParams.get("mediaFormats") || "";
   const retroCompatible = searchParams.get("retroCompatible") || "";
   const storage = searchParams.get("storage") || "";
+  const accessoryType = searchParams.get("accessoryType") || "";
+  const accessorySubType = searchParams.get("accessorySubType") || "";
+  const accessoryConsole = searchParams.get("accessoryConsole") || "";
 
   // Inicializar estados dos filtros a partir dos parâmetros da URL
   useEffect(() => {
@@ -132,7 +155,22 @@ const PublicProfileMarketGridContent = ({
     setConsoleMediaFormats(mediaFormats ? mediaFormats.split(",").filter(Boolean) : []);
     setConsoleRetroCompatible(retroCompatible === "true");
     setConsoleStorageRanges(storage ? storage.split(",").filter(Boolean) : []);
-  }, [brand, generation, model, consoleType, allDigital, mediaFormats, retroCompatible, storage]);
+    setAccessoryTypes(accessoryType ? accessoryType.split(",").filter(Boolean) : []);
+    setAccessorySubTypes(accessorySubType ? accessorySubType.split(",").filter(Boolean) : []);
+    setAccessoryConsoles(accessoryConsole ? accessoryConsole.split(",").filter(Boolean) : []);
+  }, [
+    brand,
+    generation,
+    model,
+    consoleType,
+    allDigital,
+    mediaFormats,
+    retroCompatible,
+    storage,
+    accessoryType,
+    accessorySubType,
+    accessoryConsole,
+  ]);
 
   // Determinar o status baseado no tipo selecionado
   const status = type === "looking" ? "LOOKING_FOR" : "SELLING";
@@ -174,22 +212,40 @@ const PublicProfileMarketGridContent = ({
     consoleStorageRanges.join(","),
     consoleRetroCompatible,
     consoleAllDigital,
+    status,
   );
 
-  const isLoading = gamesLoading || consolesLoading;
-  const error = gamesError || consolesError;
+  const {
+    data: accessoriesData,
+    isLoading: accessoriesLoading,
+    error: accessoriesError,
+  } = useUserAccessoriesPublic(
+    slug,
+    accessoriesPage,
+    accessoriesPerPage,
+    accessoriesSort,
+    status,
+    accessoryTypes.join(","),
+    accessorySubTypes.join(","),
+    accessoryConsoles.join(","),
+  );
+
+  const isLoading = gamesLoading || consolesLoading || accessoriesLoading;
+  const error = gamesError || consolesError || accessoriesError;
 
   const games = gamesData?.items || [];
   const consoles = consolesData?.items || [];
+  const accessories = accessoriesData?.items || [];
   const gamesMeta = gamesData?.meta;
   const consolesMeta = consolesData?.meta;
+  const accessoriesMeta = accessoriesData?.meta;
 
   const toggleItems = [
     { value: "selling", label: t("selling") },
     { value: "looking", label: t("lookingFor") },
   ];
 
-  // Opções de ordenação compatíveis com ambas as APIs (jogos e consoles)
+  // Opções de ordenação compatíveis com ambas as APIs (jogos, consoles e acessórios)
   const SORT_OPTIONS: SortOption[] = [
     { value: "createdAt-desc", label: t("order.createdAtDesc") },
     { value: "createdAt-asc", label: t("order.createdAtAsc") },
@@ -218,11 +274,20 @@ const PublicProfileMarketGridContent = ({
     router.push(`?${params.toString()}`);
   };
 
+  const handleAccessoriesPageChange = (newPage: number) => {
+    setAccessoriesPage(newPage);
+  };
+
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("sort", newSort);
     params.set("page", "1");
     router.push(`?${params.toString()}`);
+  };
+
+  const handleAccessoriesSortChange = (newSort: string) => {
+    setAccessoriesSort(newSort);
+    setAccessoriesPage(1);
   };
 
   const handlePerPageChange = (newPerPage: string) => {
@@ -231,6 +296,11 @@ const PublicProfileMarketGridContent = ({
     params.set("page", "1");
     setLocalPerPage(Number(newPerPage));
     router.push(`?${params.toString()}`);
+  };
+
+  const handleAccessoriesPerPageChange = (newPerPage: string) => {
+    setAccessoriesPerPage(Number(newPerPage));
+    setAccessoriesPage(1);
   };
 
   const handleViewModeChange = (mode: ViewMode) => {
@@ -259,46 +329,61 @@ const PublicProfileMarketGridContent = ({
 
   const handleConsoleBrandChange = (brands: string[]) => {
     setConsoleBrands(brands);
-    updateConsoleURL({ brand: brands.join(",") });
+    updateURL({ brand: brands.join(",") });
   };
 
   const handleConsoleGenerationChange = (generations: string[]) => {
     setConsoleGenerations(generations);
-    updateConsoleURL({ generation: generations.join(",") });
+    updateURL({ generation: generations.join(",") });
   };
 
   const handleConsoleModelChange = (models: string[]) => {
     setConsoleModels(models);
-    updateConsoleURL({ model: models.join(",") });
+    updateURL({ model: models.join(",") });
   };
 
   const handleConsoleTypeChange = (types: string[]) => {
     setConsoleTypes(types);
-    updateConsoleURL({ consoleType: types.join(",") });
+    updateURL({ consoleType: types.join(",") });
   };
 
   const handleConsoleAllDigitalChange = (allDigital: boolean) => {
     setConsoleAllDigital(allDigital);
-    updateConsoleURL({ allDigital: allDigital ? "true" : "" });
+    updateURL({ allDigital: allDigital ? "true" : "" });
   };
 
   const handleConsoleMediaFormatChange = (formats: string[]) => {
     setConsoleMediaFormats(formats);
-    updateConsoleURL({ mediaFormats: formats.join(",") });
+    updateURL({ mediaFormats: formats.join(",") });
   };
 
   const handleConsoleRetroCompatibleChange = (isRetroCompatible: boolean) => {
     setConsoleRetroCompatible(isRetroCompatible);
-    updateConsoleURL({ retroCompatible: isRetroCompatible.toString() });
+    updateURL({ retroCompatible: isRetroCompatible.toString() });
   };
 
   const handleConsoleStorageChange = (ranges: string[]) => {
     setConsoleStorageRanges(ranges);
-    updateConsoleURL({ storage: ranges.join(",") });
+    updateURL({ storage: ranges.join(",") });
   };
 
-  // Função para atualizar a URL com filtros de console
-  const updateConsoleURL = (newParams: Record<string, string>) => {
+  const handleAccessoryTypeChange = (types: string[]) => {
+    setAccessoryTypes(types);
+    updateURL({ accessoryType: types.join(",") });
+  };
+
+  const handleAccessorySubTypeChange = (subTypes: string[]) => {
+    setAccessorySubTypes(subTypes);
+    updateURL({ accessorySubType: subTypes.join(",") });
+  };
+
+  const handleAccessoryConsoleChange = (consoles: string[]) => {
+    setAccessoryConsoles(consoles);
+    updateURL({ accessoryConsole: consoles.join(",") });
+  };
+
+  // Função para atualizar a URL com filtros
+  const updateURL = (newParams: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
     Object.entries(newParams).forEach(([key, value]) => {
       if (value) {
@@ -330,6 +415,19 @@ const PublicProfileMarketGridContent = ({
     params.delete("mediaFormats");
     params.delete("retroCompatible");
     params.delete("storage");
+    params.set("page", "1");
+    router.push(`?${params.toString()}`);
+  };
+
+  const clearAccessoryFilters = () => {
+    setAccessoryTypes([]);
+    setAccessorySubTypes([]);
+    setAccessoryConsoles([]);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("accessoryType");
+    params.delete("accessorySubType");
+    params.delete("accessoryConsole");
     params.set("page", "1");
     router.push(`?${params.toString()}`);
   };
@@ -428,7 +526,7 @@ const PublicProfileMarketGridContent = ({
             anchor="right"
             className="w-full max-w-md"
           >
-            <FilterContainer
+            <ConsoleFilterContainer
               onBrandChange={handleConsoleBrandChange}
               onGenerationChange={handleConsoleGenerationChange}
               onModelChange={handleConsoleModelChange}
@@ -616,7 +714,132 @@ const PublicProfileMarketGridContent = ({
         </div>
       )}
 
-      {games.length === 0 && consoles.length === 0 && (
+      {/* Seção de Acessórios */}
+      {accessories.length > 0 && (
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold dark:text-white">
+              {type === "selling" ? t("accessoriesForSale") : t("accessoriesLookingFor")}
+            </h2>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAccessoryFilterOpen(true)}
+              icon={<Settings2 size={16} />}
+            ></Button>
+          </div>
+
+          {/* Drawer de Filtros para Acessórios */}
+          <Drawer
+            open={isAccessoryFilterOpen}
+            onClose={() => setIsAccessoryFilterOpen(false)}
+            title="Filtrar Acessórios"
+            anchor="right"
+            className="w-full max-w-md"
+          >
+            <AccessoryFilterContainer
+              selectedTypes={accessoryTypes}
+              selectedSubTypes={accessorySubTypes}
+              selectedConsoles={accessoryConsoles}
+              onTypeChange={handleAccessoryTypeChange}
+              onSubTypeChange={handleAccessorySubTypeChange}
+              onConsoleChange={handleAccessoryConsoleChange}
+              clearFilters={clearAccessoryFilters}
+              locale={locale}
+            />
+          </Drawer>
+
+          {/* Controles de ordenação e paginação para acessórios */}
+          <div className="flex justify-end items-center mb-4 gap-4">
+            <SortSelect
+              options={SORT_OPTIONS}
+              value={accessoriesSort}
+              onChange={handleAccessoriesSortChange}
+              className="w-full sm:w-auto"
+            />
+            <Select
+              options={PER_PAGE_OPTIONS}
+              value={accessoriesPerPage.toString()}
+              onChange={(e) => handleAccessoriesPerPageChange(e.target.value)}
+              className="w-20"
+              size="sm"
+            />
+          </div>
+
+          {viewMode === "table" ? (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="p-2 text-left">Acessório</th>
+                    <th className="p-2 text-left">Tipo</th>
+                    <th className="p-2 text-left">Console</th>
+                    <th className="p-2 text-left">Preço</th>
+                    <th className="p-2 text-left">Condição</th>
+                    <th className="p-2 text-left">Aceita Troca</th>
+                    {isOwner && <th className="p-2 text-left">Ações</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {accessories.map((accessory) => (
+                    <AccessoryTableRow
+                      key={`accessory-${accessory.id}`}
+                      accessory={accessory}
+                      isOwner={isOwner || false}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : viewMode === "list" ? (
+            <div className="space-y-4">
+              {accessories.map((accessory) => (
+                <AccessoryListItem
+                  key={accessory.id}
+                  accessory={accessory}
+                  isOwner={isOwner || false}
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              className={`grid ${
+                viewMode === "grid"
+                  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                  : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
+              } gap-6`}
+            >
+              {accessories.map((accessory) =>
+                viewMode === "compact" ? (
+                  <AccessoryCompactCard
+                    key={accessory.id}
+                    accessory={accessory}
+                    isOwner={isOwner || false}
+                  />
+                ) : (
+                  <AccessoryCard
+                    key={accessory.id}
+                    accessory={accessory}
+                    isOwner={isOwner || false}
+                  />
+                ),
+              )}
+            </div>
+          )}
+
+          {accessoriesMeta && accessoriesMeta.totalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={accessoriesPage}
+                totalPages={accessoriesMeta.totalPages}
+                onPageChange={handleAccessoriesPageChange}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {games.length === 0 && consoles.length === 0 && accessories.length === 0 && (
         <Card>
           <div className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400">

@@ -144,6 +144,25 @@ export const AccessoryForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="mt-4">
+        <h4 className="font-medium mb-2">{t("compatibleConsoles")}</h4>
+        {isLoading ? (
+          <Spinner />
+        ) : ownedConsoles.length === 0 ? (
+          <p className="text-sm text-gray-500">{t("noConsoles")}</p>
+        ) : (
+          <div className="space-y-2">
+            {ownedConsoles.map((userConsole) => (
+              <Checkbox
+                key={userConsole.id}
+                label={userConsole.name}
+                checked={selectedConsoleIds.includes(userConsole.id || 0)}
+                onChange={() => handleCheckboxChange(userConsole.id || 0)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
       <div className="flex flex-col gap-4">
         <MainImageUpload
           label={t("mainPhoto")}
@@ -177,26 +196,6 @@ export const AccessoryForm = ({
           placeholder={t("descriptionPlaceholder")}
           rows={4}
         />
-
-        <div className="mt-4">
-          <h4 className="font-medium mb-2">{t("compatibleConsoles")}</h4>
-          {isLoading ? (
-            <Spinner />
-          ) : ownedConsoles.length === 0 ? (
-            <p className="text-sm text-gray-500">{t("noConsoles")}</p>
-          ) : (
-            <div className="space-y-2">
-              {ownedConsoles.map((userConsole) => (
-                <Checkbox
-                  key={userConsole.id}
-                  label={userConsole.name}
-                  checked={selectedConsoleIds.includes(userConsole.id || 0)}
-                  onChange={() => handleCheckboxChange(userConsole.id || 0)}
-                />
-              ))}
-            </div>
-          )}
-        </div>
 
         <div className="mt-4">
           <AdditionalImagesUpload

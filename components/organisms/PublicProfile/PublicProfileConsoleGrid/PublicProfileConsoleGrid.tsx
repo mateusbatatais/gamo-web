@@ -187,13 +187,14 @@ const PublicProfileConsoleGridContent = ({
     selectedStorageRanges.join(","),
     retroCompatible,
     selectedAllDigital,
+    "OWNED",
   );
 
   const {
     data: accessoriesData,
     isLoading: accessoriesLoading,
     error: accessoriesError,
-  } = useUserAccessoriesPublic(slug, accessoriesPage, accessoriesPerPage, accessoriesSort);
+  } = useUserAccessoriesPublic(slug, accessoriesPage, accessoriesPerPage, accessoriesSort, "OWNED");
 
   const consoles = data?.items || [];
   const meta = data?.meta;
@@ -352,7 +353,7 @@ const PublicProfileConsoleGridContent = ({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <span className="text-2xl">🎮</span>
+              <span className="text-2xl">🖥️</span>
             </div>
           )}
         </div>
@@ -435,7 +436,7 @@ const PublicProfileConsoleGridContent = ({
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <span className="text-xl">🎮</span>
+                      <span className="text-xl">🖥️</span>
                     </div>
                   )}
                 </div>
@@ -494,7 +495,7 @@ const PublicProfileConsoleGridContent = ({
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <span>🎮</span>
+                          <span>🖥️</span>
                         </div>
                       )}
                     </div>

@@ -21,8 +21,8 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const sections = [
-    { id: "", label: t("collection"), icon: "🎮" },
-    { id: "games", label: t("games"), icon: "🕹️" },
+    { id: "", label: t("collection"), icon: "📚" },
+    { id: "games", label: t("games"), icon: "👾" },
     { id: "market", label: t("market"), icon: "🛒" },
     { id: "reviews", label: t("reviews"), icon: "⭐" },
   ];
