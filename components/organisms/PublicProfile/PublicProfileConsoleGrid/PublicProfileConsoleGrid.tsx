@@ -341,7 +341,7 @@ const PublicProfileConsoleGridContent = ({
           <AccessoryActionButtons
             accessory={acc}
             isOwner={isOwner || false}
-            customClassName="absolute top-2 right-2"
+            customClassName="absolute top-2 right-2 z-10"
           />
           {acc.photoMain ? (
             <Image
@@ -924,17 +924,6 @@ const PublicProfileConsoleGridContent = ({
               />
             </div>
           )}
-        </div>
-      )}
-
-      {accessoriesData && accessories.length === 0 && (
-        <div className="mt-12">
-          <h2 className="text-xl font-semibold mb-6 dark:text-white">Acessórios Avulsos</h2>
-          <Card>
-            <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400">Nenhum acessório avulso na coleção</p>
-            </div>
-          </Card>
         </div>
       )}
     </div>

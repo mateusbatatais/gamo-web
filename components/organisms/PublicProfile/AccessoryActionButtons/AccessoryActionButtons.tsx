@@ -41,13 +41,13 @@ export const AccessoryActionButtons = ({
 
   return (
     <>
-      <div className={`${customClassName} flex gap-2 ${compact ? "flex-col" : ""}`}>
+      <div className={`${customClassName} flex${compact ? "flex-col" : ""}`}>
         <Button
           onClick={() => setShowEditModal(true)}
           aria-label={t("editItem")}
           icon={<Pencil size={compact ? 12 : 16} />}
           variant="transparent"
-          size={compact ? "sm" : "md"}
+          size="sm"
         />
         <Button
           onClick={() => setShowDeleteModal(true)}
@@ -55,7 +55,7 @@ export const AccessoryActionButtons = ({
           variant="transparent"
           aria-label={t("deleteItem")}
           icon={<Trash size={compact ? 12 : 16} />}
-          size={compact ? "sm" : "md"}
+          size="sm"
         />
       </div>
 

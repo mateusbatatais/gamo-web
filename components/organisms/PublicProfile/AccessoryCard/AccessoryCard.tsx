@@ -12,7 +12,7 @@ interface AccessoryCardProps {
 
 export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
   return (
-    <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
+    <div className="relative rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
         {accessory.photoMain ? (
           <Image
@@ -28,6 +28,11 @@ export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
           </div>
         )}
       </div>
+      <AccessoryActionButtons
+        accessory={accessory}
+        isOwner={isOwner}
+        customClassName="absolute top-2 right-2 z-10"
+      />
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div className="flex-1">
@@ -36,7 +41,6 @@ export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-300">{accessory.accessorySlug}</p>
           </div>
-          <AccessoryActionButtons accessory={accessory} isOwner={isOwner} />
         </div>
 
         {accessory.price && (
