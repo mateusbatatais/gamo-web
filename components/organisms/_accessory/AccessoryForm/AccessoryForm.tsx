@@ -49,7 +49,7 @@ export const AccessoryForm = ({
 }: AccessoryFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserAccessory, updateUserAccessory, isPending } = useUserAccessoryMutation();
-  const { data: userConsoles, isLoading } = useUserConsoles();
+  const { data: userConsoles, isLoading } = useUserConsoles(accessoryId);
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>(
     initialData?.compatibleUserConsoleIds || [],
   );
@@ -155,7 +155,7 @@ export const AccessoryForm = ({
             {ownedConsoles.map((userConsole) => (
               <Checkbox
                 key={userConsole.id}
-                label={userConsole.name}
+                label={`${userConsole.name} (${userConsole.status})`}
                 checked={selectedConsoleIds.includes(userConsole.id || 0)}
                 onChange={() => handleCheckboxChange(userConsole.id || 0)}
               />
