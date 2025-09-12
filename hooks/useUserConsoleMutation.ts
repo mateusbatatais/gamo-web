@@ -6,20 +6,26 @@ import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
 import { UserConsole } from "@/@types/collection.types";
 
+interface UserConsoleResponse {
+  code: string;
+  message: string;
+  userConsole: UserConsole;
+}
+
 export function useUserConsoleMutation() {
   const { apiFetch } = useApiClient();
   const { showToast } = useToast();
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
-    mutationFn: async (data: UserConsole) => {
+    mutationFn: async (data: UserConsole): Promise<UserConsoleResponse> => {
       return apiFetch("/user-consoles", {
         method: "POST",
         body: data,
       });
     },
-    onSuccess: () => {
-      showToast("Console adicionado à coleção com sucesso", "success");
+    onSuccess: (response) => {
+      showToast(response.message || "Console adicionado à coleção com sucesso", "success");
       // Invalidate todas as queries de consoles públicos
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
@@ -29,14 +35,20 @@ export function useUserConsoleMutation() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: UserConsole }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: UserConsole;
+    }): Promise<UserConsoleResponse> => {
       return apiFetch(`/user-consoles/${id}`, {
         method: "PUT",
         body: data,
       });
     },
-    onSuccess: () => {
-      showToast("Console atualizado com sucesso", "success");
+    onSuccess: (response) => {
+      showToast(response.message || "Console atualizado com sucesso", "success");
       // Invalidate todas as queries de consoles públicos
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },

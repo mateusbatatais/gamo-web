@@ -473,13 +473,25 @@
     "mediaDigital": "Digital",
     "platform": "Platform",
     "compatibleConsoles": "Compatible Consoles",
-    "noConsoles": "No consoles in your collection"
+    "noConsoles": "No consoles in your collection",
+    "includeAccessories": "Include accessories?",
+    "selectAccessories": "Select accessories",
+    "noAccessories": "No accessories available for this console"
   },
   "SimpleAccessoryForm": {
     "description": "Select the consoles from your collection that are compatible with this accessory:",
     "noConsoles": "You don't have any consoles in your collection.",
     "cancel": "Cancel",
     "add": "Add"
+  },
+  "SimpleConsoleForm": {
+    "storageOption": "Storage option",
+    "includeAccessories": "Include accessories?",
+    "selectAccessories": "Select accessories",
+    "noAccessories": "No accessories available for this console",
+    "cancel": "Cancel",
+    "add": "Add to collection",
+    "quantity": "Quantity"
   },
   "HomePage": {
     "construction": "Under construction"

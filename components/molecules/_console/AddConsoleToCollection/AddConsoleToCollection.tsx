@@ -1,4 +1,3 @@
-// components/molecules/AddConsoleToCollection/AddConsoleToCollection.tsx
 "use client";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,8 +6,8 @@ import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { CardActionButtons } from "../../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
-import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
 import { TradeConsoleForm } from "../TradeConsoleForm/TradeConsoleForm";
+import { SimpleConsoleForm } from "../SimpleConsoleForm/SimpleConsoleForm";
 
 interface Props {
   consoleVariantId: number;
@@ -33,7 +32,11 @@ export function AddConsoleToCollection({
     openModal: openTradeModal,
     closeModal: closeTradeModal,
   } = useModalUrl(`add-to-collection-${skinId}`);
-  const { createUserConsole, isPending } = useUserConsoleMutation();
+  const {
+    isOpen: isSimpleModalOpen,
+    openModal: openSimpleModal,
+    closeModal: closeSimpleModal,
+  } = useModalUrl(`add-console-simple-${skinId}`);
 
   const handleAction = (type: "OWNED" | "TRADE") => {
     if (!user) {
@@ -48,28 +51,15 @@ export function AddConsoleToCollection({
     }
 
     if (type === "OWNED") {
-      addToCollectionDirectly();
+      openSimpleModal();
     } else {
       openTradeModal();
     }
   };
 
-  const addToCollectionDirectly = async () => {
-    await createUserConsole({
-      consoleVariantId,
-      consoleId,
-      skinId,
-      status: "OWNED",
-      condition: "USED",
-      variantSlug,
-    });
-    onAddSuccess?.();
-  };
-
   return (
     <div className="flex justify-end">
       <CardActionButtons
-        loading={isPending}
         actions={[
           {
             key: "collection",
@@ -93,6 +83,20 @@ export function AddConsoleToCollection({
             onAddSuccess?.();
           }}
           onCancel={closeTradeModal}
+        />
+      </Dialog>
+
+      <Dialog open={isSimpleModalOpen} onClose={closeSimpleModal} title={"Adicionar à coleção"}>
+        <SimpleConsoleForm
+          consoleId={consoleId}
+          consoleVariantId={consoleVariantId}
+          variantSlug={variantSlug}
+          skinId={skinId}
+          onSuccess={() => {
+            closeSimpleModal();
+            onAddSuccess?.();
+          }}
+          onCancel={closeSimpleModal}
         />
       </Dialog>
     </div>

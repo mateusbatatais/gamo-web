@@ -471,13 +471,25 @@
     "mediaDigital": "Digital",
     "platform": "Plataforma",
     "compatibleConsoles": "Consoles compatíveis",
-    "noConsoles": "Nenhum console em sua coleção"
+    "noConsoles": "Nenhum console em sua coleção",
+    "includeAccessories": "Deseja incluir acessórios?",
+    "selectAccessories": "Selecione os acessórios",
+    "noAccessories": "Nenhum acessório disponível para este console"
   },
   "SimpleAccessoryForm": {
     "description": "Selecione os consoles da sua coleção que são compatíveis com este acessório:",
     "noConsoles": "Você não possui consoles em sua coleção.",
     "cancel": "Cancelar",
     "add": "Adicionar"
+  },
+  "SimpleConsoleForm": {
+    "storageOption": "Opção de armazenamento",
+    "includeAccessories": "Deseja incluir acessórios?",
+    "selectAccessories": "Selecione os acessórios",
+    "noAccessories": "Nenhum acessório disponível para este console",
+    "cancel": "Cancelar",
+    "add": "Adicionar à coleção",
+    "quantity": "Quantidade"
   },
   "HomePage": {
     "construction": "Em construção"
