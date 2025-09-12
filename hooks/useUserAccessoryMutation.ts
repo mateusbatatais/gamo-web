@@ -37,21 +37,17 @@ export function useUserAccessoryMutation() {
       });
     },
     onMutate: async ({ id, data }) => {
-      // Cancela queries em andamento para ambos os tipos de acessórios
       await queryClient.cancelQueries({ queryKey: ["userAccessoriesPublic"] });
       await queryClient.cancelQueries({ queryKey: ["userConsolesPublic"] });
 
-      // Snapshot do valor anterior para acessórios avulsos
       const previousAccessories = queryClient.getQueryData<PaginatedResponse<UserAccessory>>([
         "userAccessoriesPublic",
       ]);
 
-      // Snapshot do valor anterior para consoles (que contêm acessórios)
       const previousConsoles = queryClient.getQueryData<PaginatedResponse<UserConsole>>([
         "userConsolesPublic",
       ]);
 
-      // Atualiza o acessório avulso otimisticamente
       if (previousAccessories) {
         queryClient.setQueryData<PaginatedResponse<UserAccessory>>(["userAccessoriesPublic"], {
           ...previousAccessories,
@@ -61,7 +57,6 @@ export function useUserAccessoryMutation() {
         });
       }
 
-      // Atualiza o acessório nos consoles otimisticamente
       if (previousConsoles) {
         queryClient.setQueryData<PaginatedResponse<UserConsole>>(["userConsolesPublic"], {
           ...previousConsoles,
@@ -77,7 +72,6 @@ export function useUserAccessoryMutation() {
       return { previousAccessories, previousConsoles };
     },
     onError: (err, variables, context) => {
-      // Reverte para o valor anterior em caso de erro
       if (context?.previousAccessories) {
         queryClient.setQueryData(["userAccessoriesPublic"], context.previousAccessories);
       }
@@ -90,7 +84,6 @@ export function useUserAccessoryMutation() {
       showToast("Acessório atualizado com sucesso", "success");
     },
     onSettled: () => {
-      // Invalida para garantir sincronização com o servidor
       queryClient.invalidateQueries({ queryKey: ["userAccessoriesPublic"] });
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
