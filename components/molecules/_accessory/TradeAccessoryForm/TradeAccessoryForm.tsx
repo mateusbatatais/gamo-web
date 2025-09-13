@@ -45,8 +45,6 @@ export const TradeAccessoryForm = ({
   const { data: userConsoles, isLoading } = useUserConsoles(accessoryId);
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
 
-  const ownedConsoles = userConsoles?.filter((console) => console.status === "OWNED") || [];
-
   const handleCheckboxChange = (consoleId: number) => {
     setSelectedConsoleIds((prev) =>
       prev.includes(consoleId) ? prev.filter((id) => id !== consoleId) : [...prev, consoleId],
@@ -80,14 +78,14 @@ export const TradeAccessoryForm = ({
       <h4 className="font-medium mb-2">{t("compatibleConsoles")}</h4>
       {isLoading ? (
         <Spinner />
-      ) : ownedConsoles.length === 0 ? (
+      ) : userConsoles?.length === 0 ? (
         <p className="text-sm text-gray-500">{t("noConsoles")}</p>
       ) : (
         <div className="space-y-2">
-          {ownedConsoles.map((userConsole) => (
+          {userConsoles?.map((userConsole) => (
             <Checkbox
               key={userConsole.id}
-              label={userConsole.name}
+              label={`${userConsole.name} (${userConsole.status})`}
               checked={selectedConsoleIds.includes(userConsole.id)}
               onChange={() => handleCheckboxChange(userConsole.id)}
             />

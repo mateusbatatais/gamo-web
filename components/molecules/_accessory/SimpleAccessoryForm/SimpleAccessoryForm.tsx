@@ -26,8 +26,6 @@ export const SimpleAccessoryForm = ({
   const { createUserAccessory, isPending } = useUserAccessoryMutation();
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
 
-  const ownedConsoles = userConsoles?.filter((console) => console.status === "OWNED") || [];
-
   const handleCheckboxChange = (consoleId: number) => {
     setSelectedConsoleIds((prev) =>
       prev.includes(consoleId) ? prev.filter((id) => id !== consoleId) : [...prev, consoleId],
@@ -52,14 +50,14 @@ export const SimpleAccessoryForm = ({
   return (
     <div className="space-y-4">
       <p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
-      {ownedConsoles.length === 0 ? (
+      {userConsoles?.length === 0 ? (
         <p className="text-sm text-gray-500 dark:text-gray-400">{t("noConsoles")}</p>
       ) : (
         <div className="max-h-60 overflow-y-auto space-y-2">
-          {ownedConsoles.map((userConsole) => (
+          {userConsoles?.map((userConsole) => (
             <Checkbox
               key={userConsole.id}
-              label={userConsole.name}
+              label={`${userConsole.name} (${userConsole.status})`}
               checked={selectedConsoleIds.includes(userConsole.id)}
               onChange={() => handleCheckboxChange(userConsole.id)}
             />
