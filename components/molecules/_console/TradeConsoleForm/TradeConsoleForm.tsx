@@ -97,8 +97,8 @@ export const TradeConsoleForm = ({
               await createUserAccessory({
                 accessoryId: variant.accessoryId,
                 accessoryVariantId: variant.id,
-                status: "OWNED",
-                condition: "USED",
+                status: data.status,
+                condition: data.condition,
                 compatibleUserConsoleIds: [userConsoleId],
               });
             }

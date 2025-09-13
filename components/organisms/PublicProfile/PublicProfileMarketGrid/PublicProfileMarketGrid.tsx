@@ -35,6 +35,9 @@ import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
 import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
 import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
 import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
+import { UserConsole, UserAccessory } from "@/@types/collection.types";
+import Image from "next/image";
+import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -61,6 +64,50 @@ type ViewMode = "grid" | "compact" | "list" | "table";
 // Chave para armazenar as preferências no localStorage
 const STORAGE_KEY = "userMarketViewPreferences";
 
+// Hooks de colunas responsivas
+function useResponsiveColumns(): number {
+  const [cols, setCols] = useState<number>(2);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w >= 1024)
+        setCols(4); // lg
+      else if (w >= 768)
+        setCols(3); // md
+      else setCols(2); // base
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return cols;
+}
+
+function useCompactColumns(): number {
+  const [cols, setCols] = useState<number>(3);
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth;
+      if (w >= 1536) setCols(8);
+      else if (w >= 1024) setCols(6);
+      else if (w >= 768) setCols(4);
+      else setCols(3);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return cols;
+}
+
+// Type guard para acessórios
+function hasAccessories(
+  item: UserConsole,
+): item is UserConsole & { accessories: ReadonlyArray<UserAccessory> } {
+  const maybe = item as unknown as { accessories?: unknown };
+  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
+}
+
 const PublicProfileMarketGridContent = ({
   slug,
   locale,
@@ -74,6 +121,17 @@ const PublicProfileMarketGridContent = ({
   const [isGameFilterOpen, setIsGameFilterOpen] = useState(false);
   const [isConsoleFilterOpen, setIsConsoleFilterOpen] = useState(false);
   const [isAccessoryFilterOpen, setIsAccessoryFilterOpen] = useState(false);
+
+  // Estados para colapse de acessórios em consoles
+  const [openGridId, setOpenGridId] = useState<number | null>(null);
+  const [openGridRowStart, setOpenGridRowStart] = useState<number | null>(null);
+  const [openCompactId, setOpenCompactId] = useState<number | null>(null);
+  const [openCompactRowStart, setOpenCompactRowStart] = useState<number | null>(null);
+  const [openListId, setOpenListId] = useState<number | null>(null);
+  const [openTableId, setOpenTableId] = useState<number | null>(null);
+
+  const gridCols = useResponsiveColumns();
+  const compactCols = useCompactColumns();
 
   // Estados para filtros de jogos
   const [gameGenres, setGameGenres] = useState<number[]>([]);
@@ -432,6 +490,216 @@ const PublicProfileMarketGridContent = ({
     router.push(`?${params.toString()}`);
   };
 
+  // Funções para colapse de acessórios
+  const handleToggleGrid = (index: number, id: number) => {
+    const rowStart = index - (index % gridCols);
+    if (openGridId === id) {
+      setOpenGridId(null);
+      setOpenGridRowStart(null);
+      return;
+    }
+    if (openGridRowStart !== null && rowStart === openGridRowStart) {
+      setOpenGridId(id);
+      return;
+    }
+    setOpenGridId(id);
+    setOpenGridRowStart(rowStart);
+  };
+
+  const handleToggleCompact = (index: number, id: number) => {
+    const rowStart = index - (index % compactCols);
+    if (openCompactId === id) {
+      setOpenCompactId(null);
+      setOpenCompactRowStart(null);
+      return;
+    }
+    if (openCompactRowStart !== null && rowStart === openCompactRowStart) {
+      setOpenCompactId(id);
+      return;
+    }
+    setOpenCompactId(id);
+    setOpenCompactRowStart(rowStart);
+  };
+
+  const handleToggleList = (id: number) => {
+    setOpenListId((prev) => (prev === id ? null : id));
+  };
+
+  const handleToggleTable = (id: number) => {
+    setOpenTableId((prev) => (prev === id ? null : id));
+  };
+
+  // Funções para renderizar acessórios
+  function renderAccessoriesTitle(item?: UserConsole) {
+    return (
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-semibold dark:text-white">
+          Acessórios
+          {item?.consoleName && (
+            <span className="ml-2 font-normal text-gray-500 dark:text-gray-400">
+              — {item.consoleName}
+            </span>
+          )}
+        </h3>
+      </div>
+    );
+  }
+
+  function renderAccessoriesGrid(item?: UserConsole) {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <Card className="p-4">
+        {renderAccessoriesTitle(item)}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {item.accessories.map((acc) => (
+            <AccessoryCard key={acc.id} accessory={acc} isOwner={isOwner || false} />
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  function renderAccessoriesCompact(item?: UserConsole) {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <Card className="p-4">
+        {renderAccessoriesTitle(item)}
+        <div className="flex flex-wrap gap-3">
+          {item.accessories.map((acc) => (
+            <div
+              key={acc.id}
+              className="
+                box-border min-w-0
+                flex-[0_0_calc(33.333%_-_.5rem)]
+                md:flex-[0_0_calc(25%_-_.5625rem)]
+                lg:flex-[0_0_calc(16.666%_-_.625rem)]
+                xl:flex-[0_0_calc(12.5%_-_.65625rem)]
+              "
+            >
+              <AccessoryCompactCard accessory={acc} isOwner={isOwner || false} />
+            </div>
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  function renderAccessoriesList(item?: UserConsole) {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <Card className="p-4">
+        {renderAccessoriesTitle(item)}
+        <div className="space-y-3">
+          {item.accessories.map((acc) => (
+            <AccessoryListItem key={acc.id} accessory={acc} isOwner={isOwner || false} />
+          ))}
+        </div>
+      </Card>
+    );
+  }
+
+  function renderAccessoriesTable(item?: UserConsole) {
+    if (!item || !hasAccessories(item)) {
+      return (
+        <Card className="p-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            Nenhum acessório cadastrado para este console.
+          </div>
+        </Card>
+      );
+    }
+    return (
+      <div className="overflow-x-auto ps-10">
+        <table className="w-full">
+          <thead>
+            <tr className="border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+              <th className="p-2 text-left">Acessório</th>
+              <th className="p-2 text-left">Slug</th>
+              <th className="p-2 text-left">Preço</th>
+              <th className="p-2 text-left">Condição</th>
+              {isOwner && <th className="p-2 ">Ações</th>}
+            </tr>
+          </thead>
+          <tbody>
+            {item.accessories.map((acc) => (
+              <tr key={acc.id} className="border-b border-gray-200 dark:border-gray-700">
+                <td className="p-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+                      {acc.photoMain ? (
+                        <Image
+                          src={acc.photoMain}
+                          alt={acc.variantName || ""}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <span>🖥️</span>
+                        </div>
+                      )}
+                    </div>
+                    <span className="font-medium dark:text-white">{acc.variantName}</span>
+                  </div>
+                </td>
+                <td className="p-2 text-sm text-gray-600 dark:text-gray-300">
+                  {acc.accessorySlug}
+                </td>
+                <td className="p-2">
+                  {acc.price ? (
+                    <span className="font-medium">
+                      {new Intl.NumberFormat(locale, {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(acc.price)}
+                    </span>
+                  ) : (
+                    <span className="text-gray-500 dark:text-gray-400">-</span>
+                  )}
+                </td>
+                <td className="p-2">
+                  <span className="text-sm text-gray-600 dark:text-gray-300">
+                    {acc.condition ? t(`condition.${acc.condition.toLowerCase()}`) : "-"}
+                  </span>
+                </td>
+                {isOwner && (
+                  <td className="p-2 text-center">
+                    <AccessoryActionButtons accessory={acc} isOwner={isOwner} />
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div>
@@ -552,6 +820,7 @@ const PublicProfileMarketGridContent = ({
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th className="p-2 w-10" />
                     <th className="p-2 text-left">Console</th>
                     <th className="p-2 text-left">Skin</th>
                     <th className="p-2 text-left">Preço</th>
@@ -561,50 +830,135 @@ const PublicProfileMarketGridContent = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {consoles.map((consoleItem) => (
-                    <PublicProfileConsoleTable
-                      key={`console-${consoleItem.id}`}
-                      consoleItem={consoleItem}
-                      isOwner={isOwner || false}
-                      isMarketGrid={true}
-                    />
-                  ))}
+                  {consoles.map((consoleItem: UserConsole) => {
+                    const isExpanded = openTableId === consoleItem.id;
+                    const canExpand = hasAccessories(consoleItem);
+                    return (
+                      <React.Fragment key={consoleItem.id}>
+                        <PublicProfileConsoleTable
+                          consoleItem={consoleItem}
+                          isOwner={isOwner || false}
+                          isMarketGrid={true}
+                          isExpanded={isExpanded}
+                          onToggleAccessories={
+                            canExpand
+                              ? () => handleToggleTable(consoleItem.id as number)
+                              : undefined
+                          }
+                        />
+                        {isExpanded && (
+                          <tr className="bg-gray-50 dark:bg-gray-800">
+                            <td colSpan={7 + (isOwner ? 1 : 0)} className="p-4">
+                              {renderAccessoriesTable(consoleItem)}
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
           ) : viewMode === "list" ? (
             <div className="space-y-4">
-              {consoles.map((consoleItem) => (
-                <PublicProfileConsoleList
-                  key={consoleItem.id}
-                  consoleItem={consoleItem}
-                  isOwner={isOwner || false}
-                />
-              ))}
+              {consoles.map((consoleItem: UserConsole) => {
+                const isOpen = openListId === consoleItem.id;
+                return (
+                  <div key={consoleItem.id} className="flex flex-col gap-2">
+                    <PublicProfileConsoleList
+                      consoleItem={consoleItem}
+                      isOwner={isOwner || false}
+                      isExpanded={isOpen}
+                      onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
+                    />
+                    {isOpen && <div>{renderAccessoriesList(consoleItem)}</div>}
+                  </div>
+                );
+              })}
+            </div>
+          ) : viewMode === "compact" ? (
+            <div className="flex flex-wrap gap-3">
+              {consoles.map((consoleItem: UserConsole, index: number) => {
+                const isOpen = openCompactId === consoleItem.id;
+                const rowEndIndex = index - (index % compactCols) + (compactCols - 1);
+                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+                const shouldRenderAccessoriesRow =
+                  openCompactRowStart !== null &&
+                  isRowEnd &&
+                  index >= openCompactRowStart &&
+                  index < openCompactRowStart + compactCols;
+
+                return (
+                  <div key={consoleItem.id} className="contents">
+                    <div
+                      className="
+                        box-border min-w-0 flex flex-col
+                        flex-[0_0_calc(33.333%_-_.5rem)]
+                        md:flex-[0_0_calc(25%_-_.5625rem)]
+                        lg:flex-[0_0_calc(16.666%_-_.625rem)]
+                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]
+                      "
+                    >
+                      <PublicProfileConsoleCompact
+                        consoleItem={consoleItem}
+                        isOwner={isOwner || false}
+                        isExpanded={isOpen}
+                        onToggleAccessories={() =>
+                          handleToggleCompact(index, consoleItem.id as number)
+                        }
+                      />
+                    </div>
+
+                    {shouldRenderAccessoriesRow && (
+                      <div className="basis-full">
+                        {renderAccessoriesCompact(consoles.find((c) => c.id === openCompactId))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div
-              className={`grid ${
-                viewMode === "grid"
-                  ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                  : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
-              } gap-6`}
-            >
-              {consoles.map((consoleItem) =>
-                viewMode === "compact" ? (
-                  <PublicProfileConsoleCompact
-                    key={consoleItem.id}
-                    consoleItem={consoleItem}
-                    isOwner={isOwner || false}
-                  />
-                ) : (
-                  <PublicProfileConsoleCard
-                    key={consoleItem.id}
-                    consoleItem={consoleItem}
-                    isOwner={isOwner || false}
-                  />
-                ),
-              )}
+            <div className="flex flex-wrap gap-6">
+              {consoles.map((consoleItem: UserConsole, index: number) => {
+                const isOpen = openGridId === consoleItem.id;
+                const rowEndIndex = index - (index % gridCols) + (gridCols - 1);
+                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+                const shouldRenderAccessoriesRow =
+                  openGridRowStart !== null &&
+                  isRowEnd &&
+                  index >= openGridRowStart &&
+                  index < openGridRowStart + gridCols;
+
+                return (
+                  <div key={consoleItem.id} className="contents">
+                    <div
+                      className="
+                        box-border min-w-0
+                        flex-[0_0_calc(50%_-_.75rem)]
+                        md:flex-[0_0_calc(33.333%_-_1rem)]
+                        lg:flex-[0_0_calc(25%_-_1.125rem)]
+                        flex flex-col
+                      "
+                    >
+                      <PublicProfileConsoleCard
+                        consoleItem={consoleItem}
+                        isOwner={isOwner || false}
+                        isExpanded={isOpen}
+                        onToggleAccessories={() =>
+                          handleToggleGrid(index, consoleItem.id as number)
+                        }
+                      />
+                    </div>
+
+                    {shouldRenderAccessoriesRow && (
+                      <div className="basis-full">
+                        {renderAccessoriesGrid(consoles.find((c) => c.id === openGridId))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
