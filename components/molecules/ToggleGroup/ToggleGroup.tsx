@@ -23,6 +23,22 @@ export interface ToggleGroupProps {
   className?: string;
 }
 
+// Mapeamento de classes para variantes selecionadas
+const selectedVariantClasses: Record<ButtonVariant, string> = {
+  primary: "opacity-100 !cursor-default hover:!bg-primary-600",
+  secondary: "opacity-100 !cursor-default hover:!bg-secondary-500",
+  outline: "opacity-100 !cursor-default bg-primary-500 text-white border-primary-500",
+  transparent: "opacity-100 !cursor-default bg-primary-500/20 text-primary-500",
+};
+
+// Mapeamento de classes para variantes não selecionadas
+const unselectedVariantClasses: Record<ButtonVariant, string> = {
+  primary: "bg-transparent !border-primary-500 text-primary-500 hover:bg-primary-500/10",
+  secondary: "bg-transparent !border-secondary-500 text-secondary-500 hover:bg-secondary-500/10",
+  outline: "bg-transparent !border-primary-500 text-primary-500 hover:bg-primary-500/10",
+  transparent: "bg-transparent !border-primary-500 text-primary-500 hover:bg-primary-500/10",
+};
+
 export function ToggleGroup({
   items,
   value,
@@ -46,16 +62,18 @@ export function ToggleGroup({
             icon={item.icon}
             iconPosition={item.iconPosition}
             size={size}
-            variant={variant}
-            status={status}
-            className={clsx("transition-all duration-200 !rounded-none", {
-              "!rounded-l-md": isFirst,
-              "!rounded-r-md": isLast,
-              "-ml-px": !isFirst,
-              "opacity-100": isSelected,
-              "opacity-70 hover:opacity-100": !isSelected,
-              "border-r-0": variant === "outline" && !isLast,
-            })}
+            variant={isSelected ? variant : "outline"}
+            status={isSelected ? status : "default"}
+            className={clsx(
+              "transition-all duration-200 !rounded-none",
+              {
+                "!rounded-l-md": isFirst,
+                "!rounded-r-md": isLast,
+                "-ml-px": !isFirst,
+                "border-r-0": !isLast,
+              },
+              isSelected ? selectedVariantClasses[variant] : unselectedVariantClasses[variant],
+            )}
             onClick={() => onChange(item.value)}
           />
         );
