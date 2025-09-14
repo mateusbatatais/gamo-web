@@ -346,6 +346,7 @@
     "extras": "Extras details"
   },
   "PublicProfile": {
+    "noItemsLookingFor": "This user hasn't listed any items looking for trade yet",
     "viewMode": {
       "grid": "Grid",
       "compact": "Compact",
@@ -474,7 +475,7 @@
     "platform": "Platform",
     "compatibleConsoles": "Compatible Consoles",
     "noConsoles": "No consoles in your collection",
-    "includeAccessories": "Include accessories?",
+    "includeAccessories": "Add accessories",
     "selectAccessories": "Select accessories",
     "noAccessories": "No accessories available for this console"
   },

@@ -3,19 +3,15 @@
 
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
 import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { Select } from "@/components/atoms/Select/Select";
 import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
 import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
-import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
-import { Counter } from "@/components/atoms/Counter/Counter";
-import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
-import { Gamepad } from "lucide-react";
-import { normalizeImageUrl } from "@/utils/validate-url";
+import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
+import { AccessorySelector } from "../../AccessorySelector/AccessorySelector";
 
 interface SimpleConsoleFormProps {
   consoleId: number;
@@ -47,12 +43,11 @@ export const SimpleConsoleForm = ({
   const { createUserConsole } = useUserConsoleMutation();
   const { createUserAccessory } = useUserAccessoryMutation();
   const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number>();
-  const [includeAccessories, setIncludeAccessories] = useState(false);
+  const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageError, setImageError] = useState<Record<number, boolean>>({});
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -67,7 +62,7 @@ export const SimpleConsoleForm = ({
         condition: "USED",
       });
 
-      if (includeAccessories && userConsoleResponse && userConsoleResponse.userConsole.id) {
+      if (isAccessoriesOpen && userConsoleResponse && userConsoleResponse.userConsole.id) {
         for (const [variantId, selected] of Object.entries(selectedVariants)) {
           if (selected.quantity > 0) {
             const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
@@ -101,8 +96,8 @@ export const SimpleConsoleForm = ({
     }));
   };
 
-  const handleImageError = (variantId: number) => {
-    setImageError((prev) => ({ ...prev, [variantId]: true }));
+  const handleAccessoriesToggle = (open: boolean) => {
+    setIsAccessoriesOpen(open);
   };
 
   const variantsByType = accessoryVariants?.reduce(
@@ -134,80 +129,18 @@ export const SimpleConsoleForm = ({
         />
       )}
 
-      <Checkbox
-        label={t("includeAccessories")}
-        checked={includeAccessories}
-        onChange={(e) => setIncludeAccessories(e.target.checked)}
-      />
-
-      {includeAccessories && (
-        <div className="mt-4">
-          <h4 className="font-medium mb-3">{t("selectAccessories")}</h4>
-          {accessoriesLoading ? (
-            <Spinner />
-          ) : variantsByType && Object.keys(variantsByType).length > 0 ? (
-            <div className="space-y-4">
-              {Object.entries(variantsByType).map(([type, typeVariants]) => (
-                <Collapse key={type} title={type} defaultOpen>
-                  <div className="grid grid-cols-1 gap-3">
-                    {typeVariants.map((variant) => {
-                      const selected = selectedVariants[variant.id] || {
-                        variantId: variant.id,
-                        quantity: 0,
-                      };
-                      return (
-                        <div
-                          key={variant.id}
-                          className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"
-                        >
-                          <div className="flex items-center space-x-3 flex-1">
-                            <div className="w-12 h-12 relative flex-shrink-0">
-                              {variant.imageUrl && !imageError[variant.id] ? (
-                                <Image
-                                  src={normalizeImageUrl(variant.imageUrl)}
-                                  alt={variant.name}
-                                  fill
-                                  className="object-cover rounded"
-                                  onError={() => handleImageError(variant.id)}
-                                />
-                              ) : (
-                                <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded">
-                                  <Gamepad size={24} className="text-gray-400" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium truncate">{variant.name}</p>
-                              {variant.editionName && (
-                                <p className="text-xs text-gray-500 truncate">
-                                  {variant.editionName}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <Counter
-                            value={selected.quantity}
-                            onIncrement={() =>
-                              handleQuantityChange(variant.id, selected.quantity + 1)
-                            }
-                            onDecrement={() =>
-                              handleQuantityChange(variant.id, selected.quantity - 1)
-                            }
-                            min={0}
-                            max={10}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Collapse>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500 dark:text-gray-400">{t("noAccessories")}</p>
-          )}
-        </div>
-      )}
+      <Collapse
+        title={t("includeAccessories")}
+        defaultOpen={false}
+        onToggle={handleAccessoriesToggle}
+      >
+        <AccessorySelector
+          variantsByType={variantsByType || {}}
+          selectedVariants={selectedVariants}
+          onQuantityChange={handleQuantityChange}
+          isLoading={accessoriesLoading}
+        />
+      </Collapse>
 
       <div className="flex justify-end gap-2 mt-6">
         <Button variant="outline" onClick={onCancel} disabled={isSubmitting} label={t("cancel")} />

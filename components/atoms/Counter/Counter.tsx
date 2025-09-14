@@ -1,8 +1,6 @@
-// components/atoms/Counter/Counter.tsx
 "use client";
 
 import React from "react";
-import { Button } from "../Button/Button";
 
 interface CounterProps {
   value: number;
@@ -20,10 +18,22 @@ export function Counter({
   max = Infinity,
 }: CounterProps) {
   return (
-    <div className="flex items-center space-x-2">
-      <Button variant="outline" size="sm" onClick={onDecrement} disabled={value <= min} label="-" />
-      <span className="w-8 text-center font-medium">{value}</span>
-      <Button variant="outline" size="sm" onClick={onIncrement} disabled={value >= max} label="+" />
+    <div className="flex items-center space-x-1">
+      <button
+        className="w-5 h-5 flex items-center justify-center rounded border border-gray-300 text-xs hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={onDecrement}
+        disabled={value <= min}
+      >
+        -
+      </button>
+      <span className="w-6 text-center text-sm font-medium">{value}</span>
+      <button
+        className="w-5 h-5 flex items-center justify-center rounded border border-gray-300 text-xs hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        onClick={onIncrement}
+        disabled={value >= max}
+      >
+        +
+      </button>
     </div>
   );
 }

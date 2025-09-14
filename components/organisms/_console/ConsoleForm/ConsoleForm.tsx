@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
-import Image from "next/image";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
@@ -15,13 +14,9 @@ import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImag
 import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
 import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { Select } from "@/components/atoms/Select/Select";
-import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
-import { Counter } from "@/components/atoms/Counter/Counter";
-import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
 import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
-import { normalizeImageUrl } from "@/utils/validate-url";
-import { Gamepad } from "lucide-react";
+import { AccessorySelector } from "@/components/molecules/AccessorySelector/AccessorySelector";
 
 interface ConsoleFormProps {
   mode: "create" | "edit";
@@ -99,16 +94,15 @@ export const ConsoleForm = ({
     initialData?.storageOptionId ?? undefined,
   );
 
-  const [includeAccessories, setIncludeAccessories] = useState(false);
+  const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
   >({});
-  const [imageError, setImageError] = useState<Record<number, boolean>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (mode === "edit" && initialData?.id) {
-      setIncludeAccessories(true);
+      setIsAccessoriesOpen(true);
     }
   }, [mode, initialData]);
 
@@ -131,8 +125,8 @@ export const ConsoleForm = ({
     }));
   };
 
-  const handleImageError = (variantId: number) => {
-    setImageError((prev) => ({ ...prev, [variantId]: true }));
+  const handleAccessoriesToggle = (open: boolean) => {
+    setIsAccessoriesOpen(open);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -170,7 +164,7 @@ export const ConsoleForm = ({
         throw new Error("Invalid mode or missing initialData.id");
       }
 
-      if (includeAccessories && userConsoleId) {
+      if (isAccessoriesOpen && userConsoleId) {
         for (const [variantId, selected] of Object.entries(selectedVariants)) {
           if (selected.quantity > 0) {
             const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
@@ -256,86 +250,6 @@ export const ConsoleForm = ({
         />
       )}
 
-      {accessoryVariants && accessoryVariants.length > 0 && (
-        <div className="mt-4">
-          <Checkbox
-            name="includeAccessories"
-            checked={includeAccessories}
-            onChange={(e) => setIncludeAccessories(e.target.checked)}
-            label={t("includeAccessories")}
-            disabled={isSubmitting}
-          />
-          {includeAccessories && (
-            <div className="mt-4">
-              <h4 className="font-medium mb-3">{t("selectAccessories")}</h4>
-              {accessoriesLoading ? (
-                <Spinner />
-              ) : variantsByType && Object.keys(variantsByType).length > 0 ? (
-                <div className="space-y-4">
-                  {Object.entries(variantsByType).map(([type, typeVariants]) => (
-                    <Collapse key={type} title={type} defaultOpen>
-                      <div className="grid grid-cols-1 gap-3">
-                        {typeVariants.map((variant) => {
-                          const selected = selectedVariants[variant.id] || {
-                            variantId: variant.id,
-                            quantity: 0,
-                          };
-                          return (
-                            <div
-                              key={variant.id}
-                              className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"
-                            >
-                              <div className="flex items-center space-x-3 flex-1">
-                                <div className="w-12 h-12 relative flex-shrink-0">
-                                  {variant.imageUrl && !imageError[variant.id] ? (
-                                    <Image
-                                      src={normalizeImageUrl(variant.imageUrl)}
-                                      alt={variant.name}
-                                      fill
-                                      className="object-cover rounded"
-                                      onError={() => handleImageError(variant.id)}
-                                    />
-                                  ) : (
-                                    <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded">
-                                      <Gamepad size={24} className="text-gray-400" />
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-medium truncate">{variant.name}</p>
-                                  {variant.editionName && (
-                                    <p className="text-xs text-gray-500 truncate">
-                                      {variant.editionName}
-                                    </p>
-                                  )}
-                                </div>
-                              </div>
-                              <Counter
-                                value={selected.quantity}
-                                onIncrement={() =>
-                                  handleQuantityChange(variant.id, selected.quantity + 1)
-                                }
-                                onDecrement={() =>
-                                  handleQuantityChange(variant.id, selected.quantity - 1)
-                                }
-                                min={0}
-                                max={10}
-                              />
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </Collapse>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-gray-500 dark:text-gray-400">{t("noAccessories")}</p>
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
       <Collapse title={t("tradeSection")} defaultOpen={formData.status !== "OWNED"}>
         <TradeSection
           conditionOptions={conditionOptions}
@@ -372,6 +286,21 @@ export const ConsoleForm = ({
           />
         </div>
       </Collapse>
+
+      {accessoryVariants && accessoryVariants.length > 0 && (
+        <Collapse
+          title={t("includeAccessories")}
+          defaultOpen={mode === "edit"}
+          onToggle={handleAccessoriesToggle}
+        >
+          <AccessorySelector
+            variantsByType={variantsByType || {}}
+            selectedVariants={selectedVariants}
+            onQuantityChange={handleQuantityChange}
+            isLoading={accessoriesLoading}
+          />
+        </Collapse>
+      )}
 
       {currentCropImage && (
         <ImageCropper

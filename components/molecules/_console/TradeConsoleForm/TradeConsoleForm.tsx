@@ -9,13 +9,8 @@ import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
 import { Select } from "@/components/atoms/Select/Select";
-import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
-import { Counter } from "@/components/atoms/Counter/Counter";
-import { Spinner } from "@/components/atoms/Spinner/Spinner";
-import { Gamepad } from "lucide-react";
-import Image from "next/image";
-import { normalizeImageUrl } from "@/utils/validate-url";
+import { AccessorySelector } from "../../AccessorySelector/AccessorySelector";
 
 interface TradeConsoleFormProps {
   consoleId: number;
@@ -63,11 +58,10 @@ export const TradeConsoleForm = ({
   const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number | undefined>(
     initialData?.storageOptionId ?? undefined,
   );
-  const [includeAccessories, setIncludeAccessories] = useState(false);
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
   >({});
-  const [imageError, setImageError] = useState<Record<number, boolean>>({});
+  const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
 
   const handleSubmit = async (data: TradeSubmitData<"NEW" | "USED" | "REFURBISHED">) => {
     const payload = {
@@ -87,7 +81,7 @@ export const TradeConsoleForm = ({
     }
 
     // Se o usuário quer incluir acessórios e a criação/atualização foi bem-sucedida
-    if (includeAccessories && userConsoleResponse && userConsoleResponse.userConsole.id) {
+    if (isAccessoriesOpen && userConsoleResponse && userConsoleResponse.userConsole.id) {
       const userConsoleId = userConsoleResponse.userConsole.id;
       for (const [variantId, selected] of Object.entries(selectedVariants)) {
         if (selected.quantity > 0) {
@@ -117,8 +111,8 @@ export const TradeConsoleForm = ({
     }));
   };
 
-  const handleImageError = (variantId: number) => {
-    setImageError((prev) => ({ ...prev, [variantId]: true }));
+  const handleAccessoriesToggle = (open: boolean) => {
+    setIsAccessoriesOpen(open);
   };
 
   const conditionOptions: { value: "NEW" | "USED" | "REFURBISHED"; label: string }[] = [
@@ -159,81 +153,18 @@ export const TradeConsoleForm = ({
         />
       )}
 
-      <Checkbox
-        name="includeAccessories"
-        checked={includeAccessories}
-        onChange={(e) => setIncludeAccessories(e.target.checked)}
-        label={t("includeAccessories")}
-      />
-
-      {includeAccessories && (
-        <div className="mt-4">
-          <h4 className="font-medium mb-3">{t("selectAccessories")}</h4>
-          {accessoriesLoading ? (
-            <Spinner />
-          ) : variantsByType && Object.keys(variantsByType).length > 0 ? (
-            <div className="space-y-4">
-              {Object.entries(variantsByType).map(([type, typeVariants]) => (
-                <Collapse key={type} title={type} defaultOpen>
-                  <div className="grid grid-cols-1 gap-3">
-                    {typeVariants.map((variant) => {
-                      const selected = selectedVariants[variant.id] || {
-                        variantId: variant.id,
-                        quantity: 0,
-                      };
-                      return (
-                        <div
-                          key={variant.id}
-                          className="flex items-center justify-between p-3 border rounded-lg bg-gray-50 dark:bg-gray-800"
-                        >
-                          <div className="flex items-center space-x-3 flex-1">
-                            <div className="w-12 h-12 relative flex-shrink-0">
-                              {variant.imageUrl && !imageError[variant.id] ? (
-                                <Image
-                                  src={normalizeImageUrl(variant.imageUrl)}
-                                  alt={variant.name}
-                                  fill
-                                  className="object-cover rounded"
-                                  onError={() => handleImageError(variant.id)}
-                                />
-                              ) : (
-                                <div className="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded">
-                                  <Gamepad size={24} className="text-gray-400" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium truncate">{variant.name}</p>
-                              {variant.editionName && (
-                                <p className="text-xs text-gray-500 truncate">
-                                  {variant.editionName}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          <Counter
-                            value={selected.quantity}
-                            onIncrement={() =>
-                              handleQuantityChange(variant.id, selected.quantity + 1)
-                            }
-                            onDecrement={() =>
-                              handleQuantityChange(variant.id, selected.quantity - 1)
-                            }
-                            min={0}
-                            max={10}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                </Collapse>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500 dark:text-gray-400">{t("noAccessories")}</p>
-          )}
-        </div>
-      )}
+      <Collapse
+        title={t("includeAccessories")}
+        defaultOpen={false}
+        onToggle={handleAccessoriesToggle}
+      >
+        <AccessorySelector
+          variantsByType={variantsByType || {}}
+          selectedVariants={selectedVariants}
+          onQuantityChange={handleQuantityChange}
+          isLoading={accessoriesLoading}
+        />
+      </Collapse>
     </>
   );
 

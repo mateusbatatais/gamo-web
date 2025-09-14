@@ -344,6 +344,7 @@
     "extras": "Detalhes extras"
   },
   "PublicProfile": {
+    "noItemsLookingFor": "Este usuário ainda nao possui itens procurando troca",
     "viewMode": {
       "grid": "Grid",
       "compact": "Compacto",
@@ -472,7 +473,7 @@
     "platform": "Plataforma",
     "compatibleConsoles": "Consoles compatíveis",
     "noConsoles": "Nenhum console em sua coleção",
-    "includeAccessories": "Deseja incluir acessórios?",
+    "includeAccessories": "Adicionar acessorioss",
     "selectAccessories": "Selecione os acessórios",
     "noAccessories": "Nenhum acessório disponível para este console"
   },
