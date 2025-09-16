@@ -558,5 +558,21 @@
     "addToFavorites": "Adicionar aos favoritos",
     "removeFromFavorites": "Remover dos favoritos",
     "addToCollection": "Adicionar à coleção"
+  },
+  "DonationPhrases": {
+    "dropCoins": "Solte umas moedinhas igual no Mario",
+    "sponsorConsole": "Patrocine meu próximo console",
+    "sponsorGame": "Patrocine meu próximo game",
+    "supportQuest": "Apoie minha jornada com uma moedinha",
+    "stockInventory": "Alimente meu inventário",
+    "refillMana": "Recarregue minha barra de mana com um café",
+    "helpLevelUp": "Me ajude a upar de nível"
+  },
+  "Footer": {
+    "rightsReserved": "Todos os direitos reservados.",
+    "terms": "Termos",
+    "privacy": "Privacidade",
+    "contact": "Contato",
+    "about": "Sobre"
   }
 }

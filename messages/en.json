@@ -560,5 +560,21 @@
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
     "addToCollection": "Add to collection"
+  },
+  "DonationPhrases": {
+    "dropCoins": "Drop some coins like in Mario",
+    "sponsorConsole": "Sponsor my next console upgrade",
+    "sponsorGame": "Fuel my next game purchase",
+    "supportQuest": "Support my quest with a coin",
+    "stockInventory": "Stock up my inventory",
+    "refillMana": "Refill my mana bar with a coffee",
+    "helpLevelUp": "Help me level up"
+  },
+  "Footer": {
+    "rightsReserved": "All rights reserved.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "contact": "Contact",
+    "about": "About"
   }
 }
