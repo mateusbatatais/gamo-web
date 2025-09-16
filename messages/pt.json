@@ -5,6 +5,27 @@
     "email": "E-mail: {email}",
     "role": "Perfil: {role}"
   },
+  "DonationModal": {
+    "title": "Apoie o GAMO",
+    "subtitle": "Sua doação ajuda a manter a plataforma",
+    "paymentTitle": "Finalizar doação",
+    "paymentSubtitle": "Complete seus dados de pagamento",
+    "description": "Escolha um valor ou digite o valor que deseja doar. Qualquer valor é bem-vindo!",
+    "cancelButton": "Cancelar",
+    "processingButton": "Processando...",
+    "continueButton": "Continuar para pagamento",
+    "customAmountPlaceholder": "Outro valor",
+    "paymentSecurity": "Pagamento seguro com Stripe",
+    "paymentSecurityDescription": "Seus dados de pagamento são criptografados e processados com segurança.",
+    "backButton": "Alterar valor",
+    "successMessage": "Doação realizada com sucesso! Obrigado pelo apoio."
+  },
+  "StripePaymentForm": {
+    "donationAmount": "Valor da doação: R$ {amount}",
+    "cancelButton": "Cancelar",
+    "processingButton": "Processando...",
+    "donateButton": "Doar R$ {amount}"
+  },
   "common": {
     "logout": "Sair",
     "loading": "Carregando...",

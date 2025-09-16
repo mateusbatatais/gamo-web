@@ -5,6 +5,27 @@
     "email": "Email: {email}",
     "role": "Role: {role}"
   },
+  "DonationModal": {
+    "title": "Support GAMO",
+    "subtitle": "Your donation helps maintain the platform",
+    "paymentTitle": "Complete donation",
+    "paymentSubtitle": "Complete your payment details",
+    "description": "Choose an amount or enter the amount you wish to donate. Any amount is welcome!",
+    "cancelButton": "Cancel",
+    "processingButton": "Processing...",
+    "continueButton": "Continue to payment",
+    "customAmountPlaceholder": "Other amount",
+    "paymentSecurity": "Secure payment with Stripe",
+    "paymentSecurityDescription": "Your payment data is encrypted and processed securely.",
+    "backButton": "Change amount",
+    "successMessage": "Donation completed successfully! Thank you for your support."
+  },
+  "StripePaymentForm": {
+    "donationAmount": "Donation amount: R$ {amount}",
+    "cancelButton": "Cancel",
+    "processingButton": "Processing...",
+    "donateButton": "Donate R$ {amount}"
+  },
   "Breadcrumbs": {
     "game": "Game",
     "game-catalog": "Game Catalog",

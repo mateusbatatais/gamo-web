@@ -1,0 +1,173 @@
+// components/organisms/DonationModal/DonationModal.tsx
+"use client";
+
+import React, { useState } from "react";
+import { Dialog } from "@/components/atoms/Dialog/Dialog";
+import { Button } from "@/components/atoms/Button/Button";
+import { Input } from "@/components/atoms/Input/Input";
+import { Coffee, CreditCard, ArrowLeft } from "lucide-react";
+import { useModalUrl } from "@/hooks/useModalUrl";
+import { useDonation } from "@/hooks/useDonation";
+import { StripePaymentForm } from "@/components/organisms/StripePaymentForm/StripePaymentForm";
+import { Elements } from "@stripe/react-stripe-js";
+import { useStripe } from "@/contexts/StripeContext";
+import { useToast } from "@/contexts/ToastContext";
+import { useTranslations } from "next-intl";
+
+type DonationStep = "amount" | "payment";
+
+export function DonationModal() {
+  const t = useTranslations("DonationModal");
+  const { isOpen, closeModal } = useModalUrl("donation");
+  const [amount, setAmount] = useState("");
+  const [step, setStep] = useState<DonationStep>("amount");
+  const [paymentIntent, setPaymentIntent] = useState<{
+    clientSecret: string;
+    amount: number;
+  } | null>(null);
+  const { createDonation, isLoading } = useDonation();
+  const { stripe } = useStripe();
+  const { showToast } = useToast();
+
+  const handleAmountSubmit = async () => {
+    if (!amount || parseFloat(amount) <= 0) return;
+
+    const result = await createDonation({
+      amount: parseFloat(amount),
+      currency: "BRL",
+    });
+
+    if (result) {
+      setPaymentIntent({
+        clientSecret: result.clientSecret,
+        amount: result.amount,
+      });
+      setStep("payment");
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    showToast(t("successMessage"), "success");
+    closeModal();
+    setTimeout(() => {
+      setStep("amount");
+      setAmount("");
+      setPaymentIntent(null);
+    }, 1000);
+  };
+
+  const handleBackToAmount = () => {
+    setStep("amount");
+    setPaymentIntent(null);
+  };
+
+  const suggestedAmounts = [10, 50, 100, 200, 500];
+
+  return (
+    <Dialog
+      modalId="donation"
+      title={step === "amount" ? t("title") : t("paymentTitle")}
+      subtitle={step === "amount" ? t("subtitle") : t("paymentSubtitle")}
+      onClose={closeModal}
+      icon={<Coffee className="text-yellow-500" />}
+      size="md"
+      actionButtons={
+        step === "amount"
+          ? {
+              cancel: {
+                label: t("cancelButton"),
+                onClick: closeModal,
+              },
+              confirm: {
+                label: isLoading ? t("processingButton") : t("continueButton"),
+                onClick: handleAmountSubmit,
+                disabled: !amount || parseFloat(amount) <= 0 || isLoading,
+                loading: isLoading,
+              },
+            }
+          : undefined
+      }
+      open={isOpen}
+    >
+      <div className="space-y-4">
+        {step === "amount" ? (
+          <>
+            <p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
+
+            {/* Grid de valores sugeridos (3 colunas x 2 linhas) */}
+            <div className="grid grid-cols-3 gap-2">
+              {suggestedAmounts.map((suggestedAmount) => (
+                <Button
+                  key={suggestedAmount}
+                  variant={amount === suggestedAmount.toString() ? "primary" : "outline"}
+                  size="sm"
+                  onClick={() => setAmount(suggestedAmount.toString())}
+                  className="justify-center py-2"
+                >
+                  R$ {suggestedAmount}
+                </Button>
+              ))}
+              {/* Input personalizado na última célula */}
+              <Input
+                type="number"
+                min="1"
+                step="1"
+                placeholder={t("customAmountPlaceholder")}
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="text-center h-full"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+              <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+                <CreditCard size={16} />
+                <span className="text-sm font-medium">{t("paymentSecurity")}</span>
+              </div>
+              <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                {t("paymentSecurityDescription")}
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <Button
+              variant="transparent"
+              size="sm"
+              onClick={handleBackToAmount}
+              className="mb-2 flex items-center gap-1 text-gray-600 dark:text-gray-400"
+              icon={<ArrowLeft size={16} />}
+            >
+              {t("backButton")}
+            </Button>
+
+            {stripe && paymentIntent && (
+              <Elements
+                stripe={stripe}
+                options={{
+                  clientSecret: paymentIntent.clientSecret,
+                  appearance: {
+                    theme: "stripe",
+                    variables: {
+                      colorPrimary: "#2563eb",
+                      colorBackground: "#f9fafb",
+                      colorText: "#374151",
+                      fontFamily: "Inter, system-ui, sans-serif",
+                    },
+                  },
+                }}
+              >
+                <StripePaymentForm
+                  amount={paymentIntent.amount}
+                  onSuccess={handlePaymentSuccess}
+                  onCancel={handleBackToAmount}
+                />
+              </Elements>
+            )}
+          </>
+        )}
+      </div>
+    </Dialog>
+  );
+}

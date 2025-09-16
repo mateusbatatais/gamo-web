@@ -6,6 +6,7 @@ import { ToastProvider } from "./ToastContext";
 import { BreadcrumbsProvider } from "./BreadcrumbsContext";
 import { PendingActionProvider } from "./PendingActionContext";
 import { QueryProvider } from "./QueryProvider";
+import { StripeProvider } from "./StripeContext";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -13,7 +14,9 @@ export function Providers({ children }: { children: ReactNode }) {
       <AuthProvider>
         <BreadcrumbsProvider>
           <ToastProvider>
-            <PendingActionProvider>{children}</PendingActionProvider>
+            <PendingActionProvider>
+              <StripeProvider>{children}</StripeProvider>
+            </PendingActionProvider>
           </ToastProvider>
         </BreadcrumbsProvider>
       </AuthProvider>

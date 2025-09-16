@@ -8,6 +8,7 @@ import { getTranslations } from "next-intl/server";
 import { ReactNode } from "react";
 import { Providers } from "@/contexts/Providers";
 import { ThemeProvider } from "next-themes";
+import { DonationModal } from "@/components/organisms/DonationModal/DonationModal";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -99,6 +100,7 @@ export default async function LocaleLayout({
           <NextIntlClientProvider>
             <Providers>
               <LogRocketInit />
+              <DonationModal />
               {children}
             </Providers>
           </NextIntlClientProvider>
