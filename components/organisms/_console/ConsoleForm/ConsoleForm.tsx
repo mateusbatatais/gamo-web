@@ -211,10 +211,10 @@ export const ConsoleForm = ({
 
   const variantsByType = accessoryVariants?.reduce(
     (acc, variant) => {
-      if (!acc[variant.type]) {
-        acc[variant.type] = [];
+      if (!acc[variant.type as string]) {
+        acc[variant.type as string] = [];
       }
-      acc[variant.type].push(variant);
+      acc[variant.type as string].push(variant);
       return acc;
     },
     {} as Record<string, typeof accessoryVariants>,
