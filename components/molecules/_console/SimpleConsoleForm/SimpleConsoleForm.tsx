@@ -102,10 +102,10 @@ export const SimpleConsoleForm = ({
 
   const variantsByType = accessoryVariants?.reduce(
     (acc, variant) => {
-      if (!acc[variant.type]) {
-        acc[variant.type] = [];
+      if (!acc[variant.type || ""]) {
+        acc[variant.type || ""] = [];
       }
-      acc[variant.type].push(variant);
+      acc[variant.type || ""].push(variant);
       return acc;
     },
     {} as Record<string, typeof accessoryVariants>,

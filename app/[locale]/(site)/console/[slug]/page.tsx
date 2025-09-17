@@ -16,6 +16,7 @@ import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useFavorite } from "@/hooks/useFavorite";
 import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 import { SkinDetail } from "@/@types/catalog.types";
+import ConsoleAccessories from "@/components/molecules/_console/ConsoleAccessories/ConsoleAccessories";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -133,6 +134,8 @@ export default function ConsoleDetailPage() {
           </Card>
         )}
       </section>
+
+      <ConsoleAccessories consoleId={data.consoleId} />
 
       <Card className="bg-gray-50 dark:bg-gray-800">
         <h2 className="text-2xl font-bold mb-4">Mercado</h2>

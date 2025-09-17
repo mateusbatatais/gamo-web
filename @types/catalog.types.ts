@@ -123,4 +123,5 @@ export interface AccessoryVariantDetail {
   releaseDate?: string;
   material?: string;
   finish?: string;
+  type?: string;
 }

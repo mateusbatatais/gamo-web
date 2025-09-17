@@ -325,7 +325,10 @@
     "releaseDates": "Release Dates",
     "specifications": "Technical Specifications",
     "storageAndMedia": "Storage and Media",
-    "funFactsAbout": "Fun Facts about the {console}"
+    "funFactsAbout": "Fun Facts about the {console}",
+    "viewAccessories": "View Accessories",
+    "noAccessoriesAvailable": "No accessories available",
+    "failedToLoadAccessories": "Failed to load accessories"
   },
   "AccessoryDetails": {
     "catalog": "Accessory Catalog",

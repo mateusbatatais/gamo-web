@@ -323,7 +323,10 @@
     "releaseDates": "Datas de Lançamento",
     "specifications": "Especificações Técnicas",
     "storageAndMedia": "Armazenamento e Mídia",
-    "funFactsAbout": "Curiosidades sobre  {console}"
+    "funFactsAbout": "Curiosidades sobre  {console}",
+    "viewAccessories": "Ver acessórios deste console",
+    "noAccessoriesAvailable": "Nenhum acessório disponível",
+    "failedToLoadAccessories": "Falha ao carregar acessórios"
   },
   "AccessoryDetails": {
     "catalog": "Catálogo",
