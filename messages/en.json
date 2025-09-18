@@ -18,7 +18,16 @@
     "paymentSecurity": "Secure payment with Stripe",
     "paymentSecurityDescription": "Your payment data is encrypted and processed securely.",
     "backButton": "Change amount",
-    "successMessage": "Donation completed successfully! Thank you for your support."
+    "successMessage": "Donation completed successfully! Thank you for your support.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "your@email.com",
+    "zipCodeLabel": "Zip Code",
+    "zipCodePlaceholder": "00000-000",
+    "zipCodeHelp": "Provide your zip code for receipt purposes",
+    "emailRequired": "Please provide your email",
+    "invalidEmail": "Please provide a valid email",
+    "zipCodeRequired": "Please provide your zip code",
+    "invalidZipCode": "Please provide a valid zip code with 8 digits"
   },
   "StripePaymentForm": {
     "donationAmount": "Donation amount: R$ {amount}",

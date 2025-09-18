@@ -18,7 +18,16 @@
     "paymentSecurity": "Pagamento seguro com Stripe",
     "paymentSecurityDescription": "Seus dados de pagamento são criptografados e processados com segurança.",
     "backButton": "Alterar valor",
-    "successMessage": "Doação realizada com sucesso! Obrigado pelo apoio."
+    "successMessage": "Doação realizada com sucesso! Obrigado pelo apoio.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "seu@email.com",
+    "zipCodeLabel": "CEP",
+    "zipCodePlaceholder": "00000-000",
+    "zipCodeHelp": "Informe seu CEP para fins de emissão de recibo",
+    "emailRequired": "Por favor, informe seu email",
+    "invalidEmail": "Por favor, informe um email válido",
+    "zipCodeRequired": "Por favor, informe seu CEP",
+    "invalidZipCode": "Por favor, informe um CEP válido com 8 dígitos"
   },
   "StripePaymentForm": {
     "donationAmount": "Valor da doação: R$ {amount}",

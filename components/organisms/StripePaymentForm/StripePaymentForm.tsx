@@ -5,20 +5,23 @@ import React from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { Button } from "@/components/atoms/Button/Button";
 import { useTranslations } from "next-intl";
-import { useAuth } from "@/contexts/AuthContext";
 
 interface StripePaymentFormProps {
   amount: number;
   onSuccess: () => void;
   onCancel: () => void;
+  isProcessing: boolean;
 }
 
-export function StripePaymentForm({ amount, onSuccess, onCancel }: StripePaymentFormProps) {
+export function StripePaymentForm({
+  amount,
+  onSuccess,
+  onCancel,
+  isProcessing,
+}: StripePaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
-  const [isProcessing, setIsProcessing] = React.useState(false);
   const t = useTranslations("StripePaymentForm");
-  const { user } = useAuth();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -27,9 +30,7 @@ export function StripePaymentForm({ amount, onSuccess, onCancel }: StripePayment
       return;
     }
 
-    setIsProcessing(true);
-
-    const { error } = await stripe.confirmPayment({
+    const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/donation/success`,
@@ -40,21 +41,25 @@ export function StripePaymentForm({ amount, onSuccess, onCancel }: StripePayment
     if (error) {
       console.error("Erro no pagamento:", error);
       alert(error.message);
-    } else {
+    } else if (paymentIntent && paymentIntent.status === "succeeded") {
       onSuccess();
     }
-
-    setIsProcessing(false);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          {t("donationAmount", { amount: (amount / 100).toFixed(2) })}
+        </h3>
+      </div>
+
       <PaymentElement
         options={{
           layout: "tabs",
           defaultValues: {
             billingDetails: {
-              email: user?.email,
+              email: "",
             },
           },
         }}
@@ -70,7 +75,9 @@ export function StripePaymentForm({ amount, onSuccess, onCancel }: StripePayment
           disabled={!stripe || isProcessing}
           loading={isProcessing}
         >
-          {isProcessing ? t("processingButton") : t("donateButton", { amount: amount.toFixed(2) })}
+          {isProcessing
+            ? t("processingButton")
+            : t("donateButton", { amount: (amount / 100).toFixed(2) })}
         </Button>
       </div>
     </form>

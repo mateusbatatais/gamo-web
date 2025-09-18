@@ -15,6 +15,7 @@ interface AuthUser {
   profileImage: string;
   hasPassword: boolean;
   description?: string;
+  zipCode?: string;
 }
 
 interface AuthContextType {

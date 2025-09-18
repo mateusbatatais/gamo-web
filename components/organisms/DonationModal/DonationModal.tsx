@@ -1,7 +1,7 @@
 // components/organisms/DonationModal/DonationModal.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/atoms/Input/Input";
@@ -13,6 +13,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { useStripe } from "@/contexts/StripeContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/contexts/AuthContext";
 
 type DonationStep = "amount" | "payment";
 
@@ -20,40 +21,80 @@ export function DonationModal() {
   const t = useTranslations("DonationModal");
   const { isOpen, closeModal } = useModalUrl("donation");
   const [amount, setAmount] = useState("");
+  const [email, setEmail] = useState("");
+  const [zipCode, setZipCode] = useState("");
   const [step, setStep] = useState<DonationStep>("amount");
   const [paymentIntent, setPaymentIntent] = useState<{
     clientSecret: string;
     amount: number;
+    id: string;
   } | null>(null);
-  const { createDonation, isLoading } = useDonation();
+  const { createDonation, confirmDonation, isLoading, isProcessingPayment } = useDonation();
   const { stripe } = useStripe();
   const { showToast } = useToast();
+  const { user } = useAuth();
+
+  // Preencher email se o usuário estiver logado
+  useEffect(() => {
+    if (user?.email) {
+      setEmail(user.email);
+    }
+  }, [user]);
 
   const handleAmountSubmit = async () => {
     if (!amount || parseFloat(amount) <= 0) return;
 
+    // Validações
+    if (!user && !email) {
+      showToast(t("emailRequired"), "danger");
+      return;
+    }
+
+    if (!user && email && !/\S+@\S+\.\S+/.test(email)) {
+      showToast(t("invalidEmail"), "danger");
+      return;
+    }
+
+    if (!zipCode) {
+      showToast(t("zipCodeRequired"), "danger");
+      return;
+    }
+
+    // Validar formato do CEP (apenas números, 8 dígitos)
+    const zipCodeRegex = /^\d{8}$/;
+    if (!zipCodeRegex.test(zipCode.replace(/\D/g, ""))) {
+      showToast(t("invalidZipCode"), "danger");
+      return;
+    }
+
     const result = await createDonation({
       amount: parseFloat(amount),
       currency: "BRL",
+      email: user ? user.email : email,
+      zipCode: zipCode.replace(/\D/g, ""),
     });
 
     if (result) {
       setPaymentIntent({
         clientSecret: result.clientSecret,
         amount: result.amount,
+        id: result.paymentIntentId,
       });
       setStep("payment");
     }
   };
 
-  const handlePaymentSuccess = () => {
-    showToast(t("successMessage"), "success");
-    closeModal();
-    setTimeout(() => {
-      setStep("amount");
-      setAmount("");
-      setPaymentIntent(null);
-    }, 1000);
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
+    const success = await confirmDonation({ paymentIntentId });
+
+    if (success) {
+      setTimeout(() => {
+        closeModal();
+        setStep("amount");
+        setAmount("");
+        setPaymentIntent(null);
+      }, 2000);
+    }
   };
 
   const handleBackToAmount = () => {
@@ -62,6 +103,19 @@ export function DonationModal() {
   };
 
   const suggestedAmounts = [10, 50, 100, 200, 500];
+
+  // Determinar se deve mostrar campos de email e CEP
+  const showEmailField = !user;
+  const showZipCodeField = !user || (user && !user.zipCode);
+
+  // Formatar CEP enquanto digita
+  const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length > 5) {
+      value = value.substring(0, 5) + "-" + value.substring(5, 8);
+    }
+    setZipCode(value);
+  };
 
   return (
     <Dialog
@@ -94,7 +148,7 @@ export function DonationModal() {
           <>
             <p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
 
-            {/* Grid de valores sugeridos (3 colunas x 2 linhas) */}
+            {/* Grid de valores sugeridos */}
             <div className="grid grid-cols-3 gap-2">
               {suggestedAmounts.map((suggestedAmount) => (
                 <Button
@@ -107,17 +161,64 @@ export function DonationModal() {
                   R$ {suggestedAmount}
                 </Button>
               ))}
-              {/* Input personalizado na última célula */}
-              <Input
-                type="number"
-                min="1"
-                step="1"
-                placeholder={t("customAmountPlaceholder")}
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                className="text-center h-full"
-                disabled={isLoading}
-              />
+              {/* Input personalizado */}
+              <div className="col-span-3 md:col-span-1">
+                <Input
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder={t("customAmountPlaceholder")}
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  className="text-center h-full"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            {/* Campos de email e CEP */}
+            <div className="space-y-3">
+              {showEmailField && (
+                <div className="space-y-2">
+                  <label
+                    htmlFor="donation-email"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    {t("emailLabel")}
+                  </label>
+                  <Input
+                    id="donation-email"
+                    type="email"
+                    placeholder={t("emailPlaceholder")}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={isLoading}
+                    required
+                  />
+                </div>
+              )}
+
+              {showZipCodeField && (
+                <div className="space-y-2">
+                  <label
+                    htmlFor="donation-zipcode"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    {t("zipCodeLabel")}
+                  </label>
+                  <Input
+                    id="donation-zipcode"
+                    type="text"
+                    placeholder={t("zipCodePlaceholder")}
+                    value={zipCode}
+                    onChange={handleZipCodeChange}
+                    disabled={isLoading}
+                    maxLength={9}
+                    required
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{t("zipCodeHelp")}</p>
+                </div>
+              )}
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
@@ -137,8 +238,8 @@ export function DonationModal() {
               size="sm"
               onClick={handleBackToAmount}
               className="mb-2 flex items-center gap-1 text-gray-600 dark:text-gray-400"
-              icon={<ArrowLeft size={16} />}
             >
+              <ArrowLeft size={16} />
               {t("backButton")}
             </Button>
 
@@ -160,8 +261,9 @@ export function DonationModal() {
               >
                 <StripePaymentForm
                   amount={paymentIntent.amount}
-                  onSuccess={handlePaymentSuccess}
+                  onSuccess={() => handlePaymentSuccess(paymentIntent.id)}
                   onCancel={handleBackToAmount}
+                  isProcessing={isProcessingPayment}
                 />
               </Elements>
             )}
