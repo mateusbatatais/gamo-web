@@ -14,15 +14,13 @@ import { useStripe } from "@/contexts/StripeContext";
 import { useToast } from "@/contexts/ToastContext";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "next-themes";
 
 type DonationStep = "amount" | "payment";
 
 export function DonationModal() {
-  const [isClient, setIsClient] = useState(false); // Novo estado para controle de renderização
-
-  useEffect(() => {
-    setIsClient(true); // Marca que estamos no cliente após o mount
-  }, []);
+  const [isClient, setIsClient] = useState(false);
+  const { resolvedTheme } = useTheme();
   const t = useTranslations("DonationModal");
   const { isOpen, closeModal } = useModalUrl("donation");
   const [amount, setAmount] = useState("");
@@ -88,6 +86,9 @@ export function DonationModal() {
       setStep("payment");
     }
   };
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
     const success = await confirmDonation({ paymentIntentId });
@@ -108,12 +109,9 @@ export function DonationModal() {
   };
 
   const suggestedAmounts = [10, 50, 100, 200, 500];
-
-  // Determinar se deve mostrar campos de email e CEP
   const showEmailField = !user;
   const showZipCodeField = !user || (user && !user.zipCode);
 
-  // Formatar CEP enquanto digita
   const handleZipCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, "");
     if (value.length > 5) {
@@ -157,7 +155,6 @@ export function DonationModal() {
           <>
             <p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
 
-            {/* Grid de valores sugeridos */}
             <div className="grid grid-cols-3 gap-2">
               {suggestedAmounts.map((suggestedAmount) => (
                 <Button
@@ -170,7 +167,6 @@ export function DonationModal() {
                   R$ {suggestedAmount}
                 </Button>
               ))}
-              {/* Input personalizado */}
               <div className="col-span-3 md:col-span-1">
                 <Input
                   type="number"
@@ -185,7 +181,6 @@ export function DonationModal() {
               </div>
             </div>
 
-            {/* Campos de email e CEP */}
             <div className="space-y-3">
               {showEmailField && (
                 <div className="space-y-2">
@@ -247,8 +242,8 @@ export function DonationModal() {
               size="sm"
               onClick={handleBackToAmount}
               className="mb-2 flex items-center gap-1 text-gray-600 dark:text-gray-400"
+              icon={<ArrowLeft size={16} />}
             >
-              <ArrowLeft size={16} />
               {t("backButton")}
             </Button>
 
@@ -258,15 +253,15 @@ export function DonationModal() {
                 options={{
                   clientSecret: paymentIntent.clientSecret,
                   appearance: {
-                    theme: "stripe",
+                    theme: resolvedTheme === "dark" ? "night" : "stripe",
                     variables: {
-                      colorPrimary: "#2563eb",
-                      colorBackground: "#f9fafb",
-                      colorText: "#374151",
-                      fontFamily: "Inter, system-ui, sans-serif",
+                      colorBackground: "transparent",
+                      colorText: resolvedTheme === "dark" ? "#ffffff" : "#000000",
+                      colorDanger: "#dc2626",
                     },
                   },
                 }}
+                key={resolvedTheme}
               >
                 <StripePaymentForm
                   amount={paymentIntent.amount}

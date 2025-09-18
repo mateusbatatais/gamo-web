@@ -48,12 +48,6 @@ export function StripePaymentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-          {t("donationAmount", { amount: (amount / 100).toFixed(2) })}
-        </h3>
-      </div>
-
       <PaymentElement
         options={{
           layout: "tabs",
@@ -75,9 +69,7 @@ export function StripePaymentForm({
           disabled={!stripe || isProcessing}
           loading={isProcessing}
         >
-          {isProcessing
-            ? t("processingButton")
-            : t("donateButton", { amount: (amount / 100).toFixed(2) })}
+          {isProcessing ? t("processingButton") : t("donateButton", { amount: amount.toFixed(2) })}
         </Button>
       </div>
     </form>
