@@ -2,13 +2,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useState, useEffect } from "react";
 
 export function useRandomDonationPhrase() {
   const t = useTranslations("DonationPhrases");
+  const [randomPhrase, setRandomPhrase] = useState("");
 
-  const phraseKeys = useMemo(
-    () => [
+  useEffect(() => {
+    const phraseKeys = [
       "dropCoins",
       "sponsorConsole",
       "sponsorGame",
@@ -16,12 +17,12 @@ export function useRandomDonationPhrase() {
       "stockInventory",
       "refillMana",
       "helpLevelUp",
-    ],
-    [],
-  );
+    ];
 
-  return useMemo(() => {
+    // Gera um índice aleatório baseado em um seed consistente
     const randomIndex = Math.floor(Math.random() * phraseKeys.length);
-    return t(phraseKeys[randomIndex]);
-  }, [t, phraseKeys]);
+    setRandomPhrase(t(phraseKeys[randomIndex]));
+  }, [t]);
+
+  return randomPhrase;
 }

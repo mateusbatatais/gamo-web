@@ -18,6 +18,11 @@ import { useAuth } from "@/contexts/AuthContext";
 type DonationStep = "amount" | "payment";
 
 export function DonationModal() {
+  const [isClient, setIsClient] = useState(false); // Novo estado para controle de renderização
+
+  useEffect(() => {
+    setIsClient(true); // Marca que estamos no cliente após o mount
+  }, []);
   const t = useTranslations("DonationModal");
   const { isOpen, closeModal } = useModalUrl("donation");
   const [amount, setAmount] = useState("");
@@ -116,6 +121,10 @@ export function DonationModal() {
     }
     setZipCode(value);
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <Dialog

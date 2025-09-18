@@ -7,11 +7,17 @@ import { Button } from "@/components/atoms/Button/Button";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { useTranslations } from "next-intl";
 import { useRandomDonationPhrase } from "@/hooks/useRandomDonationPhrase";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
   const { openModal } = useModalUrl("donation");
   const t = useTranslations("Footer");
   const randomPhrase = useRandomDonationPhrase();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <footer className="bg-gray-800 text-gray-200 dark:bg-gray-900 dark:text-gray-400">
@@ -46,16 +52,19 @@ export default function Footer() {
             {t("about")}
           </Link>
         </div>
-        <Button
-          variant="transparent"
-          size="sm"
-          onClick={openModal}
-          className="text-yellow-400 hover:text-yellow-300 dark:text-yellow-300 dark:hover:text-yellow-200 flex items-center gap-1"
-          title={randomPhrase}
-          icon={<CircleDollarSignIcon size={20} />}
-        >
-          {randomPhrase}
-        </Button>
+
+        {isClient && (
+          <Button
+            variant="transparent"
+            size="sm"
+            onClick={openModal}
+            className="text-yellow-400 hover:text-yellow-300 dark:text-yellow-300 dark:hover:text-yellow-200 flex items-center gap-1"
+            title={randomPhrase}
+            icon={<CircleDollarSignIcon size={20} />}
+          >
+            {randomPhrase}
+          </Button>
+        )}
       </div>
     </footer>
   );
