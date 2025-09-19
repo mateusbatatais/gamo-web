@@ -12,6 +12,7 @@ interface AuthUser {
   slug: string;
   role: string;
   email: string;
+  phone: string | null;
   profileImage: string;
   hasPassword: boolean;
   description?: string;

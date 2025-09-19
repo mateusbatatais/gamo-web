@@ -32,6 +32,7 @@ export function DonationModal() {
     amount: number;
     id: string;
   } | null>(null);
+
   const { createDonation, confirmDonation, isLoading, isProcessingPayment } = useDonation();
   const { stripe } = useStripe();
   const { showToast } = useToast();
@@ -39,9 +40,7 @@ export function DonationModal() {
 
   // Preencher email se o usuário estiver logado
   useEffect(() => {
-    if (user?.email) {
-      setEmail(user.email);
-    }
+    if (user?.email) setEmail(user.email);
   }, [user]);
 
   const handleAmountSubmit = async () => {
@@ -75,6 +74,7 @@ export function DonationModal() {
       currency: "BRL",
       email: user ? user.email : email,
       zipCode: zipCode.replace(/\D/g, ""),
+      // OBS: se quiser mandar name/phone/country para o backend, ampliar o schema depois
     });
 
     if (result) {
@@ -86,13 +86,13 @@ export function DonationModal() {
       setStep("payment");
     }
   };
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const handlePaymentSuccess = async (paymentIntentId: string) => {
     const success = await confirmDonation({ paymentIntentId });
-
     if (success) {
       setTimeout(() => {
         closeModal();
@@ -120,9 +120,7 @@ export function DonationModal() {
     setZipCode(value);
   };
 
-  if (!isClient) {
-    return null;
-  }
+  if (!isClient) return null;
 
   return (
     <Dialog
@@ -270,6 +268,9 @@ export function DonationModal() {
                   isProcessing={isProcessingPayment}
                   billing={{
                     email: (user?.email ?? email) || "",
+                    name: user?.name || undefined,
+                    phone: user?.phone || undefined,
+                    country: "BR", // se você guardar no perfil, troque para user?.country
                     postalCode: zipCode.replace(/\D/g, ""),
                   }}
                 />

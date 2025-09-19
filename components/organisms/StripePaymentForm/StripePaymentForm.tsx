@@ -6,12 +6,20 @@ import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
 import { Button } from "@/components/atoms/Button/Button";
 import { useTranslations } from "next-intl";
 
+type StripeBilling = {
+  email?: string;
+  name?: string;
+  phone?: string;
+  country?: string;
+  postalCode?: string;
+};
+
 interface StripePaymentFormProps {
   amount: number;
   onSuccess: () => void;
   onCancel: () => void;
   isProcessing: boolean;
-  billing?: { email?: string; postalCode?: string; name?: string };
+  billing?: StripeBilling;
 }
 
 export function StripePaymentForm({
@@ -27,20 +35,25 @@ export function StripePaymentForm({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!stripe || !elements) return;
 
-    if (!stripe || !elements) {
-      return;
-    }
+    const billingAddress =
+      billing?.country || billing?.postalCode
+        ? {
+            country: billing?.country, // ex: "BR"
+            postal_code: billing?.postalCode,
+          }
+        : undefined;
 
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${window.location.origin}/donation/success`,
         payment_method_data: {
           billing_details: {
             email: billing?.email,
-            address: { postal_code: billing?.postalCode },
             name: billing?.name,
+            phone: billing?.phone,
+            address: billingAddress,
           },
         },
       },
@@ -50,7 +63,10 @@ export function StripePaymentForm({
     if (error) {
       console.error("Erro no pagamento:", error);
       alert(error.message);
-    } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      return;
+    }
+
+    if (paymentIntent && paymentIntent.status === "succeeded") {
       onSuccess();
     }
   };
@@ -63,8 +79,12 @@ export function StripePaymentForm({
           defaultValues: {
             billingDetails: {
               email: billing?.email ?? "",
-              address: { postal_code: billing?.postalCode },
               name: billing?.name,
+              phone: billing?.phone,
+              address: {
+                country: billing?.country,
+                postal_code: billing?.postalCode,
+              },
             },
           },
         }}
