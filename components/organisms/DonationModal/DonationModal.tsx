@@ -268,6 +268,10 @@ export function DonationModal() {
                   onSuccess={() => handlePaymentSuccess(paymentIntent.id)}
                   onCancel={handleBackToAmount}
                   isProcessing={isProcessingPayment}
+                  billing={{
+                    email: (user?.email ?? email) || "",
+                    postalCode: zipCode.replace(/\D/g, ""),
+                  }}
                 />
               </Elements>
             )}

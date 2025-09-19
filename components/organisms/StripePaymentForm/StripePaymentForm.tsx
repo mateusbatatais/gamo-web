@@ -11,6 +11,7 @@ interface StripePaymentFormProps {
   onSuccess: () => void;
   onCancel: () => void;
   isProcessing: boolean;
+  billing?: { email?: string; postalCode?: string; name?: string };
 }
 
 export function StripePaymentForm({
@@ -18,6 +19,7 @@ export function StripePaymentForm({
   onSuccess,
   onCancel,
   isProcessing,
+  billing,
 }: StripePaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
@@ -34,6 +36,13 @@ export function StripePaymentForm({
       elements,
       confirmParams: {
         return_url: `${window.location.origin}/donation/success`,
+        payment_method_data: {
+          billing_details: {
+            email: billing?.email,
+            address: { postal_code: billing?.postalCode },
+            name: billing?.name,
+          },
+        },
       },
       redirect: "if_required",
     });
@@ -53,7 +62,9 @@ export function StripePaymentForm({
           layout: "tabs",
           defaultValues: {
             billingDetails: {
-              email: "",
+              email: billing?.email ?? "",
+              address: { postal_code: billing?.postalCode },
+              name: billing?.name,
             },
           },
         }}
