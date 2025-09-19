@@ -463,7 +463,8 @@
     "consolesLookingFor": "Consoles Looking For",
     "gamesLookingFor": "Games Looking For",
     "totalConsoles": "Total Consoles",
-    "TotalAccessories": "Total Accessories"
+    "TotalAccessories": "Total Accessories",
+    "addToCollection": "Add item to collection"
   },
   "TradeForm": {
     "mainPhoto": "Main photo",
@@ -588,5 +589,13 @@
     "privacy": "Privacy",
     "contact": "Contact",
     "about": "About"
+  },
+  "AddConsole": {
+    "title": "Adicionar Console à Coleção",
+    "back": "Voltar",
+    "selectBrand": "Selecione uma marca",
+    "selectVariant": "Selecione um modelo",
+    "selectSkin": "Selecione uma edição (opcional)",
+    "defaultSkin": "Edição padrão"
   }
 }

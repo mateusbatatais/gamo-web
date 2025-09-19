@@ -1,3 +1,5 @@
+"use client";
+
 // components/organisms/PublicProfile/PublicProfileHeader/PublicProfileHeader.tsx
 import React from "react";
 import { Avatar } from "@/components/atoms/Avatar/Avatar";
@@ -5,7 +7,9 @@ import { PublicUserProfile } from "@/@types/auth.types";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/atoms/Badge/Badge";
-
+import { Button } from "@/components/atoms/Button/Button";
+import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
+import { Gamepad, Joystick, Gamepad2, Phone } from "lucide-react";
 interface PublicProfileHeaderProps {
   profile: PublicUserProfile;
 }
@@ -13,6 +17,26 @@ interface PublicProfileHeaderProps {
 export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
   const t = useTranslations("PublicProfile");
 
+  const collectionItems = [
+    {
+      id: "consoles",
+      label: t("catalog.consoles"),
+      icon: <Gamepad size={16} />,
+      href: "/user/collection/consoles/add",
+    },
+    {
+      id: "accessories",
+      label: t("catalog.accessories"),
+      icon: <Joystick size={16} />,
+      href: "/user/collection/accessory/add/",
+    },
+    {
+      id: "games",
+      label: t("catalog.games"),
+      icon: <Gamepad2 size={16} />,
+      href: "/user/collection/game/add/",
+    },
+  ];
   return (
     <div className="flex flex-col md:flex-row items-start gap-6">
       <div className="flex-shrink-0">
@@ -54,17 +78,16 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
             </div>
           </div>
 
-          {/* <div className="flex flex-wrap gap-2">
-            <Button variant="primary" size="sm">
-              Seguir
-            </Button>
-            <Button variant="outline" size="sm">
-              Mensagem
-            </Button>
-            <Button variant="transparent" size="sm">
-              Compartilhar
-            </Button>
-          </div> */}
+          <div className="flex flex-wrap gap-2">
+            <Dropdown
+              label={t("addToCollection")}
+              items={collectionItems}
+              menuProps={{
+                className: "mt-2",
+              }}
+            />
+            <Button variant="transparent" size="sm" icon={<Phone />}></Button>
+          </div>
         </div>
 
         {/* Badges */}
