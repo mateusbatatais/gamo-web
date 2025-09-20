@@ -590,6 +590,7 @@
   },
   "AddConsole": {
     "title": "Adicionar Console à Coleção",
+    "formTitle": "Detalhes do Console",
     "back": "Voltar",
     "selectBrand": "Selecione uma marca",
     "selectVariant": "Selecione um modelo",

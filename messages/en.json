@@ -591,11 +591,12 @@
     "about": "About"
   },
   "AddConsole": {
-    "title": "Adicionar Console à Coleção",
-    "back": "Voltar",
-    "selectBrand": "Selecione uma marca",
-    "selectVariant": "Selecione um modelo",
-    "selectSkin": "Selecione uma edição ",
-    "defaultSkin": "Edição padrão"
+    "title": "Add Console to Collection",
+    "formTitle": "Console Details",
+    "back": "Back",
+    "selectBrand": "Select a brand",
+    "selectVariant": "Select a model",
+    "selectSkin": "Select a skin",
+    "defaultSkin": "Default skin"
   }
 }

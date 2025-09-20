@@ -1,7 +1,7 @@
 // app/[locale]/profile/collection/consoles/add/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useConsoles } from "@/hooks/useConsoles";
@@ -15,6 +15,7 @@ import useConsoleDetails from "@/hooks/useConsoleDetails";
 import { ConsoleForm } from "@/components/organisms/_console/ConsoleForm/ConsoleForm";
 import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
+import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 
 type Step = "brand" | "variant" | "skin" | "form";
 
@@ -104,6 +105,7 @@ export default function AddConsolePage() {
   const params = useParams();
   const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
   const t = useTranslations("AddConsole");
+  const { setItems } = useBreadcrumbs();
 
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [selectedVariant, setSelectedVariant] = useState<ConsoleVariant | null>(null);
@@ -122,6 +124,17 @@ export default function AddConsolePage() {
     selectedVariant?.slug || "",
     locale || "pt",
   );
+
+  useEffect(() => {
+    setItems([
+      { label: user?.slug || "", href: `/user/${user?.slug}` },
+      {
+        label: t("title"),
+      },
+    ]);
+
+    return () => setItems([]);
+  }, [setItems, t, user]);
 
   const handleBrandSelect = (brandSlug: string) => {
     setSelectedBrand(brandSlug);
@@ -185,7 +198,7 @@ export default function AddConsolePage() {
           {selectedBrand && (
             <SelectionSection title={t("selectVariant")} isSelected={currentStep === "variant"}>
               {variantsLoading ? (
-                <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                   {[...Array(8)].map((_, i) => (
                     <Card key={i} className="p-0 overflow-hidden">
                       <Skeleton className="h-32 w-full" animated />
@@ -197,7 +210,7 @@ export default function AddConsolePage() {
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                   {variants?.items.map((variant) => (
                     <SelectableItem
                       key={variant.id}
@@ -216,7 +229,7 @@ export default function AddConsolePage() {
                           />
                         </div>
                         <div className="p-2">
-                          <p className="text-xs text-gray-600 dark:text-gray-400">
+                          <p className="text-[0.5rem] text-gray-600 dark:text-gray-400">
                             {variant.consoleName} ({variant.name})
                           </p>
                         </div>
@@ -232,7 +245,7 @@ export default function AddConsolePage() {
           {selectedVariant && (
             <SelectionSection title={t("selectSkin")} isSelected={currentStep === "skin"}>
               {detailsLoading ? (
-                <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                   {[...Array(10)].map((_, i) => (
                     <Card key={i} className="p-0 overflow-hidden">
                       <Skeleton className="h-24 w-full" animated />
@@ -245,7 +258,7 @@ export default function AddConsolePage() {
               ) : (
                 <>
                   {variantDetails?.skins && variantDetails.skins.length > 0 && (
-                    <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                    <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                       {variantDetails.skins.map((skin) => (
                         <SelectableItem
                           key={skin.id}
@@ -264,7 +277,7 @@ export default function AddConsolePage() {
                               />
                             </div>
                             <div className="p-2">
-                              <p className="font-medium text-[0.2rem] text-gray-900 dark:text-white line-clamp-2">
+                              <p className="font-medium text-[0.5rem] text-gray-900 dark:text-white line-clamp-2">
                                 {skin.name}
                               </p>
                             </div>
