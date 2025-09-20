@@ -15,7 +15,8 @@ export const SimpleCollapse = ({ title, children, defaultOpen = false }: SimpleC
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <button
-        className="flex items-center justify-between w-full py-3 text-left font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 px-2 rounded-md"
+        type="button"
+        className="flex cursor-pointer items-center justify-between w-full py-3 text-left font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 px-2 rounded-md"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span>{title}</span>

@@ -14,6 +14,7 @@ import useBrands from "@/hooks/filters/useBrands";
 import useConsoleDetails from "@/hooks/useConsoleDetails";
 import { ConsoleForm } from "@/components/organisms/_console/ConsoleForm/ConsoleForm";
 import { Card } from "@/components/atoms/Card/Card";
+import { useAuth } from "@/contexts/AuthContext";
 
 type Step = "brand" | "variant" | "skin" | "form";
 
@@ -49,7 +50,7 @@ function SelectableItem({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-md ${className} ${
+      className={`w-full cursor-pointer text-left transition-all focus:outline-none rounded-md ${className} ${
         isSelected
           ? "ring-2 ring-primary-500 dark:ring-primary-400 bg-primary-50 dark:bg-primary-900/20"
           : "hover:bg-gray-100 dark:hover:bg-gray-800"
@@ -60,7 +61,46 @@ function SelectableItem({
   );
 }
 
+function ImageWithFallback({
+  src,
+  alt,
+  monitorSize = 32,
+  fallbackClassName = "",
+  sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
+  imgClassName = "object-cover",
+}: {
+  src?: string | null;
+  alt: string;
+  monitorSize?: number;
+  fallbackClassName?: string;
+  sizes?: string;
+  imgClassName?: string;
+}) {
+  const [error, setError] = useState(false);
+
+  if (src && !error) {
+    return (
+      <Image
+        src={normalizeImageUrl(src)}
+        alt={alt}
+        fill
+        className={imgClassName}
+        onError={() => setError(true)}
+        sizes={sizes}
+      />
+    );
+  }
+
+  return (
+    <div className={fallbackClassName}>
+      <Monitor size={monitorSize} className="text-gray-400 dark:text-gray-500" />
+    </div>
+  );
+}
+
 export default function AddConsolePage() {
+  const { user } = useAuth();
+
   const params = useParams();
   const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
   const t = useTranslations("AddConsole");
@@ -117,7 +157,7 @@ export default function AddConsolePage() {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                 {brands?.map((brand) => (
                   <SelectableItem
                     key={brand.slug}
@@ -125,26 +165,27 @@ export default function AddConsolePage() {
                     onClick={() => handleBrandSelect(brand.slug)}
                     className="p-3 rounded-md text-center font-medium capitalize"
                   >
-                    <span
+                    <Image
+                      src={"/images/brands/" + brand.slug + ".svg"}
+                      alt={brand.slug}
+                      width={60}
+                      height={60}
                       className={
                         selectedBrand === brand.slug
-                          ? "text-primary-600 dark:text-primary-400"
-                          : "text-gray-900 dark:text-white"
+                          ? "object-contain m-auto text-primary-600 dark:text-primary-400"
+                          : "object-contain m-auto text-gray-900 dark:text-white"
                       }
-                    >
-                      {brand.slug}
-                    </span>
+                    />
                   </SelectableItem>
                 ))}
               </div>
             )}
           </SelectionSection>
 
-          {/* Seção de Variantes (apenas se marca selecionada) */}
           {selectedBrand && (
             <SelectionSection title={t("selectVariant")} isSelected={currentStep === "variant"}>
               {variantsLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
                   {[...Array(8)].map((_, i) => (
                     <Card key={i} className="p-0 overflow-hidden">
                       <Skeleton className="h-32 w-full" animated />
@@ -156,7 +197,7 @@ export default function AddConsolePage() {
                   ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
                   {variants?.items.map((variant) => (
                     <SelectableItem
                       key={variant.id}
@@ -164,28 +205,19 @@ export default function AddConsolePage() {
                       onClick={() => handleVariantSelect(variant)}
                       className="p-0 overflow-hidden"
                     >
-                      <Card className="h-full border-0">
-                        <div className="h-32 relative">
-                          {variant.imageUrl ? (
-                            <Image
-                              src={normalizeImageUrl(variant.imageUrl)}
-                              alt={variant.name}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                          ) : (
-                            <div className="bg-gray-200 dark:bg-gray-700 w-full h-full flex items-center justify-center">
-                              <Monitor size={32} className="text-gray-400 dark:text-gray-500" />
-                            </div>
-                          )}
+                      <Card className="h-full border-0 !p-0">
+                        <div className="h-20 relative">
+                          <ImageWithFallback
+                            src={variant.imageUrl}
+                            alt={variant.name}
+                            monitorSize={32}
+                            fallbackClassName="bg-gray-200 dark:bg-gray-700 w-full h-full flex items-center justify-center"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          />
                         </div>
-                        <div className="p-3">
-                          <h3 className="font-semibold text-sm text-gray-900 dark:text-white">
-                            {variant.name}
-                          </h3>
+                        <div className="p-2">
                           <p className="text-xs text-gray-600 dark:text-gray-400">
-                            {variant.consoleName}
+                            {variant.consoleName} ({variant.name})
                           </p>
                         </div>
                       </Card>
@@ -200,7 +232,7 @@ export default function AddConsolePage() {
           {selectedVariant && (
             <SelectionSection title={t("selectSkin")} isSelected={currentStep === "skin"}>
               {detailsLoading ? (
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
                   {[...Array(10)].map((_, i) => (
                     <Card key={i} className="p-0 overflow-hidden">
                       <Skeleton className="h-24 w-full" animated />
@@ -212,25 +244,8 @@ export default function AddConsolePage() {
                 </div>
               ) : (
                 <>
-                  <SelectableItem
-                    isSelected={selectedSkin === null}
-                    onClick={() => handleSkinSelect(null)}
-                    className="mb-4 p-0 overflow-hidden"
-                  >
-                    <Card className="border-0">
-                      <div className="h-24 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                        <Monitor size={28} className="text-gray-400 dark:text-gray-500" />
-                      </div>
-                      <div className="p-2 text-center">
-                        <h3 className="font-medium text-sm text-gray-900 dark:text-white">
-                          {t("defaultSkin")}
-                        </h3>
-                      </div>
-                    </Card>
-                  </SelectableItem>
-
                   {variantDetails?.skins && variantDetails.skins.length > 0 && (
-                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-2">
                       {variantDetails.skins.map((skin) => (
                         <SelectableItem
                           key={skin.id}
@@ -238,31 +253,20 @@ export default function AddConsolePage() {
                           onClick={() => handleSkinSelect(skin)}
                           className="p-0 overflow-hidden"
                         >
-                          <Card className="border-0 h-full">
+                          <Card className="border-0 h-full !p-0">
                             <div className="h-24 relative">
-                              {skin.imageUrl ? (
-                                <Image
-                                  src={normalizeImageUrl(skin.imageUrl)}
-                                  alt={skin.name}
-                                  fill
-                                  className="object-cover"
-                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                />
-                              ) : (
-                                <div className="bg-gray-100 dark:bg-gray-800 w-full h-full flex items-center justify-center">
-                                  <Monitor size={28} className="text-gray-400 dark:text-gray-500" />
-                                </div>
-                              )}
+                              <ImageWithFallback
+                                src={skin.imageUrl}
+                                alt={skin.name}
+                                monitorSize={28}
+                                fallbackClassName="bg-gray-100 dark:bg-gray-800 w-full h-full flex items-center justify-center"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              />
                             </div>
                             <div className="p-2">
-                              <h3 className="font-medium text-xs text-gray-900 dark:text-white line-clamp-2">
+                              <p className="font-medium text-[0.2rem] text-gray-900 dark:text-white line-clamp-2">
                                 {skin.name}
-                              </h3>
-                              {skin.editionName && (
-                                <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-1">
-                                  {skin.editionName}
-                                </p>
-                              )}
+                              </p>
                             </div>
                           </Card>
                         </SelectableItem>
@@ -285,12 +289,12 @@ export default function AddConsolePage() {
                 </h2>
                 <ConsoleForm
                   mode="create"
-                  consoleId={selectedVariant.consoleId}
+                  consoleId={variantDetails?.consoleId || 0}
                   consoleVariantId={selectedVariant.id}
                   variantSlug={selectedVariant.slug}
                   skinId={selectedSkin?.id || null}
                   onSuccess={() => {
-                    window.location.href = `/${locale}/profile/collection`;
+                    window.location.href = `/user/${user?.slug}`;
                   }}
                   onCancel={() => setCurrentStep("skin")}
                 />
