@@ -28,7 +28,7 @@ interface SelectionSectionProps {
 function SelectionSection({ title, children, isSelected }: SelectionSectionProps) {
   return (
     <div
-      className={`p-4 rounded-lg border ${isSelected ? "border-primary-500 dark:border-primary-400 bg-primary-50 dark:bg-primary-900/20" : "border-gray-200 dark:border-gray-700"}`}
+      className={`p-4 rounded-lg border ${isSelected ? "border-primary-500 dark:border-primary-700 bg-primary-50 dark:bg-gray-800" : "border-gray-200 dark:border-gray-700"}`}
     >
       <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">{title}</h3>
       {children}
@@ -53,7 +53,7 @@ function SelectableItem({
       onClick={onClick}
       className={`w-full cursor-pointer text-left transition-all focus:outline-none rounded-md ${className} ${
         isSelected
-          ? "ring-2 ring-primary-500 dark:ring-primary-400 bg-primary-50 dark:bg-primary-900/20"
+          ? "ring-1 ring-primary-500 dark:ring-primary-400 bg-primary-50 dark:bg-gray-700"
           : "hover:bg-gray-100 dark:hover:bg-gray-800"
       }`}
     >
@@ -155,13 +155,11 @@ export default function AddConsolePage() {
   };
 
   return (
-    <div className="container mx-auto max-w-6xl px-4">
+    <div className="container mx-auto max-w-6xl sm:px-4">
       <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">{t("title")}</h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Coluna de seleção */}
         <div className="flex-1 space-y-6">
-          {/* Seção de Marcas */}
           <SelectionSection title={t("selectBrand")} isSelected={currentStep === "brand"}>
             {brandsLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -241,7 +239,6 @@ export default function AddConsolePage() {
             </SelectionSection>
           )}
 
-          {/* Seção de Skins (apenas se variante selecionada) */}
           {selectedVariant && (
             <SelectionSection title={t("selectSkin")} isSelected={currentStep === "skin"}>
               {detailsLoading ? (
@@ -292,7 +289,6 @@ export default function AddConsolePage() {
           )}
         </div>
 
-        {/* Coluna do formulário */}
         <div className="w-full lg:w-1/2">
           {currentStep === "form" && selectedVariant && (
             <div className="sticky top-4">

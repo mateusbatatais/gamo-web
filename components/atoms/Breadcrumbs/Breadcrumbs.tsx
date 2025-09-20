@@ -86,7 +86,7 @@ export function Breadcrumbs({ condensed = false, maxItems = 3 }: BreadcrumbsProp
         <IconButton
           size="small"
           onClick={handleClick}
-          className="text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+          className="text-neutral-500 dark:!text-primary-500 hover:bg-neutral-100 dark:hover:bg-neutral-700"
         >
           <MoreVert fontSize="small" />
         </IconButton>
