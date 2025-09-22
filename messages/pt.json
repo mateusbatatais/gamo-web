@@ -57,6 +57,7 @@
   },
   "filters": {
     "label": "Filtros",
+    "clear": "limpar",
     "brand": {
       "label": "Filtrar por Marca"
     },

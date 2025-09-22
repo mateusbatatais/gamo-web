@@ -58,6 +58,7 @@
   },
   "filters": {
     "label": "Filters",
+    "clear": "Clear",
     "brand": {
       "label": "Filter by Brand"
     },
