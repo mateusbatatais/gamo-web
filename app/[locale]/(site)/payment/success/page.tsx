@@ -20,7 +20,7 @@ export default function PaymentSuccessPage() {
     if (paymentIntentIdParam) {
       setPaymentIntentId(paymentIntentIdParam);
     }
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   const handleGoHome = () => {
     router.push("/");

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js";
 import { Button } from "@/components/atoms/Button/Button";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 type StripeBilling = {
   email: string;
@@ -25,7 +25,6 @@ interface StripePaymentFormProps {
 
 export function StripePaymentForm({
   amount,
-  onSuccess,
   onCancel,
   isProcessing,
   billing,
@@ -34,6 +33,7 @@ export function StripePaymentForm({
   const elements = useElements();
   const t = useTranslations("StripePaymentForm");
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [message, setMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,24 +42,26 @@ export function StripePaymentForm({
     if (!stripe) return;
 
     const clientSecret = searchParams.get("payment_intent_client_secret");
+    const paymentIntentId = searchParams.get("payment_intent");
 
-    if (clientSecret) {
+    if (clientSecret && paymentIntentId) {
       setIsSubmitting(true);
+
       stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
         setIsSubmitting(false);
 
         if (paymentIntent) {
           switch (paymentIntent.status) {
             case "succeeded":
-              setMessage(t("paymentSucceeded"));
-              // Pequeno delay para mostrar a mensagem de sucesso
-              setTimeout(() => onSuccess(), 1500);
+              // Redirecionar para a página de sucesso
+              router.push(`/payment/success?amount=${amount}&paymentIntentId=${paymentIntentId}`);
               break;
             case "processing":
               setMessage(t("paymentProcessing"));
               break;
             case "requires_payment_method":
               setMessage(t("paymentFailed"));
+              onCancel();
               break;
             default:
               setMessage(t("paymentError"));
@@ -68,7 +70,7 @@ export function StripePaymentForm({
         }
       });
     }
-  }, [stripe, searchParams, onSuccess, t]);
+  }, [stripe, searchParams, amount, router, onCancel, t]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -79,7 +81,7 @@ export function StripePaymentForm({
 
     try {
       // URL para onde o usuário será redirecionado após autenticação 3D Secure
-      const returnUrl = `${window.location.origin}${window.location.pathname}?donation=processing`;
+      const returnUrl = `${window.location.origin}/payment/success?amount=${amount}`;
 
       const billingDetails: {
         email: string;
@@ -94,7 +96,7 @@ export function StripePaymentForm({
         };
       } = {
         email: billing.email,
-        name: billing.name || "Cliente",
+        name: billing.name || "Doador",
       };
 
       if (billing.phone) {
@@ -150,7 +152,7 @@ export function StripePaymentForm({
       {message && (
         <div
           className={`p-3 rounded-md text-sm ${
-            message.includes("sucesso") || message.includes("sucesso")
+            message.includes("sucesso")
               ? "bg-green-50 border border-green-200 text-green-800"
               : "bg-yellow-50 border border-yellow-200 text-yellow-800"
           }`}
