@@ -15,6 +15,7 @@ import { useToast } from "@/contexts/ToastContext";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 type DonationStep = "amount" | "payment";
 
@@ -26,6 +27,7 @@ export function DonationModal() {
   const [amount, setAmount] = useState("");
   const [email, setEmail] = useState("");
   const [zipCode, setZipCode] = useState("");
+  const [cpf, setCpf] = useState("");
   const [step, setStep] = useState<DonationStep>("amount");
   const [paymentIntent, setPaymentIntent] = useState<{
     clientSecret: string;
@@ -37,10 +39,12 @@ export function DonationModal() {
   const { stripe } = useStripe();
   const { showToast } = useToast();
   const { user } = useAuth();
+  const router = useRouter();
 
   // Preencher email se o usuário estiver logado
   useEffect(() => {
     if (user?.email) setEmail(user.email);
+    if (user?.zipCode) setZipCode(user.zipCode);
   }, [user]);
 
   const handleAmountSubmit = async () => {
@@ -64,8 +68,15 @@ export function DonationModal() {
 
     // Validar formato do CEP (apenas números, 8 dígitos)
     const zipCodeRegex = /^\d{8}$/;
-    if (!zipCodeRegex.test(zipCode.replace(/\D/g, ""))) {
+    const cleanZipCode = zipCode.replace(/\D/g, "");
+    if (!zipCodeRegex.test(cleanZipCode)) {
       showToast(t("invalidZipCode"), "danger");
+      return;
+    }
+
+    // Validar CPF se fornecido (opcional)
+    if (cpf && cpf.replace(/\D/g, "").length !== 11) {
+      showToast("CPF inválido", "danger");
       return;
     }
 
@@ -73,8 +84,7 @@ export function DonationModal() {
       amount: parseFloat(amount),
       currency: "BRL",
       email: user ? user.email : email,
-      zipCode: zipCode.replace(/\D/g, ""),
-      // OBS: se quiser mandar name/phone/country para o backend, ampliar o schema depois
+      zipCode: cleanZipCode,
     });
 
     if (result) {
@@ -94,18 +104,33 @@ export function DonationModal() {
   const handlePaymentSuccess = async (paymentIntentId: string) => {
     const success = await confirmDonation({ paymentIntentId });
     if (success) {
+      // Fechar o modal e redirecionar para a página de sucesso
+      closeModal();
+
+      // Pequeno delay para garantir que o modal fechou antes do redirecionamento
       setTimeout(() => {
-        closeModal();
-        setStep("amount");
-        setAmount("");
-        setPaymentIntent(null);
-      }, 2000);
+        router.push(`/payment/success?amount=${amount}&paymentIntentId=${paymentIntentId}`);
+      }, 100);
+    } else {
+      showToast("Erro ao confirmar pagamento", "danger");
+      setStep("amount");
     }
   };
 
   const handleBackToAmount = () => {
     setStep("amount");
     setPaymentIntent(null);
+  };
+
+  const handleCloseModal = () => {
+    closeModal();
+    // Resetar estado após fechar
+    setTimeout(() => {
+      setStep("amount");
+      setAmount("");
+      setPaymentIntent(null);
+      setCpf("");
+    }, 300);
   };
 
   const suggestedAmounts = [10, 50, 100, 200, 500];
@@ -120,6 +145,21 @@ export function DonationModal() {
     setZipCode(value);
   };
 
+  const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, "");
+    if (value.length > 11) value = value.slice(0, 11);
+
+    // Formatação do CPF
+    if (value.length > 9) {
+      value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+    } else if (value.length > 6) {
+      value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
+    } else if (value.length > 3) {
+      value = value.replace(/(\d{3})(\d{1,3})/, "$1.$2");
+    }
+    setCpf(value);
+  };
+
   if (!isClient) return null;
 
   return (
@@ -127,7 +167,7 @@ export function DonationModal() {
       modalId="donation"
       title={step === "amount" ? t("title") : t("paymentTitle")}
       subtitle={step === "amount" ? t("subtitle") : t("paymentSubtitle")}
-      onClose={closeModal}
+      onClose={handleCloseModal}
       icon={<Coffee className="text-yellow-500" />}
       size="md"
       actionButtons={
@@ -135,7 +175,7 @@ export function DonationModal() {
           ? {
               cancel: {
                 label: t("cancelButton"),
-                onClick: closeModal,
+                onClick: handleCloseModal,
               },
               confirm: {
                 label: isLoading ? t("processingButton") : t("continueButton"),
@@ -199,28 +239,48 @@ export function DonationModal() {
                   />
                 </div>
               )}
+              <div className="flex gap-2">
+                {showZipCodeField && (
+                  <div className="space-y-2 ">
+                    <label
+                      htmlFor="donation-zipcode"
+                      className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                      {t("zipCodeLabel")}
+                    </label>
+                    <Input
+                      id="donation-zipcode"
+                      type="text"
+                      placeholder={t("zipCodePlaceholder")}
+                      value={zipCode}
+                      onChange={handleZipCodeChange}
+                      disabled={isLoading}
+                      maxLength={9}
+                      required
+                    />
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t("zipCodeHelp")}</p>
+                  </div>
+                )}
 
-              {showZipCodeField && (
                 <div className="space-y-2">
                   <label
-                    htmlFor="donation-zipcode"
+                    htmlFor="donation-cpf"
                     className="text-sm font-medium text-gray-700 dark:text-gray-300"
                   >
-                    {t("zipCodeLabel")}
+                    {t("cpf")}
                   </label>
                   <Input
-                    id="donation-zipcode"
+                    id="donation-cpf"
                     type="text"
-                    placeholder={t("zipCodePlaceholder")}
-                    value={zipCode}
-                    onChange={handleZipCodeChange}
+                    placeholder="000.000.000-00"
+                    value={cpf}
+                    onChange={handleCpfChange}
                     disabled={isLoading}
-                    maxLength={9}
-                    required
+                    maxLength={14}
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">{t("zipCodeHelp")}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{t("cpfHelp")}</p>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
@@ -268,7 +328,7 @@ export function DonationModal() {
                   isProcessing={isProcessingPayment}
                   billing={{
                     email: (user?.email ?? email) || "",
-                    name: user?.name || "Doador", // Valor padrão importante
+                    name: user?.name || "Doador",
                     phone: user?.phone || "",
                     country: "BR",
                     postalCode: zipCode.replace(/\D/g, ""),

@@ -35,6 +35,7 @@ export function StripePaymentForm({
   const t = useTranslations("StripePaymentForm");
   const searchParams = useSearchParams();
   const [message, setMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Verificar se estamos retornando de um redirecionamento 3D Secure
   useEffect(() => {
@@ -43,12 +44,16 @@ export function StripePaymentForm({
     const clientSecret = searchParams.get("payment_intent_client_secret");
 
     if (clientSecret) {
+      setIsSubmitting(true);
       stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+        setIsSubmitting(false);
+
         if (paymentIntent) {
           switch (paymentIntent.status) {
             case "succeeded":
               setMessage(t("paymentSucceeded"));
-              onSuccess();
+              // Pequeno delay para mostrar a mensagem de sucesso
+              setTimeout(() => onSuccess(), 1500);
               break;
             case "processing":
               setMessage(t("paymentProcessing"));
@@ -69,58 +74,60 @@ export function StripePaymentForm({
     event.preventDefault();
     if (!stripe || !elements) return;
 
+    setIsSubmitting(true);
     setMessage(null);
 
-    // URL para onde o usuário será redirecionado após autenticação 3D Secure
-    const returnUrl = `${window.location.origin}${window.location.pathname}?donation=processing`;
+    try {
+      // URL para onde o usuário será redirecionado após autenticação 3D Secure
+      const returnUrl = `${window.location.origin}${window.location.pathname}?donation=processing`;
 
-    // Configuração do endereço de cobrança
-    const billingDetails: {
-      email: string;
-      name: string;
-      phone?: string;
-      address?: {
-        country?: string;
-        postal_code?: string;
-        state?: string;
-        city?: string;
-        line1?: string;
+      const billingDetails: {
+        email: string;
+        name: string;
+        phone?: string;
+        address?: {
+          country?: string;
+          postal_code?: string;
+          state?: string;
+          city?: string;
+          line1?: string;
+        };
+      } = {
+        email: billing.email,
+        name: billing.name || "Cliente",
       };
-    } = {
-      email: billing.email,
-      name: billing.name || "Cliente",
-    };
 
-    // Adicionar telefone se disponível
-    if (billing.phone) {
-      billingDetails.phone = billing.phone;
-    }
+      if (billing.phone) {
+        billingDetails.phone = billing.phone;
+      }
 
-    // Adicionar endereço se disponível
-    if (billing.country || billing.postalCode) {
-      billingDetails.address = {
-        country: billing.country || "BR",
-        postal_code: billing.postalCode || "",
-        state: "", // Estado (ex: "SP")
-        city: "", // Cidade
-        line1: "", // Endereço linha 1
-      };
-    }
+      if (billing.country || billing.postalCode) {
+        billingDetails.address = {
+          country: billing.country || "BR",
+          postal_code: billing.postalCode || "",
+        };
+      }
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: returnUrl,
-        payment_method_data: {
-          billing_details: billingDetails,
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: returnUrl,
+          payment_method_data: {
+            billing_details: billingDetails,
+          },
         },
-      },
-      redirect: "always",
-    });
+        redirect: "always",
+      });
 
-    if (error) {
-      setMessage(error.message || t("paymentError"));
-      console.error("Erro no pagamento:", error);
+      if (error) {
+        setMessage(error.message || t("paymentError"));
+        console.error("Erro no pagamento:", error);
+      }
+    } catch (error) {
+      setMessage(t("paymentError"));
+      console.error("Erro ao processar pagamento:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -137,37 +144,39 @@ export function StripePaymentForm({
               address: "auto",
             },
           },
-          defaultValues: {
-            billingDetails: {
-              email: billing.email,
-              name: billing.name || "",
-              phone: billing.phone || "",
-              address: {
-                country: billing.country || "BR",
-                postal_code: billing.postalCode || "",
-              },
-            },
-          },
         }}
       />
 
       {message && (
-        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800">
+        <div
+          className={`p-3 rounded-md text-sm ${
+            message.includes("sucesso") || message.includes("sucesso")
+              ? "bg-green-50 border border-green-200 text-green-800"
+              : "bg-yellow-50 border border-yellow-200 text-yellow-800"
+          }`}
+        >
           {message}
         </div>
       )}
 
       <div className="flex gap-2 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} disabled={isProcessing}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onCancel}
+          disabled={isSubmitting || isProcessing}
+        >
           {t("cancelButton")}
         </Button>
         <Button
           type="submit"
           variant="primary"
-          disabled={!stripe || isProcessing}
-          loading={isProcessing}
+          disabled={!stripe || isSubmitting || isProcessing}
+          loading={isSubmitting || isProcessing}
         >
-          {isProcessing ? t("processingButton") : t("donateButton", { amount: amount.toFixed(2) })}
+          {isSubmitting || isProcessing
+            ? t("processingButton")
+            : t("donateButton", { amount: amount.toFixed(2) })}
         </Button>
       </div>
     </form>
