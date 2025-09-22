@@ -28,13 +28,13 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
       id: "accessories",
       label: t("catalog.accessories"),
       icon: <Joystick size={16} />,
-      href: "/user/collection/accessory/add/",
+      href: "/user/collection/accessories/add/",
     },
     {
       id: "games",
       label: t("catalog.games"),
       icon: <Gamepad2 size={16} />,
-      href: "/user/collection/game/add/",
+      href: "/user/collection/games/add/",
     },
   ];
   return (
