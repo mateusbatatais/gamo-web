@@ -608,5 +608,12 @@
     "selectVariant": "Selecione um modelo",
     "selectSkin": "Selecione uma edição ",
     "defaultSkin": "Edição padrão"
+  },
+  "AddGame": {
+    "title": "Adicionar Jogo",
+    "selectGame": "Selecionar Jogo",
+    "searchPlaceholder": "Buscar jogos...",
+    "popularGames": "Jogos Populares",
+    "formTitle": "Adicionar à Coleção"
   }
 }

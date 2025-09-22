@@ -610,5 +610,12 @@
     "selectVariant": "Select a model",
     "selectSkin": "Select a skin",
     "defaultSkin": "Default skin"
+  },
+  "AddGame": {
+    "title": "Add Game",
+    "selectGame": "Select Game",
+    "searchPlaceholder": "Search games...",
+    "popularGames": "Popular Games",
+    "formTitle": "Add to Collection"
   }
 }
