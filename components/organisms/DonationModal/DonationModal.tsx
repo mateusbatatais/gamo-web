@@ -268,9 +268,9 @@ export function DonationModal() {
                   isProcessing={isProcessingPayment}
                   billing={{
                     email: (user?.email ?? email) || "",
-                    name: user?.name || undefined,
-                    phone: user?.phone || undefined,
-                    country: "BR", // se você guardar no perfil, troque para user?.country
+                    name: user?.name || "Doador", // Valor padrão importante
+                    phone: user?.phone || "",
+                    country: "BR",
                     postalCode: zipCode.replace(/\D/g, ""),
                   }}
                 />
