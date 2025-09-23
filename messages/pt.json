@@ -28,7 +28,27 @@
     "paymentSecurity": "Pagamento seguro",
     "paymentSecurityDescription": "Seus dados estão protegidos com criptografia de ponta a ponta",
     "cpf": "CPF (opcional)",
-    "cpfHelp": "Informe seu CPF para ajudar na prevenção de fraudes"
+    "cpfHelp": "Informe seu CPF para ajudar na prevenção de fraudes",
+
+    "paymentMethodTitle": "Escolha a Forma de Pagamento",
+    "paymentMethodSubtitle": "Selecione como deseja realizar sua doação",
+    "creditCard": "Cartão de Crédito",
+    "creditCardDescription": "Pagamento seguro via Stripe",
+    "pix": "PIX",
+    "pixDescription": "Pagamento instantâneo - Copie e cole a chave PIX",
+    "pixTitle": "Pagamento via PIX",
+    "pixSubtitle": "Utilize o QR Code ou a chave PIX para realizar o pagamento",
+    "pixAmount": "Valor a ser pago:",
+    "pixKeyLabel": "Chave PIX (Copie e cole):",
+    "pixQrCodeAlt": "QR Code PIX",
+    "pixInstructions": "Importante: O pagamento pode levar alguns minutos para ser confirmado. Após realizar o pagamento, clique em \"Já realizei o pagamento\".",
+    "pixInitiated": "Pagamento PIX iniciado! Verifique as informações para realizar a transferência.",
+    "pixKeyCopied": "Chave PIX copiada para a área de transferência!",
+    "pixKeyCopyError": "Erro ao copiar a chave PIX",
+    "pixConfirmedButton": "Já realizei o pagamento",
+    "pixImportantNote": "Importante: Você pode escolher qualquer valor ao fazer o pagamento. Após completar a transferência, clique no botão de confirmação abaixo.",
+    "invalidCpf": "CPF inválido",
+    "cpfPlaceholder": "000.000.000-00"
   },
   "PaymentSuccess": {
     "title": "Obrigado pela sua doação!",
