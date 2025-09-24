@@ -61,14 +61,12 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
         >
           {sections.map((section) => (
             <TabItem key={section.id} label={section.label} className="cursor-pointer">
-              {/* Conteúdo vazio pois a navegação é tratada pelo onChange */}
               <div className="hidden" />
             </TabItem>
           ))}
         </Tabs>
       </div>
 
-      {/* Mobile Navigation (mantido igual) */}
       <div className="md:hidden relative">
         <Button
           variant="outline"

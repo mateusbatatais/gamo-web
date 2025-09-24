@@ -27,6 +27,7 @@ import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
 import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
 import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
+import { EmptyCard } from "../EmptyCard/EmptyCard";
 
 // Tipos/guard locais (sem any)
 interface Accessory {
@@ -520,7 +521,15 @@ const PublicProfileConsoleGridContent = ({
 
   // Funções de renderização para acessórios avulsos
   const renderAccessoriesGrid = (accessories: UserAccessory[]) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {isOwner && (
+        <EmptyCard
+          text={t("txtAccessory")}
+          buttonLabel={t("txtAddAccessory")}
+          buttonLink="/user/collection/accessories/add/"
+          viewMode="card"
+        />
+      )}
       {accessories.map((accessory) => (
         <AccessoryCard key={accessory.id} accessory={accessory} isOwner={isOwner || false} />
       ))}
@@ -529,6 +538,14 @@ const PublicProfileConsoleGridContent = ({
 
   const renderAccessoriesCompactView = (accessories: UserAccessory[]) => (
     <div className="flex flex-wrap gap-3">
+      {isOwner && (
+        <EmptyCard
+          text={t("txtAccessory")}
+          buttonLabel={t("txtAddAccessory")}
+          buttonLink="/user/collection/accessories/add/"
+          viewMode="compact"
+        />
+      )}
       {accessories.map((accessory) => (
         <div
           key={accessory.id}
@@ -548,6 +565,14 @@ const PublicProfileConsoleGridContent = ({
 
   const renderAccessoriesListView = (accessories: UserAccessory[]) => (
     <div className="space-y-4">
+      {isOwner && (
+        <EmptyCard
+          text={t("txtAccessory")}
+          buttonLabel={t("txtAddAccessory")}
+          buttonLink="/user/collection/accessories/add/"
+          viewMode="list"
+        />
+      )}
       {accessories.map((accessory) => (
         <AccessoryListItem key={accessory.id} accessory={accessory} isOwner={isOwner || false} />
       ))}
@@ -566,6 +591,14 @@ const PublicProfileConsoleGridContent = ({
           </tr>
         </thead>
         <tbody>
+          {isOwner && (
+            <EmptyCard
+              text={t("txtAccessory")}
+              buttonLabel={t("txtAddAccessory")}
+              buttonLink="/user/collection/accessories/add/"
+              viewMode="table"
+            />
+          )}
           {accessories.map((accessory) => (
             <AccessoryTableRow
               key={accessory.id}
@@ -694,8 +727,16 @@ const PublicProfileConsoleGridContent = ({
       {/* conteúdo */}
       {!consoles || consoles.length === 0 ? (
         <Card>
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">{t("noConsoles")}</p>
+          <div className="py-12">
+            <p className="text-center text-gray-500 dark:text-gray-400 mb-4">{t("noConsoles")}</p>
+            {isOwner && (
+              <EmptyCard
+                text={t("txtConsole")}
+                buttonLabel={t("txtAddConsole")}
+                buttonLink="/user/collection/consoles/add/"
+                viewMode="list"
+              />
+            )}
           </div>
         </Card>
       ) : (
@@ -714,6 +755,15 @@ const PublicProfileConsoleGridContent = ({
                   </tr>
                 </thead>
                 <tbody>
+                  {isOwner && (
+                    <EmptyCard
+                      text={t("txtConsole")}
+                      buttonLabel={t("txtAddConsole")}
+                      buttonLink="/user/collection/consoles/add/"
+                      viewMode="table"
+                      space={true}
+                    />
+                  )}
                   {consoles.map((consoleItem: UserConsole) => {
                     const isExpanded = openTableId === consoleItem.id;
                     const canExpand = hasAccessories(consoleItem);
@@ -747,6 +797,14 @@ const PublicProfileConsoleGridContent = ({
             </div>
           ) : viewMode === "list" ? (
             <div className="space-y-4">
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtConsole")}
+                  buttonLabel={t("txtAddConsole")}
+                  buttonLink="/user/collection/consoles/add/"
+                  viewMode="list"
+                />
+              )}
               {consoles.map((consoleItem: UserConsole) => {
                 const isOpen = openListId === consoleItem.id;
                 return (
@@ -764,6 +822,24 @@ const PublicProfileConsoleGridContent = ({
             </div>
           ) : viewMode === "compact" ? (
             <div className="flex flex-wrap gap-3">
+              {isOwner && (
+                <div
+                  className="
+                        box-border min-w-0 flex flex-col
+                        flex-[0_0_calc(33.333%_-_.5rem)]       /* 3 col */
+                        md:flex-[0_0_calc(25%_-_.5625rem)]     /* 4 col */
+                        lg:flex-[0_0_calc(16.666%_-_.625rem)]  /* 6 col */
+                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]  /* 8 col */
+                      "
+                >
+                  <EmptyCard
+                    text={t("txtConsole")}
+                    buttonLabel={t("txtAddConsole")}
+                    buttonLink="/user/collection/consoles/add/"
+                    viewMode="compact"
+                  />
+                </div>
+              )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openCompactId === consoleItem.id;
 
@@ -808,6 +884,24 @@ const PublicProfileConsoleGridContent = ({
             </div>
           ) : (
             <div className="flex flex-wrap gap-6">
+              {isOwner && (
+                <div
+                  className="
+                        box-border min-w-0
+                        flex-[0_0_calc(50%_-_.75rem)]
+                        md:flex-[0_0_calc(33.333%_-_1rem)]
+                        lg:flex-[0_0_calc(25%_-_1.125rem)]
+                        flex flex-col
+                      "
+                >
+                  <EmptyCard
+                    text={t("txtConsole")}
+                    buttonLabel={t("txtAddConsole")}
+                    buttonLink="/user/collection/consoles/add/"
+                    viewMode="card"
+                  />
+                </div>
+              )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openGridId === consoleItem.id;
                 const rowEndIndex = index - (index % gridCols) + (gridCols - 1);
@@ -867,7 +961,7 @@ const PublicProfileConsoleGridContent = ({
       {accessoriesLoading && (
         <div className="mt-12">
           <h2 className="text-xl font-semibold mb-6 dark:text-white">Acessórios Avulsos</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
               <Skeleton key={i} className="h-64 w-full rounded-xl" />
             ))}
@@ -886,7 +980,7 @@ const PublicProfileConsoleGridContent = ({
         </div>
       )}
 
-      {accessoriesData && accessories.length > 0 && (
+      {accessoriesData && accessories.length > 0 ? (
         <div className="mt-12">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold dark:text-white">Acessórios Avulsos</h2>
@@ -925,6 +1019,17 @@ const PublicProfileConsoleGridContent = ({
             </div>
           )}
         </div>
+      ) : (
+        isOwner && (
+          <div className="mt-4">
+            <EmptyCard
+              text={t("txtAccessory")}
+              buttonLabel={t("txtAddAccessory")}
+              buttonLink="/user/collection/accessories/add/"
+              viewMode="list"
+            />
+          </div>
+        )
       )}
     </div>
   );

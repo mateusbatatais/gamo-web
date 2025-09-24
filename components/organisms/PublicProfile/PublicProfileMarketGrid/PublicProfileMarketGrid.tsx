@@ -38,6 +38,7 @@ import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
 import { UserConsole, UserAccessory } from "@/@types/collection.types";
 import Image from "next/image";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
+import { EmptyCard } from "../EmptyCard/EmptyCard";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -772,7 +773,7 @@ const PublicProfileMarketGridContent = ({
       </div>
 
       {/* Seção de Consoles */}
-      {consoles.length > 0 && (
+      {(consoles.length > 0 || isOwner) && (
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold dark:text-white">
@@ -830,6 +831,21 @@ const PublicProfileMarketGridContent = ({
                   </tr>
                 </thead>
                 <tbody>
+                  {isOwner && (
+                    <tr>
+                      <td colSpan={7 + (isOwner ? 1 : 0)}>
+                        <EmptyCard
+                          text={t("txtConsole")}
+                          buttonLabel={
+                            type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")
+                          }
+                          buttonLink="/user/collection/consoles/add/"
+                          viewMode="table"
+                          space={false}
+                        />
+                      </td>
+                    </tr>
+                  )}
                   {consoles.map((consoleItem: UserConsole) => {
                     const isExpanded = openTableId === consoleItem.id;
                     const canExpand = hasAccessories(consoleItem);
@@ -861,6 +877,14 @@ const PublicProfileMarketGridContent = ({
             </div>
           ) : viewMode === "list" ? (
             <div className="space-y-4">
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtConsole")}
+                  buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
+                  buttonLink="/user/collection/consoles/add/"
+                  viewMode="list"
+                />
+              )}
               {consoles.map((consoleItem: UserConsole) => {
                 const isOpen = openListId === consoleItem.id;
                 return (
@@ -878,6 +902,24 @@ const PublicProfileMarketGridContent = ({
             </div>
           ) : viewMode === "compact" ? (
             <div className="flex flex-wrap gap-3">
+              {isOwner && (
+                <div
+                  className="
+                    box-border min-w-0 flex flex-col
+                    flex-[0_0_calc(33.333%_-_.5rem)]
+                    md:flex-[0_0_calc(25%_-_.5625rem)]
+                    lg:flex-[0_0_calc(16.666%_-_.625rem)]
+                    xl:flex-[0_0_calc(12.5%_-_.65625rem)]
+                  "
+                >
+                  <EmptyCard
+                    text={t("txtConsole")}
+                    buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
+                    buttonLink="/user/collection/consoles/add/"
+                    viewMode="compact"
+                  />
+                </div>
+              )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openCompactId === consoleItem.id;
                 const rowEndIndex = index - (index % compactCols) + (compactCols - 1);
@@ -920,6 +962,24 @@ const PublicProfileMarketGridContent = ({
             </div>
           ) : (
             <div className="flex flex-wrap gap-6">
+              {isOwner && (
+                <div
+                  className="
+                    box-border min-w-0
+                    flex-[0_0_calc(50%_-_.75rem)]
+                    md:flex-[0_0_calc(33.333%_-_1rem)]
+                    lg:flex-[0_0_calc(25%_-_1.125rem)]
+                    flex flex-col
+                  "
+                >
+                  <EmptyCard
+                    text={t("txtConsole")}
+                    buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
+                    buttonLink="/user/collection/consoles/add/"
+                    viewMode="card"
+                  />
+                </div>
+              )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openGridId === consoleItem.id;
                 const rowEndIndex = index - (index % gridCols) + (gridCols - 1);
@@ -975,7 +1035,7 @@ const PublicProfileMarketGridContent = ({
       )}
 
       {/* Seção de Jogos */}
-      {games.length > 0 && (
+      {(games.length > 0 || isOwner) && (
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold dark:text-white">
@@ -1021,6 +1081,19 @@ const PublicProfileMarketGridContent = ({
                   </tr>
                 </thead>
                 <tbody>
+                  {isOwner && (
+                    <tr>
+                      <td colSpan={6 + (isOwner ? 1 : 0)}>
+                        <EmptyCard
+                          text={t("txtGame")}
+                          buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
+                          buttonLink="/user/collection/games/add/"
+                          viewMode="table"
+                          space={false}
+                        />
+                      </td>
+                    </tr>
+                  )}
                   {games.map((game) => (
                     <PublicProfileGameTable
                       key={`game-${game.id}`}
@@ -1034,6 +1107,14 @@ const PublicProfileMarketGridContent = ({
             </div>
           ) : viewMode === "list" ? (
             <div className="space-y-4">
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtGame")}
+                  buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
+                  buttonLink="/user/collection/games/add/"
+                  viewMode="list"
+                />
+              )}
               {games.map((game) => (
                 <PublicProfileGameList key={game.id} game={game} isOwner={isOwner || false} />
               ))}
@@ -1046,6 +1127,14 @@ const PublicProfileMarketGridContent = ({
                   : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
               } gap-6`}
             >
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtGame")}
+                  buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
+                  buttonLink="/user/collection/games/add/"
+                  viewMode={viewMode === "grid" ? "card" : "compact"}
+                />
+              )}
               {games.map((game) =>
                 viewMode === "compact" ? (
                   <PublicProfileGameCompact key={game.id} game={game} isOwner={isOwner || false} />
@@ -1069,7 +1158,7 @@ const PublicProfileMarketGridContent = ({
       )}
 
       {/* Seção de Acessórios */}
-      {accessories.length > 0 && (
+      {(accessories.length > 0 || isOwner) && (
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold dark:text-white">
@@ -1135,6 +1224,21 @@ const PublicProfileMarketGridContent = ({
                   </tr>
                 </thead>
                 <tbody>
+                  {isOwner && (
+                    <tr>
+                      <td colSpan={6 + (isOwner ? 1 : 0)}>
+                        <EmptyCard
+                          text={t("txtAccessory")}
+                          buttonLabel={
+                            type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")
+                          }
+                          buttonLink="/user/collection/accessories/add/"
+                          viewMode="table"
+                          space={false}
+                        />
+                      </td>
+                    </tr>
+                  )}
                   {accessories.map((accessory) => (
                     <AccessoryTableRow
                       key={`accessory-${accessory.id}`}
@@ -1147,6 +1251,16 @@ const PublicProfileMarketGridContent = ({
             </div>
           ) : viewMode === "list" ? (
             <div className="space-y-4">
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtAccessory")}
+                  buttonLabel={
+                    type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")
+                  }
+                  buttonLink="/user/collection/accessories/add/"
+                  viewMode="list"
+                />
+              )}
               {accessories.map((accessory) => (
                 <AccessoryListItem
                   key={accessory.id}
@@ -1163,6 +1277,16 @@ const PublicProfileMarketGridContent = ({
                   : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
               } gap-6`}
             >
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtAccessory")}
+                  buttonLabel={
+                    type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")
+                  }
+                  buttonLink="/user/collection/accessories/add/"
+                  viewMode={viewMode === "grid" ? "card" : "compact"}
+                />
+              )}
               {accessories.map((accessory) =>
                 viewMode === "compact" ? (
                   <AccessoryCompactCard
@@ -1193,7 +1317,7 @@ const PublicProfileMarketGridContent = ({
         </div>
       )}
 
-      {games.length === 0 && consoles.length === 0 && accessories.length === 0 && (
+      {games.length === 0 && consoles.length === 0 && accessories.length === 0 && !isOwner && (
         <Card>
           <div className="text-center py-12">
             <p className="text-gray-500 dark:text-gray-400">

@@ -29,7 +29,6 @@
     "paymentSecurityDescription": "Seus dados estão protegidos com criptografia de ponta a ponta",
     "cpf": "CPF (opcional)",
     "cpfHelp": "Informe seu CPF para ajudar na prevenção de fraudes",
-
     "paymentMethodTitle": "Escolha a Forma de Pagamento",
     "paymentMethodSubtitle": "Selecione como deseja realizar sua doação",
     "creditCard": "Cartão de Crédito",
@@ -409,6 +408,11 @@
     "extras": "Detalhes extras"
   },
   "PublicProfile": {
+    "catalog": {
+      "consoles": "Consoles",
+      "games": "Jogos",
+      "accessories": "Acessórios"
+    },
     "noItemsLookingFor": "Este usuário ainda nao possui itens procurando troca",
     "viewMode": {
       "grid": "Grid",
@@ -494,7 +498,21 @@
     "gamesLookingFor": "Jogos buscados",
     "totalConsoles": "Total de Consoles",
     "TotalAccessories": "Total de Acessórios",
-    "addToCollection": "Adiciona item à coleção"
+    "addToCollection": "Adiciona item à coleção",
+    "txtAccessory": "Tem acessório novo ai? Vamos adicionar!",
+    "txtAddAccessory": "Adicionar Acessório",
+    "txtConsole": "Tem console novo ai? Vamos adicionar!",
+    "txtAddConsole": "Adicionar console",
+    "txtGame": "Tem jogo novo ai? Vamos adicionar!",
+    "txtAddGame": "Adicionar jogo",
+    "txtSellConsole": "Vender console",
+    "txtSellGame": "Vender jogo",
+    "txtSellAccessory": "Vender acessório",
+    "accessoriesForSale": "Acessórios à venda",
+    "accessoriesLookingFor": "Buscando por acessórios",
+    "txtLookForConsole": "Procurando console",
+    "txtLookForGame": "Procurando jogo",
+    "txtLookForAccessory": "Procurando acessório"
   },
   "TradeForm": {
     "mainPhoto": "Foto principal",
@@ -635,5 +653,12 @@
     "searchPlaceholder": "Buscar jogos...",
     "popularGames": "Jogos Populares",
     "formTitle": "Adicionar à Coleção"
+  },
+  "AddAccessory": {
+    "title": "Adicionar Acessório à Coleção",
+    "searchPlaceholder": "Buscar acessórios...",
+    "formTitle": "Detalhes do Acessório",
+    "selectAccessory": "Selecionar Acessório",
+    "selectVariant": "Selecione um modelo"
   }
 }

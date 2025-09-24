@@ -411,6 +411,11 @@
     "extras": "Extras details"
   },
   "PublicProfile": {
+    "catalog": {
+      "consoles": "Consoles",
+      "games": "Games",
+      "accessories": "Accessories"
+    },
     "noItemsLookingFor": "This user hasn't listed any items looking for trade yet",
     "viewMode": {
       "grid": "Grid",
@@ -496,7 +501,21 @@
     "gamesLookingFor": "Games Looking For",
     "totalConsoles": "Total Consoles",
     "TotalAccessories": "Total Accessories",
-    "addToCollection": "Add item to collection"
+    "addToCollection": "Add item to collection",
+    "txtAccessory": "Have an accessory to add? Let's add it!",
+    "txtAddAccessory": "Add accessory",
+    "txtConsole": "Have a console to add? Let's add it!",
+    "txtGame": "Have a game to add? Let's add it!",
+    "txtAddConsole": "Add console",
+    "txtAddGame": "Add game",
+    "txtSellConsole": "Sell console",
+    "txtSellGame": "Sell game",
+    "txtSellAccessory": "Sell accessory",
+    "accessoriesForSale": "Accessories for sale",
+    "accessoriesLookingFor": "Accessories looking for",
+    "txtLookForConsole": "Looking for console",
+    "txtLookForGame": "Looking for game",
+    "txtLookForAccessory": "Looking for accessory"
   },
   "TradeForm": {
     "mainPhoto": "Main photo",
@@ -637,5 +656,12 @@
     "searchPlaceholder": "Search games...",
     "popularGames": "Popular Games",
     "formTitle": "Add to Collection"
+  },
+  "AddAccessory": {
+    "title": "Add Accessory to Collection",
+    "searchPlaceholder": "Search accessories...",
+    "formTitle": "Accessory Details",
+    "selectAccessory": "Select Accessory",
+    "selectVariant": "Select a model"
   }
 }

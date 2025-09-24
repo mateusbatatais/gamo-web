@@ -19,6 +19,7 @@ export interface PublicUserProfile {
   id: number;
   name: string;
   slug: string;
+  phone?: string | null;
   profileImage: string | null;
   description: string | null;
   accessoriesFavorited: number;

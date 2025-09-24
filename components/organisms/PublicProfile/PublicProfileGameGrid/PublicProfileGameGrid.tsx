@@ -22,6 +22,7 @@ import GameFilterContainer from "@/components/molecules/Filter/GameFilterContain
 import { Button } from "@/components/atoms/Button/Button";
 import { Select } from "@/components/atoms/Select/Select";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
+import { EmptyCard } from "../EmptyCard/EmptyCard";
 
 interface PublicProfileGameGridProps {
   slug: string;
@@ -284,8 +285,16 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
 
       {!games || games.length === 0 ? (
         <Card>
-          <div className="text-center py-12">
-            <p className="text-gray-500 dark:text-gray-400">{t("noGames")}</p>
+          <div className=" py-12">
+            <p className="text-center text-gray-500 dark:text-gray-400 mb-4">{t("noGames")}</p>
+            {isOwner && (
+              <EmptyCard
+                text={t("txtGame")}
+                buttonLabel={t("txtAddGame")}
+                buttonLink="/user/collection/games/add/"
+                viewMode="list"
+              />
+            )}
           </div>
         </Card>
       ) : (
@@ -305,6 +314,14 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
                   </tr>
                 </thead>
                 <tbody>
+                  {isOwner && (
+                    <EmptyCard
+                      text={t("txtGame")}
+                      buttonLabel={t("txtAddGame")}
+                      buttonLink="/user/collection/games/add/"
+                      viewMode="table"
+                    />
+                  )}
                   {games.map((game: UserGame) => (
                     <PublicProfileGameTable key={game.id} game={game} isOwner={isOwner || false} />
                   ))}
@@ -314,6 +331,14 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
           ) : viewMode === "list" ? (
             // Modo Lista
             <div className="space-y-4">
+              {isOwner && (
+                <EmptyCard
+                  text={t("txtGame")}
+                  buttonLabel={t("txtAddGame")}
+                  buttonLink="/user/collection/games/add/"
+                  viewMode="list"
+                />
+              )}
               {games.map((game: UserGame) => (
                 <PublicProfileGameList key={game.id} game={game} isOwner={isOwner || false} />
               ))}
@@ -327,12 +352,39 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
                   : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
               } gap-6`}
             >
-              {games.map((game: UserGame) =>
-                viewMode === "compact" ? (
-                  <PublicProfileGameCompact key={game.id} game={game} isOwner={isOwner || false} />
-                ) : (
-                  <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
-                ),
+              {viewMode === "compact" && (
+                <>
+                  {isOwner && (
+                    <EmptyCard
+                      text={t("txtGame")}
+                      buttonLabel={t("txtAddGame")}
+                      buttonLink="/user/collection/games/add/"
+                      viewMode="compact"
+                    />
+                  )}
+                  {games.map((game: UserGame) => (
+                    <PublicProfileGameCompact
+                      key={game.id}
+                      game={game}
+                      isOwner={isOwner || false}
+                    />
+                  ))}
+                </>
+              )}
+              {viewMode === "grid" && (
+                <>
+                  {isOwner && (
+                    <EmptyCard
+                      text={t("txtGame")}
+                      buttonLabel={t("txtAddGame")}
+                      buttonLink="/user/collection/games/add/"
+                      viewMode="card"
+                    />
+                  )}
+                  {games.map((game: UserGame) => (
+                    <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
+                  ))}
+                </>
               )}
             </div>
           )}
