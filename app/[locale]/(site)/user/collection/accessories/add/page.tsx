@@ -13,7 +13,7 @@ import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
-import { Autocomplete, AutocompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
+import { Autocomplete, AutocompleteItem } from "@/components/atoms/Autocomplete/AutoComplete";
 
 type Step = "accessory" | "variant" | "form";
 
