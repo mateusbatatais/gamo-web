@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
 import { SelectOption } from "@/components/atoms/Select/Select";
-import { Autocomplete, AutocompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
+import { Autocomplete, AutocompleteItem } from "@/components/atoms/Autocomplete/AutoComplete";
 
 type Step = "game" | "form";
 
