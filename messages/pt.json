@@ -660,5 +660,177 @@
     "formTitle": "Detalhes do Acessório",
     "selectAccessory": "Selecionar Acessório",
     "selectVariant": "Selecione um modelo"
+  },
+  "GameImport": {
+    "title": "Importar Jogos",
+    "description": "Importe sua coleção de jogos através de uma planilha CSV, Excel ou JSON",
+    "steps": {
+      "upload": "Upload",
+      "review": "Revisão",
+      "confirmation": "Confirmação"
+    },
+    "upload": {
+      "title": "Selecionar Arquivo",
+      "description": "Arraste e solte seu arquivo aqui ou clique para procurar",
+      "dropHere": "Solte o arquivo aqui...",
+      "browseFiles": "Procurar arquivos",
+      "supportedFormats": "Formatos suportados: CSV, XLSX, JSON",
+      "maxSize": "Tamanho máximo: 10MB",
+      "parsing": "Processando...",
+      "parsedSuccess": "{count} jogos analisados",
+      "templateTitle": "Template de Planilha",
+      "templateDescription": "Baixe nosso template para garantir o formato correto",
+      "downloadTemplate": "Baixar Template",
+      "columnsGuide": "Guia de Colunas",
+      "requiredColumns": "Colunas Obrigatórias",
+      "optionalColumns": "Colunas Opcionais",
+      "columns": {
+        "gameName": "Nome do jogo (obrigatório)",
+        "status": "OWNED, SELLING ou LOOKING_FOR",
+        "progress": "0 a 10",
+        "rating": "0 a 10",
+        "media": "PHYSICAL ou DIGITAL",
+        "price": "Valor em reais",
+        "hasBox": "true ou false",
+        "hasManual": "true ou false",
+        "condition": "NEW, USED ou REFURBISHED",
+        "acceptsTrade": "true ou false",
+        "description": "Descrição opcional"
+      }
+    },
+
+    "review": {
+      "title": "Revisar Jogos Importados",
+      "gamesFound": "{count} jogos encontrados no arquivo",
+      "selectedCount": "{count} de {total} selecionados",
+      "selectAllHint": "Clique para selecionar/desselecionar todos",
+      "selectAll": "Selecionar Todos",
+      "deselectAll": "Desselecionar Todos",
+      "readyToImport": "{count} jogos prontos para importar",
+      "actions": {
+        "back": "Voltar",
+        "confirm": "Confirmar Importação"
+      },
+      "tips": {
+        "title": "Dica Importante",
+        "description": "Os nomes dos jogos serão automaticamente comparados com nosso catálogo. Caso haja divergências, você poderá ajustar manualmente na próxima etapa."
+      }
+    },
+
+    "confirmation": {
+      "title": "Confirmar Matches",
+      "matchesCount": "{confirmed} de {total} jogos confirmados",
+      "status": {
+        "label": "Status",
+        "readyForReview": "Pronto para revisão",
+        "processing": "Processando",
+        "completed": "Concluído",
+        "failed": "Falhou",
+        "uploaded": "Enviado",
+        "confirmed": "Confirmado",
+        "skipped": "Ignorado",
+        "pending": "Pendente",
+        "autoMatched": "Match Automático",
+        "manualReview": "Revisão Manual"
+      },
+      "suggestedMatch": "Match sugerido",
+      "confidence": "de confiança",
+      "userData": "Dados do usuário",
+      "confirmMatch": "Confirmar Match",
+      "searchAlternatives": "Buscar Alternativas",
+      "skipGame": "Não Importar",
+      "fields": {
+        "status": "Status",
+        "media": "Mídia",
+        "progress": "Progresso",
+        "rating": "Nota"
+      },
+      "statusValues": {
+        "owned": "Na coleção",
+        "selling": "Vendendo",
+        "looking_for": "Procurando"
+      },
+      "mediaValues": {
+        "physical": "Físico",
+        "digital": "Digital"
+      },
+      "instructions": {
+        "title": "Como importar",
+        "step1": "Revise cada jogo da sua planilha",
+        "step2": "Confirmar Match → Jogo será importado",
+        "step3": "Buscar Alternativas → Encontrar outro jogo",
+        "step4": "Não Importar → Jogo será ignorado",
+        "step5": "Clique em Importar X Jogos quando terminar",
+        "note": "💡 Apenas jogos confirmados serão importados"
+      },
+      "actions": {
+        "restart": "Recomeçar",
+        "importCompleted": "Importação Concluída",
+        "importGames": "Importar {count} Jogo{count, plural, one {} other {s}}",
+        "cancelImport": "Cancelar Importação",
+        "confirmAtLeastOne": "Confirme pelo menos um jogo",
+        "confirmMatch": "Confirmar Match",
+        "searchAlternatives": "Buscar Alternativas",
+        "skipGame": "Não Importar",
+        "reopen": "Reabrir",
+        "changeGame": "Alterar Jogo"
+      },
+      "feedback": {
+        "confirmed": "Confirmado para importação",
+        "skipped": "Este jogo não será importado",
+        "pending": "Escolha uma ação para este jogo"
+      },
+      "messages": {
+        "processing": "Processando matches...",
+        "noMatches": "Nenhum match encontrado para revisão",
+        "noGamesConfirmed": "Nenhum jogo confirmado ainda",
+        "gamesConfirmed": "{confirmed} de {total} jogos confirmados",
+        "gamesSkipped": " • {skipped} ignorados",
+        "pendingGames": "{pending} pendentes"
+      },
+      "results": {
+        "successTitle": "Importação concluída com sucesso!",
+        "successMessage": "{count} jogo{count, plural, one {} other {s}} foram adicionados à sua coleção."
+      },
+      "errors": {
+        "sessionNotFound": "Erro: Sessão não encontrada"
+      }
+    },
+    "status": {
+      "owned": "Na Coleção",
+      "selling": "Vendendo",
+      "lookingFor": "Procurando"
+    },
+
+    "media": {
+      "physical": "Físico",
+      "digital": "Digital"
+    },
+
+    "details": {
+      "progress": "Progresso",
+      "rating": "Avaliação",
+      "hasBox": "Tem Caixa",
+      "hasManual": "Tem Manual",
+      "condition": "Condição",
+      "acceptsTrade": "Aceita Troca",
+      "yes": "Sim",
+      "no": "Não"
+    },
+    "searchModal": {
+      "title": "Buscar Jogo Alternativo",
+      "close": "Fechar",
+      "placeholder": "Digite o nome do jogo...",
+      "search": "Buscar",
+      "noResults": "Nenhum jogo encontrado",
+      "selected": "Selecionado: {game}",
+      "noSelection": "Nenhum jogo selecionado",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar",
+      "searchLabel": "Digite o nome do jogo",
+      "searchPlaceholder": "Buscar jogos...",
+      "cancelButton": "Cancelar",
+      "confirmButton": "Selecionar"
+    }
   }
 }

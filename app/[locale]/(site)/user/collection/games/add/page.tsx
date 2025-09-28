@@ -14,6 +14,7 @@ import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
 import { SelectOption } from "@/components/atoms/Select/Select";
 import { Autocomplete, AutocompleteItem } from "@/components/atoms/Autocomplete/AutoComplete";
+import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 
 type Step = "game" | "form";
 
@@ -91,6 +92,7 @@ export default function AddGamePage() {
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("game");
   const [searchQuery, setSearchQuery] = useState("");
+  const { platformsMap } = usePlatformsCache();
 
   const { data: games, isLoading: gamesLoading } = useGames({
     page: 1,
@@ -123,7 +125,7 @@ export default function AddGamePage() {
   const platformOptions: SelectOption[] =
     gameDetails?.platforms?.map((platformId) => ({
       value: platformId.toString(),
-      label: `Platform ${platformId}`, // Você pode querer mapear para nomes reais
+      label: platformsMap[platformId], // Você pode querer mapear para nomes reais
     })) || [];
 
   const autocompleteItems: AutocompleteItem[] =
@@ -153,7 +155,7 @@ export default function AddGamePage() {
                     <ImageWithFallback
                       src={item.imageUrl}
                       alt={item.label}
-                      packageSize={20}
+                      packageSize={50}
                       fallbackClassName="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded"
                       imgClassName="object-cover"
                     />
@@ -223,7 +225,7 @@ export default function AddGamePage() {
                     <ImageWithFallback
                       src={selectedGame.imageUrl}
                       alt={selectedGame.name}
-                      packageSize={24}
+                      packageSize={70}
                       fallbackClassName="bg-gray-200 dark:bg-gray-700 w-full h-full flex items-center justify-center rounded"
                       imgClassName="object-cover rounded"
                     />

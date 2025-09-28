@@ -38,10 +38,13 @@
     "next-intl": "^4.3.4",
     "next-router-mock": "^1.0.2",
     "next-themes": "^0.4.6",
+    "papaparse": "^5.5.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-dropzone": "^14.3.8",
     "react-image-crop": "^11.0.10",
-    "tailwindcss": "^4.1.11"
+    "tailwindcss": "^4.1.11",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.0",
@@ -58,6 +61,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.2.0",
+    "@types/papaparse": "^5.3.16",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
