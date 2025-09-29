@@ -5,7 +5,7 @@ import React, { ChangeEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
-import { Select } from "@/components/atoms/Select/Select";
+import { Select, SelectOption } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
@@ -16,7 +16,6 @@ import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImag
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { Rating } from "@/components/atoms/Rating/Rating";
 import { Range } from "@/components/atoms/Range/Range";
-import { SelectOption } from "@/components/atoms/Select/Select";
 
 interface GameFormProps {
   mode: "create" | "edit";
