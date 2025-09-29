@@ -9,6 +9,7 @@ import { ReviewStep } from "./ReviewStep";
 import { ConfirmationStep } from "./ConfirmationStep";
 import { useGameImport, ImportSession } from "@/hooks/useGameImport";
 import { useFileParser } from "@/hooks/useFileParser";
+import type { ParsedGame } from "@/hooks/useFileParser";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 
@@ -103,24 +104,37 @@ export function GameImportWizard() {
     }
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) {
+  const handleUpload = async (selected?: ParsedGame[]) => {
+    if (!selectedFile && (!selected || selected.length === 0)) {
       showToast("Nenhum arquivo selecionado", "danger");
       return;
     }
 
     try {
-      const fileContent = await readFileContent(selectedFile);
-      const fileType = selectedFile.name.split(".").pop()?.toUpperCase();
+      let fileContent: string;
+      let fileType: "CSV" | "XLSX" | "JSON";
+      let fileName: string;
 
-      if (!fileType || !["CSV", "XLSX", "JSON"].includes(fileType)) {
-        throw new Error("Tipo de arquivo não suportado");
+      if (selected && selected.length > 0) {
+        fileContent = JSON.stringify(selected);
+        fileType = "JSON";
+        const baseName = selectedFile?.name.replace(/\.[^.]+$/, "") || "import";
+        fileName = `${baseName}-selected.json`;
+      } else {
+        const content = await readFileContent(selectedFile as File);
+        fileContent = content;
+        const ext = selectedFile!.name.split(".").pop()?.toUpperCase();
+        if (!ext || !["CSV", "XLSX", "JSON"].includes(ext)) {
+          throw new Error("Tipo de arquivo não suportado");
+        }
+        fileType = ext as "CSV" | "XLSX" | "JSON";
+        fileName = selectedFile!.name;
       }
 
       const session = await uploadFile({
-        fileName: selectedFile.name,
-        fileType: fileType as "CSV" | "XLSX" | "JSON",
-        fileContent: fileContent,
+        fileName,
+        fileType,
+        fileContent,
       });
 
       if (session?.id) {

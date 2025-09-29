@@ -10,7 +10,7 @@ import { GameImportCard } from "../GameImportCard/GameImportCard";
 
 interface ReviewStepProps {
   parsedGames: ParsedGame[];
-  onConfirm: () => void;
+  onConfirm: (selected: ParsedGame[]) => void;
   onBack: () => void;
   isLoading: boolean;
 }
@@ -39,6 +39,7 @@ export function ReviewStep({ parsedGames, onConfirm, onBack, isLoading }: Review
 
   const selectedCount = selectedGames.size;
   const totalCount = parsedGames.length;
+  const selectedItems = parsedGames.filter((_, index) => selectedGames.has(index));
 
   return (
     <div className="space-y-6">
@@ -96,7 +97,7 @@ export function ReviewStep({ parsedGames, onConfirm, onBack, isLoading }: Review
           </span>
           <Button
             type="button"
-            onClick={onConfirm}
+            onClick={() => onConfirm(selectedItems)}
             loading={isLoading}
             disabled={selectedCount === 0}
             label={t("review.actions.confirm")}
