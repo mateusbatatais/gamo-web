@@ -1,4 +1,4 @@
-// components/atoms/Autocomplete/Autocomplete.tsx
+// components/atoms/AutoComplete/AutoComplete.tsx
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
@@ -7,7 +7,7 @@ import { Search } from "lucide-react";
 import { ImageWithFallback } from "../ImageWithFallback/ImageWithFallback";
 import { Skeleton } from "../Skeleton/Skeleton";
 
-export interface AutocompleteItem {
+export interface AutoCompleteItem {
   id: number;
   label: string;
   imageUrl?: string | null;
@@ -15,16 +15,16 @@ export interface AutocompleteItem {
   [key: string]: string | number | boolean | null | undefined;
 }
 
-interface AutocompleteProps extends Omit<InputProps, "onChange" | "value"> {
-  items: AutocompleteItem[];
-  onItemSelect: (item: AutocompleteItem) => void;
+interface AutoCompleteProps extends Omit<InputProps, "onChange" | "value"> {
+  items: AutoCompleteItem[];
+  onItemSelect: (item: AutoCompleteItem) => void;
   onSearch: (query: string) => void;
   loading?: boolean;
   value?: string;
-  renderItem?: (item: AutocompleteItem) => React.ReactNode;
+  renderItem?: (item: AutoCompleteItem) => React.ReactNode;
 }
 
-export const Autocomplete = ({
+export const AutoComplete = ({
   items,
   onItemSelect,
   onSearch,
@@ -33,7 +33,7 @@ export const Autocomplete = ({
   renderItem,
   placeholder = "Buscar...",
   ...inputProps
-}: AutocompleteProps) => {
+}: AutoCompleteProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ export const Autocomplete = ({
   };
 
   const handleSelect = useCallback(
-    (item: AutocompleteItem) => {
+    (item: AutoCompleteItem) => {
       setInputValue(item.label);
       setIsOpen(false);
       onItemSelect(item);
@@ -82,7 +82,7 @@ export const Autocomplete = ({
     }
   };
 
-  const defaultRenderItem = (item: AutocompleteItem) => (
+  const defaultRenderItem = (item: AutoCompleteItem) => (
     <div className="flex items-center gap-3 p-2">
       <div className="flex-shrink-0 w-8 h-8 relative">
         <ImageWithFallback

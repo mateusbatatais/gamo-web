@@ -13,7 +13,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
 import { SelectOption } from "@/components/atoms/Select/Select";
-import { Autocomplete, AutocompleteItem } from "@/components/atoms/Autocomplete/AutoComplete";
+import { AutoComplete, AutoCompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 
 type Step = "game" | "form";
@@ -113,7 +113,7 @@ export default function AddGamePage() {
     return () => setItems([]);
   }, [setItems, t, user]);
 
-  const handleGameSelect = (item: AutocompleteItem) => {
+  const handleGameSelect = (item: AutoCompleteItem) => {
     const game = games?.items.find((g) => g.id === item.id);
     if (game) {
       setSelectedGame(game);
@@ -128,7 +128,7 @@ export default function AddGamePage() {
       label: platformsMap[platformId], // Você pode querer mapear para nomes reais
     })) || [];
 
-  const autocompleteItems: AutocompleteItem[] =
+  const autocompleteItems: AutoCompleteItem[] =
     games?.items.map((game) => ({
       id: game.id,
       label: game.name,
@@ -143,7 +143,7 @@ export default function AddGamePage() {
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">
           <SelectionSection title={t("selectGame")} isSelected={currentStep === "game"}>
-            <Autocomplete
+            <AutoComplete
               items={autocompleteItems}
               onItemSelect={handleGameSelect}
               onSearch={setSearchQuery}

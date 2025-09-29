@@ -13,7 +13,7 @@ import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
-import { Autocomplete, AutocompleteItem } from "@/components/atoms/Autocomplete/AutoComplete";
+import { AutoComplete, AutoCompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
 
 type Step = "accessory" | "variant" | "form";
 
@@ -100,7 +100,7 @@ export default function AddAccessoryPage() {
     return () => setItems([]);
   }, [setItems, t, user]);
 
-  const handleAccessorySelect = (item: AutocompleteItem) => {
+  const handleAccessorySelect = (item: AutoCompleteItem) => {
     const accessory = accessories?.items.find((acc) => acc.id === item.id);
     if (accessory) {
       setSelectedAccessory(accessory);
@@ -114,7 +114,7 @@ export default function AddAccessoryPage() {
     setCurrentStep("form");
   };
 
-  const autocompleteItems: AutocompleteItem[] =
+  const autocompleteItems: AutoCompleteItem[] =
     accessories?.items.map((acc) => ({
       id: acc.id,
       label: acc.name,
@@ -129,7 +129,7 @@ export default function AddAccessoryPage() {
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">
           <SelectionSection title={t("selectAccessory")} isSelected={currentStep === "accessory"}>
-            <Autocomplete
+            <AutoComplete
               items={autocompleteItems}
               onItemSelect={handleAccessorySelect}
               onSearch={setSearchQuery}

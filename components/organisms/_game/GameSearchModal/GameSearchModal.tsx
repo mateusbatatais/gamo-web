@@ -8,7 +8,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Game } from "@/@types/catalog.types";
 import { useApiClient } from "@/lib/api-client";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
-import { Autocomplete, AutocompleteItem } from "@/components/atoms/Autocomplete/AutoComplete";
+import { AutoComplete, AutoCompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
 
 interface GameSearchModalProps {
   searchTerm: string;
@@ -24,7 +24,7 @@ export function GameSearchModal({ searchTerm, onSelectGame, onClose }: GameSearc
   const [isLoading, setIsLoading] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
-  // Buscar jogos quando o termo mudar (usando o debounce interno do Autocomplete)
+  // Buscar jogos quando o termo mudar (usando o debounce interno do AutoComplete)
   const handleSearch = useCallback(
     async (query: string) => {
       if (!query.trim() || query.length < 2) {
@@ -48,8 +48,8 @@ export function GameSearchModal({ searchTerm, onSelectGame, onClose }: GameSearc
     [apiFetch],
   );
 
-  // Quando um item é selecionado no Autocomplete
-  const handleItemSelect = (item: AutocompleteItem) => {
+  // Quando um item é selecionado no AutoComplete
+  const handleItemSelect = (item: AutoCompleteItem) => {
     const game = searchResults.find((g) => g.id === item.id);
     if (game) {
       setSelectedGame(game);
@@ -64,8 +64,8 @@ export function GameSearchModal({ searchTerm, onSelectGame, onClose }: GameSearc
     }
   };
 
-  // Renderizar cada item do Autocomplete
-  const renderGameItem = (item: AutocompleteItem) => (
+  // Renderizar cada item do AutoComplete
+  const renderGameItem = (item: AutoCompleteItem) => (
     <div className="flex items-center gap-3 p-2">
       <div className="flex-shrink-0 w-12 h-12 relative">
         <ImageWithFallback
@@ -86,8 +86,8 @@ export function GameSearchModal({ searchTerm, onSelectGame, onClose }: GameSearc
     </div>
   );
 
-  // Converter jogos para items do Autocomplete
-  const autocompleteItems: AutocompleteItem[] = searchResults.map((game) => ({
+  // Converter jogos para items do AutoComplete
+  const autocompleteItems: AutoCompleteItem[] = searchResults.map((game) => ({
     id: game.id,
     label: game.name,
     imageUrl: game.imageUrl,
@@ -97,13 +97,13 @@ export function GameSearchModal({ searchTerm, onSelectGame, onClose }: GameSearc
   return (
     <Dialog open={true} onClose={onClose} title={t("title")} size="md">
       <div className="space-y-6">
-        {/* Autocomplete Simples */}
+        {/* AutoComplete Simples */}
         <div className="space-y-3">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             {t("searchLabel")}
           </label>
 
-          <Autocomplete
+          <AutoComplete
             items={autocompleteItems}
             onItemSelect={handleItemSelect}
             onSearch={handleSearch}
