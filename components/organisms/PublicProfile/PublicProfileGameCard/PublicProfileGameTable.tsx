@@ -12,6 +12,8 @@ import { GameForm } from "@/components/organisms/_game/GameForm/GameForm";
 import { useDeleteUserGame } from "@/hooks/usePublicProfile";
 import { UserGame } from "@/@types/collection.types";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
+import useGameDetails from "@/hooks/useGameDetails";
+import { SelectOption } from "@/components/atoms/Select/Select";
 
 // Adicione a prop isMarketGrid à interface
 interface PublicProfileGameTableProps {
@@ -30,11 +32,13 @@ export const PublicProfileGameTable = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
+  const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
-  const platformOptions = Object.entries(platformsMap).map(([id, name]) => ({
-    value: id,
-    label: name,
-  }));
+  const platformOptions: SelectOption[] =
+    gameDetails?.platforms?.map((platformId) => ({
+      value: platformId.toString(),
+      label: platformsMap[platformId],
+    })) || [];
 
   const handleDelete = () => {
     deleteGame(game.id || 0);

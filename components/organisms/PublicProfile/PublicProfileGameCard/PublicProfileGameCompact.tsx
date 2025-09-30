@@ -13,6 +13,8 @@ import { useDeleteUserGame } from "@/hooks/usePublicProfile";
 import { UserGame } from "@/@types/collection.types";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import { useTranslations } from "next-intl";
+import useGameDetails from "@/hooks/useGameDetails";
+import { SelectOption } from "@/components/atoms/Select/Select";
 
 export const PublicProfileGameCompact = ({
   game,
@@ -27,10 +29,13 @@ export const PublicProfileGameCompact = ({
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
 
-  const platformOptions = Object.entries(platformsMap).map(([id, name]) => ({
-    value: id,
-    label: name,
-  }));
+  const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
+
+  const platformOptions: SelectOption[] =
+    gameDetails?.platforms?.map((platformId) => ({
+      value: platformId.toString(),
+      label: platformsMap[platformId],
+    })) || [];
 
   const handleDelete = () => {
     deleteGame(game.id || 0);
