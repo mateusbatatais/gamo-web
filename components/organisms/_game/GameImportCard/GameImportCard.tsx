@@ -92,6 +92,12 @@ export function GameImportCard({ game, index, isSelected, onSelect }: GameImport
               #{index + 1}
             </span>
           </div>
+          {game.platform && (
+            <div className="mt-2">
+              <span className="text-gray-600 dark:text-gray-400">{t("details.platform")}: </span>
+              <span className="font-medium text-gray-900 dark:text-white">{game.platform}</span>
+            </div>
+          )}
 
           {/* Detalhes */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">

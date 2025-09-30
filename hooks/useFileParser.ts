@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 
 export interface ParsedGame {
   gameName: string;
+  platform?: string; // ← NOVO CAMPO
   progress?: number;
   rating?: number;
   status?: string;
@@ -168,8 +169,17 @@ export function useFileParser() {
     const gameName =
       typeof gameNameCandidate === "string" ? gameNameCandidate : `Linha ${index + 1}`;
 
+    // Buscar plataforma em várias colunas possíveis
+    const platformCandidate =
+      normalizeString((row as RawRow).platform) ||
+      normalizeString((row as RawRow).plataforma) ||
+      normalizeString((row as RawRow).console) ||
+      normalizeString((row as RawRow).system) ||
+      normalizeString((row as RawRow).sistema);
+
     return {
       gameName,
+      platform: platformCandidate, // ← NOVO
       progress: normalizeNumber((row as RawRow).progress ?? (row as RawRow).progresso),
       rating: normalizeNumber(
         (row as RawRow).rating ?? (row as RawRow).nota ?? (row as RawRow).score,

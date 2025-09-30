@@ -42,11 +42,13 @@ export function UploadStep({ onFileSelect, isParsing, parsedCount }: UploadStepP
   });
 
   const handleTemplateDownload = () => {
-    // Criar template CSV
-    const template = `gameName,status,progress,rating,media,price,hasBox,hasManual,condition,acceptsTrade,description
-The Legend of Zelda: Breath of the Wild,OWNED,10,10,PHYSICAL,,true,true,USED,false,Excelente jogo
-God of War,SELLING,10,9,PHYSICAL,100,true,false,USED,true,"Vendendo para comprar nova versão"
-Final Fantasy VII,LOOKING_FOR,0,0,PHYSICAL,150,true,true,USED,true,Procurando versão original`;
+    // Criar template CSV com plataforma
+    const template = `gameName,platform,status,progress,rating,media,price,hasBox,hasManual,condition,acceptsTrade,description
+The Legend of Zelda: Breath of the Wild,Nintendo Switch,OWNED,10,10,PHYSICAL,,true,true,USED,false,Excelente jogo
+God of War,PlayStation 4,SELLING,10,9,PHYSICAL,100,true,false,USED,true,"Vendendo para comprar nova versão"
+Final Fantasy VII,PlayStation,LOOKING_FOR,0,0,PHYSICAL,150,true,true,USED,true,Procurando versão original
+Halo Infinite,Xbox Series X,OWNED,8,9,DIGITAL,,false,false,NEW,false,Jogo digital
+The Witcher 3: Wild Hunt,PC,OWNED,10,10,PHYSICAL,,true,true,USED,false,Completo com DLCs`;
 
     const blob = new Blob([template], { type: "text/csv" });
     const url = URL.createObjectURL(blob);

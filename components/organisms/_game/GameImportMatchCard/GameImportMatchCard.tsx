@@ -1,15 +1,17 @@
-// GameImportMatchCard.tsx - Versão simplificada
+// GameImportMatchCard.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
+import { Select } from "@/components/atoms/Select/Select";
 import { ImportMatch } from "@/hooks/useGameImport";
 import { GameSearchModal } from "../GameSearchModal/GameSearchModal";
 import { Game } from "@/@types/catalog.types";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
 import { useApiClient } from "@/lib/api-client";
+import { usePlatformMatching } from "@/hooks/usePlatformMatching";
 
 interface GameImportMatchCardProps {
   match: ImportMatch;
@@ -19,8 +21,15 @@ interface GameImportMatchCardProps {
 export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardProps) {
   const t = useTranslations("GameImport.confirmation");
   const { apiFetch } = useApiClient();
+  const {
+    findBestPlatformMatch,
+    getPlatformOptions,
+    isLoading: platformsLoading,
+  } = usePlatformMatching();
+
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [platformLoading, setPlatformLoading] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<"PENDING" | "CONFIRMED" | "SKIPPED">(
     match.matchStatus === "CONFIRMED"
       ? "CONFIRMED"
@@ -29,6 +38,28 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
         : "PENDING",
   );
   const [currentGame, setCurrentGame] = useState(match.suggestedGame);
+  const [selectedPlatformId, setSelectedPlatformId] = useState<string>(
+    match.confirmedPlatformId?.toString() || match.suggestedPlatformId?.toString() || "",
+  );
+
+  // Encontrar melhor match de plataforma quando o componente carrega
+  useEffect(() => {
+    if (match.userPlatform && !match.confirmedPlatformId && !match.suggestedPlatformId) {
+      const bestMatch = findBestPlatformMatch(match.userPlatform);
+      if (bestMatch) {
+        setSelectedPlatformId(bestMatch.id.toString());
+        // Auto-save da plataforma sugerida
+        updatePlatform(bestMatch.id.toString());
+      }
+    }
+  }, [
+    match.userPlatform,
+    match.confirmedPlatformId,
+    match.suggestedPlatformId,
+    findBestPlatformMatch,
+  ]);
+
+  const platformOptions = getPlatformOptions();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -50,7 +81,6 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     return statusMap[status] || status;
   };
 
-  // Função única para atualizar o match
   const updateMatch = async (matchId: number, gameId: number | null, game?: Game) => {
     setIsLoading(true);
     try {
@@ -76,6 +106,22 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
       console.error("Error updating match:", error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Função para atualizar plataforma (NOVA)
+  const updatePlatform = async (platformId: string) => {
+    setPlatformLoading(true);
+    try {
+      await apiFetch(`/user-games-import/match/${match.id}/platform`, {
+        method: "PUT",
+        body: { platformId: platformId ? parseInt(platformId) : null },
+      });
+      setSelectedPlatformId(platformId);
+    } catch (error) {
+      console.error("Error updating platform:", error);
+    } finally {
+      setPlatformLoading(false);
     }
   };
 
@@ -106,7 +152,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
           </div>
         </div>
 
-        {/* Jogo Atual */}
+        {/* Jogo Atual - ORIGINAL MANTIDO */}
         {currentGame && currentStatus !== "SKIPPED" && (
           <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
             <div className="flex items-center justify-between mb-2">
@@ -150,7 +196,39 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
           </div>
         )}
 
-        {/* Dados do Usuário */}
+        {/* Seletor de Plataforma - NOVO (adicionado após o jogo) */}
+        {(match.userPlatform || platformOptions.length > 0) && currentStatus !== "SKIPPED" && (
+          <div className="mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                {t("platform")}
+              </span>
+              {match.userPlatform && (
+                <span className="text-xs text-purple-600 dark:text-purple-400">
+                  {t("originalPlatform")}: {match.userPlatform}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-3">
+              <div className="flex-1">
+                <Select
+                  label={t("selectPlatform")}
+                  options={[{ value: "", label: t("noPlatform") }, ...platformOptions]}
+                  value={selectedPlatformId}
+                  onChange={(e) => {
+                    setSelectedPlatformId(e.target.value);
+                    updatePlatform(e.target.value);
+                  }}
+                  disabled={platformLoading || platformsLoading}
+                  size="sm"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Dados do Usuário - ORIGINAL MANTIDO */}
         {match.userData && currentStatus !== "SKIPPED" && (
           <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
             <span className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">
@@ -177,7 +255,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
           </div>
         )}
 
-        {/* Ações */}
+        {/* Ações - ORIGINAL MANTIDO */}
         {currentStatus === "PENDING" && (
           <div className="flex flex-wrap gap-2">
             {currentGame && (
@@ -236,7 +314,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
         )}
       </Card>
 
-      {/* Modal de Busca */}
+      {/* Modal de Busca - ORIGINAL MANTIDO */}
       {showSearchModal && (
         <GameSearchModal
           searchTerm={match.rawInput}

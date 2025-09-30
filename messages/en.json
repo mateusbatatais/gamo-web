@@ -663,5 +663,185 @@
     "formTitle": "Accessory Details",
     "selectAccessory": "Select Accessory",
     "selectVariant": "Select a model"
+  },
+  "GameImport": {
+    "title": "Import Games",
+    "description": "Import your game collection through a CSV, Excel, or JSON file",
+    "steps": {
+      "upload": "Upload",
+      "review": "Review",
+      "confirmation": "Confirmation"
+    },
+    "upload": {
+      "title": "Select File",
+      "description": "Drag and drop your file here or click to browse",
+      "dropHere": "Drop file here...",
+      "browseFiles": "Browse files",
+      "supportedFormats": "Supported formats: CSV, XLSX, JSON",
+      "maxSize": "Maximum size: 10MB",
+      "parsing": "Processing...",
+      "parsedSuccess": "{count} games parsed",
+      "templateTitle": "Spreadsheet Template",
+      "templateDescription": "Download our template to ensure the correct format",
+      "downloadTemplate": "Download Template",
+      "columnsGuide": "Columns Guide",
+      "requiredColumns": "Required Columns",
+      "optionalColumns": "Optional Columns",
+      "columns": {
+        "gameName": "Game name (required)",
+        "status": "OWNED, SELLING or LOOKING_FOR",
+        "platform": "Platform name (e.g. PlayStation 4, Xbox One, Nintendo Switch)",
+        "progress": "0 to 10",
+        "rating": "0 to 10",
+        "media": "PHYSICAL or DIGITAL",
+        "price": "Price in BRL",
+        "hasBox": "true or false",
+        "hasManual": "true or false",
+        "condition": "NEW, USED or REFURBISHED",
+        "acceptsTrade": "true or false",
+        "description": "Optional description"
+      }
+    },
+
+    "review": {
+      "title": "Review Imported Games",
+      "gamesFound": "{count} games found in file",
+      "selectedCount": "{count} of {total} selected",
+      "selectAllHint": "Click to select/deselect all",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "readyToImport": "{count} games ready to import",
+      "actions": {
+        "back": "Back",
+        "confirm": "Confirm Import"
+      },
+      "tips": {
+        "title": "Important Tip",
+        "description": "Game names will be automatically matched with our catalog. If there are discrepancies, you can adjust them manually in the next step."
+      }
+    },
+
+    "confirmation": {
+      "title": "Confirm Matches",
+      "platform": "Platform",
+      "originalPlatform": "Original",
+      "selectPlatform": "Select Platform",
+      "noPlatform": "No platform",
+      "matchesCount": "{confirmed} of {total} games confirmed",
+      "status": {
+        "label": "Status",
+        "readyForReview": "Ready for review",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed",
+        "uploaded": "Uploaded",
+        "confirmed": "Confirmed",
+        "skipped": "Skipped",
+        "pending": "Pending",
+        "autoMatched": "Auto-Matched",
+        "manualReview": "Manual Review"
+      },
+      "suggestedMatch": "Suggested match",
+      "confidence": "confidence",
+      "userData": "User data",
+      "confirmMatch": "Confirm Match",
+      "searchAlternatives": "Search Alternatives",
+      "skipGame": "Skip Import",
+      "fields": {
+        "status": "Status",
+        "media": "Media",
+        "progress": "Progress",
+        "rating": "Rating"
+      },
+      "statusValues": {
+        "owned": "Owned",
+        "selling": "Selling",
+        "looking_for": "Looking For"
+      },
+      "mediaValues": {
+        "physical": "Physical",
+        "digital": "Digital"
+      },
+      "instructions": {
+        "title": "How to import",
+        "step1": "Review each game in your spreadsheet",
+        "step2": "Confirm Match → Game will be imported",
+        "step3": "Search Alternatives → Find another game",
+        "step4": "Skip Import → Game will be ignored",
+        "step5": "Click Import X Games when finished",
+        "note": "💡 Only confirmed games will be imported"
+      },
+      "actions": {
+        "restart": "Restart",
+        "importCompleted": "Import Completed",
+        "importGames": "Import {count} Game{count, plural, one {} other {s}}",
+        "cancelImport": "Cancel Import",
+        "confirmAtLeastOne": "Confirm at least one game",
+        "confirmMatch": "Confirm Match",
+        "searchAlternatives": "Search Alternatives",
+        "skipGame": "Skip Import",
+        "reopen": "Reopen",
+        "changeGame": "Change Game"
+      },
+      "feedback": {
+        "confirmed": "Confirmed for import",
+        "skipped": "This game will not be imported",
+        "pending": "Choose an action for this game"
+      },
+      "messages": {
+        "processing": "Processing matches...",
+        "noMatches": "No matches found for review",
+        "noGamesConfirmed": "No games confirmed yet",
+        "gamesConfirmed": "{confirmed} of {total} games confirmed",
+        "gamesSkipped": " • {skipped} skipped",
+        "pendingGames": "{pending} pending"
+      },
+      "results": {
+        "successTitle": "Import completed successfully!",
+        "successMessage": "{count} game{count, plural, one {} other {s}} have been added to your collection."
+      },
+      "errors": {
+        "sessionNotFound": "Error: Session not found"
+      },
+      "selectedGame": "Selected game"
+    },
+
+    "status": {
+      "owned": "Owned",
+      "selling": "Selling",
+      "lookingFor": "Looking For"
+    },
+
+    "media": {
+      "physical": "Physical",
+      "digital": "Digital"
+    },
+
+    "details": {
+      "platform": "Platform",
+      "progress": "Progress",
+      "rating": "Rating",
+      "hasBox": "Has Box",
+      "hasManual": "Has Manual",
+      "condition": "Condition",
+      "acceptsTrade": "Accepts Trade",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "searchModal": {
+      "title": "Search Alternative Game",
+      "close": "Close",
+      "placeholder": "Type the game name...",
+      "search": "Search",
+      "noResults": "No games found",
+      "selected": "Selected: {game}",
+      "noSelection": "No game selected",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "searchLabel": "Type the game name",
+      "searchPlaceholder": "Search games...",
+      "cancelButton": "Cancel",
+      "confirmButton": "Select"
+    }
   }
 }

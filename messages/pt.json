@@ -687,6 +687,7 @@
       "columns": {
         "gameName": "Nome do jogo (obrigatório)",
         "status": "OWNED, SELLING ou LOOKING_FOR",
+        "platform": "Nome da plataforma (ex: PlayStation 4, Xbox One, Nintendo Switch)",
         "progress": "0 a 10",
         "rating": "0 a 10",
         "media": "PHYSICAL ou DIGITAL",
@@ -719,6 +720,10 @@
 
     "confirmation": {
       "title": "Confirmar Matches",
+      "platform": "Plataforma",
+      "originalPlatform": "Original",
+      "selectPlatform": "Selecionar Plataforma",
+      "noPlatform": "Sem plataforma",
       "matchesCount": "{confirmed} de {total} jogos confirmados",
       "status": {
         "label": "Status",
@@ -794,8 +799,10 @@
       },
       "errors": {
         "sessionNotFound": "Erro: Sessão não encontrada"
-      }
+      },
+      "selectedGame": "Jogo selecionado"
     },
+
     "status": {
       "owned": "Na Coleção",
       "selling": "Vendendo",
@@ -808,6 +815,7 @@
     },
 
     "details": {
+      "platform": "Plataforma",
       "progress": "Progresso",
       "rating": "Avaliação",
       "hasBox": "Tem Caixa",

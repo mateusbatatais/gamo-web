@@ -50,6 +50,10 @@ export interface ImportMatch {
     name: string;
     imageUrl: string | null;
   };
+  userPlatform?: string;
+  suggestedPlatformId?: number | null;
+  confirmedPlatformId?: number | null;
+
   userData: {
     progress?: number;
     rating?: number;
@@ -106,9 +110,7 @@ export function useGameImport() {
       queryFn: async () => {
         if (!sessionId) throw new Error("Session ID is required");
 
-        const session = await apiFetch<ImportSession>(`/user-games-import/session/${sessionId}`);
-        console.log("📡 Session fetched:", session);
-        return session;
+        return await apiFetch<ImportSession>(`/user-games-import/session/${sessionId}`);
       },
       enabled: !!sessionId && !!user,
       refetchInterval: (query) => {
