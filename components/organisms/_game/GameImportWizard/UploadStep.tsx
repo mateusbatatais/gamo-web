@@ -7,6 +7,7 @@ import { useDropzone } from "react-dropzone";
 import { Card } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
+import { Tooltip } from "@/components/atoms/Tooltip/Tooltip";
 
 interface UploadStepProps {
   onFileSelect: (file: File) => void;
@@ -42,13 +43,13 @@ export function UploadStep({ onFileSelect, isParsing, parsedCount }: UploadStepP
   });
 
   const handleTemplateDownload = () => {
-    // Criar template CSV com plataforma
+    // Template em formato de tabela CSV
     const template = `gameName,platform,status,progress,rating,media,price,hasBox,hasManual,condition,acceptsTrade,description
-The Legend of Zelda: Breath of the Wild,Nintendo Switch,OWNED,10,10,PHYSICAL,,true,true,USED,false,Excelente jogo
-God of War,PlayStation 4,SELLING,10,9,PHYSICAL,100,true,false,USED,true,"Vendendo para comprar nova versão"
-Final Fantasy VII,PlayStation,LOOKING_FOR,0,0,PHYSICAL,150,true,true,USED,true,Procurando versão original
-Halo Infinite,Xbox Series X,OWNED,8,9,DIGITAL,,false,false,NEW,false,Jogo digital
-The Witcher 3: Wild Hunt,PC,OWNED,10,10,PHYSICAL,,true,true,USED,false,Completo com DLCs`;
+"The Legend of Zelda: Breath of the Wild","Nintendo Switch",OWNED,10,10,PHYSICAL,,true,true,USED,false,"Excelente jogo de aventura"
+"God of War","PlayStation 4",SELLING,10,9,PHYSICAL,100,true,false,USED,true,"Vendendo para comprar nova versão"
+"Final Fantasy VII","PlayStation",LOOKING_FOR,0,0,PHYSICAL,150,true,true,USED,true,"Procurando versão original"
+"Halo Infinite","Xbox Series X",OWNED,8,9,DIGITAL,,false,false,NEW,false,"Jogo digital na conta"
+"The Witcher 3: Wild Hunt",PC,OWNED,10,10,PHYSICAL,,true,true,USED,false,"Completo com todas as DLCs"`;
 
     const blob = new Blob([template], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -108,7 +109,6 @@ The Witcher 3: Wild Hunt,PC,OWNED,10,10,PHYSICAL,,true,true,USED,false,Completo 
           <p>{t("upload.maxSize")}</p>
         </div>
       </Card>
-
       {/* Arquivo Selecionado */}
       {selectedFile && (
         <Card className="p-4">
@@ -150,7 +150,6 @@ The Witcher 3: Wild Hunt,PC,OWNED,10,10,PHYSICAL,,true,true,USED,false,Completo 
           </div>
         </Card>
       )}
-
       {/* Template Download */}
       <Card className="p-4">
         <div className="flex items-center justify-between">
@@ -170,45 +169,377 @@ The Witcher 3: Wild Hunt,PC,OWNED,10,10,PHYSICAL,,true,true,USED,false,Completo 
           />
         </div>
       </Card>
+      <h3 className="font-medium text-gray-900 dark:text-white mb-4">{t("upload.columnsGuide")}</h3>
 
-      {/* Informações sobre colunas */}
-      <Card className="p-6">
-        <h3 className="font-medium text-gray-900 dark:text-white mb-4">
-          {t("upload.columnsGuide")}
-        </h3>
+      {/* Tabela de Exemplo Expandida */}
+      <div className="mb-6 overflow-x-auto">
+        <table className="min-w-full border border-gray-200 dark:border-gray-700 text-sm">
+          <thead>
+            <tr className="bg-gray-50 dark:bg-gray-800">
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  gameName
+                  <Tooltip title={t("upload.tooltips.gameName")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  platform
+                  <Tooltip title={t("upload.tooltips.platform")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  status
+                  <Tooltip title={t("upload.tooltips.status")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  progress
+                  <Tooltip title={t("upload.tooltips.progress")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  rating
+                  <Tooltip title={t("upload.tooltips.rating")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  media
+                  <Tooltip title={t("upload.tooltips.media")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  price
+                  <Tooltip title={t("upload.tooltips.price")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  hasBox
+                  <Tooltip title={t("upload.tooltips.hasBox")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  hasManual
+                  <Tooltip title={t("upload.tooltips.hasManual")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  condition
+                  <Tooltip title={t("upload.tooltips.condition")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  acceptsTrade
+                  <Tooltip title={t("upload.tooltips.acceptsTrade")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+              <th className="border border-gray-200 dark:border-gray-700 px-3 py-2 text-left font-medium">
+                <div className="flex items-center gap-1">
+                  description
+                  <Tooltip title={t("upload.tooltips.description")}>
+                    <svg
+                      className="w-4 h-4 text-gray-400 cursor-help"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </Tooltip>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                The Legend of Zelda: Breath of the Wild
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Nintendo Switch
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">OWNED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">10</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">10</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">PHYSICAL</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2"></td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">USED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">false</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Excelente jogo de aventura
+              </td>
+            </tr>
+            <tr className="bg-gray-50 dark:bg-gray-800">
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">God of War</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                PlayStation 4
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">SELLING</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">10</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">9</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">PHYSICAL</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">100</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">false</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">USED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Vendendo para comprar nova versão
+              </td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Final Fantasy VII
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">PlayStation</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">LOOKING_FOR</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">0</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">0</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">PHYSICAL</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">150</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">USED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Procurando versão original
+              </td>
+            </tr>
+            <tr className="bg-gray-50 dark:bg-gray-800">
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Halo Infinite
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Xbox Series X
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">OWNED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">8</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">9</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">DIGITAL</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2"></td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">false</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">false</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">NEW</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">false</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Jogo digital na conta
+              </td>
+            </tr>
+            <tr>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                The Witcher 3: Wild Hunt
+              </td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">PC</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">OWNED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">10</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">10</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">PHYSICAL</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2"></td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">true</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">USED</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">false</td>
+              <td className="border border-gray-200 dark:border-gray-700 px-3 py-2">
+                Completo com todas as DLCs
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <h4 className="font-medium mb-2">{t("upload.requiredColumns")}</h4>
-            <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-              <li>
-                • <strong>gameName</strong> - {t("upload.columns.gameName")}
-              </li>
-            </ul>
+      {/* Informação sobre obrigatoriedade */}
+      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+        <div className="flex items-start space-x-3">
+          <div className="text-blue-600 dark:text-blue-400 mt-0.5">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
           </div>
-
           <div>
-            <h4 className="font-medium mb-2">{t("upload.optionalColumns")}</h4>
-            <ul className="space-y-1 text-gray-600 dark:text-gray-400">
-              <li>
-                • <strong>status</strong> - {t("upload.columns.status")}
-              </li>
-              <li>
-                • <strong>progress</strong> - {t("upload.columns.progress")}
-              </li>
-              <li>
-                • <strong>rating</strong> - {t("upload.columns.rating")}
-              </li>
-              <li>
-                • <strong>media</strong> - {t("upload.columns.media")}
-              </li>
-              <li>
-                • <strong>price</strong> - {t("upload.columns.price")}
-              </li>
-            </ul>
+            <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+              {t("upload.requiredInfo.title")}
+            </p>
+            <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
+              {t("upload.requiredInfo.description")}
+            </p>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

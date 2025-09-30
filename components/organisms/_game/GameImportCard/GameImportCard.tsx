@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { ParsedGame } from "@/hooks/useFileParser";
+import { Badge } from "@/components/atoms/Badge/Badge";
 
 interface GameImportCardProps {
   game: ParsedGame;
@@ -22,15 +23,15 @@ export function GameImportCard({ game, index, isSelected, onSelect }: GameImport
 
     const statusConfig = {
       OWNED: {
-        color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+        color: "soft" as const,
         label: t("status.owned"),
       },
       SELLING: {
-        color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+        color: "outline" as const,
         label: t("status.selling"),
       },
       LOOKING_FOR: {
-        color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+        color: "solid" as const,
         label: t("status.lookingFor"),
       },
     };
@@ -39,11 +40,9 @@ export function GameImportCard({ game, index, isSelected, onSelect }: GameImport
     if (!config) return null;
 
     return (
-      <span
-        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${config.color}`}
-      >
+      <Badge status="primary" variant={config.color}>
         {config.label}
-      </span>
+      </Badge>
     );
   };
 
@@ -51,9 +50,9 @@ export function GameImportCard({ game, index, isSelected, onSelect }: GameImport
     if (!media) return null;
 
     return (
-      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+      <Badge status="secondary" variant="soft">
         {media === "DIGITAL" ? t("media.digital") : t("media.physical")}
-      </span>
+      </Badge>
     );
   };
 
@@ -82,6 +81,13 @@ export function GameImportCard({ game, index, isSelected, onSelect }: GameImport
               <div className="flex items-center space-x-2 mt-1">
                 {getStatusBadge(game.status)}
                 {getMediaBadge(game.media)}
+                {game.platform && (
+                  <>
+                    <Badge status="secondary" variant="outline">
+                      {game.platform}
+                    </Badge>
+                  </>
+                )}
                 {game.price && (
                   <span className="text-sm text-gray-600 dark:text-gray-400">R$ {game.price}</span>
                 )}
@@ -92,14 +98,7 @@ export function GameImportCard({ game, index, isSelected, onSelect }: GameImport
               #{index + 1}
             </span>
           </div>
-          {game.platform && (
-            <div className="mt-2">
-              <span className="text-gray-600 dark:text-gray-400">{t("details.platform")}: </span>
-              <span className="font-medium text-gray-900 dark:text-white">{game.platform}</span>
-            </div>
-          )}
 
-          {/* Detalhes */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
             {game.progress !== undefined && (
               <div>

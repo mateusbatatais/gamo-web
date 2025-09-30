@@ -1,4 +1,4 @@
-// GameImportMatchCard.tsx
+// GameImportMatchCard.tsx - VERSÃO OTIMIZADA
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -25,6 +25,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     findBestPlatformMatch,
     getPlatformOptions,
     isLoading: platformsLoading,
+    platformsMap,
   } = usePlatformMatching();
 
   const [showSearchModal, setShowSearchModal] = useState(false);
@@ -48,7 +49,6 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
       const bestMatch = findBestPlatformMatch(match.userPlatform);
       if (bestMatch) {
         setSelectedPlatformId(bestMatch.id.toString());
-        // Auto-save da plataforma sugerida
         updatePlatform(bestMatch.id.toString());
       }
     }
@@ -60,6 +60,10 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
   ]);
 
   const platformOptions = getPlatformOptions();
+  const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 0;
+  const selectedPlatformName = selectedPlatformId
+    ? platformsMap[parseInt(selectedPlatformId)]
+    : null;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -85,7 +89,6 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     setIsLoading(true);
     try {
       if (gameId) {
-        // Atualizar com novo jogo
         await apiFetch(`/user-games-import/match/${matchId}/game`, {
           method: "PUT",
           body: { gameId },
@@ -93,14 +96,12 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
         setCurrentStatus("CONFIRMED");
         if (game) setCurrentGame(game);
       } else {
-        // Marcar como skipped
         await apiFetch(`/user-games-import/match/${matchId}/confirm`, {
           method: "PUT",
           body: { confirmedGameId: null },
         });
         setCurrentStatus("SKIPPED");
       }
-
       onConfirm(matchId, gameId, game);
     } catch (error) {
       console.error("Error updating match:", error);
@@ -109,7 +110,6 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     }
   };
 
-  // Função para atualizar plataforma (NOVA)
   const updatePlatform = async (platformId: string) => {
     setPlatformLoading(true);
     try {
@@ -135,186 +135,198 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     setShowSearchModal(false);
   };
 
-  const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 0;
+  // Função para renderizar dados do usuário de forma compacta
+  const renderUserDataCompact = () => {
+    if (!match.userData || currentStatus === "SKIPPED") return null;
+
+    const hasData =
+      match.userData.status ||
+      match.userData.media ||
+      match.userData.progress ||
+      match.userData.rating;
+    if (!hasData) return null;
+
+    return (
+      <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400">
+        {match.userData.status && (
+          <span className="flex items-center gap-1">
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              {t(`statusValues.${match.userData.status.toLowerCase()}`)}
+            </span>
+          </span>
+        )}
+        {match.userData.media && (
+          <span className="flex items-center gap-1">
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              {t(`mediaValues.${match.userData.media.toLowerCase()}`)}
+            </span>
+          </span>
+        )}
+        {match.userData.progress !== undefined && (
+          <span className="flex items-center gap-1">
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              {match.userData.progress}/10
+            </span>
+          </span>
+        )}
+        {match.userData.rating !== undefined && (
+          <span className="flex items-center gap-1">
+            <span className="font-medium text-gray-700 dark:text-gray-300">
+              ⭐{match.userData.rating}
+            </span>
+          </span>
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
-      <Card className="p-4 mb-4">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <h3 className="font-medium text-gray-900 dark:text-white mb-1">{match.rawInput}</h3>
-            <span
-              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(currentStatus)}`}
-            >
-              {getStatusText(currentStatus)}
-              {match.confidence && currentStatus === "PENDING" && ` (${confidencePercentage}%)`}
-            </span>
+      <Card className="p-3 mb-3">
+        {/* Header Compacto */}
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-medium text-gray-900 dark:text-white truncate text-sm">
+                {match.rawInput}
+              </h3>
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(currentStatus)}`}
+              >
+                {getStatusText(currentStatus)}
+                {match.confidence && currentStatus === "PENDING" && ` (${confidencePercentage}%)`}
+              </span>
+            </div>
+            {renderUserDataCompact()}
           </div>
         </div>
 
-        {/* Jogo Atual - ORIGINAL MANTIDO */}
+        {/* Jogo e Plataforma em Linha Única */}
         {currentGame && currentStatus !== "SKIPPED" && (
-          <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {currentStatus === "CONFIRMED" ? t("selectedGame") : t("suggestedMatch")}
-              </span>
-              {match.confidence && currentStatus === "PENDING" && (
-                <span
-                  className={`text-xs font-medium ${
-                    match.confidence > 0.8
-                      ? "text-green-600"
-                      : match.confidence > 0.6
-                        ? "text-yellow-600"
-                        : "text-red-600"
-                  }`}
-                >
-                  {confidencePercentage}% {t("confidence")}
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 flex-shrink-0">
+          <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 dark:bg-gray-800 rounded">
+            {/* Jogo */}
+            <div className="flex items-center space-x-2 flex-1 min-w-0">
+              <div className="w-8 h-8 flex-shrink-0">
                 <ImageWithFallback
                   src={currentGame.imageUrl}
                   alt={currentGame.name}
-                  width={48}
-                  height={48}
-                  fallbackClassName="bg-gray-200 dark:bg-gray-700 w-12 h-12 flex items-center justify-center rounded"
+                  width={32}
+                  height={32}
+                  fallbackClassName="bg-gray-200 dark:bg-gray-700 w-8 h-8 flex items-center justify-center rounded text-xs"
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900 dark:text-white truncate">
+                <p className="font-medium text-gray-900 dark:text-white truncate text-sm">
                   {currentGame.name}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                  {currentGame.slug}
-                </p>
+                {match.confidence && currentStatus === "PENDING" && (
+                  <p
+                    className={`text-xs ${
+                      match.confidence > 0.8
+                        ? "text-green-600"
+                        : match.confidence > 0.6
+                          ? "text-yellow-600"
+                          : "text-red-600"
+                    }`}
+                  >
+                    {confidencePercentage}% {t("confidence")}
+                  </p>
+                )}
               </div>
             </div>
-          </div>
-        )}
 
-        {/* Seletor de Plataforma - NOVO (adicionado após o jogo) */}
-        {(match.userPlatform || platformOptions.length > 0) && currentStatus !== "SKIPPED" && (
-          <div className="mb-4 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
-                {t("platform")}
-              </span>
-              {match.userPlatform && (
-                <span className="text-xs text-purple-600 dark:text-purple-400">
-                  {t("originalPlatform")}: {match.userPlatform}
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <div className="flex-1">
-                <Select
-                  label={t("selectPlatform")}
-                  options={[{ value: "", label: t("noPlatform") }, ...platformOptions]}
-                  value={selectedPlatformId}
-                  onChange={(e) => {
-                    setSelectedPlatformId(e.target.value);
-                    updatePlatform(e.target.value);
-                  }}
-                  disabled={platformLoading || platformsLoading}
-                  size="sm"
-                />
+            {/* Plataforma Compacta */}
+            {(match.userPlatform || platformOptions.length > 0) && (
+              <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                {currentStatus === "CONFIRMED" && selectedPlatformName ? (
+                  // Plataforma como texto quando confirmado
+                  <div className="text-right">
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Plataforma</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {selectedPlatformName}
+                    </p>
+                  </div>
+                ) : (
+                  // Seletor de plataforma quando pendente
+                  <div className="w-42">
+                    <Select
+                      options={[{ value: "", label: "Plataforma" }, ...platformOptions]}
+                      value={selectedPlatformId}
+                      onChange={(e) => {
+                        setSelectedPlatformId(e.target.value);
+                        updatePlatform(e.target.value);
+                      }}
+                      disabled={
+                        platformLoading || platformsLoading || currentStatus === "CONFIRMED"
+                      }
+                      size="sm"
+                    />
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Dados do Usuário - ORIGINAL MANTIDO */}
-        {match.userData && currentStatus !== "SKIPPED" && (
-          <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-2 block">
-              {t("userData")}
-            </span>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {match.userData.status && (
-                <div>
-                  <span className="text-gray-600 dark:text-gray-400">{t("fields.status")}: </span>
-                  <span className="font-medium capitalize">
-                    {t(`statusValues.${match.userData.status.toLowerCase()}`)}
-                  </span>
-                </div>
-              )}
-              {match.userData.media && (
-                <div>
-                  <span className="text-gray-600 dark:text-gray-400">{t("fields.media")}: </span>
-                  <span className="font-medium capitalize">
-                    {t(`mediaValues.${match.userData.media.toLowerCase()}`)}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Ações - ORIGINAL MANTIDO */}
-        {currentStatus === "PENDING" && (
-          <div className="flex flex-wrap gap-2">
-            {currentGame && (
-              <Button
-                type="button"
-                variant="primary"
-                size="sm"
-                onClick={() => updateMatch(match.id, currentGame.id)}
-                loading={isLoading}
-                label={t("actions.confirmMatch")}
-              />
             )}
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => setShowSearchModal(true)}
-              loading={isLoading}
-              label={t("actions.searchAlternatives")}
-            />
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => updateMatch(match.id, null)}
-              loading={isLoading}
-              label={t("actions.skipGame")}
-            />
           </div>
         )}
 
-        {currentStatus !== "PENDING" && (
-          <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => handleReopen(match.id)}
-              loading={isLoading}
-              label={t("actions.reopen")}
-            />
-
-            {currentStatus === "CONFIRMED" && (
+        {/* Ações Compactas */}
+        <div className="flex flex-wrap gap-1.5">
+          {currentStatus === "PENDING" && (
+            <>
+              {currentGame && (
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="sm"
+                  onClick={() => updateMatch(match.id, currentGame.id)}
+                  loading={isLoading}
+                  label={t("actions.confirmMatch")}
+                />
+              )}
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => setShowSearchModal(true)}
                 loading={isLoading}
-                label={t("actions.changeGame")}
+                label={t("actions.search")}
               />
-            )}
-          </div>
-        )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => updateMatch(match.id, null)}
+                loading={isLoading}
+                label={t("actions.skip")}
+              />
+            </>
+          )}
+
+          {currentStatus !== "PENDING" && (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => handleReopen(match.id)}
+                loading={isLoading}
+                label={t("actions.reopen")}
+              />
+              {currentStatus === "CONFIRMED" && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSearchModal(true)}
+                  loading={isLoading}
+                  label={t("actions.change")}
+                />
+              )}
+            </>
+          )}
+        </div>
       </Card>
 
-      {/* Modal de Busca - ORIGINAL MANTIDO */}
+      {/* Modal de Busca */}
       {showSearchModal && (
         <GameSearchModal
           searchTerm={match.rawInput}

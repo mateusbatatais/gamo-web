@@ -175,40 +175,38 @@ export function GameImportWizard() {
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center space-x-4">
-            {["upload", "review", "confirmation"].map((step, index) => (
-              <div key={step} className="flex items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    currentStep === step
-                      ? "bg-primary-500 text-white"
-                      : currentStep > step
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-                  }`}
-                >
-                  {index + 1}
-                </div>
-                <span
-                  className={`ml-2 text-sm font-medium ${
-                    currentStep === step
-                      ? "text-primary-600 dark:text-primary-400"
-                      : "text-gray-500 dark:text-gray-400"
-                  }`}
-                >
-                  {t(`steps.${step}`)}
-                </span>
-                {index < 2 && (
-                  <div
-                    className={`w-12 h-0.5 mx-4 ${
-                      currentStep > step ? "bg-green-500" : "bg-gray-200 dark:bg-gray-700"
-                    }`}
-                  />
-                )}
+        <div className="flex items-center gap-4 mb-6 justify-center flex-wrap">
+          {["upload", "review", "confirmation"].map((step, index) => (
+            <div key={step} className="flex items-center">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === step
+                    ? "bg-primary-500 text-white"
+                    : currentStep > step
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                }`}
+              >
+                {index + 1}
               </div>
-            ))}
-          </div>
+              <span
+                className={`ml-2 text-sm font-medium ${
+                  currentStep === step
+                    ? "text-primary-600 dark:text-primary-400"
+                    : "text-gray-500 dark:text-gray-400"
+                }`}
+              >
+                {t(`steps.${step}`)}
+              </span>
+              {index < 2 && (
+                <div
+                  className={`w-12 h-0.5 mx-4 hidden sm:block ${
+                    currentStep > step ? "bg-green-500" : "bg-gray-200 dark:bg-gray-700"
+                  }`}
+                />
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Step Content */}

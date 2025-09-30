@@ -684,22 +684,26 @@
       "templateTitle": "Spreadsheet Template",
       "templateDescription": "Download our template to ensure the correct format",
       "downloadTemplate": "Download Template",
-      "columnsGuide": "Columns Guide",
       "requiredColumns": "Required Columns",
       "optionalColumns": "Optional Columns",
-      "columns": {
-        "gameName": "Game name (required)",
-        "status": "OWNED, SELLING or LOOKING_FOR",
-        "platform": "Platform name (e.g. PlayStation 4, Xbox One, Nintendo Switch)",
-        "progress": "0 to 10",
-        "rating": "0 to 10",
-        "media": "PHYSICAL or DIGITAL",
-        "price": "Price in BRL",
-        "hasBox": "true or false",
-        "hasManual": "true or false",
-        "condition": "NEW, USED or REFURBISHED",
-        "acceptsTrade": "true or false",
-        "description": "Optional description"
+      "columnsGuide": "Spreadsheet Structure",
+      "requiredInfo": {
+        "title": "Important Information",
+        "description": "Only the 'gameName' column is required. All other columns are optional. Hover over the ℹ️ icons to see the available options for each column."
+      },
+      "tooltips": {
+        "gameName": "Game name (REQUIRED)",
+        "platform": "Game platform. E.g.: PlayStation 4, Xbox One, Nintendo Switch, PC",
+        "status": "Collection status: OWNED, SELLING, LOOKING_FOR",
+        "progress": "Game progress (0 to 10). 0 = not started, 10 = completed",
+        "rating": "Your personal rating for the game (0 to 10)",
+        "media": "Media type: PHYSICAL, DIGITAL",
+        "price": "Price in BRL (only for games for sale). Leave empty if not selling",
+        "hasBox": "Has box? Values: true, false, yes, no, 1, 0",
+        "hasManual": "Has manual? Values: true, false, yes, no, 1, 0",
+        "condition": "Item condition: NEW, USED, REFURBISHED",
+        "acceptsTrade": "Accepts trade? Values: true, false, yes, no, 1, 0",
+        "description": "Description, notes, or additional details about the item"
       }
     },
 
@@ -778,6 +782,9 @@
         "cancelImport": "Cancel Import",
         "confirmAtLeastOne": "Confirm at least one game",
         "confirmMatch": "Confirm Match",
+        "search": "Search",
+        "skip": "Skip",
+        "change": "Change",
         "searchAlternatives": "Search Alternatives",
         "skipGame": "Skip Import",
         "reopen": "Reopen",

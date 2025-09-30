@@ -681,22 +681,26 @@
       "templateTitle": "Template de Planilha",
       "templateDescription": "Baixe nosso template para garantir o formato correto",
       "downloadTemplate": "Baixar Template",
-      "columnsGuide": "Guia de Colunas",
       "requiredColumns": "Colunas Obrigatórias",
       "optionalColumns": "Colunas Opcionais",
-      "columns": {
-        "gameName": "Nome do jogo (obrigatório)",
-        "status": "OWNED, SELLING ou LOOKING_FOR",
-        "platform": "Nome da plataforma (ex: PlayStation 4, Xbox One, Nintendo Switch)",
-        "progress": "0 a 10",
-        "rating": "0 a 10",
-        "media": "PHYSICAL ou DIGITAL",
-        "price": "Valor em reais",
-        "hasBox": "true ou false",
-        "hasManual": "true ou false",
-        "condition": "NEW, USED ou REFURBISHED",
-        "acceptsTrade": "true ou false",
-        "description": "Descrição opcional"
+      "columnsGuide": "Estrutura da Planilha",
+      "requiredInfo": {
+        "title": "Informações Importantes",
+        "description": "Apenas a coluna 'gameName' é obrigatória. Todas as outras colunas são opcionais. Passe o mouse sobre os ícones ℹ️ para ver as opções disponíveis em cada coluna."
+      },
+      "tooltips": {
+        "gameName": "Nome do jogo (OBRIGATÓRIO)",
+        "platform": "Plataforma do jogo. Ex: PlayStation 4, Xbox One, Nintendo Switch, PC",
+        "status": "Status na coleção: OWNED (tenho), SELLING (vendendo), LOOKING_FOR (procurando)",
+        "progress": "Progresso no jogo (0 a 10). 0 = não iniciado, 10 = completado",
+        "rating": "Sua nota pessoal para o jogo (0 a 10)",
+        "media": "Tipo de mídia: PHYSICAL (físico), DIGITAL (digital)",
+        "price": "Preço em reais (apenas para jogos à venda). Deixe vazio se não for vender",
+        "hasBox": "Tem caixa? Valores: true, false, sim, não, 1, 0",
+        "hasManual": "Tem manual? Valores: true, false, sim, não, 1, 0",
+        "condition": "Condição do item: NEW (novo), USED (usado), REFURBISHED (reformado)",
+        "acceptsTrade": "Aceita troca? Valores: true, false, sim, não, 1, 0",
+        "description": "Descrição, observações ou detalhes adicionais sobre o item"
       }
     },
 
@@ -774,7 +778,10 @@
         "importGames": "Importar {count} Jogo{count, plural, one {} other {s}}",
         "cancelImport": "Cancelar Importação",
         "confirmAtLeastOne": "Confirme pelo menos um jogo",
-        "confirmMatch": "Confirmar Match",
+        "confirmMatch": "Confirmar",
+        "search": "Buscar",
+        "skip": "Pular",
+        "change": "Alterar",
         "searchAlternatives": "Buscar Alternativas",
         "skipGame": "Não Importar",
         "reopen": "Reabrir",
