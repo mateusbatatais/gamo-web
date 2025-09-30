@@ -121,11 +121,10 @@ export default function AddGamePage() {
     }
   };
 
-  // Converter plataformas do jogo para opções do select
   const platformOptions: SelectOption[] =
     gameDetails?.platforms?.map((platformId) => ({
       value: platformId.toString(),
-      label: platformsMap[platformId], // Você pode querer mapear para nomes reais
+      label: platformsMap[platformId],
     })) || [];
 
   const autocompleteItems: AutoCompleteItem[] =
