@@ -288,12 +288,15 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
           <div className=" py-12">
             <p className="text-center text-gray-500 dark:text-gray-400 mb-4">{t("noGames")}</p>
             {isOwner && (
-              <EmptyCard
-                text={t("txtGame")}
-                buttonLabel={t("txtAddGame")}
-                buttonLink="/user/collection/games/add/"
-                viewMode="list"
-              />
+              <>
+                <EmptyCard
+                  text={t("txtGame")}
+                  buttonLabel={t("txtAddGame")}
+                  buttonLink="/user/collection/games/add/"
+                  viewMode="list"
+                  isGame={true}
+                />
+              </>
             )}
           </div>
         </Card>
@@ -320,6 +323,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
                       buttonLabel={t("txtAddGame")}
                       buttonLink="/user/collection/games/add/"
                       viewMode="table"
+                      isGame={true}
                     />
                   )}
                   {games.map((game: UserGame) => (
@@ -337,6 +341,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
                   buttonLabel={t("txtAddGame")}
                   buttonLink="/user/collection/games/add/"
                   viewMode="list"
+                  isGame={true}
                 />
               )}
               {games.map((game: UserGame) => (
@@ -360,6 +365,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
                       buttonLabel={t("txtAddGame")}
                       buttonLink="/user/collection/games/add/"
                       viewMode="compact"
+                      isGame={true}
                     />
                   )}
                   {games.map((game: UserGame) => (
@@ -379,6 +385,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
                       buttonLabel={t("txtAddGame")}
                       buttonLink="/user/collection/games/add/"
                       viewMode="card"
+                      isGame={true}
                     />
                   )}
                   {games.map((game: UserGame) => (

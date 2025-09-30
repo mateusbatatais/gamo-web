@@ -1,8 +1,9 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { Card } from "@/components/atoms/Card/Card";
+import { Button } from "@/components/atoms/Button/Button";
+import { useRouter } from "next/navigation";
 
 interface EmptyCardProps {
   text: string;
@@ -10,6 +11,7 @@ interface EmptyCardProps {
   buttonLink: string;
   viewMode?: "card" | "table" | "list" | "compact";
   space?: boolean;
+  isGame?: boolean;
 }
 
 export const EmptyCard = ({
@@ -18,7 +20,10 @@ export const EmptyCard = ({
   buttonLink,
   viewMode = "card",
   space = false,
+  isGame = false,
 }: EmptyCardProps) => {
+  const router = useRouter();
+
   // Versão Compact
   if (viewMode === "compact") {
     return (
@@ -30,13 +35,19 @@ export const EmptyCard = ({
           </div>
         </div>
 
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
-          <Link
-            href={buttonLink}
-            className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-xs font-medium"
-          >
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 z-10">
+          <Button variant="primary" onClick={() => router.push(buttonLink)} size="sm">
             {buttonLabel}
-          </Link>
+          </Button>
+          {isGame && (
+            <Button
+              variant="secondary"
+              onClick={() => router.push(`/user/collection/games/import`)}
+              size="sm"
+            >
+              Importar em massa
+            </Button>
+          )}
         </div>
       </Card>
     );
@@ -58,13 +69,18 @@ export const EmptyCard = ({
               </div>
             </div>
 
-            <div className="flex justify-start mt-3">
-              <Link
-                href={buttonLink}
-                className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
-              >
+            <div className="flex justify-start mt-3 gap-2">
+              <Button variant="primary" onClick={() => router.push(buttonLink)}>
                 {buttonLabel}
-              </Link>
+              </Button>
+              {isGame && (
+                <Button
+                  variant="secondary"
+                  onClick={() => router.push(`/user/collection/games/import`)}
+                >
+                  Importar em massa
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -89,18 +105,20 @@ export const EmptyCard = ({
           </div>
         </td>
 
-        <td className="p-2"></td>
-        <td className="p-2"></td>
-        <td className="p-2"></td>
-        <td className="p-2"></td>
-
-        <td className="p-2">
-          <Link
-            href={buttonLink}
-            className="px-3 py-1.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-xs font-medium"
-          >
+        <td className="p-2 text-end" colSpan={4}>
+          <Button variant="primary" onClick={() => router.push(buttonLink)} size="sm">
             {buttonLabel}
-          </Link>
+          </Button>
+          {isGame && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="ms-2"
+              onClick={() => router.push(`/user/collection/games/import`)}
+            >
+              Importar em massa
+            </Button>
+          )}
         </td>
       </tr>
     );
@@ -117,13 +135,18 @@ export const EmptyCard = ({
       </div>
 
       <div className="p-4">
-        <div className="flex justify-center">
-          <Link
-            href={buttonLink}
-            className="px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors text-sm font-medium"
-          >
+        <div className="flex justify-center flex-col gap-2">
+          <Button variant="primary" onClick={() => router.push(buttonLink)}>
             {buttonLabel}
-          </Link>
+          </Button>
+          {isGame && (
+            <Button
+              variant="secondary"
+              onClick={() => router.push(`/user/collection/games/import`)}
+            >
+              Importar em massa
+            </Button>
+          )}
         </div>
       </div>
     </div>
