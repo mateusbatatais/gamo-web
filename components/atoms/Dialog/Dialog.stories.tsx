@@ -18,18 +18,33 @@ const meta: Meta<typeof Dialog> = {
       options: ["icon", "text"],
     },
   },
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: "/",
+        query: {},
+      },
+    },
+  },
 };
 
 export default meta;
 type Story = StoryObj<typeof Dialog>;
 
+// Wrapper para stories que não dependem de URL
 const DialogWrapper = (args: React.ComponentProps<typeof Dialog>) => {
   const [open, setOpen] = useState(false);
 
   return (
     <div>
       <Button label="Abrir Dialog" onClick={() => setOpen(true)} />
-      <Dialog {...args} open={open} onClose={() => setOpen(false)} />
+      <Dialog
+        {...args}
+        open={open}
+        onClose={() => setOpen(false)}
+        modalId={undefined} // Não usar modalId para evitar dependência de URL
+      />
     </div>
   );
 };
