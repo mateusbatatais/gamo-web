@@ -2,30 +2,19 @@ name: Manter Servidor Ativo
 
 on:
   schedule:
-    - cron: "*/9 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
   ping-server:
     runs-on: ubuntu-latest
     steps:
-      - name: Acordar servidor com múltiplas tentativas
+      - name: Manter servidor ativo
         run: |
-          echo "Iniciando processo para acordar o servidor..."
+          echo "🔔 Enviando ping para manter servidor ativo..."
 
-          # Primeira tentativa - pode dar timeout (isso é normal)
-          echo "1ª tentativa (pode dar timeout)..."
-          curl -s --max-time 30 "https://gamo-api.onrender.com/api/consoles" || echo "Primeira tentativa: servidor acordando..."
+          # Simplesmente tenta fazer a requisição, ignora erros
+          curl -s --max-time 120 "https://gamo-api.onrender.com/api/consoles" || true
 
-          # Aguarda o servidor inicializar
-          sleep 15
-
-          # Segunda tentativa - deve funcionar
-          echo "2ª tentativa..."
-          response=$(curl -s --max-time 30 -w "%{http_code}" "https://gamo-api.onrender.com/api/consoles")
-
-          if [ "$response" = "200" ]; then
-            echo "✅ Servidor ativo e respondendo!"
-          else
-            echo "📡 Resposta do servidor: $response"
-          fi
+          echo "📞 Requisição enviada - servidor deve permanecer ativo"
+          echo "✅ Workflow concluído com sucesso"
