@@ -2,6 +2,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
 import sonarjsPlugin from "eslint-plugin-sonarjs";
+import unusedImportsPlugin from "eslint-plugin-unused-imports";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -36,6 +37,55 @@ const eslintConfig = [
       "sonarjs/prefer-object-literal": "warn",
       "sonarjs/prefer-single-boolean-return": "warn",
       "sonarjs/prefer-while": "warn",
+    },
+  },
+
+  // Configuração para detectar código não utilizado
+  {
+    plugins: {
+      "unused-imports": unusedImportsPlugin,
+    },
+    rules: {
+      // Remove imports não utilizados automaticamente
+      "unused-imports/no-unused-imports": "error",
+
+      // Detecta variáveis não utilizadas (incluindo componentes)
+      "unused-imports/no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_", // Ignora variáveis que começam com _
+          args: "after-used",
+          argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+
+      // Regras nativas do ESLint para código não utilizado
+      "no-unused-vars": "off", // Desativa a regra nativa para usar a do plugin
+      "react/no-unused-state": "error",
+      "react/no-unused-prop-types": "warn",
+
+      // Detecta componentes não utilizados especificamente
+      "@typescript-eslint/no-unused-vars": "off", // Desativa para usar a do plugin
+    },
+  },
+
+  // Configuração específica para arquivos React
+  {
+    files: ["**/*.jsx", "**/*.tsx"],
+    rules: {
+      "unused-imports/no-unused-vars": [
+        "error",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_",
+          args: "after-used",
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
     },
   },
 ];
