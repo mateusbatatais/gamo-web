@@ -1,30 +1,15 @@
-name: Ping Render app
+name: Manter Servidor Ativo
 
 on:
   schedule:
-    - cron: "* * * * *"
-  workflow_dispatch:
+    - cron: "*/9 * * * *"
 
 jobs:
-  ping:
+  ping-server:
     runs-on: ubuntu-latest
     steps:
-      - name: Decide randomly
-        run: |
-          # número aleatório entre 1 e 14
-          MIN=$((1 + RANDOM % 14))
-          echo "Random minute chosen: $MIN"
-
-          # minuto atual (sem zero à esquerda)
-          CURRENT_MINUTE=$(date +'%M' | sed 's/^0*//')
-
-          echo "Current minute: $CURRENT_MINUTE"
-
-          if [ "$CURRENT_MINUTE" -ne "$MIN" ]; then
-            echo "Not the chosen minute, skipping..."
-            exit 0
-          fi
-
-      - name: Curl health
-        run: |
-          curl -fsS --max-time 10 https://gamo-api.onrender.com/api/consoles || true
+      - name: Fazer requisição para a API
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://gamo-api.onrender.com/api/consoles"
+          method: "GET"
