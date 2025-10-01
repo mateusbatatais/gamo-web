@@ -15,7 +15,7 @@ export interface AutoCompleteItem {
   [key: string]: string | number | boolean | null | undefined;
 }
 
-interface AutoCompleteProps extends Omit<InputProps, "onChange" | "value"> {
+export interface AutoCompleteProps extends Omit<InputProps, "onChange" | "value"> {
   items: AutoCompleteItem[];
   onItemSelect: (item: AutoCompleteItem) => void;
   onSearch: (query: string) => void;
@@ -131,6 +131,7 @@ export const AutoComplete = ({
             items.map((item) => (
               <button
                 key={item.id}
+                test-id="auto-complete-item"
                 type="button"
                 className="w-full text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-b border-gray-100 dark:border-gray-600 last:border-b-0"
                 onClick={() => handleSelect(item)}
