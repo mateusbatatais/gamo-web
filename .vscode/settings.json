@@ -4,6 +4,29 @@
   "i18n-ally.keysInUse": [
     "PublicProfile.status.lookingFor",
     "PublicProfile.status.owned",
-    "PublicProfile.status.selling"
+    "PublicProfile.status.selling",
+    "DonationPhrases.dropCoins",
+    "DonationPhrases.sponsorConsole",
+    "DonationPhrases.sponsorGame",
+    "DonationPhrases.supportQuest",
+    "DonationPhrases.stockInventory",
+    "DonationPhrases.refillMana",
+    "DonationPhrases.helpLevelUp",
+    "CardActions.market",
+    "CardActions.removeFromFavorites",
+    "CardActions.addToFavorites",
+    "CardActions.addToCollection",
+    "TradeForm.condition",
+    "TradeForm.hasManual",
+    "TradeForm.price",
+    "TradeForm.acceptsTrade",
+    "TradeForm.hasBox",
+    "TradeForm.addPhoto",
+    "TradeForm.pricePlaceholder",
+    "TradeForm.publish",
+    "TradeForm.extras",
+    "GameImport.steps.upload",
+    "GameImport.steps.review",
+    "GameImport.steps.confirmation"
   ]
 }

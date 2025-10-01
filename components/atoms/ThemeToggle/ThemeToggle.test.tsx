@@ -32,6 +32,7 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "light",
       setTheme: mockSetTheme,
+      resolvedTheme: "light",
     });
   });
 
@@ -44,6 +45,7 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "dark",
       setTheme: mockSetTheme,
+      resolvedTheme: "dark",
     });
     render(<ThemeToggle />);
     expect(screen.getByTestId("sun-icon")).toBeInTheDocument();
@@ -53,6 +55,7 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "system",
       setTheme: mockSetTheme,
+      resolvedTheme: "light",
     });
     render(<ThemeToggle />);
     expect(screen.getByTestId("monitor-icon")).toBeInTheDocument();
@@ -68,6 +71,7 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "dark",
       setTheme: mockSetTheme,
+      resolvedTheme: "dark",
     });
     render(<ThemeToggle />);
     fireEvent.click(screen.getByRole("button"));
@@ -78,6 +82,7 @@ describe("ThemeToggle component", () => {
     vi.mocked(useTheme).mockReturnValue({
       theme: "system",
       setTheme: mockSetTheme,
+      resolvedTheme: "dark",
     });
     render(<ThemeToggle />);
     fireEvent.click(screen.getByRole("button"));

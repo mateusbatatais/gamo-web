@@ -1,10 +1,4 @@
 {
-  "dashboard": {
-    "title": "Painel do Usuário",
-    "welcome": "Bem-vindo, {name}!",
-    "email": "E-mail: {email}",
-    "role": "Perfil: {role}"
-  },
   "DonationModal": {
     "title": "Fazer uma doação",
     "subtitle": "Ajude a manter nossa plataforma",
@@ -29,44 +23,37 @@
     "paymentSecurityDescription": "Seus dados estão protegidos com criptografia de ponta a ponta",
     "cpf": "CPF (opcional)",
     "cpfHelp": "Informe seu CPF para ajudar na prevenção de fraudes",
-    "paymentMethodTitle": "Escolha a Forma de Pagamento",
-    "paymentMethodSubtitle": "Selecione como deseja realizar sua doação",
     "creditCard": "Cartão de Crédito",
     "creditCardDescription": "Pagamento seguro via Stripe",
     "pix": "PIX",
     "pixDescription": "Pagamento instantâneo - Copie e cole a chave PIX",
     "pixTitle": "Pagamento via PIX",
     "pixSubtitle": "Utilize o QR Code ou a chave PIX para realizar o pagamento",
-    "pixAmount": "Valor a ser pago:",
     "pixKeyLabel": "Chave PIX (Copie e cole):",
     "pixQrCodeAlt": "QR Code PIX",
-    "pixInstructions": "Importante: O pagamento pode levar alguns minutos para ser confirmado. Após realizar o pagamento, clique em \"Já realizei o pagamento\".",
-    "pixInitiated": "Pagamento PIX iniciado! Verifique as informações para realizar a transferência.",
     "pixKeyCopied": "Chave PIX copiada para a área de transferência!",
     "pixKeyCopyError": "Erro ao copiar a chave PIX",
     "pixConfirmedButton": "Já realizei o pagamento",
     "pixImportantNote": "Importante: Você pode escolher qualquer valor ao fazer o pagamento. Após completar a transferência, clique no botão de confirmação abaixo.",
     "invalidCpf": "CPF inválido",
-    "cpfPlaceholder": "000.000.000-00"
+    "cpfPlaceholder": "000.000.000-00",
+    "paymentConfirmationError": "Erro ao confirmar pagamento"
   },
   "PaymentSuccess": {
     "title": "Obrigado pela sua doação!",
-    "amount": "R$ {{amount}}",
     "message": "Sua contribuição ajuda a manter nossa plataforma e criar mais conteúdo de qualidade.",
     "impactMessage": "Com sua ajuda, podemos continuar desenvolvendo recursos incríveis para a comunidade.",
-    "shareButton": "Compartilhar",
-    "homeButton": "Página Inicial",
-    "shareTitle": "Fiz uma doação para o Gamo Games!",
-    "shareText": "Acabei de doar R$ {{amount}} para apoiar o Gamo Games. Junte-se a mim nessa causa!"
+    "homeButton": "Página Inicial"
   },
   "StripePaymentForm": {
-    "donationAmount": "Valor da doação: R$ {amount}",
     "cancelButton": "Cancelar",
     "processingButton": "Processando...",
-    "donateButton": "Doar R$ {amount}"
+    "donateButton": "Doar R$ {amount}",
+    "paymentProcessing": "Pagamento processando",
+    "paymentFailed": "Pagamento falhou",
+    "paymentError": "Erro no pagamento"
   },
   "common": {
-    "logout": "Sair",
     "loading": "Carregando...",
     "error": "Ocorreu um erro",
     "siteName": "Gamo",
@@ -75,15 +62,9 @@
     "siteKeywords": "jogos,coleções, gamer"
   },
   "Breadcrumbs": {
-    "game": "Jogo",
     "game-catalog": "Catálogo de Jogos",
     "console-catalog": "Catálogo de Consoles",
-    "accessory-catalog": "Catálogo de Acessórios",
-    "accessories": "Acessórios",
-    "skins": "Skins",
-    "collections": "Coleções",
-    "profile": "Perfil",
-    "settings": "Configurações"
+    "accessory-catalog": "Catálogo de Acessórios"
   },
   "filters": {
     "label": "Filtros",
@@ -104,28 +85,15 @@
       "label": "Filtrar por Geração"
     },
     "genres": {
-      "label": "Gêneros",
-      "action": "Ação",
-      "adventure": "Aventura",
-      "rpg": "RPG",
-      "strategy": "Estratégia",
-      "sports": "Esportes"
+      "label": "Gêneros"
     },
     "platforms": {
-      "label": "Plataformas",
-      "pc": "PC",
-      "playstation": "PlayStation",
-      "xbox": "Xbox",
-      "nintendo": "Nintendo",
-      "mobile": "Mobile"
+      "label": "Plataformas"
     },
     "mediaFormats": {
       "label": "Media Formats"
     },
-    "retroCompatible": {
-      "label": "Retro Compatible",
-      "description": "Show only retro compatible consoles"
-    },
+    "retroCompatible": {},
     "storage": {
       "label": "Armazenamento",
       "upto1gb": "Até 1GB",
@@ -159,17 +127,13 @@
       "title": "Catálogo",
       "consoles": "Consoles",
       "games": "Jogos",
-      "accessories": "Acessórios",
-      "skins": "Skins",
-      "collections": "Coleções"
+      "accessories": "Acessórios"
     },
     "login": "Entrar",
     "myAccount": "Minha Conta",
     "viewProfile": "Ver Perfil",
     "wishlist": "Lista de Desejos",
-    "logout": "Sair",
-    "language": "Idioma",
-    "theme": "Tema"
+    "logout": "Sair"
   },
   "login": {
     "title": "Entrar",
@@ -218,7 +182,6 @@
       "emailExists": "E-mail já cadastrado"
     },
     "errorGeneric": "Falha no cadastro. Por favor, tente novamente.",
-    "emailSendError": "Conta criada, mas não foi possível enviar o e-mail de confirmação. Tente novamente mais tarde.",
     "success": {
       "title": "Cadastro realizado com sucesso!",
       "message": "Enviamos um e-mail de confirmação para {email}. Verifique sua caixa de entrada (ou spam) para ativar sua conta.",
@@ -284,7 +247,6 @@
       "logout": "Sair"
     },
     "overview": {
-      "title": "Visão Geral da Conta",
       "recentActivity": "Atividade Recente",
       "quickActions": "Ações Rápidas",
       "changePassword": "Mudar Senha",
@@ -298,7 +260,6 @@
       "publicProfile": "Perfil Público"
     },
     "detailsForm": {
-      "title": "Dados da Conta",
       "name": "Nome",
       "slug": "Username (apelido)",
       "email": "E-mail",
@@ -306,13 +267,11 @@
       "descriptionPlaceholder": "Conte um pouco sobre você...",
       "saveChanges": "Salvar alterações",
       "saving": "Salvando...",
-      "fetchError": "Falha ao obter dados do usuário.",
       "updateError": "Falha ao atualizar dados.",
       "updateSuccess": "Dados atualizados com sucesso!",
       "selectPhoto": "Selecionar foto"
     },
     "changePasswordForm": {
-      "title": "Alterar Senha",
       "currentPassword": "Senha Atual",
       "newPassword": "Nova Senha",
       "confirmNewPassword": "Confirme Nova Senha",
@@ -331,22 +290,13 @@
   },
   "ConsoleDetails": {
     "catalog": "Catálogo de Consoles",
-    "brand": "Marca",
-    "generation": "Geração",
-    "type": "Tipo",
-    "releaseDate": "Lançamento do console",
     "storage": "Armazenamento",
-    "launchDate": "Lançamento dessa versão",
     "description": "Descrição",
     "noImage": "Imagem não disponível",
     "availableSkins": "Skins Disponíveis",
     "noSkinsAvailable": "Nenhuma skin disponível para esta versão",
     "limitedEdition": "Edição Limitada",
-    "userCollections": "Coleções de Usuários",
-    "collectionsDescription": "Veja como outros colecionadores personalizaram seus consoles",
-    "viewCollections": "Ver Coleções",
     "notFound": "Versão de console não encontrada",
-    "release": "Lançamento console/modelo",
     "allDigital": "All Digital",
     "cpu": "CPU",
     "gpu": "GPU",
@@ -379,40 +329,9 @@
     "noVariantsAvailable": "Nenhuma variante disponível",
     "limitedEdition": "Edição Limitada"
   },
-  "Collection": {
-    "condition": "Condição",
-    "conditionNew": "Novo",
-    "conditionUsed": "Usado",
-    "conditionRefurbished": "Recondicionado",
-    "status": "Status",
-    "statusOwned": "Na minha coleção",
-    "statusSelling": "Vendendo",
-    "statusLookingFor": "Procurando",
-    "price": "Preço",
-    "hasBox": "Possui caixa original",
-    "hasManual": "Possui manual",
-    "acceptsTrade": "Aceita trocas",
-    "description": "Descrição",
-    "descriptionPlaceholder": "Detalhes sobre o item...",
-    "cancel": "Cancelar",
-    "adding": "Adicionando...",
-    "add": "Adicionar",
-    "success": "Item adicionado à coleção com sucesso!",
-    "error": "Erro ao adicionar item à coleção.",
-    "tradeSection": "Compra/Venda/Troca",
-    "mainPhoto": "Foto Principal",
-    "additionalPhotos": "Fotos Adicionais",
-    "addMainPhoto": "Adicionar Foto Principal",
-    "addPhoto": "Adicionar Foto",
-    "statusTrading": "Para Troca",
-    "extras": "Detalhes extras"
-  },
+  "Collection": {},
   "PublicProfile": {
-    "catalog": {
-      "consoles": "Consoles",
-      "games": "Jogos",
-      "accessories": "Acessórios"
-    },
+    "catalog": {},
     "noItemsLookingFor": "Este usuário ainda nao possui itens procurando troca",
     "viewMode": {
       "grid": "Grid",
@@ -425,52 +344,33 @@
     "noConsoles": "Este usuário ainda não adicionou consoles à sua coleção",
     "skin": "Skin",
     "market": "Compra e venda",
-    "favorites": "Favoritos",
     "withBox": "Com caixa",
     "withManual": "Com manual",
-    "acceptsTrade": "Aceita trocas",
     "defaultBio": "Jogador e colecionador de consoles",
-    "totalGames": "Total de Jogos Jogados",
-    "playedThisYear": "Jogados em 2025",
-    "backlog": "Backlog de Jogos",
-    "achievements": "Conquistas",
     "recentlyPlayed": "Jogos Recentemente Jogados",
     "recentlyReviewed": "Jogos Recentemente Avaliados",
     "seeMore": "Ver Mais",
     "readFullReview": "Ler Avaliação Completa",
     "games": "Jogos",
-    "activity": "Atividade",
     "reviews": "Avaliações",
-    "lists": "Listas",
-    "friends": "Amigos",
-    "likes": "Curtidas",
     "status": {
       "owned": "Tenho",
       "selling": "Vendendo",
       "lookingFor": "Procurando"
     },
     "deleteTitle": "Confirmar exclusão",
-    "saving": "Salvando...",
     "deleteMessage": "Tem certeza que deseja remover este item da sua coleção?",
     "deleteConfirm": "Excluir",
-    "deleteSuccess": "Item removido com sucesso",
-    "deleteError": "Erro ao remover o item",
     "editTitle": "Editar Item",
-    "editSuccess": "Item atualizado com sucesso",
     "editItem": "Editar item",
     "deleteItem": "Excluir item",
     "cancel": "Cancelar",
     "noGames": "Nenhum jogo na coleção",
     "gamesCollection": "Coleção de Jogos",
-    "media": {
-      "PHYSICAL": "Físico",
-      "DIGITAL": "Digital"
-    },
-    "rating": "Avaliação",
+    "media": {},
     "searchConsoles": "Buscar consoles...",
     "searchGames": "Buscar jogos...",
     "searchMarket": "Buscar no mercado...",
-    "noMarketItems": "Nenhum item à venda no momento",
     "consolesForSale": "Consoles à venda",
     "gamesForSale": "Jogos à venda",
     "progress": "Progresso",
@@ -488,17 +388,12 @@
       "createdAtDesc": "Data de criação (mais recente)",
       "progressAsc": "Progresso (crescente)",
       "progressDesc": "Progresso (decrescente)",
-      "ratingAsc": "Avaliação (menor primeiro)",
-      "conditionAsc": "Condição (A-Z)",
-      "conditionDesc": "Condição (Z-A)"
+      "ratingAsc": "Avaliação (menor primeiro)"
     },
     "selling": "Vendendo",
     "lookingFor": "Buscando",
     "consolesLookingFor": "Consoles buscados",
     "gamesLookingFor": "Jogos buscados",
-    "totalConsoles": "Total de Consoles",
-    "TotalAccessories": "Total de Acessórios",
-    "addToCollection": "Adiciona item à coleção",
     "txtAccessory": "Tem acessório novo ai? Vamos adicionar!",
     "txtAddAccessory": "Adicionar Acessório",
     "txtConsole": "Tem console novo ai? Vamos adicionar!",
@@ -512,11 +407,11 @@
     "accessoriesLookingFor": "Buscando por acessórios",
     "txtLookForConsole": "Procurando console",
     "txtLookForGame": "Procurando jogo",
-    "txtLookForAccessory": "Procurando acessório"
+    "txtLookForAccessory": "Procurando acessório",
+    "errorLoading": "Erro ao carregar"
   },
   "TradeForm": {
     "mainPhoto": "Foto principal",
-    "addMainPhoto": "Adicionar foto principal",
     "description": "Descrição",
     "descriptionPlaceholder": "Detalhes sobre seu item...",
     "tradeSection": "Detalhes de Troca/Venda",
@@ -540,10 +435,6 @@
     "saving": "Salvando...",
     "saveChanges": "Salvar alterações",
     "addToCollection": "Adicionar à coleção",
-    "createSuccess": "Item adicionado com sucesso!",
-    "editSuccess": "Item atualizado com sucesso!",
-    "error": "Ocorreu um erro",
-    "uploadError": "Erro ao enviar imagem",
     "storageOption": "Armazenamento",
     "publish": "Publicar",
     "media": "Mídia",
@@ -557,9 +448,7 @@
     "platform": "Plataforma",
     "compatibleConsoles": "Consoles compatíveis",
     "noConsoles": "Nenhum console em sua coleção",
-    "includeAccessories": "Adicionar acessorioss",
-    "selectAccessories": "Selecione os acessórios",
-    "noAccessories": "Nenhum acessório disponível para este console"
+    "includeAccessories": "Adicionar acessorioss"
   },
   "SimpleAccessoryForm": {
     "description": "Selecione os consoles da sua coleção que são compatíveis com este acessório:",
@@ -570,11 +459,9 @@
   "SimpleConsoleForm": {
     "storageOption": "Opção de armazenamento",
     "includeAccessories": "Deseja incluir acessórios?",
-    "selectAccessories": "Selecione os acessórios",
     "noAccessories": "Nenhum acessório disponível para este console",
     "cancel": "Cancelar",
-    "add": "Adicionar à coleção",
-    "quantity": "Quantidade"
+    "add": "Adicionar à coleção"
   },
   "HomePage": {
     "construction": "Em construção"
@@ -610,10 +497,6 @@
   },
   "gameCard": {
     "noImage": "Imagem não disponível",
-    "releaseDate": "Data de lançamento",
-    "developer": "Desenvolvedor",
-    "genres": "Gêneros",
-    "details": "Detalhes",
     "noReleaseDate": "Data de lançamento não disponível"
   },
   "CardActions": {
@@ -641,18 +524,15 @@
   "AddConsole": {
     "title": "Adicionar Console à Coleção",
     "formTitle": "Detalhes do Console",
-    "back": "Voltar",
     "selectBrand": "Selecione uma marca",
     "selectVariant": "Selecione um modelo",
-    "selectSkin": "Selecione uma edição ",
-    "defaultSkin": "Edição padrão"
+    "selectSkin": "Selecione uma edição "
   },
   "AddGame": {
     "title": "Adicionar Jogo",
     "selectGame": "Selecionar Jogo",
     "searchPlaceholder": "Buscar jogos...",
-    "popularGames": "Jogos Populares",
-    "formTitle": "Adicionar à Coleção"
+    "popularGames": "Jogos Populares"
   },
   "AddAccessory": {
     "title": "Adicionar Acessório à Coleção",
@@ -681,8 +561,6 @@
       "templateTitle": "Template de Planilha",
       "templateDescription": "Baixe nosso template para garantir o formato correto",
       "downloadTemplate": "Baixar Template",
-      "requiredColumns": "Colunas Obrigatórias",
-      "optionalColumns": "Colunas Opcionais",
       "columnsGuide": "Estrutura da Planilha",
       "requiredInfo": {
         "title": "Informações Importantes",
@@ -703,7 +581,6 @@
         "description": "Descrição, observações ou detalhes adicionais sobre o item"
       }
     },
-
     "review": {
       "title": "Revisar Jogos Importados",
       "gamesFound": "{count} jogos encontrados no arquivo",
@@ -721,13 +598,8 @@
         "description": "Os nomes dos jogos serão automaticamente comparados com nosso catálogo. Caso haja divergências, você poderá ajustar manualmente na próxima etapa."
       }
     },
-
     "confirmation": {
       "title": "Confirmar Matches",
-      "platform": "Plataforma",
-      "originalPlatform": "Original",
-      "selectPlatform": "Selecionar Plataforma",
-      "noPlatform": "Sem plataforma",
       "matchesCount": "{confirmed} de {total} jogos confirmados",
       "status": {
         "label": "Status",
@@ -738,31 +610,12 @@
         "uploaded": "Enviado",
         "confirmed": "Confirmado",
         "skipped": "Ignorado",
-        "pending": "Pendente",
-        "autoMatched": "Match Automático",
-        "manualReview": "Revisão Manual"
+        "pending": "Pendente"
       },
-      "suggestedMatch": "Match sugerido",
       "confidence": "de confiança",
-      "userData": "Dados do usuário",
-      "confirmMatch": "Confirmar Match",
-      "searchAlternatives": "Buscar Alternativas",
-      "skipGame": "Não Importar",
-      "fields": {
-        "status": "Status",
-        "media": "Mídia",
-        "progress": "Progresso",
-        "rating": "Nota"
-      },
-      "statusValues": {
-        "owned": "Na coleção",
-        "selling": "Vendendo",
-        "looking_for": "Procurando"
-      },
-      "mediaValues": {
-        "physical": "Físico",
-        "digital": "Digital"
-      },
+      "fields": {},
+      "statusValues": {},
+      "mediaValues": {},
       "instructions": {
         "title": "Como importar",
         "step1": "Revise cada jogo da sua planilha",
@@ -782,16 +635,9 @@
         "search": "Buscar",
         "skip": "Pular",
         "change": "Alterar",
-        "searchAlternatives": "Buscar Alternativas",
-        "skipGame": "Não Importar",
-        "reopen": "Reabrir",
-        "changeGame": "Alterar Jogo"
+        "reopen": "Reabrir"
       },
-      "feedback": {
-        "confirmed": "Confirmado para importação",
-        "skipped": "Este jogo não será importado",
-        "pending": "Escolha uma ação para este jogo"
-      },
+      "feedback": {},
       "messages": {
         "processing": "Processando matches...",
         "noMatches": "Nenhum match encontrado para revisão",
@@ -806,23 +652,18 @@
       },
       "errors": {
         "sessionNotFound": "Erro: Sessão não encontrada"
-      },
-      "selectedGame": "Jogo selecionado"
+      }
     },
-
     "status": {
       "owned": "Na Coleção",
       "selling": "Vendendo",
       "lookingFor": "Procurando"
     },
-
     "media": {
       "physical": "Físico",
       "digital": "Digital"
     },
-
     "details": {
-      "platform": "Plataforma",
       "progress": "Progresso",
       "rating": "Avaliação",
       "hasBox": "Tem Caixa",
@@ -834,18 +675,22 @@
     },
     "searchModal": {
       "title": "Buscar Jogo Alternativo",
-      "close": "Fechar",
-      "placeholder": "Digite o nome do jogo...",
-      "search": "Buscar",
-      "noResults": "Nenhum jogo encontrado",
-      "selected": "Selecionado: {game}",
-      "noSelection": "Nenhum jogo selecionado",
-      "cancel": "Cancelar",
-      "confirm": "Confirmar",
       "searchLabel": "Digite o nome do jogo",
       "searchPlaceholder": "Buscar jogos...",
       "cancelButton": "Cancelar",
       "confirmButton": "Selecionar"
     }
+  },
+  "About": {
+    "construction": "Sobre"
+  },
+  "Contact": {
+    "construction": "Contato"
+  },
+  "Privacy": {
+    "construction": "Privacidade"
+  },
+  "Terms": {
+    "construction": "Termos"
   }
 }

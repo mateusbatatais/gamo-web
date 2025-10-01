@@ -23,7 +23,7 @@ export const MainImageUpload = ({
   onImageUpload,
   onRemove,
   onCropComplete,
-  t,
+  t: translate,
 }: MainImageUploadProps) => {
   return (
     <div>
@@ -42,7 +42,7 @@ export const MainImageUpload = ({
           onClick={() => fileInputRef.current?.click()}
           className="w-24 h-24 flex flex-col items-center justify-center"
           icon={<Plus size={16} />}
-          label={t("addPhoto")}
+          label={translate("addPhoto")}
         />
       )}
       <input

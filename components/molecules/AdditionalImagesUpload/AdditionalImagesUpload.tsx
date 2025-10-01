@@ -24,7 +24,7 @@ export const AdditionalImagesUpload = ({
   onImageUpload,
   onRemove,
   onCropComplete,
-  t,
+  t: translate,
   maxPhotos = 5,
 }: AdditionalImagesUploadProps) => {
   return (
@@ -51,7 +51,7 @@ export const AdditionalImagesUpload = ({
             className="w-24 h-24 flex flex-col items-center justify-center"
             icon={<Plus size={16} />}
           >
-            {t("addPhoto")}
+            {translate("addPhoto")}
           </Button>
         )}
       </div>

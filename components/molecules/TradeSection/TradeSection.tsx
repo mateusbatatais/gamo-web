@@ -22,7 +22,7 @@ export const TradeSection = ({
   statusOptions,
   formData,
   handleChange,
-  t,
+  t: translate,
   showPrice = true,
   showStatus = true,
 }: TradeSectionProps) => {
@@ -34,7 +34,7 @@ export const TradeSection = ({
             name="status"
             value={formData.status}
             onChange={handleChange}
-            label={t("status")}
+            label={translate("status")}
             options={statusOptions}
           />
         )}
@@ -43,7 +43,7 @@ export const TradeSection = ({
           name="condition"
           value={formData.condition}
           onChange={handleChange}
-          label={t("condition")}
+          label={translate("condition")}
           options={conditionOptions}
         />
 
@@ -52,8 +52,8 @@ export const TradeSection = ({
             name="price"
             value={formData.price}
             onChange={handleChange}
-            label={t("price")}
-            placeholder={t("pricePlaceholder")}
+            label={translate("price")}
+            placeholder={translate("pricePlaceholder")}
             type="number"
             min="0"
             step="0.01"
@@ -61,25 +61,25 @@ export const TradeSection = ({
         )}
       </div>
       <div className="space-y-2">
-        <label className="block text-sm font-medium">{t("extras")}</label>
+        <label className="block text-sm font-medium">{translate("extras")}</label>
         <div className="flex gap-2 flex-col sm:flex-row sm:gap-4">
           <Checkbox
             name="acceptsTrade"
             checked={formData.acceptsTrade}
             onChange={handleChange}
-            label={t("acceptsTrade")}
+            label={translate("acceptsTrade")}
           />
           <Checkbox
             name="hasBox"
             checked={formData.hasBox}
             onChange={handleChange}
-            label={t("hasBox")}
+            label={translate("hasBox")}
           />
           <Checkbox
             name="hasManual"
             checked={formData.hasManual}
             onChange={handleChange}
-            label={t("hasManual")}
+            label={translate("hasManual")}
           />
         </div>
       </div>

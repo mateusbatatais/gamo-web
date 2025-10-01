@@ -62,7 +62,7 @@ interface FormDataType<C extends string = string> {
 }
 
 export function TradeFormBase<C extends string = string>({
-  t,
+  t: translate,
   initialData,
   onSubmit,
   onSuccess,
@@ -119,9 +119,9 @@ export function TradeFormBase<C extends string = string>({
   const isLoading = Boolean(isSubmitting) || uploadLoading;
 
   const defaultConditionOptions: { value: C; label: string }[] = [
-    { value: "NEW", label: t("conditionNew") },
-    { value: "USED", label: t("conditionUsed") },
-    { value: "REFURBISHED", label: t("conditionRefurbished") },
+    { value: "NEW", label: translate("conditionNew") },
+    { value: "USED", label: translate("conditionUsed") },
+    { value: "REFURBISHED", label: translate("conditionRefurbished") },
   ] as unknown as { value: C; label: string }[];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -159,14 +159,14 @@ export function TradeFormBase<C extends string = string>({
               value="SELLING"
               checked={formData.status === "SELLING"}
               onChange={() => handleRadioChange("status", "SELLING")}
-              label={t("statusSelling")}
+              label={translate("statusSelling")}
             />
             <Radio
               name="status"
               value="LOOKING_FOR"
               checked={formData.status === "LOOKING_FOR"}
               onChange={() => handleRadioChange("status", "LOOKING_FOR")}
-              label={t("statusLookingFor")}
+              label={translate("statusLookingFor")}
             />
           </div>
         </div>
@@ -174,7 +174,7 @@ export function TradeFormBase<C extends string = string>({
         {extraFields}
 
         <MainImageUpload
-          label={t("mainPhoto")}
+          label={translate("mainPhoto")}
           photo={photoMain}
           fileInputRef={mainFileInputRef}
           onImageUpload={(e) => handleImageUpload(e, "main")}
@@ -183,7 +183,7 @@ export function TradeFormBase<C extends string = string>({
             const url = URL.createObjectURL(blob);
             setPhotoMain({ url, blob });
           }}
-          t={t}
+          t={translate}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,13 +191,13 @@ export function TradeFormBase<C extends string = string>({
             name="condition"
             value={formData.condition as unknown as string}
             onChange={handleChange}
-            label={t("condition")}
+            label={translate("condition")}
             options={finalConditionOptions}
           />
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {t("price")}
+              {translate("price")}
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
@@ -222,21 +222,21 @@ export function TradeFormBase<C extends string = string>({
             name="hasBox"
             checked={formData.hasBox}
             onChange={handleChange}
-            label={t("hasBox")}
+            label={translate("hasBox")}
           />
 
           <Checkbox
             name="hasManual"
             checked={formData.hasManual}
             onChange={handleChange}
-            label={t("hasManual")}
+            label={translate("hasManual")}
           />
 
           <Checkbox
             name="acceptsTrade"
             checked={formData.acceptsTrade}
             onChange={handleChange}
-            label={t("acceptsTrade")}
+            label={translate("acceptsTrade")}
           />
         </div>
 
@@ -244,13 +244,13 @@ export function TradeFormBase<C extends string = string>({
           name="description"
           value={formData.description}
           onChange={handleChange}
-          label={t("description")}
-          placeholder={t("descriptionPlaceholder")}
+          label={translate("description")}
+          placeholder={translate("descriptionPlaceholder")}
           rows={4}
         />
 
         <AdditionalImagesUpload
-          label={t("additionalPhotos")}
+          label={translate("additionalPhotos")}
           photos={additionalPhotos}
           fileInputRef={additionalFileInputRef}
           onImageUpload={(e) => handleImageUpload(e, "additional")}
@@ -261,7 +261,7 @@ export function TradeFormBase<C extends string = string>({
             newPhotos[index] = { url, blob };
             setAdditionalPhotos(newPhotos);
           }}
-          t={t}
+          t={translate}
         />
       </div>
 
@@ -274,11 +274,17 @@ export function TradeFormBase<C extends string = string>({
       )}
 
       <div className="flex justify-end gap-3 mt-6">
-        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
+        <Button type="button" variant="outline" onClick={onCancel} label={translate("cancel")} />
         <Button
           type="submit"
           loading={isLoading}
-          label={isLoading ? t("saving") : initialData?.id ? t("saveChanges") : t("publish")}
+          label={
+            isLoading
+              ? translate("saving")
+              : initialData?.id
+                ? translate("saveChanges")
+                : translate("publish")
+          }
         />
       </div>
     </form>

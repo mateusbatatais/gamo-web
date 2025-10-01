@@ -1,0 +1,38 @@
+{
+  "ignore": {
+    "files": [
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/layout.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/login/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/recover/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/reset-password/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/signup/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/signup/success/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(auth)/verify-email/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/accessory-catalog/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/accessory/[slug]/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/account/details/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/account/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/account/security/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/console-catalog/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/console/[slug]/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/game-catalog/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/game/[slug]/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/layout.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/payment/success/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/[slug]/activity/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/[slug]/games/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/[slug]/market/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/[slug]/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/[slug]/reviews/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/collection/accessories/add/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/collection/consoles/add/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/collection/games/add/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/collection/games/import/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/[locale]/(site)/user/collection/layout.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/app/page.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/cache-life.d.ts",
+      "d:/Documents/_projects/Gamo/dev/gamo-web/.next/types/server.d.ts"
+    ]
+  }
+}
