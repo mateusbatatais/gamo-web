@@ -3,13 +3,25 @@ name: Manter Servidor Ativo
 on:
   schedule:
     - cron: "*/9 * * * *"
+  workflow_dispatch: # Permite execução manual
 
 jobs:
   ping-server:
     runs-on: ubuntu-latest
     steps:
-      - name: Fazer requisição para a API
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: "https://gamo-api.onrender.com/api/consoles"
-          method: "GET"
+      - name: Fazer ping na API com curl
+        run: |
+          echo "Fazendo requisição para a API..."
+          response=$(curl -s -o response.txt -w "%{http_code}" "https://gamo-api.onrender.com/api/consoles")
+          echo "Status HTTP: $response"
+          echo "Resposta da API:"
+          cat response.txt
+          echo ""
+
+          # Verifica se a requisição foi bem sucedida
+          if [ "$response" -eq 200 ]; then
+            echo "✅ Requisição bem sucedida!"
+          else
+            echo "❌ Erro na requisição: $response"
+            exit 1
+          fi
