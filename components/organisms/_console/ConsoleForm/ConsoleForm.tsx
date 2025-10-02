@@ -100,6 +100,24 @@ export const ConsoleForm = ({
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const addSelectedAccessories = async (userConsoleId: number) => {
+    if (!isAccessoriesOpen || !userConsoleId) return;
+    for (const [variantId, selected] of Object.entries(selectedVariants)) {
+      if (selected.quantity <= 0) continue;
+      const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
+      if (!variant) continue;
+      for (let i = 0; i < selected.quantity; i++) {
+        await createUserAccessory({
+          accessoryId: variant.accessoryId,
+          accessoryVariantId: variant.id,
+          status: formData.status,
+          condition: formData.condition,
+          compatibleUserConsoleIds: [userConsoleId],
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     if (mode === "edit" && initialData?.id) {
       setIsAccessoriesOpen(true);
@@ -153,7 +171,7 @@ export const ConsoleForm = ({
         variantSlug,
       };
 
-      let userConsoleId: number;
+      let userConsoleId: number | undefined;
       if (mode === "create") {
         const response = await createUserConsole(payload);
         userConsoleId = response.userConsole.id || 0;
@@ -164,23 +182,8 @@ export const ConsoleForm = ({
         throw new Error("Invalid mode or missing initialData.id");
       }
 
-      if (isAccessoriesOpen && userConsoleId) {
-        for (const [variantId, selected] of Object.entries(selectedVariants)) {
-          if (selected.quantity > 0) {
-            const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
-            if (variant) {
-              for (let i = 0; i < selected.quantity; i++) {
-                await createUserAccessory({
-                  accessoryId: variant.accessoryId,
-                  accessoryVariantId: variant.id,
-                  status: formData.status,
-                  condition: formData.condition,
-                  compatibleUserConsoleIds: [userConsoleId],
-                });
-              }
-            }
-          }
-        }
+      if (userConsoleId) {
+        await addSelectedAccessories(userConsoleId);
       }
 
       onSuccess();

@@ -49,6 +49,24 @@ export const SimpleConsoleForm = ({
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const addSelectedAccessories = async (userConsoleId: number) => {
+    if (!isAccessoriesOpen || !userConsoleId) return;
+    for (const [variantId, selected] of Object.entries(selectedVariants)) {
+      if (selected.quantity <= 0) continue;
+      const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
+      if (!variant) continue;
+      for (let i = 0; i < selected.quantity; i++) {
+        await createUserAccessory({
+          accessoryId: variant.accessoryId,
+          accessoryVariantId: variant.id,
+          status: "OWNED",
+          condition: "USED",
+          compatibleUserConsoleIds: [userConsoleId],
+        });
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -62,23 +80,9 @@ export const SimpleConsoleForm = ({
         condition: "USED",
       });
 
-      if (isAccessoriesOpen && userConsoleResponse && userConsoleResponse.userConsole.id) {
-        for (const [variantId, selected] of Object.entries(selectedVariants)) {
-          if (selected.quantity > 0) {
-            const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
-            if (variant) {
-              for (let i = 0; i < selected.quantity; i++) {
-                await createUserAccessory({
-                  accessoryId: variant.accessoryId,
-                  accessoryVariantId: variant.id,
-                  status: "OWNED",
-                  condition: "USED",
-                  compatibleUserConsoleIds: [userConsoleResponse.userConsole.id],
-                });
-              }
-            }
-          }
-        }
+      const userConsoleId = userConsoleResponse?.userConsole?.id;
+      if (userConsoleId) {
+        await addSelectedAccessories(userConsoleId);
       }
 
       onSuccess();

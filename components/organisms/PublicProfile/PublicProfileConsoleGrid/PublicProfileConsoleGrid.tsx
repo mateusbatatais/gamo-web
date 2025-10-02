@@ -21,27 +21,16 @@ import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";
 import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
 import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
-import Image from "next/image";
+import {
+  ConsoleAccessoriesCompact,
+  ConsoleAccessoriesList,
+  ConsoleAccessoriesTable,
+} from "./ConsoleAccessories";
 import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
 import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
 import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
 import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
-import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 import { EmptyCard } from "../EmptyCard/EmptyCard";
-
-// Tipos/guard locais (sem any)
-interface Accessory {
-  id: number;
-  name: string;
-  slug: string;
-  photoMain?: string;
-}
-function hasAccessories(
-  item: UserConsole,
-): item is UserConsole & { accessories: ReadonlyArray<Accessory> } {
-  const maybe = item as unknown as { accessories?: unknown };
-  return Array.isArray(maybe.accessories) && maybe.accessories.length > 0;
-}
 
 // Hooks de colunas
 function useResponsiveColumns(): number {
@@ -334,190 +323,7 @@ const PublicProfileConsoleGridContent = ({
   const [openTableId, setOpenTableId] = useState<number | null>(null);
   const tableCols = 1 /*expander*/ + 2 /*Console + Skin*/ + (isOwner ? 1 : 0);
 
-  // --------- Renderizadores de acessórios ----------
-  function AccessoriesCard({ acc }: { acc: UserAccessory; isOwner: boolean }) {
-    return (
-      <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="h-36 bg-gray-100 dark:bg-gray-700 relative">
-          <AccessoryActionButtons
-            accessory={acc}
-            isOwner={isOwner || false}
-            customClassName="absolute top-2 right-2 z-10"
-          />
-          {acc.photoMain ? (
-            <Image
-              src={acc.photoMain}
-              alt={acc.variantName || ""}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-              className="object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <span className="text-2xl">🖥️</span>
-            </div>
-          )}
-        </div>
-        <div className="p-3">
-          <div className="flex justify-between items-start mb-2">
-            <div className="flex-1">
-              <p className="font-medium dark:text-white">{acc.variantName}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">{acc.accessorySlug}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  function RenderAccessoriesTitle({ item }: { item?: UserConsole }) {
-    return (
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold dark:text-white">
-          Acessórios
-          {item?.consoleName && (
-            <span className="ml-2 font-normal text-gray-500 dark:text-gray-400">
-              — {item.consoleName}
-            </span>
-          )}
-        </h3>
-      </div>
-    );
-  }
-
-  function renderAccessoriesCompact(item?: UserConsole): React.ReactNode {
-    if (!item || !hasAccessories(item)) {
-      return (
-        <Card className="p-4">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Nenhum acessório cadastrado para este console.
-          </div>
-        </Card>
-      );
-    }
-    return (
-      <Card className="p-4">
-        <RenderAccessoriesTitle item={item} />
-        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-          {item.accessories.map((acc) => (
-            <div key={acc.id} className="aspect-square">
-              <AccessoriesCard acc={acc} isOwner={isOwner || false} />
-            </div>
-          ))}
-        </div>
-      </Card>
-    );
-  }
-
-  function renderAccessoriesList(item?: UserConsole): React.ReactNode {
-    if (!item || !hasAccessories(item)) {
-      return (
-        <Card className="p-4">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Nenhum acessório cadastrado para este console.
-          </div>
-        </Card>
-      );
-    }
-    return (
-      <Card className="p-4">
-        <RenderAccessoriesTitle item={item} />
-        <div className="space-y-3">
-          {item.accessories.map((acc) => (
-            <Card key={acc.id} className="!p-3">
-              <div className="flex items-center gap-3">
-                <div className="w-14 h-14 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative rounded-md overflow-hidden">
-                  {acc.photoMain ? (
-                    <Image
-                      src={acc.photoMain}
-                      alt={acc.variantName || ""}
-                      fill
-                      sizes="56px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <span className="text-xl">🖥️</span>
-                    </div>
-                  )}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-medium dark:text-white truncate">{acc.variantName}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {acc.accessorySlug}
-                  </p>
-                </div>
-                <AccessoryActionButtons
-                  accessory={acc}
-                  isOwner={isOwner || false}
-                  customClassName="flex-grow justify-end"
-                />
-              </div>
-            </Card>
-          ))}
-        </div>
-      </Card>
-    );
-  }
-
-  function renderAccessoriesTable(item?: UserConsole): React.ReactNode {
-    if (!item || !hasAccessories(item)) {
-      return (
-        <Card className="p-4">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Nenhum acessório cadastrado para este console.
-          </div>
-        </Card>
-      );
-    }
-    return (
-      <div className="overflow-x-auto ps-10">
-        <table className="w-full">
-          <thead>
-            <tr className="border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-              <th className="p-2 text-left">Acessório</th>
-              <th className="p-2 text-left">Slug</th>
-              {isOwner && <th className="p-2 ">Ações</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {item.accessories.map((acc) => (
-              <tr key={acc.id} className="border-b border-gray-200 dark:border-gray-700">
-                <td className="p-2">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
-                      {acc.photoMain ? (
-                        <Image
-                          src={acc.photoMain}
-                          alt={acc.variantName || ""}
-                          fill
-                          sizes="40px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <span>🖥️</span>
-                        </div>
-                      )}
-                    </div>
-                    <span className="font-medium dark:text-white">{acc.variantName}</span>
-                  </div>
-                </td>
-                <td className="p-2 text-sm text-gray-600 dark:text-gray-300">
-                  {acc.accessorySlug}
-                </td>
-                {isOwner && (
-                  <td className="p-2 text-center">
-                    <AccessoryActionButtons accessory={acc} isOwner={isOwner} />
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
+  // --------- Renderizadores de acessórios extraídos ----------
 
   // Funções de renderização para acessórios avulsos
   const renderAccessoriesGrid = (accessories: UserAccessory[]) => (
@@ -766,7 +572,8 @@ const PublicProfileConsoleGridContent = ({
                   )}
                   {consoles.map((consoleItem: UserConsole) => {
                     const isExpanded = openTableId === consoleItem.id;
-                    const canExpand = hasAccessories(consoleItem);
+                    const canExpand =
+                      Array.isArray(consoleItem.accessories) && consoleItem.accessories.length > 0;
                     return (
                       <React.Fragment key={consoleItem.id}>
                         <PublicProfileConsoleTable
@@ -785,7 +592,10 @@ const PublicProfileConsoleGridContent = ({
                         {isExpanded && (
                           <tr className="bg-gray-50 dark:bg-gray-800">
                             <td colSpan={tableCols} className="p-4">
-                              {renderAccessoriesTable(consoleItem)}
+                              <ConsoleAccessoriesTable
+                                item={consoleItem}
+                                isOwner={isOwner || false}
+                              />
                             </td>
                           </tr>
                         )}
@@ -815,7 +625,11 @@ const PublicProfileConsoleGridContent = ({
                       isExpanded={isOpen}
                       onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
                     />
-                    {isOpen && <div>{renderAccessoriesList(consoleItem)}</div>}
+                    {isOpen && (
+                      <div>
+                        <ConsoleAccessoriesList item={consoleItem} isOwner={isOwner || false} />
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -875,7 +689,10 @@ const PublicProfileConsoleGridContent = ({
 
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
-                        {renderAccessoriesCompact(consoles.find((c) => c.id === openCompactId))}
+                        <ConsoleAccessoriesCompact
+                          item={consoles.find((c) => c.id === openCompactId)}
+                          isOwner={isOwner || false}
+                        />
                       </div>
                     )}
                   </div>
@@ -936,7 +753,10 @@ const PublicProfileConsoleGridContent = ({
 
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
-                        {renderAccessoriesCompact(selectedGridConsole)}
+                        <ConsoleAccessoriesCompact
+                          item={selectedGridConsole}
+                          isOwner={isOwner || false}
+                        />
                       </div>
                     )}
                   </div>

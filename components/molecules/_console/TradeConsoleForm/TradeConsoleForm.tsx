@@ -63,6 +63,28 @@ export const TradeConsoleForm = ({
   >({});
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
 
+  const addSelectedAccessories = async (
+    userConsoleId: number,
+    status: "SELLING" | "LOOKING_FOR",
+    condition: "NEW" | "USED" | "REFURBISHED",
+  ) => {
+    if (!isAccessoriesOpen || !userConsoleId) return;
+    for (const [variantId, selected] of Object.entries(selectedVariants)) {
+      if (selected.quantity <= 0) continue;
+      const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
+      if (!variant) continue;
+      for (let i = 0; i < selected.quantity; i++) {
+        await createUserAccessory({
+          accessoryId: variant.accessoryId,
+          accessoryVariantId: variant.id,
+          status,
+          condition,
+          compatibleUserConsoleIds: [userConsoleId],
+        });
+      }
+    }
+  };
+
   const handleSubmit = async (data: TradeSubmitData<"NEW" | "USED" | "REFURBISHED">) => {
     const payload = {
       consoleId,
@@ -73,32 +95,13 @@ export const TradeConsoleForm = ({
       ...data,
     };
 
-    let userConsoleResponse;
-    if (initialData?.id) {
-      userConsoleResponse = await updateUserConsole({ id: initialData.id, data: payload });
-    } else {
-      userConsoleResponse = await createUserConsole(payload);
-    }
+    const userConsoleResponse = initialData?.id
+      ? await updateUserConsole({ id: initialData.id, data: payload })
+      : await createUserConsole(payload);
 
-    // Se o usuário quer incluir acessórios e a criação/atualização foi bem-sucedida
-    if (isAccessoriesOpen && userConsoleResponse && userConsoleResponse.userConsole.id) {
-      const userConsoleId = userConsoleResponse.userConsole.id;
-      for (const [variantId, selected] of Object.entries(selectedVariants)) {
-        if (selected.quantity > 0) {
-          const variant = accessoryVariants?.find((v) => v.id === parseInt(variantId));
-          if (variant) {
-            for (let i = 0; i < selected.quantity; i++) {
-              await createUserAccessory({
-                accessoryId: variant.accessoryId,
-                accessoryVariantId: variant.id,
-                status: data.status,
-                condition: data.condition,
-                compatibleUserConsoleIds: [userConsoleId],
-              });
-            }
-          }
-        }
-      }
+    const userConsoleId = userConsoleResponse?.userConsole?.id;
+    if (userConsoleId) {
+      await addSelectedAccessories(userConsoleId, data.status, data.condition);
     }
 
     onSuccess();
