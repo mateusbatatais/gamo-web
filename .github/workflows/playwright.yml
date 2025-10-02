@@ -40,6 +40,7 @@ jobs:
       NEXT_PUBLIC_API_URL: http://localhost:8080
       RAWG_API_KEY: ${{ secrets.RAWG_API_KEY }}
       STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
 
       # Variáveis do Firebase para o frontend
       NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
@@ -65,16 +66,16 @@ jobs:
       - name: Run API container
         run: |
           docker run -d --name api \
-            --env-file <(env | grep -E 'DATABASE_URL|JWT_SECRET|FIREBASE_SERVICE_ACCOUNT|SMTP_HOST|SMTP_PORT|SMTP_USER|SMTP_PASS|SMTP_FROM|SENDINBLUE_API_KEY|CLOUDINARY_CLOUD_NAME|CLOUDINARY_API_KEY|CLOUDINARY_API_SECRET|ADMIN_EMAIL|ADMIN_PASSWORD|FRONTEND_URL') \
-            -e PORT=3001 \
-            -p 3001:3001 \
-            gamo-api
+            --env-file <(env | grep -E 'DATABASE_URL|JWT_SECRET|FIREBASE_SERVICE_ACCOUNT|SMTP_HOST|SMTP_PORT|SMTP_USER|SMTP_PASS|SMTP_FROM|SENDINBLUE_API_KEY|CLOUDINARY_CLOUD_NAME|CLOUDINARY_API_KEY|CLOUDINARY_API_SECRET|ADMIN_EMAIL|ADMIN_PASSWORD|FRONTEND_URL|FIREBASE_API_KEY|FIREBASE_AUTH_DOMAIN|FIREBASE_PROJECT_ID|FIREBASE_STORAGE_BUCKET|FIREBASE_MESSAGING_SENDER_ID|FIREBASE_APP_ID') \
+            -e PORT=8080 \
+            --network host \
+            -p 8080:8080 gamo-api
 
       # Espera a API subir
       - name: Wait for API
         run: |
           for i in {1..30}; do
-            if curl -s http://localhost:3001/health; then
+            if curl -s http://localhost:8080/health; then
               echo "API is up!";
               exit 0;
             fi
