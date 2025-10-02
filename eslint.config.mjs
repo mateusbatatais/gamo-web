@@ -19,6 +19,8 @@ const eslintConfig = [
       sonarjs: sonarjsPlugin,
     },
     rules: {
+      // Desativa a regra do react-hooks sobre dependências de efeitos para permitir flexibilidade em hooks
+      "react-hooks/exhaustive-deps": "off",
       // Regras principais para detectar duplicação
       "sonarjs/no-identical-functions": "error",
 

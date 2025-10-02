@@ -50,7 +50,6 @@ export default function GameDetailPage() {
     if (typeof data?.isFavorite === "boolean" && data.isFavorite !== isFavorite) {
       setIsFavorite(data.isFavorite);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data?.isFavorite]);
 
   useEffect(() => {

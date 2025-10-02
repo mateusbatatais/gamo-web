@@ -81,7 +81,6 @@ export function Dialog({
     if (modalId && shouldOpen && !props.open) {
       openModal();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalId, shouldOpen]);
   return (
     <MuiDialog
