@@ -8,6 +8,7 @@ import userEvent from "@testing-library/user-event";
 vi.mock("../ImageWithFallback/ImageWithFallback", () => ({
   ImageWithFallback: ({ src, alt }: { src?: string | null; alt: string }) => (
     <div data-testid="image-with-fallback">
+      {/*eslint-disable-next-line @next/next/no-img-element */}
       {src ? <img src={src} alt={alt} /> : <div>Fallback</div>}
     </div>
   ),
