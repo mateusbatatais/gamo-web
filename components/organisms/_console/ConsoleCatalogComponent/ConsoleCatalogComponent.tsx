@@ -413,6 +413,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
         <div className="lg:hidden mb-6">
           <button
             onClick={() => setShowFilters(!showFilters)}
+            data-testid="mobile-filters-toggle"
             className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between font-medium"
           >
             <span>{t("filters.label")}</span>
@@ -461,6 +462,7 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
         {error ? (
           <EmptyState
+            data-testid="empty-state"
             title="Erro ao carregar dados"
             description={error.message}
             variant="card"

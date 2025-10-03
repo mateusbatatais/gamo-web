@@ -12,60 +12,60 @@
     },
     {
       "name": "_lr_hb_-rix9j9%2Fgamo",
-      "value": "{%22heartbeat%22:1759435175638}",
+      "value": "{%22heartbeat%22:1759522102059}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1759521575,
+      "expires": 1759608502,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_lr_tabs_-rix9j9%2Fgamo",
-      "value": "{%22recordingID%22:%226-0199a682-36cf-7233-96de-cf34f51aaca6%22%2C%22sessionID%22:0%2C%22lastActivity%22:1759435176293%2C%22hasActivity%22:false%2C%22clearsIdentifiedUser%22:false%2C%22confirmed%22:true}",
+      "value": "{%22recordingID%22:%226-0199abb0-9b22-77c3-b13b-9816990999fc%22%2C%22sessionID%22:0%2C%22lastActivity%22:1759522102714%2C%22hasActivity%22:false%2C%22clearsIdentifiedUser%22:false%2C%22confirmed%22:true}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1759521576,
+      "expires": 1759608502,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "gamo_token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJTdXBlciBBZG1pbiIsInNsdWciOiJzdXBlci1hZG1pbiIsImVtYWlsIjoiYWRtaW5AZ2Ftby5nYW1lcyIsInByb2ZpbGVJbWFnZSI6bnVsbCwicm9sZSI6IlNVUEVSX0FETUlOIiwiaGFzUGFzc3dvcmQiOnRydWUsImxvY2FsZSI6InB0IiwiaWF0IjoxNzU5NDM1MTc2LCJleHAiOjE3NjAwMzk5NzZ9.RPLkyZ4gDi_i6tBL60S7rn4np_-4ntRa1IaDEuHsnlc",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzU5NDM1MjE0L3Byb2ZpbGVzL214M2pqNGxudHlnOWpqM2xzeDlkLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc1OTUyMjEwMiwiZXhwIjoxNzYwMTI2OTAyfQ.hOU5EqGv3AuLUNfgCKvq-GbU2PHJCwWGjdwYMYnmd4s",
       "domain": "localhost",
       "path": "/",
-      "expires": 1762027176.555737,
+      "expires": 1762114102.881254,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "m",
-      "value": "8c61c2e5-c8c2-4b9d-ad80-3937552280206c266c",
+      "value": "e4b2424b-d177-464f-abd9-12d14f486a1c83db79",
       "domain": "m.stripe.com",
       "path": "/",
-      "expires": 1793995177.647688,
+      "expires": 1794082104.220325,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "__stripe_mid",
-      "value": "86d90f54-5b19-434d-89bd-4b5dbfa1902a2eee0f",
+      "value": "951fefcf-e7ea-4a1a-9327-eee9ea944a86ecb534",
       "domain": "localhost",
       "path": "/",
-      "expires": 1790971177,
+      "expires": 1791058104,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Strict"
     },
     {
       "name": "__stripe_sid",
-      "value": "1b896491-7fd4-47dc-a3d4-82a38811a86efb76b7",
+      "value": "fed4a078-69ca-40ef-a479-9db86cb4094914dac5",
       "domain": "localhost",
       "path": "/",
-      "expires": 1759436977,
+      "expires": 1759523904,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Strict"
@@ -81,11 +81,11 @@
         },
         {
           "name": "gamo_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJTdXBlciBBZG1pbiIsInNsdWciOiJzdXBlci1hZG1pbiIsImVtYWlsIjoiYWRtaW5AZ2Ftby5nYW1lcyIsInByb2ZpbGVJbWFnZSI6bnVsbCwicm9sZSI6IlNVUEVSX0FETUlOIiwiaGFzUGFzc3dvcmQiOnRydWUsImxvY2FsZSI6InB0IiwiaWF0IjoxNzU5NDM1MTc2LCJleHAiOjE3NjAwMzk5NzZ9.RPLkyZ4gDi_i6tBL60S7rn4np_-4ntRa1IaDEuHsnlc"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzU5NDM1MjE0L3Byb2ZpbGVzL214M2pqNGxudHlnOWpqM2xzeDlkLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc1OTUyMjEwMiwiZXhwIjoxNzYwMTI2OTAyfQ.hOU5EqGv3AuLUNfgCKvq-GbU2PHJCwWGjdwYMYnmd4s"
         },
         {
           "name": "_lr_id_",
-          "value": "{\"userID\":\"19aa3c88-784d-4c1c-9b16-857b653047b2\"}"
+          "value": "{\"userID\":\"895c936e-a77f-4686-a833-3e419f61dfad\"}"
         }
       ]
     }

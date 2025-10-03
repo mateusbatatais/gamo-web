@@ -18,6 +18,7 @@ export function Skeleton({ className, rounded = "md", animated = true }: Skeleto
 
   return (
     <div
+      data-testid="skeleton"
       className={clsx(
         "bg-gray-200 dark:bg-gray-700",
         roundedClasses[rounded],

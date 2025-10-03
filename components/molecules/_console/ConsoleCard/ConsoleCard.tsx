@@ -69,6 +69,7 @@ const ConsoleCard = ({
 
   return (
     <article
+      data-testid={`console-card-${variantId}`}
       className={clsx(
         "border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow",
         orientation === "vertical" ? "max-w-sm" : "flex",

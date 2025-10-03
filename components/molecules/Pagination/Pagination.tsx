@@ -68,7 +68,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange, className }: Pagina
   if (totalPages <= 1) return null;
 
   return (
-    <div className={clsx("flex items-center justify-center mt-8 gap-1", className)}>
+    <div
+      className={clsx("flex items-center justify-center mt-8 gap-1", className)}
+      data-testid="pagination-container"
+    >
       <Button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}

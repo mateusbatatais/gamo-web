@@ -75,6 +75,7 @@ export function SearchBar({
       {variant === "header" && isExpanded && (
         <div className="absolute top-0 left-0 right-0 bg-white dark:bg-gray-900 p-4 shadow-md z-10 flex items-center">
           <Input
+            data-testid="search-input"
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -85,6 +86,7 @@ export function SearchBar({
             icon={<Search size={18} />}
           />
           <Button
+            data-testid="search-button"
             onClick={() => setIsExpanded(false)}
             variant="transparent"
             className="ml-2"
@@ -97,6 +99,7 @@ export function SearchBar({
         <div className="flex items-center w-full">
           <div className="hidden md:flex items-center w-full max-w-xl mx-auto">
             <Input
+              data-testid="search-input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyPress}
@@ -106,6 +109,7 @@ export function SearchBar({
               icon={<Search size={18} />}
             />
             <Button
+              data-testid="search-button"
               onClick={handleSearch}
               variant="primary"
               className="ml-2"
@@ -124,6 +128,7 @@ export function SearchBar({
       ) : (
         <div className="flex items-center w-full">
           <Input
+            data-testid="search-input"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
@@ -133,6 +138,7 @@ export function SearchBar({
             icon={<Search size={18} />}
           />
           <Button
+            data-testid="search-button"
             onClick={handleSearch}
             variant="primary"
             className="ml-2"
