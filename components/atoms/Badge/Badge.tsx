@@ -63,11 +63,15 @@ export function Badge({
   status = "default",
   className,
   children,
+  ...props
 }: BadgeProps) {
   const base = "inline-flex items-center rounded-full font-medium transition-colors";
 
   return (
-    <span className={clsx(base, sizeClasses[size], variantClasses[variant][status], className)}>
+    <span
+      className={clsx(base, sizeClasses[size], variantClasses[variant][status], className)}
+      {...props}
+    >
       {children}
     </span>
   );

@@ -41,7 +41,7 @@ export function Breadcrumbs({ condensed = false, maxItems = 3 }: BreadcrumbsProp
   // Renderização normal (não condensada)
   if (!condensed || breadcrumbs.length <= maxItems) {
     return (
-      <div className={clsx("flex-grow container mx-auto")}>
+      <div className={clsx("flex-grow container mx-auto")} data-testid="breadcrumbs">
         <MuiBreadcrumbs
           aria-label="breadcrumb"
           className={clsx("text-neutral-700 dark:text-neutral-300 pt-2 px-4")}

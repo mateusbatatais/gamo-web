@@ -11,7 +11,13 @@ interface CollapseProps {
   onToggle?: (isOpen: boolean) => void;
 }
 
-export const Collapse = ({ title, defaultOpen = false, children, onToggle }: CollapseProps) => {
+export const Collapse = ({
+  title,
+  defaultOpen = false,
+  children,
+  onToggle,
+  ...props
+}: CollapseProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   const toggle = () => {
@@ -21,7 +27,7 @@ export const Collapse = ({ title, defaultOpen = false, children, onToggle }: Col
   };
 
   return (
-    <Card className="w-full !p-0 overflow-hidden">
+    <Card className="w-full !p-0 overflow-hidden" {...props}>
       <Button
         variant="transparent"
         className="w-full"

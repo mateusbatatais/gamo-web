@@ -12,63 +12,63 @@
     },
     {
       "name": "_lr_hb_-rix9j9%2Fgamo",
-      "value": "{%22heartbeat%22:1759522102059}",
+      "value": "{%22heartbeat%22:1759847461415}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1759608502,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_lr_tabs_-rix9j9%2Fgamo",
-      "value": "{%22recordingID%22:%226-0199abb0-9b22-77c3-b13b-9816990999fc%22%2C%22sessionID%22:0%2C%22lastActivity%22:1759522102714%2C%22hasActivity%22:false%2C%22clearsIdentifiedUser%22:false%2C%22confirmed%22:true}",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1759608502,
+      "expires": 1759933861,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "gamo_token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzU5NDM1MjE0L3Byb2ZpbGVzL214M2pqNGxudHlnOWpqM2xzeDlkLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc1OTUyMjEwMiwiZXhwIjoxNzYwMTI2OTAyfQ.hOU5EqGv3AuLUNfgCKvq-GbU2PHJCwWGjdwYMYnmd4s",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzU5NTI1NjY5L3Byb2ZpbGVzL3YwM2l3MmpwaTNwZml0cGxqMjN1LmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc1OTg0NzQ2MiwiZXhwIjoxNzYwNDUyMjYyfQ.lh5MDMLxEFFFMVD7-n_9xasoxslE64-KYLeaCIT-ZJ4",
       "domain": "localhost",
       "path": "/",
-      "expires": 1762114102.881254,
+      "expires": 1762439462.911983,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
     },
     {
       "name": "m",
-      "value": "e4b2424b-d177-464f-abd9-12d14f486a1c83db79",
+      "value": "4d0dff47-4adc-4420-8c05-2d25ebf0c8c5da2d02",
       "domain": "m.stripe.com",
       "path": "/",
-      "expires": 1794082104.220325,
+      "expires": 1794407463.654818,
       "httpOnly": true,
       "secure": true,
       "sameSite": "None"
     },
     {
       "name": "__stripe_mid",
-      "value": "951fefcf-e7ea-4a1a-9327-eee9ea944a86ecb534",
+      "value": "6b03e28e-341b-4bab-96db-9d22ee945e46e83af7",
       "domain": "localhost",
       "path": "/",
-      "expires": 1791058104,
+      "expires": 1791383463,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Strict"
     },
     {
       "name": "__stripe_sid",
-      "value": "fed4a078-69ca-40ef-a479-9db86cb4094914dac5",
+      "value": "d680b982-f7b8-4bd6-abaf-89fce8f420229ae8b2",
       "domain": "localhost",
       "path": "/",
-      "expires": 1759523904,
+      "expires": 1759849263,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Strict"
+    },
+    {
+      "name": "_lr_tabs_-rix9j9%2Fgamo",
+      "value": "{%22recordingID%22:%226-0199bf15-3218-7635-8fe5-9f255931717a%22%2C%22sessionID%22:0%2C%22lastActivity%22:1759847466931%2C%22hasActivity%22:true%2C%22confirmed%22:true%2C%22clearsIdentifiedUser%22:false}",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1759933866,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
     }
   ],
   "origins": [
@@ -81,11 +81,11 @@
         },
         {
           "name": "gamo_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzU5NDM1MjE0L3Byb2ZpbGVzL214M2pqNGxudHlnOWpqM2xzeDlkLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc1OTUyMjEwMiwiZXhwIjoxNzYwMTI2OTAyfQ.hOU5EqGv3AuLUNfgCKvq-GbU2PHJCwWGjdwYMYnmd4s"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzU5NTI1NjY5L3Byb2ZpbGVzL3YwM2l3MmpwaTNwZml0cGxqMjN1LmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc1OTg0NzQ2MiwiZXhwIjoxNzYwNDUyMjYyfQ.lh5MDMLxEFFFMVD7-n_9xasoxslE64-KYLeaCIT-ZJ4"
         },
         {
           "name": "_lr_id_",
-          "value": "{\"userID\":\"895c936e-a77f-4686-a833-3e419f61dfad\"}"
+          "value": "{\"userID\":\"e7b927e6-ec99-4032-99ce-650b803de7ae\"}"
         }
       ]
     }

@@ -47,6 +47,7 @@ export default function ConsoleSkinCard({
 
   return (
     <Card
+      data-testid={`skin-card-${skin.id}`}
       className={`overflow-hidden hover:shadow-lg transition-all duration-300 !p-0 relative ${
         recentlyAdded === skin.id ? "ring-2 ring-green-500 scale-[1.02] shadow-xl" : ""
       }`}

@@ -72,7 +72,12 @@ export function AddConsoleToCollection({
         ]}
       />
 
-      <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar console"}>
+      <Dialog
+        open={isTradeModalOpen}
+        onClose={closeTradeModal}
+        title={"Anunciar console"}
+        data-testid="trade-modal"
+      >
         <TradeConsoleForm
           consoleId={consoleId}
           variantSlug={variantSlug}
@@ -86,7 +91,12 @@ export function AddConsoleToCollection({
         />
       </Dialog>
 
-      <Dialog open={isSimpleModalOpen} onClose={closeSimpleModal} title={"Adicionar à coleção"}>
+      <Dialog
+        open={isSimpleModalOpen}
+        onClose={closeSimpleModal}
+        title={"Adicionar à coleção"}
+        data-testid="simple-collection-modal"
+      >
         <SimpleConsoleForm
           consoleId={consoleId}
           consoleVariantId={consoleVariantId}

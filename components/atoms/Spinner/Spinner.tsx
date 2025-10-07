@@ -60,6 +60,7 @@ export function Spinner({
 
   return (
     <Icon
+      data-testid="spinner"
       className={spinnerClass}
       width={size}
       height={size}

@@ -27,7 +27,12 @@ export default function ConsoleAccessories({ consoleId }: ConsoleAccessoriesProp
 
   return (
     <section className="mb-8">
-      <Collapse title={t("viewAccessories")} defaultOpen={false} onToggle={handleToggle}>
+      <Collapse
+        title={t("viewAccessories")}
+        defaultOpen={false}
+        onToggle={handleToggle}
+        data-testid="accessories-collapse"
+      >
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, i) => (
@@ -68,7 +73,9 @@ export default function ConsoleAccessories({ consoleId }: ConsoleAccessoriesProp
         )}
 
         {accessories && accessories.length === 0 && (
-          <Card className="p-4 text-center text-gray-500">{t("noAccessoriesAvailable")}</Card>
+          <Card data-testid="accessories-error-message" className="p-4 text-center text-gray-500">
+            {t("noAccessoriesAvailable")}
+          </Card>
         )}
       </Collapse>
     </section>

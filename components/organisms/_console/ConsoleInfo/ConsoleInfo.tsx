@@ -57,11 +57,12 @@ interface InfoBadgeProps {
   className?: string;
 }
 
-function InfoBadge({ icon, label, value, className = "" }: InfoBadgeProps) {
+function InfoBadge({ icon, label, value, className, ...props }: InfoBadgeProps) {
   return (
     <Tooltip title={label}>
       <div
         className={`flex items-center gap-2 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg ${className}`}
+        {...props}
       >
         <span className="text-gray-600 dark:text-gray-300">{icon}</span>
         <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{value}</span>
@@ -121,7 +122,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
 
   return (
     <Card className="mb-8">
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8" data-testid="console-info">
         {/* Coluna da esquerda - Imagem, marca e geração */}
         <div className="md:w-1/3">
           <div className="w-full aspect-[4/3] relative mb-4">
@@ -162,17 +163,21 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
         </div>
 
         {/* Coluna da direita - Informações detalhadas */}
-        <div className="md:w-2/3">
+        <div className="md:w-2/3" data-testid="console-details-content">
           {/* Cabeçalho com nome e badges */}
           <div className="flex flex-col gap-4 mb-6">
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-3xl font-bold" data-testid="console-title">
               {consoleVariant.consoleName} {consoleVariant.name}
             </h1>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3" data-testid="console-badges">
               {/* Tipo */}
               {consoleVariant.type && (
-                <Badge variant="outline" className="flex items-center gap-1">
+                <Badge
+                  variant="outline"
+                  className="flex items-center gap-1"
+                  data-testid="type-badge"
+                >
                   <Package size={14} />
                   {consoleVariant.type}
                 </Badge>
@@ -182,6 +187,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
               <Badge
                 variant={consoleVariant.allDigital ? "soft" : "outline"}
                 className="flex items-center gap-1"
+                data-testid="digital-badge"
               >
                 {consoleVariant.allDigital ? <Download size={14} /> : <Disc3 size={14} />}
                 {consoleVariant.allDigital ? t("allDigital") : t("physicalMedia")}
@@ -191,6 +197,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
               <Badge
                 variant={consoleVariant.retroCompatible ? "soft" : "outline"}
                 className="flex items-center gap-1"
+                data-testid="retro-badge"
               >
                 <RefreshCw size={14} />
                 {consoleVariant.retroCompatible ? t("retroCompatible") : t("notRetroCompatible")}
@@ -205,17 +212,26 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
             consoleVariant.resolution ||
             consoleVariant.audio ||
             consoleVariant.connectivity) && (
-            <div className="mb-6">
+            <div className="mb-6" data-testid="specifications-section">
               <h3 className="text-lg font-semibold mb-3">{t("specifications")}</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                data-testid="specifications-grid"
+              >
                 {consoleVariant.cpu && (
-                  <InfoBadge icon={<Cpu size={18} />} label={t("cpu")} value={consoleVariant.cpu} />
+                  <InfoBadge
+                    icon={<Cpu size={18} />}
+                    label={t("cpu")}
+                    value={consoleVariant.cpu}
+                    data-testid="cpu-spec"
+                  />
                 )}
                 {consoleVariant.gpu && (
                   <InfoBadge
                     icon={<Monitor size={18} />}
                     label={t("gpu")}
                     value={consoleVariant.gpu}
+                    data-testid="gpu-spec"
                   />
                 )}
                 {consoleVariant.ram && (
@@ -223,6 +239,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                     icon={<MemoryStick size={18} />}
                     label={t("ram")}
                     value={consoleVariant.ram}
+                    data-testid="ram-spec"
                   />
                 )}
                 {consoleVariant.resolution && (
@@ -230,6 +247,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                     icon={<Monitor size={18} />}
                     label={t("resolution")}
                     value={consoleVariant.resolution}
+                    data-testid="resolution-spec"
                   />
                 )}
                 {consoleVariant.audio && (
@@ -237,6 +255,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                     icon={<Volume2 size={18} />}
                     label={t("audio")}
                     value={consoleVariant.audio}
+                    data-testid="audio-spec"
                   />
                 )}
                 {consoleVariant.connectivity && (
@@ -244,6 +263,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                     icon={<Wifi size={18} />}
                     label={t("connectivity")}
                     value={consoleVariant.connectivity}
+                    data-testid="connectivity-spec"
                   />
                 )}
               </div>
@@ -252,7 +272,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
 
           {/* Armazenamento e mídia */}
           {(consoleVariant.storageOptions.length > 0 || consoleVariant.mediaFormats.length > 0) && (
-            <div className="mb-6">
+            <div className="mb-6" data-testid="storage-media-section">
               <h3 className="text-lg font-semibold mb-3">{t("storageAndMedia")}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {consoleVariant.storageOptions.length > 0 && (
@@ -260,6 +280,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                     icon={<HardDrive size={18} />}
                     label={t("storage")}
                     value={formatStorageOptions(consoleVariant.storageOptions)}
+                    data-testid="storage-spec"
                   />
                 )}
                 {consoleVariant.mediaFormats.length > 0 && (
@@ -267,6 +288,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
                     icon={<Disc size={18} />}
                     label={t("mediaFormats")}
                     value={formatMediaFormats(consoleVariant.mediaFormats)}
+                    data-testid="media-formats-spec"
                   />
                 )}
               </div>
@@ -275,7 +297,7 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
 
           {/* Notas de retrocompatibilidade */}
           {consoleVariant.retroCompatibilityNotes && (
-            <div className="mb-6">
+            <div className="mb-6" data-testid="retro-compatibility-notes">
               <div className="flex items-center gap-2 mb-2">
                 <RefreshCw size={18} className="text-gray-600 dark:text-gray-300" />
                 <h3 className="text-lg font-semibold">{t("retroCompatibilityNotes")}</h3>
@@ -286,27 +308,33 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
             </div>
           )}
 
-          {/* Data de lançamento (movida para baixo) */}
-          <div className="mb-6">
+          {/* Data de lançamento */}
+          <div className="mb-6" data-testid="release-dates-section">
             <div className="flex items-center gap-2 mb-2">
               <Calendar size={18} className="text-gray-600 dark:text-gray-300" />
               <h3 className="text-lg font-semibold">{t("releaseDates")}</h3>
             </div>
-            <div className="text-gray-900 dark:text-gray-100">{formatReleaseDate()}</div>
+            <div className="text-gray-900 dark:text-gray-100" data-testid="release-dates-content">
+              {formatReleaseDate()}
+            </div>
           </div>
 
           {/* Curiosidades */}
           {consoleVariant.notes && consoleVariant.notes.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6" data-testid="fun-facts-section">
               <div className="flex items-center gap-2 mb-2">
                 <Lightbulb size={18} className="text-yellow-500" />
                 <h3 className="text-lg font-semibold">
                   {t("funFactsAbout", { console: consoleVariant.consoleName })}
                 </h3>
               </div>
-              <ul className="space-y-2">
+              <ul className="space-y-2" data-testid="fun-facts-list">
                 {consoleVariant.notes.map((note) => (
-                  <li key={note.id} className="flex items-start gap-2">
+                  <li
+                    key={note.id}
+                    className="flex items-start gap-2"
+                    data-testid={`fun-fact-${note.id}`}
+                  >
                     <span className="text-yellow-500 mt-1">•</span>
                     <span className="text-gray-900 dark:text-gray-100">{note.text}</span>
                   </li>
@@ -314,15 +342,6 @@ export default function ConsoleInfo({ consoleVariant }: ConsoleInfoProps) {
               </ul>
             </div>
           )}
-
-          {/* {consoleVariant.consoleDescription && (
-            <div>
-              <h3 className="text-lg font-semibold mb-2">{t("description")}</h3>
-              <p className="text-gray-900 dark:text-gray-100">
-                {consoleVariant.consoleDescription}
-              </p>
-            </div>
-          )} */}
         </div>
       </div>
     </Card>

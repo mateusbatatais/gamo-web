@@ -7,13 +7,14 @@ interface CardProps {
   className?: string;
 }
 
-export function Card({ children, className }: CardProps) {
+export function Card({ children, className, ...props }: CardProps) {
   return (
     <div
       className={clsx(
         "border border-neutral-300 rounded-xl p-6 bg-white dark:bg-gray-800 shadow-sm dark:border-gray-700",
         className,
       )}
+      {...props}
     >
       {children}
     </div>

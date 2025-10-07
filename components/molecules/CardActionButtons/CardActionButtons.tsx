@@ -43,7 +43,7 @@ export function CardActionButtons({ actions, loading, favoriteLoading }: CardAct
     },
     {
       key: "collection",
-      icon: LibraryAddOutlinedIcon, // já usando o do Material UI
+      icon: LibraryAddOutlinedIcon,
       tooltipKey: "addToCollection",
       onClick: () => {},
       buttonProps: { variant: "transparent", size: "sm", loading },
@@ -111,7 +111,7 @@ export function CardActionButtons({ actions, loading, favoriteLoading }: CardAct
       });
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-1" data-testid="collection-action-buttons">
       {finalActions.map((action) => {
         const IconComponent = action.icon;
         const iconColor = action.active ? action.activeColor : action.inactiveColor;
@@ -134,6 +134,7 @@ export function CardActionButtons({ actions, loading, favoriteLoading }: CardAct
               aria-label={t(action.tooltipKey)}
               onClick={action.onClick}
               disabled={action.loading}
+              data-testid={`favorite-button-${action.key}`}
               {...action.buttonProps}
               className={clsx(action.buttonProps?.className, action.active && "")}
             />

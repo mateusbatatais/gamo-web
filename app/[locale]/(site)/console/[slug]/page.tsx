@@ -93,7 +93,7 @@ export default function ConsoleDetailPage() {
   return (
     <div className="container mx-auto max-w-6xl">
       <div className="relative">
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 right-4 z-10" data-testid="favorite-action-button">
           <CardActionButtons
             loading={isLoading}
             favoriteLoading={favoriteLoading}
