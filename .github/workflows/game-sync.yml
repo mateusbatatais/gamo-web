@@ -1,11 +1,10 @@
 # .github/workflows/game-sync.yml
-name: Daily Game Sync
+name: Game Sync with Full Debug
 
 on:
   schedule:
-    # Executa todo dia às 2 AM UTC (11 PM BRT)
     - cron: "0 2 * * *"
-  workflow_dispatch: # Permite execução manual
+  workflow_dispatch:
     inputs:
       days:
         description: "Number of days to look back"
@@ -15,7 +14,7 @@ on:
       limit:
         description: "Number of games to sync"
         required: false
-        default: "50"
+        default: "10"
         type: string
 
 env:
@@ -25,40 +24,194 @@ env:
 jobs:
   sync-games:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Sync Recent Games
+      - name: Debug Environment Variables
         run: |
-          cat > /tmp/sync_payload.json << 'EOF'
+          echo "🔧 Environment Debug Info:"
+          echo "API_BASE_URL: $API_BASE_URL"
+          echo "SYNC_SECRET_KEY length: ${#SYNC_SECRET_KEY} chars"
+          echo "SYNC_SECRET_KEY first 5: ${SYNC_SECRET_KEY:0:5}..."
+          echo "SYNC_SECRET_KEY last 5: ...${SYNC_SECRET_KEY: -5}"
+          echo "Workflow inputs - days: ${{ github.event.inputs.days || '7' }}"
+          echo "Workflow inputs - limit: ${{ github.event.inputs.limit || '10' }}"
+
+      - name: Test Basic Network Connectivity
+        run: |
+          echo "🌐 Testing network connectivity..."
+          API_DOMAIN=$(echo "$API_BASE_URL" | sed 's|https://||' | sed 's|/.*||')
+          echo "Testing connection to: $API_DOMAIN"
+
+          # Test DNS resolution
+          nslookup "$API_DOMAIN" || echo "DNS lookup failed"
+
+          # Test basic TCP connectivity
+          timeout 10 bash -c "echo > /dev/tcp/$(echo "$API_DOMAIN" | sed 's/.*://')/443" && \
+            echo "✅ TCP connectivity OK" || \
+            echo "❌ TCP connectivity failed"
+
+      - name: Wait for Render Instance (if sleeping)
+        run: |
+          echo "⏳ Waiting for Render instance to wake up..."
+          sleep 45
+          echo "✅ Wait complete"
+
+      - name: Test Health Endpoint
+        run: |
+          echo "🏥 Testing health endpoint..."
+          for i in {1..3}; do
+            echo "Health check attempt $i..."
+            health_response=$(curl -s -w "|%{http_code}|%{time_total}s" -o /tmp/health_body \
+              "$API_BASE_URL/health" || echo "CURL_ERROR")
+            
+            if [[ "$health_response" == *"200"* ]]; then
+              echo "✅ Health check OK: $health_response"
+              cat /tmp/health_body
+              break
+            else
+              echo "❌ Health check failed: $health_response"
+              if [ $i -lt 3 ]; then
+                echo "Waiting 10s before retry..."
+                sleep 10
+              fi
+            fi
+          done
+
+      - name: Test Sync Status Endpoint
+        run: |
+          echo "📊 Testing sync status endpoint..."
+          status_response=$(curl -v -s -w "\n%{http_code}" -o /tmp/status_body \
+            -H "x-sync-token: $SYNC_SECRET_KEY" \
+            "$API_BASE_URL/api/games/sync/status" 2>/tmp/curl_verbose)
+
+          http_code=$(echo "$status_status" | tail -n1)
+          echo "Status endpoint HTTP: $http_code"
+
+          if [ -f /tmp/status_body ]; then
+            echo "Status response body:"
+            cat /tmp/status_body || echo "No response body"
+          fi
+
+          if [ -f /tmp/curl_verbose ]; then
+            echo "Curl verbose output:"
+            grep -E "(Connected to|Trying|Connected)" /tmp/curl_verbose || echo "No connection details"
+          fi
+
+      - name: Test Games API Endpoint
+        run: |
+          echo "🎮 Testing games API endpoint..."
+          games_response=$(curl -s -w "\n%{http_code}" -o /tmp/games_body \
+            "$API_BASE_URL/api/games?limit=1")
+
+          games_code=$(echo "$games_response" | tail -n1)
+          echo "Games endpoint HTTP: $games_code"
+
+          if [ "$games_code" -eq 200 ]; then
+            echo "✅ Games API is accessible"
+          else
+            echo "❌ Games API returned: $games_code"
+            cat /tmp/games_body || echo "No response body"
+          fi
+
+      - name: Attempt Game Sync
+        run: |
+          echo "🔄 Attempting game sync..."
+
+          # Create payload file to avoid bash parsing issues
+          cat > /tmp/sync_payload.json << EOF
           {
-          "days": 7,
-          "limit": 50,
-          "forceUpdate": false
+            "days": ${{ github.event.inputs.days || 7 }},
+            "limit": ${{ github.event.inputs.limit || 10 }},
+            "forceUpdate": false
           }
           EOF
 
-          response=$(curl -s -w "\n%{http_code}" -X POST \
-          "$API_BASE_URL/api/games/sync/recent" \
-          -H "Content-Type: application/json" \
-          -H "x-sync-token: $SYNC_SECRET_KEY" \
-          -d @/tmp/sync_payload.json)
+          echo "Sync payload:"
+          cat /tmp/sync_payload.json
 
-          http_code=$(echo "$response" | tail -n1)
-          echo "HTTP Status: $http_code"
+          for attempt in {1..5}; do
+            echo "🔄 Sync attempt $attempt..."
+            
+            sync_response=$(curl -v -s -w "\n%{http_code}" -o /tmp/sync_body \
+              -X POST \
+              -H "Content-Type: application/json" \
+              -H "x-sync-token: $SYNC_SECRET_KEY" \
+              -d @/tmp/sync_payload.json \
+              "$API_BASE_URL/api/games/sync/recent" 2>/tmp/sync_verbose)
+            
+            http_code=$(echo "$sync_response" | tail -n1)
+            echo "Sync HTTP Status: $http_code"
+            
+            if [ -f /tmp/sync_body ]; then
+              sync_body_content=$(cat /tmp/sync_body)
+              echo "Sync response body: $sync_body_content"
+              
+              if [[ "$http_code" == "200" ]]; then
+                echo "✅ Sync completed successfully!"
+                echo "Response: $sync_body_content"
+                break
+              elif [[ "$http_code" == "502" ]]; then
+                echo "❌ 502 Bad Gateway - API might be down or crashing"
+                
+                # Show verbose curl info for 502 errors
+                if [ -f /tmp/sync_verbose ]; then
+                  echo "Curl verbose for 502:"
+                  cat /tmp/sync_verbose
+                fi
+                
+                if [ $attempt -lt 5 ]; then
+                  echo "Waiting 15s before retry..."
+                  sleep 15
+                fi
+              else
+                echo "❌ Sync failed with HTTP $http_code"
+                break
+              fi
+            else
+              echo "❌ No response body received"
+              break
+            fi
+          done
 
-          if [ "$http_code" -eq 200 ]; then
-          echo "✅ Sync completed successfully"
-          else
-          echo "❌ Sync failed with HTTP $http_code"
-          echo "Response: $(echo "$response" | head -n1)"
-          exit 1
+          # Final failure if all attempts exhausted
+          if [[ "$http_code" != "200" ]]; then
+            echo "💥 All sync attempts failed with HTTP $http_code"
+            
+            # Additional debug info
+            echo "Final curl verbose output:"
+            cat /tmp/sync_verbose 2>/dev/null || echo "No verbose output"
+            
+            exit 1
           fi
 
-      - name: Get Sync Status
+      - name: Verify Sync Results
+        if: always()
         run: |
-          curl -s -X GET \
-            "$API_BASE_URL/api/games/sync/status" \
-            -H "x-sync-token: $SYNC_SECRET_KEY" | jq .
-        continue-on-error: true
+          echo "📈 Verifying sync results..."
+          final_status=$(curl -s -w "\n%{http_code}" -o /tmp/final_status \
+            -H "x-sync-token: $SYNC_SECRET_KEY" \
+            "$API_BASE_URL/api/games/sync/status")
+
+          final_code=$(echo "$final_status" | tail -n1)
+          if [ "$final_code" -eq 200 ]; then
+            echo "Final sync status:"
+            cat /tmp/final_status
+          else
+            echo "Could not retrieve final status: HTTP $final_code"
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "📋 Sync Debug Summary:"
+          echo "✅ Steps completed successfully"
+          echo "If sync failed, check:"
+          echo "1. Render deployment logs"
+          echo "2. API application logs" 
+          echo "3. Environment variables"
+          echo "4. Network connectivity"
+          echo "5. API route registration"
