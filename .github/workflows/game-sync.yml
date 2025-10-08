@@ -31,28 +31,29 @@ jobs:
 
       - name: Sync Recent Games
         run: |
+          cat > /tmp/sync_payload.json << 'EOF'
+          {
+          "days": 7,
+          "limit": 50,
+          "forceUpdate": false
+          }
+          EOF
+
           response=$(curl -s -w "\n%{http_code}" -X POST \
-            "$API_BASE_URL/api/games/sync/recent" \
-            -H "Content-Type: application/json" \
-            -H "x-sync-token: $SYNC_SECRET_KEY" \
-            -d '{
-              "days": "${{ github.event.inputs.days || '7' }}",
-              "limit": "${{ github.event.inputs.limit || '50' }}",
-              "forceUpdate": false
-            }')
+          "$API_BASE_URL/api/games/sync/recent" \
+          -H "Content-Type: application/json" \
+          -H "x-sync-token: $SYNC_SECRET_KEY" \
+          -d @/tmp/sync_payload.json)
 
-          # Separar response body do status code
           http_code=$(echo "$response" | tail -n1)
-          response_body=$(echo "$response" | head -n1)
-
           echo "HTTP Status: $http_code"
-          echo "Response: $response_body"
 
-          if [ "$http_code" -ne 200 ]; then
-            echo "❌ Sync failed with HTTP $http_code"
-            exit 1
+          if [ "$http_code" -eq 200 ]; then
+          echo "✅ Sync completed successfully"
           else
-            echo "✅ Sync completed successfully"
+          echo "❌ Sync failed with HTTP $http_code"
+          echo "Response: $(echo "$response" | head -n1)"
+          exit 1
           fi
 
       - name: Get Sync Status
@@ -60,4 +61,4 @@ jobs:
           curl -s -X GET \
             "$API_BASE_URL/api/games/sync/status" \
             -H "x-sync-token: $SYNC_SECRET_KEY" | jq .
-        continue-on-error: true # Não falhar o workflow se este passo der erro
+        continue-on-error: true
