@@ -10,21 +10,28 @@ export interface AccessorySubType {
   name: string;
 }
 
-export default function useAccessorySubTypes(type?: string, locale: string = "pt") {
+export default function useAccessorySubTypes(types: string[] = [], locale: string = "pt") {
   const { apiFetch } = useApiClient();
   const { initialized } = useAuth();
 
   return useQuery<AccessorySubType[], Error>({
-    queryKey: ["accessorySubTypes", type, locale],
+    queryKey: ["accessorySubTypes", types.sort().join(","), locale], // Ordena para cache consistente
     queryFn: async () => {
       if (!initialized) throw new Error("Auth not initialized");
 
+      // Se não há tipos selecionados, retorna array vazio
+      if (types.length === 0) {
+        return [];
+      }
+
       const params = new URLSearchParams({ locale });
-      if (type) params.append("type", type);
+
+      // Envia como string separada por vírgulas: types=type1,type2,type3
+      params.append("types", types.join(","));
 
       return apiFetch(`/accessories/subtypes?${params.toString()}`);
     },
-    enabled: initialized && !!type, // Só busca subtipos se um tipo for selecionado
+    enabled: initialized && types.length > 0, // Habilita apenas se houver tipos selecionados
     staleTime: 24 * 60 * 60 * 1000,
   });
 }

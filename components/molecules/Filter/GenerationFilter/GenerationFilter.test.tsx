@@ -44,24 +44,27 @@ describe("GenerationFilter Component", () => {
     );
   };
 
-  it("renderiza o título e todas as gerações", () => {
+  it("renderiza o título e as gerações na ordem invertida", () => {
     renderComponent();
     expect(screen.getByText("Filtrar por Geração")).toBeInTheDocument();
-    expect(screen.getByText("1ª Geração")).toBeInTheDocument();
+
+    // Agora as primeiras 3 visíveis serão 9ª, 8ª, 7ª
     expect(screen.getByText("9ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("8ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("7ª Geração")).toBeInTheDocument();
   });
 
-  it("marca as gerações pré-selecionadas", () => {
-    selectedGenerations = ["1", "3"];
+  it("marca as gerações pré-selecionadas na nova ordem", () => {
+    selectedGenerations = ["9", "7"];
     renderComponent();
 
-    const gen1Checkbox = screen.getByLabelText("1ª Geração") as HTMLInputElement;
-    const gen2Checkbox = screen.getByLabelText("2ª Geração") as HTMLInputElement;
-    const gen3Checkbox = screen.getByLabelText("3ª Geração") as HTMLInputElement;
+    const gen9Checkbox = screen.getByLabelText("9ª Geração") as HTMLInputElement;
+    const gen8Checkbox = screen.getByLabelText("8ª Geração") as HTMLInputElement;
+    const gen7Checkbox = screen.getByLabelText("7ª Geração") as HTMLInputElement;
 
-    expect(gen1Checkbox.checked).toBe(true);
-    expect(gen2Checkbox.checked).toBe(false);
-    expect(gen3Checkbox.checked).toBe(true);
+    expect(gen9Checkbox.checked).toBe(true);
+    expect(gen8Checkbox.checked).toBe(false);
+    expect(gen7Checkbox.checked).toBe(true);
   });
 
   it("chama onGenerationChange ao selecionar uma geração", () => {

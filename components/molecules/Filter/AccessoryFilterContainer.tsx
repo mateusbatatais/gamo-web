@@ -4,6 +4,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import AccessorySybTypeFilter from "./AccessorySybTypeFilter/AccessorySybTypeFilter";
 import AccessoryTypeFilter from "./AccessoryTypeFilter/AccessoryTypeFilter";
 import ConsoleFilter from "./ConsoleFilter/ConsoleFilter";
+import clsx from "clsx";
 
 interface AccessoryFilterContainerProps {
   selectedTypes: string[];
@@ -13,6 +14,7 @@ interface AccessoryFilterContainerProps {
   onTypeChange: (types: string[]) => void;
   onSubTypeChange: (subTypes: string[]) => void;
   clearFilters: () => void;
+  className?: string;
   locale?: string;
 }
 
@@ -24,12 +26,13 @@ const AccessoryFilterContainer = ({
   onSubTypeChange,
   onConsoleChange,
   clearFilters,
+  className,
   locale = "pt",
 }: AccessoryFilterContainerProps) => {
   const t = useTranslations();
 
   return (
-    <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+    <div className={clsx("space-y-6", className)}>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold">{t("filters.label")}</h3>
         <Button variant="outline" size="sm" onClick={clearFilters} label={t("filters.clear")} />
@@ -42,7 +45,7 @@ const AccessoryFilterContainer = ({
       <AccessorySybTypeFilter
         selectedSubTypes={selectedSubTypes}
         onSubTypeChange={onSubTypeChange}
-        selectedType={selectedTypes[0]}
+        selectedTypes={selectedTypes}
         locale={locale}
       />
       <ConsoleFilter

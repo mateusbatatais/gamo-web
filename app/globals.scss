@@ -1,6 +1,10 @@
 @use "tailwindcss";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+button {
+  @apply cursor-pointer;
+}
+
 @theme {
   /* Variáveis de Cores */
   /* Primário */

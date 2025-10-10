@@ -111,7 +111,9 @@
     },
     "console": {
       "label": "Filter by Console"
-    }
+    },
+    "showLess": "Show less",
+    "showMore": "Show more"
   },
   "order": {
     "nameAsc": "Name (A-Z)",

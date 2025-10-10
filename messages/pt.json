@@ -111,7 +111,9 @@
     },
     "console": {
       "label": "Console Compatível"
-    }
+    },
+    "showLess": "Mostrar menos",
+    "showMore": "Mostrar mais"
   },
   "order": {
     "nameAsc": "Nome (A-Z)",

@@ -9,17 +9,17 @@ import useAccessorySubTypes from "@/hooks/filters/useAccessorySubTypes";
 interface AccessorySybTypeFilterProps {
   selectedSubTypes: string[];
   onSubTypeChange: (selectedSubTypes: string[]) => void;
-  selectedType?: string;
+  selectedTypes: string[];
   locale?: string;
 }
 
 const AccessorySybTypeFilter = ({
   selectedSubTypes,
   onSubTypeChange,
-  selectedType,
+  selectedTypes,
   locale = "pt",
 }: AccessorySybTypeFilterProps) => {
-  const { data: subTypes, isLoading, error } = useAccessorySubTypes(selectedType, locale);
+  const { data: subTypes, isLoading, error } = useAccessorySubTypes(selectedTypes, locale);
   const t = useTranslations();
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +31,7 @@ const AccessorySybTypeFilter = ({
     onSubTypeChange(newSelectedSubTypes);
   };
 
-  if (!selectedType) {
+  if (selectedTypes.length === 0) {
     return (
       <div className="mb-4">
         <p className="font-medium text-lg">{t("filters.subType.label")}</p>

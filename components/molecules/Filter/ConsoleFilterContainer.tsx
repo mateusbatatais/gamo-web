@@ -8,6 +8,7 @@ import clsx from "clsx";
 import ModelFilter from "./ModelFilter/ModelFilter";
 import MediaFormatFilter from "./MediaFormatFilter/MediaFormatFilter";
 import StorageFilter from "./StorageFilter/StorageFilter";
+import { useTranslations } from "next-intl";
 
 interface ConsoleFilterContainerProps {
   onBrandChange: (selectedBrands: string[]) => void;
@@ -51,8 +52,15 @@ const ConsoleFilterContainer = ({
   clearFilters,
   className,
 }: ConsoleFilterContainerProps) => {
+  const t = useTranslations();
+
   return (
     <div className={clsx("space-y-6", className)}>
+      <div className="flex justify-between items-center mb-6">
+        <h3 className="text-lg font-semibold">{t("filters.label")}</h3>
+        <Button variant="outline" size="sm" onClick={clearFilters} label={t("filters.clear")} />
+      </div>
+
       <BrandFilter selectedBrands={selectedBrands} onBrandChange={onBrandChange} />
       <GenerationFilter
         selectedGenerations={selectedGenerations}
@@ -82,7 +90,6 @@ const ConsoleFilterContainer = ({
         onChange={onAllDigitalChange}
         description="Mostrar apenas consoles digitais"
       />
-      <Button onClick={clearFilters} variant="outline" className="w-full" label="Limpar filtros" />
     </div>
   );
 };
