@@ -16,6 +16,8 @@ vi.mock("next-intl", () => ({
       "filters.generation.7": "7ª Geração",
       "filters.generation.8": "8ª Geração",
       "filters.generation.9": "9ª Geração",
+      "filters.showMore": "Exibir mais",
+      "filters.showLess": "Exibir menos",
     };
     return translations[key] || key;
   }),
@@ -44,17 +46,21 @@ describe("GenerationFilter Component", () => {
     );
   };
 
-  it("renderiza o título e as gerações na ordem invertida", () => {
+  it("renderiza o título e as 3 primeiras gerações (últimas)", () => {
     renderComponent();
     expect(screen.getByText("Filtrar por Geração")).toBeInTheDocument();
 
-    // Agora as primeiras 3 visíveis serão 9ª, 8ª, 7ª
+    // Agora as 3 primeiras visíveis são as últimas gerações
     expect(screen.getByText("9ª Geração")).toBeInTheDocument();
     expect(screen.getByText("8ª Geração")).toBeInTheDocument();
     expect(screen.getByText("7ª Geração")).toBeInTheDocument();
+
+    // As gerações antigas não devem estar visíveis inicialmente
+    expect(screen.queryByText("1ª Geração")).not.toBeInTheDocument();
+    expect(screen.queryByText("2ª Geração")).not.toBeInTheDocument();
   });
 
-  it("marca as gerações pré-selecionadas na nova ordem", () => {
+  it("marca as gerações pré-selecionadas", () => {
     selectedGenerations = ["9", "7"];
     renderComponent();
 
@@ -69,33 +75,33 @@ describe("GenerationFilter Component", () => {
 
   it("chama onGenerationChange ao selecionar uma geração", () => {
     renderComponent();
-    const gen1Checkbox = screen.getByLabelText("1ª Geração");
+    const gen9Checkbox = screen.getByLabelText("9ª Geração");
 
-    fireEvent.click(gen1Checkbox);
-    expect(mockOnGenerationChange).toHaveBeenCalledWith(["1"]);
+    fireEvent.click(gen9Checkbox);
+    expect(mockOnGenerationChange).toHaveBeenCalledWith(["9"]);
   });
 
   it("chama onGenerationChange ao desselecionar uma geração", () => {
-    selectedGenerations = ["1"];
+    selectedGenerations = ["9"];
     renderComponent();
-    const gen1Checkbox = screen.getByLabelText("1ª Geração");
+    const gen9Checkbox = screen.getByLabelText("9ª Geração");
 
-    fireEvent.click(gen1Checkbox);
+    fireEvent.click(gen9Checkbox);
     expect(mockOnGenerationChange).toHaveBeenCalledWith([]);
   });
 
   it("permite selecionar múltiplas gerações", () => {
     const { rerender } = renderComponent();
 
-    const gen1Checkbox = screen.getByLabelText("1ª Geração");
-    const gen2Checkbox = screen.getByLabelText("2ª Geração");
+    const gen9Checkbox = screen.getByLabelText("9ª Geração");
+    const gen8Checkbox = screen.getByLabelText("8ª Geração");
 
     // Primeiro clique
-    fireEvent.click(gen1Checkbox);
-    expect(mockOnGenerationChange).toHaveBeenCalledWith(["1"]);
+    fireEvent.click(gen9Checkbox);
+    expect(mockOnGenerationChange).toHaveBeenCalledWith(["9"]);
 
     // Atualiza props
-    selectedGenerations = ["1"];
+    selectedGenerations = ["9"];
     rerender(
       <GenerationFilter
         selectedGenerations={selectedGenerations}
@@ -104,8 +110,8 @@ describe("GenerationFilter Component", () => {
     );
 
     // Segundo clique
-    fireEvent.click(gen2Checkbox);
-    expect(mockOnGenerationChange).toHaveBeenCalledWith(["1", "2"]);
+    fireEvent.click(gen8Checkbox);
+    expect(mockOnGenerationChange).toHaveBeenCalledWith(["9", "8"]);
   });
 
   it("renderiza corretamente quando não há gerações selecionadas", () => {
@@ -114,5 +120,77 @@ describe("GenerationFilter Component", () => {
     checkboxes.forEach((checkbox) => {
       expect(checkbox.checked).toBe(false);
     });
+  });
+
+  it("mostra botão 'Exibir mais' quando há gerações adicionais", () => {
+    renderComponent();
+    expect(screen.getByText("Exibir mais (6)")).toBeInTheDocument();
+  });
+
+  it("expande e mostra todas as gerações ao clicar em 'Exibir mais'", () => {
+    renderComponent();
+
+    // Clica no botão "Exibir mais"
+    const showMoreButton = screen.getByText("Exibir mais (6)");
+    fireEvent.click(showMoreButton);
+
+    // Agora todas as gerações devem estar visíveis
+    expect(screen.getByText("9ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("8ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("7ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("6ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("5ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("4ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("3ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("2ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("1ª Geração")).toBeInTheDocument();
+
+    // Botão deve mudar para "Exibir menos"
+    expect(screen.getByText("Exibir menos")).toBeInTheDocument();
+  });
+
+  it("recolhe as gerações ao clicar em 'Exibir menos'", () => {
+    renderComponent();
+
+    // Expande primeiro
+    const showMoreButton = screen.getByText("Exibir mais (6)");
+    fireEvent.click(showMoreButton);
+
+    // Agora recolhe
+    const showLessButton = screen.getByText("Exibir menos");
+    fireEvent.click(showLessButton);
+
+    // Apenas as 3 primeiras devem estar visíveis
+    expect(screen.getByText("9ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("8ª Geração")).toBeInTheDocument();
+    expect(screen.getByText("7ª Geração")).toBeInTheDocument();
+
+    // As antigas não devem estar visíveis
+    expect(screen.queryByText("1ª Geração")).not.toBeInTheDocument();
+    expect(screen.queryByText("2ª Geração")).not.toBeInTheDocument();
+  });
+
+  it("mantém a seleção ao expandir e recolher", () => {
+    selectedGenerations = ["9", "1"]; // 9ª visível, 1ª oculta
+    renderComponent();
+
+    // Verifica que a 9ª está selecionada
+    const gen9Checkbox = screen.getByLabelText("9ª Geração") as HTMLInputElement;
+    expect(gen9Checkbox.checked).toBe(true);
+
+    // Expande
+    const showMoreButton = screen.getByText("Exibir mais (6)");
+    fireEvent.click(showMoreButton);
+
+    // Verifica que a 1ª também está selecionada
+    const gen1Checkbox = screen.getByLabelText("1ª Geração") as HTMLInputElement;
+    expect(gen1Checkbox.checked).toBe(true);
+
+    // Recolhe
+    const showLessButton = screen.getByText("Exibir menos");
+    fireEvent.click(showLessButton);
+
+    // Verifica que a 9ª continua selecionada
+    expect(gen9Checkbox.checked).toBe(true);
   });
 });
