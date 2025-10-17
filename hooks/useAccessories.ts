@@ -39,7 +39,7 @@ export function useAccessories({
       sort,
       selectedTypes.join(","),
       selectedSubTypes.join(","),
-      selectedConsoles.join(","), // Agora são os slugs dos consoles
+      selectedConsoles.join(","),
       searchQuery,
     ],
     queryFn: async () => {
@@ -54,7 +54,7 @@ export function useAccessories({
       if (sort) params.append("sort", sort);
       if (selectedTypes.length > 0) params.append("type", selectedTypes.join(","));
       if (selectedSubTypes.length > 0) params.append("subType", selectedSubTypes.join(","));
-      if (selectedConsoles.length > 0) params.append("console", selectedConsoles.join(",")); // Agora envia os slugs dos consoles
+      if (selectedConsoles.length > 0) params.append("console", selectedConsoles.join(","));
       if (searchQuery) params.append("search", searchQuery);
 
       return apiFetch(`/accessories?${params.toString()}`);
