@@ -7,6 +7,7 @@ import { normalizeImageUrl } from "@/utils/validate-url";
 import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 import { useFavorite } from "@/hooks/useFavorite";
 import { AccessoryCardSkeleton } from "./AccessoryCard.skeleton";
+import { Gamepad } from "lucide-react";
 
 export interface AccessoryCardProps {
   id: number;
@@ -78,7 +79,8 @@ const AccessoryCard = ({
         <Link href={`/accessory/${slug}`} className="block relative w-full h-full">
           {imageError ? (
             <div className="p-4 text-gray-400 h-full items-center flex justify-center">
-              <span className="sr-only">No image</span>
+              <Gamepad size={40} className="mx-auto" />
+              <span className="sr-only">No image available</span>
             </div>
           ) : (
             <Image
