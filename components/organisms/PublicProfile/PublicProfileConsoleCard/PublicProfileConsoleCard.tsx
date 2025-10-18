@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
@@ -32,6 +31,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
+import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -128,20 +128,13 @@ export const PublicProfileConsoleCard = ({
           )}
         </div>
         <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
-          {consoleItem.photoMain ? (
-            <Image
-              src={consoleItem.photoMain}
-              alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-              className="object-cover"
-              priority={true}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <span className="text-4xl">🖥️</span>
-            </div>
-          )}
+          <SafeImage
+            src={consoleItem.photoMain}
+            alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
+            sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+            className="object-cover"
+            priority={true}
+          />
         </div>
 
         <div className="p-4">

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
+import { isValidUrl, normalizeImageUrl } from "@/utils/validate-url";
 
 interface AccessoryCardProps {
   accessory: UserAccessory;
@@ -11,16 +12,32 @@ interface AccessoryCardProps {
 }
 
 export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
+  const getSafeImageUrl = (url: string | null | undefined): string => {
+    if (!url) return "";
+
+    if (isValidUrl(url)) {
+      return url;
+    }
+
+    return normalizeImageUrl(url);
+  };
+
+  const safeImageUrl = getSafeImageUrl(accessory.photoMain);
+
   return (
     <div className="relative rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
-        {accessory.photoMain ? (
+        {safeImageUrl ? (
           <Image
-            src={accessory.photoMain}
+            src={safeImageUrl}
             alt={accessory.variantName || "Acessório"}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = "none";
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
