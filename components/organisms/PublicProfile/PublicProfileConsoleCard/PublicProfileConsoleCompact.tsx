@@ -12,6 +12,7 @@ import { ConsoleForm } from "../../_console/ConsoleForm/ConsoleForm";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import { useTranslations } from "next-intl";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -37,6 +38,8 @@ export const PublicProfileConsoleCompact = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
+  const { getSafeImageUrl } = useSafeImageUrl();
+  const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
@@ -81,13 +84,17 @@ export const PublicProfileConsoleCompact = ({
         )}
 
         <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
-          {consoleItem.photoMain ? (
+          {safeImageUrl ? (
             <Image
-              src={consoleItem.photoMain}
+              src={safeImageUrl}
               alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
               fill
               sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
               className="object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+              }}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Card } from "@/components/atoms/Card/Card";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 import { UserConsole, UserAccessory } from "@/@types/collection.types";
+import { isValidUrl, normalizeImageUrl } from "@/utils/validate-url";
 
 // Minimal local type to safely access fields we actually render
 interface AccessoryLite {
@@ -36,6 +37,64 @@ function RenderAccessoriesTitle({ item }: { item?: UserConsole }) {
   );
 }
 
+// Componente de imagem segura para acessórios
+function SafeAccessoryImage({
+  src,
+  alt,
+  className = "",
+}: {
+  src: string | null | undefined;
+  alt: string;
+  className?: string;
+  sizes?: string;
+}) {
+  const [imageError, setImageError] = React.useState(false);
+  const [safeSrc, setSafeSrc] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    if (!src) {
+      setSafeSrc(null);
+      setImageError(false);
+      return;
+    }
+
+    try {
+      if (isValidUrl(src)) {
+        setSafeSrc(src);
+      } else {
+        const normalized = normalizeImageUrl(src);
+        setSafeSrc(normalized);
+      }
+      setImageError(false);
+    } catch (error) {
+      console.error("Invalid accessory image URL:", src, error);
+      setSafeSrc(null);
+      setImageError(true);
+    }
+  }, [src]);
+
+  if (!safeSrc || imageError) {
+    return (
+      <div
+        className={`w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-400 ${className}`}
+      >
+        <span className="text-2xl">🎮</span>
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={safeSrc}
+      alt={alt}
+      fill
+      sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+      className="object-cover"
+      onError={() => setImageError(true)}
+    />
+  );
+}
+
 function AccessoriesCard({ acc, isOwner = false }: { acc: AccessoryLite; isOwner?: boolean }) {
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
@@ -45,19 +104,11 @@ function AccessoriesCard({ acc, isOwner = false }: { acc: AccessoryLite; isOwner
           isOwner={isOwner}
           customClassName="absolute top-2 right-2 z-10"
         />
-        {acc.photoMain ? (
-          <Image
-            src={acc.photoMain}
-            alt={acc.variantName || ""}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-            className="object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <span className="text-2xl">🖥️</span>
-          </div>
-        )}
+        <SafeAccessoryImage
+          src={acc.photoMain}
+          alt={acc.variantName || "Acessório"}
+          className="w-full h-full"
+        />
       </div>
       <div className="p-3">
         <div className="flex justify-between items-start mb-2">
@@ -129,19 +180,11 @@ export function ConsoleAccessoriesList({
             <Card key={a.id} className="!p-3">
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative rounded-md overflow-hidden">
-                  {a.photoMain ? (
-                    <Image
-                      src={a.photoMain}
-                      alt={a.variantName || ""}
-                      fill
-                      sizes="56px"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <span className="text-xl">🖥️</span>
-                    </div>
-                  )}
+                  <SafeAccessoryImage
+                    src={a.photoMain}
+                    alt={a.variantName || "Acessório"}
+                    className="w-full h-full"
+                  />
                 </div>
                 <div className="min-w-0">
                   <p className="font-medium dark:text-white truncate">{a.variantName}</p>
@@ -198,19 +241,11 @@ export function ConsoleAccessoriesTable({
                 <td className="p-2">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 relative rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
-                      {a.photoMain ? (
-                        <Image
-                          src={a.photoMain}
-                          alt={a.variantName || ""}
-                          fill
-                          sizes="40px"
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                          <span>🖥️</span>
-                        </div>
-                      )}
+                      <SafeAccessoryImage
+                        src={a.photoMain}
+                        alt={a.variantName || "Acessório"}
+                        className="w-full h-full"
+                      />
                     </div>
                     <span className="font-medium dark:text-white">{a.variantName}</span>
                   </div>

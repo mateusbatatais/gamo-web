@@ -32,6 +32,7 @@ import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
 import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -72,6 +73,8 @@ export const PublicProfileConsoleCard = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const queryClient = useQueryClient();
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
+  const { getSafeImageUrl } = useSafeImageUrl();
+  const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
@@ -129,7 +132,7 @@ export const PublicProfileConsoleCard = ({
         </div>
         <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
           <SafeImage
-            src={consoleItem.photoMain}
+            src={safeImageUrl}
             alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
             sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
             className="object-cover"

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 interface AccessoryTableRowProps {
   accessory: UserAccessory;
@@ -11,18 +12,25 @@ interface AccessoryTableRowProps {
 }
 
 export const AccessoryTableRow = ({ accessory, isOwner }: AccessoryTableRowProps) => {
+  const { getSafeImageUrl } = useSafeImageUrl();
+  const safeImageUrl = getSafeImageUrl(accessory.photoMain);
+
   return (
     <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
       <td className="py-2">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
-            {accessory.photoMain ? (
+            {safeImageUrl ? (
               <Image
-                src={accessory.photoMain}
+                src={safeImageUrl}
                 alt={accessory.variantName || "Acessório"}
                 fill
                 sizes="48px"
                 className="object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                }}
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-gray-400">

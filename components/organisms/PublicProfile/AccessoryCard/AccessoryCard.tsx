@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
-import { isValidUrl, normalizeImageUrl } from "@/utils/validate-url";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 interface AccessoryCardProps {
   accessory: UserAccessory;
@@ -12,16 +12,7 @@ interface AccessoryCardProps {
 }
 
 export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
-  const getSafeImageUrl = (url: string | null | undefined): string => {
-    if (!url) return "";
-
-    if (isValidUrl(url)) {
-      return url;
-    }
-
-    return normalizeImageUrl(url);
-  };
-
+  const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
 
   return (

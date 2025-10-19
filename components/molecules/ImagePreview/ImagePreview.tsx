@@ -8,6 +8,7 @@ import Image from "next/image";
 import ImageCropper from "../ImageCropper/ImageCropper";
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/atoms/Badge/Badge";
+import { isValidUrl, normalizeImageUrl } from "@/utils/validate-url";
 
 interface ImagePreviewProps {
   src: string;
@@ -24,8 +25,21 @@ export function ImagePreview({
 }: ImagePreviewProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isProcessed, setIsProcessed] = useState(initialProcessed);
+  const [imageError, setImageError] = useState(false);
   const hasBeenCropped = useRef(false);
   const t = useTranslations("");
+
+  const getSafeImageUrl = (url: string): string => {
+    if (!url) return "";
+
+    if (isValidUrl(url)) {
+      return url;
+    }
+
+    return normalizeImageUrl(url);
+  };
+
+  const safeSrc = getSafeImageUrl(src);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -54,14 +68,21 @@ export function ImagePreview({
       )}
 
       <div className="w-24 h-24 relative">
-        <Image
-          src={src}
-          alt="Preview"
-          fill
-          className="object-cover rounded-md border"
-          sizes="100px"
-          data-testid="preview-image"
-        />
+        {safeSrc && !imageError ? (
+          <Image
+            src={safeSrc}
+            alt="Preview"
+            fill
+            className="object-cover rounded-md border"
+            sizes="100px"
+            data-testid="preview-image"
+            onError={() => setImageError(true)}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-md border text-gray-400">
+            <span className="text-lg">🖼️</span>
+          </div>
+        )}
       </div>
 
       <div
@@ -88,7 +109,7 @@ export function ImagePreview({
 
       {isEditing && (
         <ImageCropper
-          src={src}
+          src={safeSrc}
           onBlobReady={handleCrop}
           setFileSrc={() => setIsEditing(false)}
           onCancel={() => setIsEditing(false)}

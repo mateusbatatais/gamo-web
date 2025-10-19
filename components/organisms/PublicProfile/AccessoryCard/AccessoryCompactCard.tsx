@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 interface AccessoryCompactCardProps {
   accessory: UserAccessory;
@@ -11,6 +12,9 @@ interface AccessoryCompactCardProps {
 }
 
 export const AccessoryCompactCard = ({ accessory, isOwner }: AccessoryCompactCardProps) => {
+  const { getSafeImageUrl } = useSafeImageUrl();
+  const safeImageUrl = getSafeImageUrl(accessory.photoMain);
+
   return (
     <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow aspect-square relative group">
       {isOwner && (
@@ -20,13 +24,17 @@ export const AccessoryCompactCard = ({ accessory, isOwner }: AccessoryCompactCar
       )}
 
       <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
-        {accessory.photoMain ? (
+        {safeImageUrl ? (
           <Image
-            src={accessory.photoMain}
+            src={safeImageUrl}
             alt={accessory.variantName || "Acessório"}
             fill
             sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
             className="object-cover"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = "none";
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
