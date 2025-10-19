@@ -1,7 +1,7 @@
 // app/[locale]/profile/collection/consoles/add/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useConsoles } from "@/hooks/useConsoles";
@@ -23,11 +23,13 @@ interface SelectionSectionProps {
   title: string;
   children: React.ReactNode;
   isSelected: boolean;
+  sectionRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-function SelectionSection({ title, children, isSelected }: SelectionSectionProps) {
+function SelectionSection({ title, children, isSelected, sectionRef }: SelectionSectionProps) {
   return (
     <div
+      ref={sectionRef}
       className={`p-4 rounded-lg border ${isSelected ? "border-primary-500 dark:border-primary-700 bg-primary-50 dark:bg-gray-800" : "border-gray-200 dark:border-gray-700"}`}
     >
       <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">{title}</h3>
@@ -112,6 +114,12 @@ export default function AddConsolePage() {
   const [selectedSkin, setSelectedSkin] = useState<SkinDetail | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("brand");
 
+  // Refs para cada seção
+  const brandSectionRef = useRef<HTMLDivElement>(null);
+  const variantSectionRef = useRef<HTMLDivElement>(null);
+  const skinSectionRef = useRef<HTMLDivElement>(null);
+  const formSectionRef = useRef<HTMLDivElement>(null);
+
   const { data: brands, isLoading: brandsLoading } = useBrands();
   const { data: variants, isLoading: variantsLoading } = useConsoles({
     locale: locale || "pt",
@@ -135,6 +143,55 @@ export default function AddConsolePage() {
 
     return () => setItems([]);
   }, [setItems, t, user]);
+
+  // Função robusta para fazer scroll
+  const scrollToSection = useCallback((sectionRef: React.RefObject<HTMLDivElement | null>) => {
+    const attemptScroll = () => {
+      if (sectionRef.current) {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        return true;
+      }
+      return false;
+    };
+
+    // Tenta imediatamente
+    if (attemptScroll()) return;
+
+    // Se não encontrou, tenta novamente após um delay
+    const maxAttempts = 5;
+    let currentAttempt = 0;
+
+    const interval = setInterval(() => {
+      currentAttempt++;
+      if (attemptScroll() || currentAttempt >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 100);
+  }, []);
+
+  // useEffect para controlar o scroll baseado no currentStep
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      switch (currentStep) {
+        case "variant":
+          scrollToSection(variantSectionRef);
+          break;
+        case "skin":
+          scrollToSection(skinSectionRef);
+          break;
+        case "form":
+          scrollToSection(formSectionRef);
+          break;
+        default:
+          break;
+      }
+    }, 150); // Delay um pouco maior para garantir renderização
+
+    return () => clearTimeout(timer);
+  }, [currentStep, scrollToSection]);
 
   const handleBrandSelect = (brandSlug: string) => {
     setSelectedBrand(brandSlug);
@@ -160,7 +217,11 @@ export default function AddConsolePage() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">
-          <SelectionSection title={t("selectBrand")} isSelected={currentStep === "brand"}>
+          <SelectionSection
+            title={t("selectBrand")}
+            isSelected={currentStep === "brand"}
+            sectionRef={brandSectionRef}
+          >
             {brandsLoading ? (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {[...Array(6)].map((_, i) => (
@@ -194,7 +255,11 @@ export default function AddConsolePage() {
           </SelectionSection>
 
           {selectedBrand && (
-            <SelectionSection title={t("selectVariant")} isSelected={currentStep === "variant"}>
+            <SelectionSection
+              title={t("selectVariant")}
+              isSelected={currentStep === "variant"}
+              sectionRef={variantSectionRef}
+            >
               {variantsLoading ? (
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                   {[...Array(8)].map((_, i) => (
@@ -240,7 +305,11 @@ export default function AddConsolePage() {
           )}
 
           {selectedVariant && (
-            <SelectionSection title={t("selectSkin")} isSelected={currentStep === "skin"}>
+            <SelectionSection
+              title={t("selectSkin")}
+              isSelected={currentStep === "skin"}
+              sectionRef={skinSectionRef}
+            >
               {detailsLoading ? (
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                   {[...Array(10)].map((_, i) => (
@@ -291,7 +360,7 @@ export default function AddConsolePage() {
 
         <div className="w-full lg:w-1/2">
           {currentStep === "form" && selectedVariant && (
-            <div className="sticky top-4">
+            <div className="sticky top-4" ref={formSectionRef}>
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
                   {t("formTitle")}

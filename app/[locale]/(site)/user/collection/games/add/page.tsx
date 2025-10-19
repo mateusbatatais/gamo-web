@@ -1,7 +1,7 @@
 // app/[locale]/profile/collection/games/add/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useGames } from "@/hooks/useGames";
 import { Game } from "@/@types/catalog.types";
@@ -22,11 +22,13 @@ interface SelectionSectionProps {
   title: string;
   children: React.ReactNode;
   isSelected: boolean;
+  sectionRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-function SelectionSection({ title, children, isSelected }: SelectionSectionProps) {
+function SelectionSection({ title, children, isSelected, sectionRef }: SelectionSectionProps) {
   return (
     <div
+      ref={sectionRef}
       className={`p-4 rounded-lg border ${
         isSelected
           ? "border-primary-500 dark:border-primary-700 bg-primary-50 dark:bg-gray-800"
@@ -94,6 +96,10 @@ export default function AddGamePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { platformsMap } = usePlatformsCache();
 
+  // Refs para cada seção
+  const gameSectionRef = useRef<HTMLDivElement>(null);
+  const formSectionRef = useRef<HTMLDivElement>(null);
+
   const { data: games, isLoading: gamesLoading } = useGames({
     page: 1,
     perPage: 20,
@@ -112,6 +118,49 @@ export default function AddGamePage() {
 
     return () => setItems([]);
   }, [setItems, t, user]);
+
+  // Função robusta para fazer scroll
+  const scrollToSection = useCallback((sectionRef: React.RefObject<HTMLDivElement | null>) => {
+    const attemptScroll = () => {
+      if (sectionRef.current) {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        return true;
+      }
+      return false;
+    };
+
+    // Tenta imediatamente
+    if (attemptScroll()) return;
+
+    // Se não encontrou, tenta novamente após um delay
+    const maxAttempts = 5;
+    let currentAttempt = 0;
+
+    const interval = setInterval(() => {
+      currentAttempt++;
+      if (attemptScroll() || currentAttempt >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 100);
+  }, []);
+
+  // useEffect para controlar o scroll baseado no currentStep
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      switch (currentStep) {
+        case "form":
+          scrollToSection(formSectionRef);
+          break;
+        default:
+          break;
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [currentStep, scrollToSection]);
 
   const handleGameSelect = (item: AutoCompleteItem) => {
     const game = games?.items.find((g) => g.id === item.id);
@@ -141,7 +190,11 @@ export default function AddGamePage() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">
-          <SelectionSection title={t("selectGame")} isSelected={currentStep === "game"}>
+          <SelectionSection
+            title={t("selectGame")}
+            isSelected={currentStep === "game"}
+            sectionRef={gameSectionRef}
+          >
             <AutoComplete
               items={autocompleteItems}
               onItemSelect={handleGameSelect}
@@ -217,7 +270,7 @@ export default function AddGamePage() {
 
         <div className="w-full lg:w-1/2">
           {currentStep === "form" && selectedGame && (
-            <div className="sticky top-4">
+            <div className="sticky top-4" ref={formSectionRef}>
               <Card className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-16 h-16 relative flex-shrink-0">

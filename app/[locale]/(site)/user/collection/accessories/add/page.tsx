@@ -1,7 +1,7 @@
 // app/[locale]/profile/collection/accessories/add/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { useAccessories } from "@/hooks/useAccessories";
@@ -21,11 +21,13 @@ interface SelectionSectionProps {
   title: string;
   children: React.ReactNode;
   isSelected: boolean;
+  sectionRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-function SelectionSection({ title, children, isSelected }: SelectionSectionProps) {
+function SelectionSection({ title, children, isSelected, sectionRef }: SelectionSectionProps) {
   return (
     <div
+      ref={sectionRef}
       className={`p-4 rounded-lg border ${
         isSelected
           ? "border-primary-500 dark:border-primary-700 bg-primary-50 dark:bg-gray-800"
@@ -77,6 +79,11 @@ export default function AddAccessoryPage() {
   const [currentStep, setCurrentStep] = useState<Step>("accessory");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Refs para cada seção
+  const accessorySectionRef = useRef<HTMLDivElement>(null);
+  const variantSectionRef = useRef<HTMLDivElement>(null);
+  const formSectionRef = useRef<HTMLDivElement>(null);
+
   const { data: accessories, isLoading: accessoriesLoading } = useAccessories({
     locale: locale || "pt",
     page: 1,
@@ -99,6 +106,52 @@ export default function AddAccessoryPage() {
 
     return () => setItems([]);
   }, [setItems, t, user]);
+
+  // Função robusta para fazer scroll
+  const scrollToSection = useCallback((sectionRef: React.RefObject<HTMLDivElement | null>) => {
+    const attemptScroll = () => {
+      if (sectionRef.current) {
+        sectionRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+        return true;
+      }
+      return false;
+    };
+
+    // Tenta imediatamente
+    if (attemptScroll()) return;
+
+    // Se não encontrou, tenta novamente após um delay
+    const maxAttempts = 5;
+    let currentAttempt = 0;
+
+    const interval = setInterval(() => {
+      currentAttempt++;
+      if (attemptScroll() || currentAttempt >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 100);
+  }, []);
+
+  // useEffect para controlar o scroll baseado no currentStep
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      switch (currentStep) {
+        case "variant":
+          scrollToSection(variantSectionRef);
+          break;
+        case "form":
+          scrollToSection(formSectionRef);
+          break;
+        default:
+          break;
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [currentStep, scrollToSection]);
 
   const handleAccessorySelect = (item: AutoCompleteItem) => {
     const accessory = accessories?.items.find((acc) => acc.id === item.id);
@@ -128,7 +181,11 @@ export default function AddAccessoryPage() {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">
-          <SelectionSection title={t("selectAccessory")} isSelected={currentStep === "accessory"}>
+          <SelectionSection
+            title={t("selectAccessory")}
+            isSelected={currentStep === "accessory"}
+            sectionRef={accessorySectionRef}
+          >
             <AutoComplete
               items={autocompleteItems}
               onItemSelect={handleAccessorySelect}
@@ -139,7 +196,11 @@ export default function AddAccessoryPage() {
           </SelectionSection>
 
           {selectedAccessory && (
-            <SelectionSection title={t("selectVariant")} isSelected={currentStep === "variant"}>
+            <SelectionSection
+              title={t("selectVariant")}
+              isSelected={currentStep === "variant"}
+              sectionRef={variantSectionRef}
+            >
               {detailsLoading ? (
                 <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
                   {[...Array(8)].map((_, i) => (
@@ -186,7 +247,7 @@ export default function AddAccessoryPage() {
 
         <div className="w-full lg:w-1/2">
           {currentStep === "form" && selectedVariant && (
-            <div className="sticky top-4">
+            <div className="sticky top-4" ref={formSectionRef}>
               <Card className="p-6">
                 <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
                   {t("formTitle")}
