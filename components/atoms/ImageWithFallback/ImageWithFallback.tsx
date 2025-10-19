@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Package } from "lucide-react";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 interface ImageWithFallbackProps {
   src?: string | null;
@@ -27,11 +28,14 @@ export const ImageWithFallback = ({
   height,
 }: ImageWithFallbackProps) => {
   const [error, setError] = useState(false);
+  const { getSafeImageUrl } = useSafeImageUrl();
 
-  if (src && !error) {
+  const safeSrc = getSafeImageUrl(src);
+
+  if (safeSrc && !error) {
     return (
       <Image
-        src={src}
+        src={safeSrc}
         alt={alt}
         fill={!width || !height}
         width={width}
