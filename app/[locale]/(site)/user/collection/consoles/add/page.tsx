@@ -16,6 +16,7 @@ import { ConsoleForm } from "@/components/organisms/_console/ConsoleForm/Console
 import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
+import { SimpleCollapse } from "@/components/atoms/SimpleCollapse/SimpleCollapse";
 
 type Step = "brand" | "variant" | "skin" | "form";
 
@@ -229,27 +230,61 @@ export default function AddConsolePage() {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-                {brands?.map((brand) => (
-                  <SelectableItem
-                    key={brand.slug}
-                    isSelected={selectedBrand === brand.slug}
-                    onClick={() => handleBrandSelect(brand.slug)}
-                    className="p-3 rounded-md text-center font-medium capitalize"
+              <div className="space-y-4">
+                {/* Primeiras 4 marcas visíveis */}
+                <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                  {brands?.slice(0, 4).map((brand) => (
+                    <SelectableItem
+                      key={brand.slug}
+                      isSelected={selectedBrand === brand.slug}
+                      onClick={() => handleBrandSelect(brand.slug)}
+                      className="p-3 rounded-md text-center font-medium capitalize"
+                    >
+                      <Image
+                        src={"/images/brands/" + brand.slug + ".svg"}
+                        alt={brand.slug}
+                        width={60}
+                        height={60}
+                        className={
+                          selectedBrand === brand.slug
+                            ? "object-contain m-auto text-primary-600 dark:text-primary-400"
+                            : "object-contain m-auto text-gray-900 dark:text-white"
+                        }
+                      />
+                    </SelectableItem>
+                  ))}
+                </div>
+
+                {/* Restante das marcas no SimpleCollapse */}
+                {brands && brands.length > 4 && (
+                  <SimpleCollapse
+                    title={`Ver mais marcas (${brands.length - 4})`}
+                    defaultOpen={false}
                   >
-                    <Image
-                      src={"/images/brands/" + brand.slug + ".svg"}
-                      alt={brand.slug}
-                      width={60}
-                      height={60}
-                      className={
-                        selectedBrand === brand.slug
-                          ? "object-contain m-auto text-primary-600 dark:text-primary-400"
-                          : "object-contain m-auto text-gray-900 dark:text-white"
-                      }
-                    />
-                  </SelectableItem>
-                ))}
+                    <div className="grid grid-cols-3 md:grid-cols-4 gap-3 mt-3">
+                      {brands?.slice(4).map((brand) => (
+                        <SelectableItem
+                          key={brand.slug}
+                          isSelected={selectedBrand === brand.slug}
+                          onClick={() => handleBrandSelect(brand.slug)}
+                          className="p-3 rounded-md text-center font-medium capitalize"
+                        >
+                          <Image
+                            src={"/images/brands/" + brand.slug + ".svg"}
+                            alt={brand.slug}
+                            width={60}
+                            height={60}
+                            className={
+                              selectedBrand === brand.slug
+                                ? "object-contain m-auto text-primary-600 dark:text-primary-400"
+                                : "object-contain m-auto text-gray-900 dark:text-white"
+                            }
+                          />
+                        </SelectableItem>
+                      ))}
+                    </div>
+                  </SimpleCollapse>
+                )}
               </div>
             )}
           </SelectionSection>
