@@ -278,8 +278,8 @@ const PublicProfileConsoleGridContent = ({
     [openGridId, consoles],
   );
 
-  const handleToggleGrid = (index: number, id: number) => {
-    const rowStart = index - (index % gridCols);
+  const handleToggleGrid = (gridIndex: number, id: number) => {
+    const rowStart = gridIndex - (gridIndex % gridCols);
     if (openGridId === id) {
       setOpenGridId(null);
       setOpenGridRowStart(null);
@@ -298,8 +298,8 @@ const PublicProfileConsoleGridContent = ({
   const [openCompactId, setOpenCompactId] = useState<number | null>(null);
   const [openCompactRowStart, setOpenCompactRowStart] = useState<number | null>(null);
 
-  const handleToggleCompact = (index: number, id: number) => {
-    const rowStart = index - (index % compactCols);
+  const handleToggleCompact = (gridIndex: number, id: number) => {
+    const rowStart = gridIndex - (gridIndex % compactCols);
     if (openCompactId === id) {
       setOpenCompactId(null);
       setOpenCompactRowStart(null);
@@ -657,24 +657,28 @@ const PublicProfileConsoleGridContent = ({
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openCompactId === consoleItem.id;
 
-                const rowEndIndex = index - (index % compactCols) + (compactCols - 1);
-                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+                const gridIndex = isOwner ? index + 1 : index;
+                const rowStart = gridIndex - (gridIndex % compactCols);
+                const rowEndIndex = rowStart + (compactCols - 1);
+                const isRowEnd =
+                  gridIndex === rowEndIndex ||
+                  gridIndex === (isOwner ? consoles.length : consoles.length - 1);
 
                 const shouldRenderAccessoriesRow =
                   openCompactRowStart !== null &&
                   isRowEnd &&
-                  index >= openCompactRowStart &&
-                  index < openCompactRowStart + compactCols;
+                  gridIndex >= openCompactRowStart &&
+                  gridIndex < openCompactRowStart + compactCols;
 
                 return (
                   <div key={consoleItem.id} className="contents">
                     <div
                       className="
                         box-border min-w-0 flex flex-col
-                        flex-[0_0_calc(33.333%_-_.5rem)]       /* 3 col */
-                        md:flex-[0_0_calc(25%_-_.5625rem)]     /* 4 col */
-                        lg:flex-[0_0_calc(16.666%_-_.625rem)]  /* 6 col */
-                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]  /* 8 col */
+                        flex-[0_0_calc(33.333%_-_.5rem)]
+                        md:flex-[0_0_calc(25%_-_.5625rem)]
+                        lg:flex-[0_0_calc(16.666%_-_.625rem)]
+                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]
                       "
                     >
                       <PublicProfileConsoleCompact
@@ -682,7 +686,7 @@ const PublicProfileConsoleGridContent = ({
                         isOwner={isOwner || false}
                         isExpanded={isOpen}
                         onToggleAccessories={() =>
-                          handleToggleCompact(index, consoleItem.id as number)
+                          handleToggleCompact(gridIndex, consoleItem.id as number)
                         }
                       />
                     </div>
@@ -721,14 +725,19 @@ const PublicProfileConsoleGridContent = ({
               )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openGridId === consoleItem.id;
-                const rowEndIndex = index - (index % gridCols) + (gridCols - 1);
-                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+
+                const gridIndex = isOwner ? index + 1 : index;
+                const rowStart = gridIndex - (gridIndex % gridCols);
+                const rowEndIndex = rowStart + (gridCols - 1);
+                const isRowEnd =
+                  gridIndex === rowEndIndex ||
+                  gridIndex === (isOwner ? consoles.length : consoles.length - 1);
 
                 const shouldRenderAccessoriesRow =
                   openGridRowStart !== null &&
                   isRowEnd &&
-                  index >= openGridRowStart &&
-                  index < openGridRowStart + gridCols;
+                  gridIndex >= openGridRowStart &&
+                  gridIndex < openGridRowStart + gridCols;
 
                 return (
                   <div key={consoleItem.id} className="contents">
@@ -746,7 +755,7 @@ const PublicProfileConsoleGridContent = ({
                         isOwner={isOwner || false}
                         isExpanded={isOpen}
                         onToggleAccessories={() =>
-                          handleToggleGrid(index, consoleItem.id as number)
+                          handleToggleGrid(gridIndex, consoleItem.id as number)
                         }
                       />
                     </div>
