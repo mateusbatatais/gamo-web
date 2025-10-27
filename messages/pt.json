@@ -271,7 +271,8 @@
       "saving": "Salvando...",
       "updateError": "Falha ao atualizar dados.",
       "updateSuccess": "Dados atualizados com sucesso!",
-      "selectPhoto": "Selecionar foto"
+      "selectPhoto": "Selecionar foto",
+      "phone": "Whatsapp (para compra e venda)"
     },
     "changePasswordForm": {
       "currentPassword": "Senha Atual",

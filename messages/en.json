@@ -271,7 +271,8 @@
       "saving": "Saving...",
       "updateError": "Failed to update details.",
       "updateSuccess": "Details updated successfully!",
-      "selectPhoto": "Select Photo"
+      "selectPhoto": "Select Photo",
+      "phone": "Phone (for trade contact)"
     },
     "changePasswordForm": {
       "currentPassword": "Current Password",

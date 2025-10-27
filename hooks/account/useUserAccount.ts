@@ -9,6 +9,7 @@ interface UserProfile {
   name: string;
   slug: string;
   email: string;
+  phone?: string | null;
   description?: string;
   profileImage?: string;
 }
@@ -16,6 +17,7 @@ interface UserProfile {
 interface UpdateProfilePayload {
   name: string;
   slug: string;
+  phone?: string | null;
   email: string;
   description: string;
   profileImage?: string;
@@ -34,7 +36,7 @@ export function useAccount() {
   const updateProfileMutation = useMutation({
     mutationFn: async (payload: UpdateProfilePayload) => {
       return apiFetch<{
-        token: string; // Novo tipo
+        token: string;
         user: UserProfile;
       }>("/user/profile", {
         method: "PUT",

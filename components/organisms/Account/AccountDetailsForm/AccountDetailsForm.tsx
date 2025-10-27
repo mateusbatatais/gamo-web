@@ -7,6 +7,7 @@ import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import Image from "next/image";
 import { Button } from "@/components/atoms/Button/Button";
 import { Input } from "@/components/atoms/Input/Input";
+import { InputPhone } from "@/components/atoms/InputPhone/InputPhone";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { useToast } from "@/contexts/ToastContext";
 import { Card } from "@/components/atoms/Card/Card";
@@ -22,6 +23,7 @@ export default function AccountDetailsForm() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
@@ -33,6 +35,7 @@ export default function AccountDetailsForm() {
       setName(profileQuery.data.name);
       setSlug(profileQuery.data.slug);
       setEmail(profileQuery.data.email);
+      setPhone(profileQuery.data.phone || "");
       setDescription(profileQuery.data.description ?? "");
     }
   }, [profileQuery.data]);
@@ -42,7 +45,7 @@ export default function AccountDetailsForm() {
 
   const handleCroppedImage = useCallback((blob: Blob) => {
     setCroppedBlob(blob);
-    setPreviewCroppedUrl(URL.createObjectURL(blob)); // Cria URL para preview
+    setPreviewCroppedUrl(URL.createObjectURL(blob));
     setFileSrc(null);
   }, []);
 
@@ -52,18 +55,17 @@ export default function AccountDetailsForm() {
     try {
       let profileImageUrl = previewUrl;
 
-      // Upload da nova imagem se existir
       if (croppedBlob) {
         const uploadResult = await uploadProfileImage.mutateAsync(croppedBlob);
         profileImageUrl = uploadResult.url;
       }
 
-      // Atualiza o perfil
       await updateProfileMutation.mutateAsync({
         name,
         slug,
         description,
         email,
+        phone,
         ...(profileImageUrl ? { profileImage: profileImageUrl } : {}),
       });
 
@@ -166,6 +168,15 @@ export default function AccountDetailsForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+              />
+
+              <InputPhone
+                data-testid="input-phone"
+                label={t("phone") || "Phone"}
+                value={phone}
+                onChange={setPhone}
+                placeholder="+55 (11) 99999-9999"
+                defaultCountry="BR"
               />
 
               <Textarea
