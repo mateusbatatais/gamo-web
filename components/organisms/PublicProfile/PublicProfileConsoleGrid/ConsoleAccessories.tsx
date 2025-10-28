@@ -122,6 +122,37 @@ function AccessoriesCard({ acc, isOwner = false }: { acc: AccessoryLite; isOwner
   );
 }
 
+export function ConsoleAccessories({
+  item,
+  isOwner = false,
+}: {
+  item?: UserConsole;
+  isOwner?: boolean;
+}) {
+  if (!item || !hasAccessories(item)) {
+    return (
+      <Card>
+        <div className="text-sm text-gray-500 dark:text-gray-400">
+          Nenhum acessório cadastrado para este console.
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="border-2 border-secondary-500 dark:border-secondary-500 -mt-10">
+      <RenderAccessoriesTitle item={item} />
+      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+        {item.accessories.map((acc) => (
+          <div key={(acc as AccessoryLite).id} className="aspect-square">
+            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} />
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
 export function ConsoleAccessoriesCompact({
   item,
   isOwner = false,
@@ -131,7 +162,7 @@ export function ConsoleAccessoriesCompact({
 }) {
   if (!item || !hasAccessories(item)) {
     return (
-      <Card className="p-4">
+      <Card>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Nenhum acessório cadastrado para este console.
         </div>
@@ -140,7 +171,7 @@ export function ConsoleAccessoriesCompact({
   }
 
   return (
-    <Card className="p-4">
+    <Card className="border-2 border-secondary-500 dark:border-secondary-500">
       <RenderAccessoriesTitle item={item} />
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
         {item.accessories.map((acc) => (
@@ -162,7 +193,7 @@ export function ConsoleAccessoriesList({
 }) {
   if (!item || !hasAccessories(item)) {
     return (
-      <Card className="p-4">
+      <Card>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Nenhum acessório cadastrado para este console.
         </div>
@@ -171,7 +202,7 @@ export function ConsoleAccessoriesList({
   }
 
   return (
-    <Card className="p-4">
+    <Card className="border-2 border-secondary-500 dark:border-secondary-500 -mt-2">
       <RenderAccessoriesTitle item={item} />
       <div className="space-y-3">
         {item.accessories.map((acc) => {
@@ -215,7 +246,7 @@ export function ConsoleAccessoriesTable({
 }) {
   if (!item || !hasAccessories(item)) {
     return (
-      <Card className="p-4">
+      <Card>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           Nenhum acessório cadastrado para este console.
         </div>
@@ -252,7 +283,7 @@ export function ConsoleAccessoriesTable({
                 </td>
                 <td className="p-2 text-sm text-gray-600 dark:text-gray-300">{a.accessorySlug}</td>
                 {isOwner && (
-                  <td className="p-2 text-center">
+                  <td className="p-2 text-center  flex justify-center">
                     <AccessoryActionButtons
                       accessory={a as unknown as UserAccessory}
                       isOwner={isOwner}

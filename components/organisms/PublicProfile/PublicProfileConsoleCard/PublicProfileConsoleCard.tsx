@@ -187,31 +187,33 @@ export const PublicProfileConsoleCard = ({
               </Badge>
             )}
           </div>
-
-          {canExpand && onToggleAccessories && (
-            <div className="mt-2 flex justify-center">
-              <Button
-                variant="secondary"
-                size="sm"
-                aria-expanded={!!isExpanded}
-                onClick={onToggleAccessories}
-                className="flex items-center gap-2 w-full"
-              >
-                <div className="flex flex-col items-center gap-1">
-                  <div className="flex items-center gap-1.5">
-                    {accessorySummary?.sortedTypes.map(([typeSlug, count]) => (
-                      <div key={typeSlug} className="flex items-center gap-0.5">
-                        <span className="text-xs">{count}x</span>
-                        {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
-                      </div>
-                    ))}
-                  </div>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </div>
-              </Button>
-            </div>
-          )}
         </div>
+        {canExpand && onToggleAccessories && (
+          <div className="mt-2 flex justify-center">
+            <Button
+              variant="secondary"
+              size="sm"
+              aria-expanded={!!isExpanded}
+              onClick={onToggleAccessories}
+              className="flex gap-2 w-full"
+            >
+              <div className="flex flex-row gap-1 justify-space-between w-full">
+                <div className="flex  gap-1.5">
+                  {accessorySummary?.sortedTypes.slice(0, 3).map(([typeSlug, count]) => (
+                    <div key={typeSlug} className="flex items-center gap-0.5">
+                      <span className="text-xs">{count}x</span>
+                      {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
+                    </div>
+                  ))}
+                  {accessorySummary && accessorySummary.sortedTypes.length > 3 && (
+                    <span className="text-xs">...</span>
+                  )}
+                </div>
+                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              </div>
+            </Button>
+          </div>
+        )}
       </Card>
 
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>

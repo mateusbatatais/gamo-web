@@ -70,15 +70,15 @@ export const PublicProfileConsoleCompact = ({
           </div>
         )}
 
-        {/* Botão de acessórios - dentro do card (exibe apenas se houver acessórios) */}
         {canExpand && onToggleAccessories && (
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20">
+          <div className="absolute bottom-0 left-0 right-0 w-full z-20">
             <Button
               variant="secondary"
               size="sm"
               aria-expanded={!!isExpanded}
               onClick={onToggleAccessories}
               icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+              className="w-full opacity-70 hover:opacity-100 rounded-t-none"
             ></Button>
           </div>
         )}

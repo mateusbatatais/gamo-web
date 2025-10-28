@@ -22,6 +22,7 @@ import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicPro
 import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
 import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
 import {
+  ConsoleAccessories,
   ConsoleAccessoriesCompact,
   ConsoleAccessoriesList,
   ConsoleAccessoriesTable,
@@ -762,10 +763,7 @@ const PublicProfileConsoleGridContent = ({
 
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
-                        <ConsoleAccessoriesCompact
-                          item={selectedGridConsole}
-                          isOwner={isOwner || false}
-                        />
+                        <ConsoleAccessories item={selectedGridConsole} isOwner={isOwner || false} />
                       </div>
                     )}
                   </div>

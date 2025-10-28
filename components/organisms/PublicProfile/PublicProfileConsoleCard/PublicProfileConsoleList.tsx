@@ -132,25 +132,29 @@ export const PublicProfileConsoleList = ({
                 </p>
               </div>
 
-              {/* Ações à direita: mostrar expandir (se houver acessórios) + botões do owner */}
               <div className="flex gap-2 items-center">
                 {canExpand && onToggleAccessories && (
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
                     aria-expanded={isExpanded}
                     onClick={onToggleAccessories}
                     className="flex items-center gap-2"
                   >
-                    <div className="flex items-center gap-1">
-                      {accessorySummary?.sortedTypes.map(([typeSlug, count]) => (
-                        <div key={typeSlug} className="flex items-center gap-1">
-                          <span className="text-xs">{count}x</span>
-                          {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
-                        </div>
-                      ))}
+                    <div className="flex gap-1 flex-row">
+                      <div className="flex items-center gap-1">
+                        {accessorySummary?.sortedTypes.slice(0, 4).map(([typeSlug, count]) => (
+                          <div key={typeSlug} className="flex items-center gap-1">
+                            <span className="text-xs">{count}x</span>
+                            {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
+                          </div>
+                        ))}
+                        {accessorySummary && accessorySummary.sortedTypes.length > 4 && (
+                          <span className="text-xs">...</span>
+                        )}
+                      </div>
+                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     </div>
-                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </Button>
                 )}
 
