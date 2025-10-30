@@ -17,6 +17,7 @@ import { useFavorite } from "@/hooks/useFavorite";
 import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
 import { SkinDetail } from "@/@types/catalog.types";
 import ConsoleAccessories from "@/components/molecules/_console/ConsoleAccessories/ConsoleAccessories";
+import { ReportProblem } from "@/components/molecules/ReportProblem/ReportProblem";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -143,6 +144,8 @@ export default function ConsoleDetailPage() {
           Colocar itens desse modelo que estão a venda
         </p>
       </Card>
+
+      <ReportProblem />
     </div>
   );
 }

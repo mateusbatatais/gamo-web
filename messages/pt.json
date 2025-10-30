@@ -695,5 +695,19 @@
   },
   "Terms": {
     "construction": "Termos"
+  },
+  "ReportProblem": {
+    "reportProblem": "Reportar Problema",
+    "reportProblemSubtitle": "Encontrou algum problema? Nos ajude a melhorar!",
+    "emailLabel": "Email (opcional)",
+    "emailPlaceholder": "seu@email.com",
+    "descriptionLabel": "Descrição do problema",
+    "descriptionPlaceholder": "Descreva detalhadamente o problema que você encontrou...",
+    "descriptionRequired": "Por favor, descreva o problema",
+    "currentPage": "Página atual",
+    "cancel": "Cancelar",
+    "sendReport": "Enviar Relatório",
+    "successMessage": "Problema reportado com sucesso! Obrigado pelo feedback.",
+    "errorMessage": "Erro ao enviar relatório. Tente novamente."
   }
 }
