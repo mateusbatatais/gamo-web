@@ -43,17 +43,18 @@ const ConsoleCard = ({
   className,
   buttonVariant = "primary",
   buttonStatus = "default",
-  buttonLabel = "View Details",
+  buttonLabel,
   orientation = "vertical",
   badge,
   children,
-  variantId, // Novo: ID da variante
+  variantId,
   isFavorite = false,
   onFavoriteToggle,
 }: ConsoleCardProps) => {
   const [imageError, setImageError] = useState(false);
   const t = useTranslations("");
   const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
+  const defaultButtonLabel = buttonLabel ?? t("button.viewdetails");
 
   if (loading) {
     return <ConsoleCardSkeleton />;
@@ -137,7 +138,7 @@ const ConsoleCard = ({
               variant={buttonVariant}
               status={buttonStatus}
               className="w-full"
-              label={buttonLabel}
+              label={defaultButtonLabel}
             />
           </Link>
           <div className="ml-2">

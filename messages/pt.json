@@ -709,5 +709,8 @@
     "sendReport": "Enviar Relatório",
     "successMessage": "Problema reportado com sucesso! Obrigado pelo feedback.",
     "errorMessage": "Erro ao enviar relatório. Tente novamente."
+  },
+  "button": {
+    "viewdetails": "Ver detalhes"
   }
 }

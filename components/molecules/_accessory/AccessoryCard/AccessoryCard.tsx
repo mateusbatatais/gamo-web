@@ -8,6 +8,7 @@ import { CardActionButtons } from "@/components/molecules/CardActionButtons/Card
 import { useFavorite } from "@/hooks/useFavorite";
 import { AccessoryCardSkeleton } from "./AccessoryCard.skeleton";
 import { Gamepad } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export interface AccessoryCardProps {
   id: number;
@@ -39,7 +40,7 @@ const AccessoryCard = ({
   className,
   buttonVariant = "primary",
   buttonStatus = "default",
-  buttonLabel = "View Details",
+  buttonLabel,
   orientation = "vertical",
   badge,
   children,
@@ -48,6 +49,8 @@ const AccessoryCard = ({
 }: AccessoryCardProps) => {
   const [imageError, setImageError] = useState(false);
   const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
+  const t = useTranslations("");
+  const defaultButtonLabel = buttonLabel ?? t("button.viewdetails");
 
   if (loading) {
     return <AccessoryCardSkeleton />;
@@ -119,7 +122,7 @@ const AccessoryCard = ({
               variant={buttonVariant}
               status={buttonStatus}
               className="w-full"
-              label={buttonLabel}
+              label={defaultButtonLabel}
             />
           </Link>
           <div className="ml-2">

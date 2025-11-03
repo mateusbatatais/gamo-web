@@ -709,5 +709,8 @@
     "sendReport": "Send Report",
     "successMessage": "Problem successfully reported! Thank you for your feedback.",
     "errorMessage": "Error sending report. Please try again."
+  },
+  "button": {
+    "viewdetails": "View details"
   }
 }
