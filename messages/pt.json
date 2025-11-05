@@ -418,7 +418,7 @@
     "description": "Descrição",
     "descriptionPlaceholder": "Detalhes sobre seu item...",
     "tradeSection": "Detalhes de Troca/Venda",
-    "status": "Status",
+    "status": "Incluir: ",
     "condition": "Condição",
     "price": "Preço",
     "pricePlaceholder": "R$ 0,00",

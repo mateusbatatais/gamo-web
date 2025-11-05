@@ -28,8 +28,8 @@ export const TradeSection = ({
 }: TradeSectionProps) => {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {showStatus && (
+      {showStatus && (
+        <div className="flex-1 min-w-0">
           <Select
             name="status"
             value={formData.status}
@@ -37,27 +37,33 @@ export const TradeSection = ({
             label={translate("status")}
             options={statusOptions}
           />
-        )}
+        </div>
+      )}
 
-        <Select
-          name="condition"
-          value={formData.condition}
-          onChange={handleChange}
-          label={translate("condition")}
-          options={conditionOptions}
-        />
+      <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+        <div className="flex-1 min-w-0">
+          <Select
+            name="condition"
+            value={formData.condition}
+            onChange={handleChange}
+            label={translate("condition")}
+            options={conditionOptions}
+          />
+        </div>
 
         {showPrice && (
-          <Input
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            label={translate("price")}
-            placeholder={translate("pricePlaceholder")}
-            type="number"
-            min="0"
-            step="0.01"
-          />
+          <div className="flex-1 min-w-0">
+            <Input
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              label={translate("price")}
+              placeholder={translate("pricePlaceholder")}
+              type="number"
+              min="0"
+              step="0.01"
+            />
+          </div>
         )}
       </div>
       <div className="space-y-2">
