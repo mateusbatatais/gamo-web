@@ -20,6 +20,11 @@ import {
   Joystick,
   Gamepad2,
   SquareUserRound,
+  Newspaper,
+  ChevronRight,
+  LibraryBig,
+  Tag,
+  CirclePlus,
 } from "lucide-react";
 import clsx from "clsx";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
@@ -31,6 +36,15 @@ export default function Header() {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [openMobileSections, setOpenMobileSections] = useState<{
+    consoles: boolean;
+    games: boolean;
+    accessories: boolean;
+  }>({
+    consoles: false,
+    games: false,
+    accessories: false,
+  });
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -49,26 +63,114 @@ export default function Header() {
     };
   }, []);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  // Controlar scroll do body quando menu mobile está aberto
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+      // Forçar header reduzido quando menu está aberto
+      setIsScrolled(true);
+    } else {
+      document.body.style.overflow = "unset";
+    }
 
-  const catalogItems = [
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMenuOpen]);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+    // Se estiver fechando o menu, restaurar o estado normal do scroll
+    if (isMenuOpen) {
+      setIsScrolled(window.scrollY > 0);
+    }
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setIsScrolled(window.scrollY > 0);
+  };
+
+  const toggleMobileSection = (section: keyof typeof openMobileSections) => {
+    setOpenMobileSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  // Menu items para Consoles
+  const consolesItems = [
     {
-      id: "consoles",
-      label: t("catalog.consoles"),
-      icon: <Gamepad size={16} />,
+      id: "view-catalog-consoles",
+      label: t("consoles.viewCatalog"),
+      icon: <LibraryBig size={18} />,
       href: "/console-catalog",
     },
     {
-      id: "accessories",
-      label: t("catalog.accessories"),
-      icon: <Joystick size={16} />,
-      href: "/accessory-catalog",
+      id: "add-collection-consoles",
+      label: t("consoles.addCollection"),
+      icon: <CirclePlus size={18} />,
+      href: "/user/collection/consoles/add?type=collection",
     },
     {
-      id: "games",
-      label: t("catalog.games"),
-      icon: <Gamepad2 size={16} />,
+      id: "sell-buy-consoles",
+      label: t("consoles.sellBuy"),
+      icon: <Tag size={18} />,
+      href: "/user/collection/consoles/add?type=trade",
+    },
+  ];
+
+  // Menu items para Games
+  const gamesItems = [
+    {
+      id: "view-catalog-games",
+      label: t("games.viewCatalog"),
+      icon: <LibraryBig size={18} />,
       href: "/game-catalog",
+    },
+    {
+      id: "add-collection-games",
+      label: t("games.addCollection"),
+      icon: <CirclePlus size={18} />,
+      href: "/user/collection/games/add?type=collection",
+    },
+    {
+      id: "sell-buy-games",
+      label: t("games.sellBuy"),
+      icon: <Tag size={18} />,
+      href: "/user/collection/games/add?type=trade",
+    },
+  ];
+
+  // Menu items para Acessórios
+  const accessoriesItems = [
+    {
+      id: "view-catalog-accessories",
+      label: t("accessories.viewCatalog"),
+      icon: <LibraryBig size={18} />,
+      href: "/accessories-catalog",
+    },
+    {
+      id: "add-collection-accessories",
+      label: t("accessories.addCollection"),
+      icon: <CirclePlus size={18} />,
+      href: "/user/collection/accessories/add?type=collection",
+    },
+    {
+      id: "sell-buy-accessories",
+      label: t("accessories.sellBuy"),
+      icon: <Tag size={18} />,
+      href: "/user/collection/accessories/add?type=trade",
+    },
+  ];
+
+  // Links diretos com ícones
+  const directLinks = [
+    {
+      id: "news",
+      label: t("news"),
+      icon: <Newspaper size={18} />,
+      href: "/news",
     },
   ];
 
@@ -77,25 +179,25 @@ export default function Header() {
         {
           id: "account",
           label: t("myAccount"),
-          icon: <User size={16} />,
+          icon: <User size={18} />,
           href: "/account",
         },
         {
           id: `/user/${user.slug}`,
           label: t("viewProfile"),
-          icon: <SquareUserRound size={16} />,
+          icon: <SquareUserRound size={18} />,
           href: `/user/${user.slug}`,
         },
         {
           id: "wishlist",
           label: t("wishlist"),
-          icon: <Heart size={16} />,
+          icon: <Heart size={18} />,
           href: "/wishlist",
         },
         {
           id: "logout",
           label: t("logout"),
-          icon: <LogOut size={16} />,
+          icon: <LogOut size={18} />,
           onClick: () => logout(),
         },
       ]
@@ -166,17 +268,50 @@ export default function Header() {
               isScrolled ? "text-sm" : "text-base",
             )}
           >
+            {/* Menu Consoles */}
             <Dropdown
-              label={t("catalog.title")}
+              label={t("consoles.title")}
               variant="transparent"
-              items={catalogItems}
+              items={consolesItems}
               menuProps={{
                 className: "mt-2",
               }}
             />
 
-            <div className="hidden md:flex ">
-              <Button size="sm" icon={<Bell size={20} />} variant="transparent"></Button>
+            {/* Menu Games */}
+            <Dropdown
+              label={t("games.title")}
+              variant="transparent"
+              items={gamesItems}
+              menuProps={{
+                className: "mt-2",
+              }}
+            />
+
+            {/* Menu Acessórios */}
+            <Dropdown
+              label={t("accessories.title")}
+              variant="transparent"
+              items={accessoriesItems}
+              menuProps={{
+                className: "mt-2",
+              }}
+            />
+
+            {/* Links diretos com ícones - Desktop */}
+            {directLinks.map((link) => (
+              <Link key={link.id} href={link.href}>
+                <Button
+                  variant="transparent"
+                  className="flex items-center gap-2"
+                  icon={link.icon}
+                  title={link.label}
+                />
+              </Link>
+            ))}
+
+            <div className="hidden md:flex items-center space-x-2">
+              <Button size="sm" icon={<Bell size={18} />} variant="transparent" />
               <ThemeToggle />
               <LocaleSwitcher />
             </div>
@@ -186,7 +321,7 @@ export default function Header() {
                 trigger={
                   <div className="flex items-center space-x-1 cursor-pointer">
                     <Avatar src={user.profileImage} alt={user.name} size="xs" />
-                    <ChevronDown size={16} />
+                    <ChevronDown size={18} />
                   </div>
                 }
                 items={accountItems}
@@ -200,66 +335,184 @@ export default function Header() {
                   variant="transparent"
                   className="flex items-center gap-2"
                   label={t("login")}
-                ></Button>
+                />
               </Link>
             )}
           </div>
         </div>
 
-        {/* Menu mobile */}
+        {/* Menu mobile - Tela cheia com scroll */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4 mt-2">
-            <nav className="flex flex-col space-y-3">
-              <div className="relative">
-                <h3>{t("catalog.title")}</h3>
-                <div className="pl-4 mt-2 space-y-3">
-                  {catalogItems.map((item) => (
-                    <Link key={item.id} href={item.href!} onClick={() => setIsMenuOpen(false)}>
-                      <div className="flex items-center gap-2 py-1 ">
-                        {item.icon}
-                        <span>{item.label}</span>
-                      </div>
-                    </Link>
-                  ))}
+          <div className="md:hidden fixed inset-0 top-16 bg-white dark:bg-gray-900 z-50 overflow-y-auto">
+            <div className="container mx-auto px-4">
+              <nav className="flex flex-col ">
+                {/* Menu Consoles mobile - Collapse */}
+                <div className="relative">
+                  <button
+                    onClick={() => toggleMobileSection("consoles")}
+                    className="flex items-center justify-between w-full py-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Gamepad size={18} />
+                      <h3>{t("consoles.title")}</h3>
+                    </div>
+                    <ChevronRight
+                      size={18}
+                      className={clsx(
+                        "transition-transform duration-200",
+                        openMobileSections.consoles && "rotate-90",
+                      )}
+                    />
+                  </button>
+                  {openMobileSections.consoles && (
+                    <div className="pl-8 gap-3">
+                      {consolesItems.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href!}
+                          onClick={closeMenu}
+                          className="block py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              {user ? (
-                <>
-                  {accountItems.map((item) => (
+                {/* Menu Games mobile - Collapse */}
+                <div className="relative">
+                  <button
+                    onClick={() => toggleMobileSection("games")}
+                    className="flex items-center justify-between w-full py-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Gamepad2 size={18} />
+                      <h3>{t("games.title")}</h3>
+                    </div>
+                    <ChevronRight
+                      size={18}
+                      className={clsx(
+                        "transition-transform duration-200",
+                        openMobileSections.games && "rotate-90",
+                      )}
+                    />
+                  </button>
+                  {openMobileSections.games && (
+                    <div className="pl-8 gap-3">
+                      {gamesItems.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href!}
+                          onClick={closeMenu}
+                          className="block py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Menu Acessórios mobile - Collapse */}
+                <div className="relative">
+                  <button
+                    onClick={() => toggleMobileSection("accessories")}
+                    className="flex items-center justify-between w-full py-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Joystick size={18} />
+                      <h3>{t("accessories.title")}</h3>
+                    </div>
+                    <ChevronRight
+                      size={18}
+                      className={clsx(
+                        "transition-transform duration-200",
+                        openMobileSections.accessories && "rotate-90",
+                      )}
+                    />
+                  </button>
+                  {openMobileSections.accessories && (
+                    <div className="pl-8 gap-3">
+                      {accessoriesItems.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href!}
+                          onClick={closeMenu}
+                          className="block py-2 text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Links diretos mobile com ícones */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                  <div className="space-y-4">
+                    {directLinks.map((link) => (
+                      <Link
+                        key={link.id}
+                        href={link.href}
+                        onClick={closeMenu}
+                        className="flex items-center gap-3 py-2 text-gray-800 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400 transition-colors"
+                      >
+                        {link.icon}
+                        <span className="font-medium">{link.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Seção do usuário */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3">
+                  {user ? (
+                    <div className="space-y-4">
+                      {accountItems.map((item) => (
+                        <Link
+                          key={item.id}
+                          href={item.href!}
+                          onClick={() => {
+                            item.onClick?.();
+                            closeMenu();
+                          }}
+                          className="flex items-center gap-3 py-2 text-gray-800 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400 transition-colors"
+                        >
+                          {item.icon}
+                          <span>{item.label}</span>
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
                     <Link
-                      key={item.id}
-                      href={item.href!}
-                      onClick={() => {
-                        item.onClick?.();
-                        setIsMenuOpen(false);
-                      }}
-                      className="flex gap-2 items-center "
+                      href="/login"
+                      onClick={closeMenu}
+                      className="flex items-center gap-3 py-2 text-gray-800 hover:text-gray-600 dark:text-gray-200 dark:hover:text-gray-400 transition-colors"
                     >
-                      {item.icon}
-                      <span>{item.label}</span>
+                      <User size={18} />
+                      <span className="font-medium">{t("login")}</span>
                     </Link>
-                  ))}
-                </>
-              ) : (
-                <Link
-                  href="/login"
-                  className="text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {t("login")}
-                </Link>
-              )}
-
-              {/* Ícones no mobile (dentro do menu) */}
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                <div className="flex items-center">
-                  <LocaleSwitcher />
-                  <Button size="sm" icon={<Bell size={20} />} variant="transparent"></Button>
-                  <ThemeToggle />
+                  )}
                 </div>
-              </div>
-            </nav>
+
+                {/* Ícones no mobile (dentro do menu) */}
+                <div className="border-t border-gray-200 dark:border-gray-700 pt-3 mt-3 ">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <LocaleSwitcher />
+                      <Button
+                        size="sm"
+                        icon={<Bell size={18} />}
+                        variant="transparent"
+                        onClick={closeMenu}
+                      />
+                      <ThemeToggle />
+                    </div>
+                  </div>
+                </div>
+              </nav>
+            </div>
           </div>
         )}
       </div>

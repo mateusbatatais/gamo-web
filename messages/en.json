@@ -135,7 +135,31 @@
     "myAccount": "My Account",
     "viewProfile": "View Profile",
     "wishlist": "Wishlist",
-    "logout": "Logout"
+    "logout": "Logout",
+    "consoles": {
+      "title": "Consoles",
+      "viewCatalog": "View catalog",
+      "addCollection": "Add to collection",
+      "sellBuy": "Put to Sell/Buy",
+      "marketplace": "Marketplace"
+    },
+    "games": {
+      "title": "Games",
+      "viewCatalog": "View catalog",
+      "addCollection": "Add to collection",
+      "sellBuy": "Put to Sell/Buy",
+      "marketplace": "Marketplace"
+    },
+    "accessories": {
+      "title": "Accessories",
+      "viewCatalog": "View catalog",
+      "addCollection": "Add to collection",
+      "sellBuy": "Put to Sell/Buy",
+      "marketplace": "Marketplace"
+    },
+    "news": "News",
+    "reviews": "Reviews",
+    "contact": "Contact"
   },
   "login": {
     "title": "Login",

@@ -135,7 +135,31 @@
     "myAccount": "Minha Conta",
     "viewProfile": "Ver Perfil",
     "wishlist": "Lista de Desejos",
-    "logout": "Sair"
+    "logout": "Sair",
+    "consoles": {
+      "title": "Consoles",
+      "viewCatalog": "Ver catálogo",
+      "addCollection": "Add a coleção",
+      "sellBuy": "Colocar a venda/compra",
+      "marketplace": "Marketplace"
+    },
+    "games": {
+      "title": "Games",
+      "viewCatalog": "Ver catálogo",
+      "addCollection": "Add a coleção",
+      "sellBuy": "Colocar a venda/compra",
+      "marketplace": "Marketplace"
+    },
+    "accessories": {
+      "title": "Acessórios",
+      "viewCatalog": "Ver catálogo",
+      "addCollection": "Add a coleção",
+      "sellBuy": "Colocar a venda/compra",
+      "marketplace": "Marketplace"
+    },
+    "news": "News",
+    "reviews": "Reviews",
+    "contact": "Contact"
   },
   "login": {
     "title": "Entrar",
