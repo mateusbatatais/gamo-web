@@ -100,22 +100,22 @@ export default function Header() {
 
           <div
             className={clsx(
-              "hidden md:block mx-4 transition-all duration-300",
+              "hidden lg:block mx-4 transition-all duration-300",
               isScrolled ? "max-w-md w-full" : "max-w-xl w-full",
             )}
           >
             {/* Filtro Removido por mudança de fluxo*/}
           </div>
 
-          <div className="flex items-center space-x-2 md:space-x-4">
+          <div className="flex items-center space-x-2 lg:space-x-4">
             {/* Barra de busca - mobile */}
-            <div className="md:hidden">{/* Filtro Removido por mudança de fluxo*/}</div>
+            <div className="lg:hidden">{/* Filtro Removido por mudança de fluxo*/}</div>
 
             <Button
               onClick={toggleMenu}
               variant="transparent"
               size="sm"
-              className="md:hidden"
+              className="lg:hidden"
               icon={isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             />
           </div>

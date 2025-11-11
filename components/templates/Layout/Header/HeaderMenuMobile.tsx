@@ -40,7 +40,7 @@ export default function HeaderMenuMobile({
   if (!isOpen) return null;
 
   return (
-    <div className="md:hidden fixed inset-0 top-16 bg-white dark:bg-gray-900 z-50 overflow-y-auto">
+    <div className="lg:hidden fixed inset-0 top-16 bg-white dark:bg-gray-900 z-50 overflow-y-auto">
       <div className="container mx-auto px-4">
         <nav className="flex flex-col ">
           <div className="relative">

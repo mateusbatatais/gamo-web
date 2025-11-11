@@ -31,11 +31,11 @@ export default function HeaderActions({ user, accountItems, isScrolled }: Props)
   return (
     <div
       className={clsx(
-        "hidden md:flex items-center space-x-4 transition-all",
+        "hidden lg:flex items-center space-x-4 transition-all",
         isScrolled ? "text-sm" : "text-base",
       )}
     >
-      <div className="hidden md:flex items-center space-x-2">
+      <div className="hidden lg:flex items-center space-x-2">
         <Button size="sm" icon={<Bell size={18} />} variant="transparent" />
         <ThemeToggle />
         <LocaleSwitcher />

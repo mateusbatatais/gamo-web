@@ -35,7 +35,7 @@ export default function HeaderMenuDesktop({
   return (
     <div
       className={clsx(
-        "hidden md:flex items-center space-x-4 transition-all",
+        "hidden lg:flex items-center space-x-4 transition-all",
         isScrolled ? "text-sm" : "text-base",
       )}
     >
