@@ -34,7 +34,6 @@ import Link from "next/link";
 import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
-// Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
 function hasAccessories(
   item: UserConsole,
@@ -61,11 +60,13 @@ export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
   isExpanded,
+  type,
   onToggleAccessories,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
   isExpanded?: boolean;
+  type?: "trade" | "collection";
   onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
@@ -219,6 +220,7 @@ export const PublicProfileConsoleCard = ({
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <ConsoleForm
           mode="edit"
+          type={type}
           consoleId={consoleItem.consoleId}
           consoleVariantId={consoleItem.consoleVariantId}
           variantSlug={consoleItem.variantSlug}

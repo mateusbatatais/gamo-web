@@ -9,9 +9,10 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 interface AccessoryCardProps {
   accessory: UserAccessory;
   isOwner: boolean;
+  type?: "collection" | "trade";
 }
 
-export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
+export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) => {
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
 
@@ -38,6 +39,7 @@ export const AccessoryCard = ({ accessory, isOwner }: AccessoryCardProps) => {
       </div>
       <AccessoryActionButtons
         accessory={accessory}
+        type={type}
         isOwner={isOwner}
         customClassName="absolute top-2 right-2 z-10"
       />

@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useAccessories } from "@/hooks/useAccessories";
 import { Accessory, AccessoryVariantDetail } from "@/@types/catalog.types";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
@@ -78,6 +78,7 @@ export default function AddAccessoryPage() {
   const [selectedVariant, setSelectedVariant] = useState<AccessoryVariantDetail | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("accessory");
   const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
 
   // Refs para cada seção
   const accessorySectionRef = useRef<HTMLDivElement>(null);
@@ -96,6 +97,7 @@ export default function AddAccessoryPage() {
     locale || "pt",
   );
 
+  const type = searchParams.get("type");
   useEffect(() => {
     setItems([
       { label: user?.slug || "", href: `/user/${user?.slug}` },
@@ -254,6 +256,7 @@ export default function AddAccessoryPage() {
                 </h2>
                 <AccessoryForm
                   mode="create"
+                  type={type as "collection" | "trade" | undefined}
                   accessoryId={selectedAccessory!.id}
                   accessoryVariantId={selectedVariant.id}
                   accessorySlug={selectedAccessory!.slug}

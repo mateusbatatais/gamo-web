@@ -65,7 +65,7 @@ export function useHeaderMenuData(): {
       id: "view-catalog-accessories",
       label: t("accessories.viewCatalog"),
       iconType: "library",
-      href: "/accessories-catalog",
+      href: "/accessory-catalog",
     },
     {
       id: "add-collection-accessories",

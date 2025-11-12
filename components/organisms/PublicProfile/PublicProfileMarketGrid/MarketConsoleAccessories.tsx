@@ -52,7 +52,7 @@ export function MarketConsoleAccessoriesGrid({
       <RenderAccessoriesTitle item={item} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {item.accessories.map((acc) => (
-          <AccessoryCard key={acc.id} accessory={acc} isOwner={isOwner} />
+          <AccessoryCard key={acc.id} accessory={acc} isOwner={isOwner} type="trade" />
         ))}
       </div>
     </Card>
@@ -90,7 +90,7 @@ export function MarketConsoleAccessoriesCompact({
               xl:flex-[0_0_calc(12.5%_-_.65625rem)]
             "
           >
-            <AccessoryCompactCard accessory={acc} isOwner={isOwner} />
+            <AccessoryCompactCard accessory={acc} isOwner={isOwner} type="trade" />
           </div>
         ))}
       </div>
@@ -119,7 +119,7 @@ export function MarketConsoleAccessoriesList({
       <RenderAccessoriesTitle item={item} />
       <div className="space-y-3">
         {item.accessories.map((acc) => (
-          <AccessoryListItem key={acc.id} accessory={acc} isOwner={isOwner} />
+          <AccessoryListItem key={acc.id} accessory={acc} isOwner={isOwner} type="trade" />
         ))}
       </div>
     </Card>
@@ -200,7 +200,7 @@ export function MarketConsoleAccessoriesTable({
               </td>
               {isOwner && (
                 <td className="p-2 text-center">
-                  <AccessoryActionButtons accessory={acc} isOwner={isOwner} />
+                  <AccessoryActionButtons accessory={acc} isOwner={isOwner} type="trade" />
                 </td>
               )}
             </tr>

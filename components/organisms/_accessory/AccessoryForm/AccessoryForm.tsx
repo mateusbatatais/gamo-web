@@ -4,7 +4,6 @@ import React, { ChangeEvent, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
-import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
@@ -13,11 +12,13 @@ import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImag
 import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { useUserConsoles } from "@/hooks/useUserConsoles";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
+import { Radio } from "@/components/atoms/Radio/Radio";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { Condition, CollectionStatus } from "@/@types/collection.types";
 
 interface AccessoryFormProps {
   mode: "create" | "edit";
+  type?: "collection" | "trade";
   accessoryId: number;
   accessoryVariantId: number;
   accessorySlug: string;
@@ -40,6 +41,7 @@ interface AccessoryFormProps {
 
 export const AccessoryForm = ({
   mode,
+  type = "collection",
   accessoryId,
   accessoryVariantId,
   accessorySlug,
@@ -53,6 +55,7 @@ export const AccessoryForm = ({
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>(
     initialData?.compatibleUserConsoleIds || [],
   );
+  const [showTrade, setShowTrade] = useState(false);
 
   const {
     photoMain,
@@ -70,14 +73,23 @@ export const AccessoryForm = ({
     setAdditionalPhotos,
   } = useCollectionForm(initialData?.photos || [], initialData?.photoMain || undefined);
 
-  const [formData, setFormData] = useState({
-    description: initialData?.description || "",
-    status: initialData?.status || "OWNED",
-    price: initialData?.price ? String(initialData.price) : "",
-    hasBox: initialData?.hasBox || false,
-    hasManual: initialData?.hasManual || false,
-    condition: initialData?.condition || "USED",
-    acceptsTrade: initialData?.acceptsTrade || false,
+  const [formData, setFormData] = useState(() => {
+    const status =
+      mode === "edit"
+        ? initialData?.status
+        : mode === "create" && type === "trade"
+          ? "SELLING"
+          : "OWNED";
+
+    return {
+      description: initialData?.description || "",
+      status,
+      price: initialData?.price ? String(initialData.price) : "",
+      hasBox: !!initialData?.hasBox,
+      hasManual: !!initialData?.hasManual,
+      condition: initialData?.condition || "USED",
+      acceptsTrade: !!initialData?.acceptsTrade,
+    };
   });
 
   const handleChange = (
@@ -108,7 +120,7 @@ export const AccessoryForm = ({
       accessoryVariantId,
       accessorySlug,
       description: formData.description || undefined,
-      status: formData.status,
+      status: formData.status || "OWNED",
       price: formData.price ? parseFloat(formData.price) : undefined,
       hasBox: formData.hasBox,
       hasManual: formData.hasManual,
@@ -134,16 +146,63 @@ export const AccessoryForm = ({
     { value: "REFURBISHED", label: t("conditionRefurbished") },
   ];
 
-  const statusOptions = [
-    { value: "OWNED", label: t("statusOwned") },
-    { value: "SELLING", label: t("statusSelling") },
-    { value: "LOOKING_FOR", label: t("statusLookingFor") },
-  ];
-
   const ownedConsoles = userConsoles?.filter((console) => console.status === "OWNED") || [];
+  const handleRadioChange = (name: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {initialData?.status === "OWNED" && (
+        <Checkbox
+          label={t("putUpForSale", { item: t("accessory") })}
+          checked={formData.status === "SELLING"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "SELLING" : "OWNED",
+            }));
+            setShowTrade(checked);
+          }}
+        />
+      )}
+      {initialData?.status === "LOOKING_FOR" && (
+        <Checkbox
+          label={t("moveToOwned", { item: t("accessory") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "LOOKING_FOR",
+            }));
+          }}
+        />
+      )}
+
+      {mode === "create" && type === "trade" && (
+        <div className="flex space-x-4">
+          <Radio
+            name="status"
+            value="SELLING"
+            checked={formData.status === "SELLING"}
+            onChange={() => handleRadioChange("status", "SELLING")}
+            label={t("statusSelling")}
+          />
+          <Radio
+            name="status"
+            value="LOOKING_FOR"
+            checked={formData.status === "LOOKING_FOR"}
+            onChange={() => handleRadioChange("status", "LOOKING_FOR")}
+            label={t("statusLookingFor")}
+          />
+        </div>
+      )}
+
       <div className="mt-4">
         <h4 className="font-medium mb-2">{t("compatibleConsoles")}</h4>
         {isLoading ? (
@@ -177,43 +236,42 @@ export const AccessoryForm = ({
           t={t}
         />
       </div>
-
-      <Collapse title={t("tradeSection")} defaultOpen={formData.status !== "OWNED"}>
-        <TradeSection
-          conditionOptions={conditionOptions}
-          statusOptions={statusOptions}
-          formData={formData}
-          handleChange={handleChange}
-          t={t}
-          showPrice={true}
-          showStatus={true}
-        />
-        <Textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          label={t("description")}
-          placeholder={t("descriptionPlaceholder")}
-          rows={4}
-        />
-
-        <div className="mt-4">
-          <AdditionalImagesUpload
-            label={t("additionalPhotos")}
-            photos={additionalPhotos}
-            fileInputRef={additionalFileInputRef}
-            onImageUpload={(e) => handleImageUpload(e, "additional")}
-            onRemove={(index) => removeImage("additional", index)}
-            onCropComplete={(blob, index) => {
-              const url = URL.createObjectURL(blob);
-              const newPhotos = [...additionalPhotos];
-              newPhotos[index] = { url, blob };
-              setAdditionalPhotos(newPhotos);
-            }}
+      {(type === "trade" || showTrade) && (
+        <>
+          <TradeSection
+            conditionOptions={conditionOptions}
+            formData={formData}
+            handleChange={handleChange}
             t={t}
+            showPrice={true}
           />
-        </div>
-      </Collapse>
+          <Textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            label={t("description")}
+            placeholder={t("descriptionPlaceholder")}
+            rows={4}
+          />
+
+          <div className="mt-4">
+            <AdditionalImagesUpload
+              label={t("additionalPhotos")}
+              photos={additionalPhotos}
+              fileInputRef={additionalFileInputRef}
+              onImageUpload={(e) => handleImageUpload(e, "additional")}
+              onRemove={(index) => removeImage("additional", index)}
+              onCropComplete={(blob, index) => {
+                const url = URL.createObjectURL(blob);
+                const newPhotos = [...additionalPhotos];
+                newPhotos[index] = { url, blob };
+                setAdditionalPhotos(newPhotos);
+              }}
+              t={t}
+            />
+          </div>
+        </>
+      )}
 
       {currentCropImage && (
         <ImageCropper

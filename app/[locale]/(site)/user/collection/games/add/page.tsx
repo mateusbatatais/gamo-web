@@ -4,6 +4,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useGames } from "@/hooks/useGames";
+import { useSearchParams } from "next/navigation";
 import { Game } from "@/@types/catalog.types";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import useGameDetails from "@/hooks/useGameDetails";
@@ -90,6 +91,7 @@ export default function AddGamePage() {
 
   const t = useTranslations("AddGame");
   const { setItems } = useBreadcrumbs();
+  const searchParams = useSearchParams();
 
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("game");
@@ -107,6 +109,7 @@ export default function AddGamePage() {
   });
 
   const { data: gameDetails } = useGameDetails(selectedGame?.slug || "");
+  const type = searchParams.get("type");
 
   useEffect(() => {
     setItems([
@@ -231,7 +234,7 @@ export default function AddGamePage() {
                   {t("popularGames")}
                 </h4>
                 {gamesLoading ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {[...Array(12)].map((_, i) => (
                       <Card key={i} className="p-0 overflow-hidden">
                         <Skeleton className="aspect-video w-full" animated />
@@ -243,7 +246,7 @@ export default function AddGamePage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {games?.items.slice(0, 12).map((game) => (
                       <GameCard
                         key={game.id}
@@ -296,6 +299,7 @@ export default function AddGamePage() {
 
                 <GameForm
                   mode="create"
+                  type={type as "collection" | "trade" | undefined}
                   gameId={selectedGame.id}
                   platformOptions={platformOptions}
                   onSuccess={() => {

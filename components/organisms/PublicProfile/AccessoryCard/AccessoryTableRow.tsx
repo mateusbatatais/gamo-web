@@ -9,9 +9,10 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 interface AccessoryTableRowProps {
   accessory: UserAccessory;
   isOwner: boolean;
+  type?: "collection" | "trade";
 }
 
-export const AccessoryTableRow = ({ accessory, isOwner }: AccessoryTableRowProps) => {
+export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRowProps) => {
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
 
@@ -71,7 +72,7 @@ export const AccessoryTableRow = ({ accessory, isOwner }: AccessoryTableRowProps
 
       {isOwner && (
         <td className="p-2">
-          <AccessoryActionButtons accessory={accessory} isOwner={isOwner} />
+          <AccessoryActionButtons accessory={accessory} isOwner={isOwner} type={type} />
         </td>
       )}
     </tr>

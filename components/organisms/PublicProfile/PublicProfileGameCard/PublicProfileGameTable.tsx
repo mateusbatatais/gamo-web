@@ -20,10 +20,12 @@ interface PublicProfileGameTableProps {
   game: UserGame;
   isOwner: boolean;
   isMarketGrid?: boolean;
+  type?: "collection" | "trade";
 }
 
 export const PublicProfileGameTable = ({
   game,
+  type,
   isOwner,
   isMarketGrid = false,
 }: PublicProfileGameTableProps) => {
@@ -160,6 +162,7 @@ export const PublicProfileGameTable = ({
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <GameForm
           mode="edit"
+          type={type}
           gameId={game.gameId}
           platformOptions={platformOptions}
           initialData={{

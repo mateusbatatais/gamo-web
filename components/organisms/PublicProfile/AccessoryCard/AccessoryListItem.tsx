@@ -12,9 +12,10 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 interface AccessoryListItemProps {
   accessory: UserAccessory;
   isOwner: boolean;
+  type?: "collection" | "trade";
 }
 
-export const AccessoryListItem = ({ accessory, isOwner }: AccessoryListItemProps) => {
+export const AccessoryListItem = ({ accessory, isOwner, type }: AccessoryListItemProps) => {
   const t = useTranslations("PublicProfile");
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
@@ -53,7 +54,7 @@ export const AccessoryListItem = ({ accessory, isOwner }: AccessoryListItemProps
                   `${accessory.type}${accessory.subType ? ` • ${accessory.subType}` : ""}`}
               </p>
             </div>
-            <AccessoryActionButtons accessory={accessory} isOwner={isOwner} />
+            <AccessoryActionButtons accessory={accessory} isOwner={isOwner} type={type} />
           </div>
 
           {accessory.price && (

@@ -7,7 +7,6 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Select, SelectOption } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
-import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
@@ -16,9 +15,12 @@ import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImag
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { Rating } from "@/components/atoms/Rating/Rating";
 import { Range } from "@/components/atoms/Range/Range";
+import { Radio } from "@/components/atoms/Radio/Radio";
+import { SimpleCollapse } from "@/components/atoms/SimpleCollapse/SimpleCollapse";
 
 interface GameFormProps {
   mode: "create" | "edit";
+  type?: "collection" | "trade";
   gameId: number;
   platformOptions: SelectOption[];
   initialData?: {
@@ -45,6 +47,8 @@ interface GameFormProps {
 
 export const GameForm = ({
   mode,
+  type = "collection",
+
   gameId,
   platformOptions,
   initialData,
@@ -53,6 +57,7 @@ export const GameForm = ({
 }: GameFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
+  const [showTrade, setShowTrade] = useState(false);
 
   const {
     photoMain,
@@ -70,22 +75,30 @@ export const GameForm = ({
     setAdditionalPhotos,
   } = useCollectionForm(initialData?.photos || [], initialData?.photoMain || undefined);
 
-  const [formData, setFormData] = useState({
-    description: initialData?.description || "",
-    status: initialData?.status || "OWNED",
-    price: initialData?.price ? String(initialData.price) : "",
-    hasBox: initialData?.hasBox || false,
-    hasManual: initialData?.hasManual || false,
-    condition: initialData?.condition || "USED",
-    acceptsTrade: initialData?.acceptsTrade || false,
-    progress: initialData?.progress ? String(initialData.progress) : "",
-    rating: initialData?.rating ? initialData.rating : 0,
-    review: initialData?.review || "",
-    abandoned: initialData?.abandoned || false,
-    media: initialData?.media || "PHYSICAL",
-    platformId: initialData?.platformId
-      ? String(initialData.platformId)
-      : platformOptions[0]?.value || "",
+  const [formData, setFormData] = useState(() => {
+    const status =
+      mode === "edit"
+        ? initialData?.status
+        : mode === "create" && type === "trade"
+          ? "SELLING"
+          : "OWNED";
+    return {
+      description: initialData?.description || "",
+      status,
+      price: initialData?.price ? String(initialData.price) : "",
+      hasBox: initialData?.hasBox || false,
+      hasManual: initialData?.hasManual || false,
+      condition: initialData?.condition || "USED",
+      acceptsTrade: initialData?.acceptsTrade || false,
+      progress: initialData?.progress ? String(initialData.progress) : "",
+      rating: initialData?.rating ? initialData.rating : 0,
+      review: initialData?.review || "",
+      abandoned: initialData?.abandoned || false,
+      media: initialData?.media || "PHYSICAL",
+      platformId: initialData?.platformId
+        ? String(initialData.platformId)
+        : platformOptions[0]?.value || "",
+    };
   });
 
   const handleChange = (
@@ -110,7 +123,7 @@ export const GameForm = ({
       media: formData.media,
       platformId: formData.platformId ? parseInt(formData.platformId) : undefined, // Adicione esta linha
       description: formData.description || undefined,
-      status: formData.status,
+      status: formData.status || "OWNED",
       price: formData.price ? parseFloat(formData.price) : undefined,
       hasBox: formData.hasBox,
       hasManual: formData.hasManual,
@@ -139,19 +152,80 @@ export const GameForm = ({
     { value: "REFURBISHED", label: t("conditionRefurbished") },
   ];
 
-  const statusOptions = [
-    { value: "OWNED", label: t("statusOwned") },
-    { value: "SELLING", label: t("statusSelling") },
-    { value: "LOOKING_FOR", label: t("statusLookingFor") },
-  ];
-
   const mediaOptions = [
     { value: "PHYSICAL", label: t("mediaPhysical") },
     { value: "DIGITAL", label: t("mediaDigital") },
   ];
 
+  const handleRadioChange = (name: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {initialData?.status === "OWNED" && (
+        <Checkbox
+          label={t("putUpForSale", { item: t("game") })}
+          checked={formData.status === "SELLING"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "SELLING" : "OWNED",
+            }));
+            setShowTrade(checked);
+          }}
+        />
+      )}
+      {initialData?.status === "LOOKING_FOR" && (
+        <Checkbox
+          label={t("moveToOwned", { item: t("game") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "LOOKING_FOR",
+            }));
+          }}
+        />
+      )}
+      {initialData?.status === "SELLING" && (
+        <Checkbox
+          label={t("backToCollection", { item: t("game") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "SELLING",
+            }));
+          }}
+        />
+      )}
+
+      {mode === "create" && type === "trade" && (
+        <div className="flex space-x-4">
+          <Radio
+            name="status"
+            value="SELLING"
+            checked={formData.status === "SELLING"}
+            onChange={() => handleRadioChange("status", "SELLING")}
+            label={t("statusSelling")}
+          />
+          <Radio
+            name="status"
+            value="LOOKING_FOR"
+            checked={formData.status === "LOOKING_FOR"}
+            onChange={() => handleRadioChange("status", "LOOKING_FOR")}
+            label={t("statusLookingFor")}
+          />
+        </div>
+      )}
+
       <div className="flex flex-col gap-4">
         <MainImageUpload
           label={t("mainPhoto")}
@@ -183,95 +257,131 @@ export const GameForm = ({
             options={mediaOptions}
           />
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            label={t("status")}
-            options={statusOptions}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Range
-            label={t("progress")}
-            value={Number(formData.progress)}
-            onChange={(newValue) =>
-              setFormData((prev) => ({ ...prev, progress: String(newValue) }))
-            }
-            min={0}
-            max={10}
-            step={0.5}
-          />
-
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              {t("rating")}
-            </span>
-            <Rating
-              value={formData.rating}
-              onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
-              size="lg"
-            />
-          </div>
-        </div>
-
-        <Textarea
-          name="review"
-          value={formData.review}
-          onChange={handleChange}
-          label={t("review")}
-          placeholder={t("reviewPlaceholder")}
-          rows={4}
-        />
-
-        <Checkbox
-          name="abandoned"
-          checked={formData.abandoned}
-          onChange={handleChange}
-          label={t("abandoned")}
-        />
       </div>
 
-      <Collapse title={t("tradeSection")} defaultOpen={formData.status !== "OWNED"}>
-        <TradeSection
-          conditionOptions={conditionOptions}
-          statusOptions={statusOptions}
-          formData={formData}
-          handleChange={handleChange}
-          t={t}
-          showPrice={true}
-          showStatus={false}
-        />
-
-        <Textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          label={t("description")}
-          placeholder={t("descriptionPlaceholder")}
-          rows={4}
-        />
-
-        <div className="mt-4">
-          <AdditionalImagesUpload
-            label={t("additionalPhotos")}
-            photos={additionalPhotos}
-            fileInputRef={additionalFileInputRef}
-            onImageUpload={(e) => handleImageUpload(e, "additional")}
-            onRemove={(index) => removeImage("additional", index)}
-            onCropComplete={(blob, index) => {
-              const url = URL.createObjectURL(blob);
-              const newPhotos = [...additionalPhotos];
-              newPhotos[index] = { url, blob };
-              setAdditionalPhotos(newPhotos);
-            }}
+      {(type === "trade" || showTrade) && (
+        <>
+          <TradeSection
+            conditionOptions={conditionOptions}
+            formData={formData}
+            handleChange={handleChange}
             t={t}
+            showPrice={true}
           />
-        </div>
-      </Collapse>
+
+          <Textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            label={t("description")}
+            placeholder={t("descriptionPlaceholder")}
+            rows={4}
+          />
+
+          <div className="mt-4">
+            <AdditionalImagesUpload
+              label={t("additionalPhotos")}
+              photos={additionalPhotos}
+              fileInputRef={additionalFileInputRef}
+              onImageUpload={(e) => handleImageUpload(e, "additional")}
+              onRemove={(index) => removeImage("additional", index)}
+              onCropComplete={(blob, index) => {
+                const url = URL.createObjectURL(blob);
+                const newPhotos = [...additionalPhotos];
+                newPhotos[index] = { url, blob };
+                setAdditionalPhotos(newPhotos);
+              }}
+              t={t}
+            />
+          </div>
+        </>
+      )}
+
+      {type === "trade" ? (
+        <SimpleCollapse title="Progresso e analise" defaultOpen={false} childrenClass="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Range
+              label={t("progress")}
+              value={Number(formData.progress)}
+              onChange={(newValue) =>
+                setFormData((prev) => ({ ...prev, progress: String(newValue) }))
+              }
+              min={0}
+              max={10}
+              step={0.5}
+            />
+
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t("rating")}
+              </span>
+              <Rating
+                value={formData.rating}
+                onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
+                size="lg"
+              />
+            </div>
+          </div>
+
+          <Textarea
+            name="review"
+            value={formData.review}
+            onChange={handleChange}
+            label={t("review")}
+            placeholder={t("reviewPlaceholder")}
+            rows={4}
+          />
+
+          <Checkbox
+            name="abandoned"
+            checked={formData.abandoned}
+            onChange={handleChange}
+            label={t("abandoned")}
+          />
+        </SimpleCollapse>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Range
+              label={t("progress")}
+              value={Number(formData.progress)}
+              onChange={(newValue) =>
+                setFormData((prev) => ({ ...prev, progress: String(newValue) }))
+              }
+              min={0}
+              max={10}
+              step={0.5}
+            />
+
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t("rating")}
+              </span>
+              <Rating
+                value={formData.rating}
+                onChange={(newValue) => setFormData((prev) => ({ ...prev, rating: newValue }))}
+                size="lg"
+              />
+            </div>
+          </div>
+
+          <Textarea
+            name="review"
+            value={formData.review}
+            onChange={handleChange}
+            label={t("review")}
+            placeholder={t("reviewPlaceholder")}
+            rows={4}
+          />
+
+          <Checkbox
+            name="abandoned"
+            checked={formData.abandoned}
+            onChange={handleChange}
+            label={t("abandoned")}
+          />
+        </>
+      )}
 
       {currentCropImage && (
         <ImageCropper

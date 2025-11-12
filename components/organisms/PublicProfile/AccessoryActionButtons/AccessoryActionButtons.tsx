@@ -17,6 +17,7 @@ interface AccessoryActionButtonsProps {
   isOwner: boolean;
   compact?: boolean;
   customClassName?: string;
+  type?: "collection" | "trade";
 }
 
 export const AccessoryActionButtons = ({
@@ -24,6 +25,7 @@ export const AccessoryActionButtons = ({
   isOwner,
   compact = false,
   customClassName = "",
+  type = "collection",
 }: AccessoryActionButtonsProps) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -65,6 +67,7 @@ export const AccessoryActionButtons = ({
         ) : (
           <AccessoryForm
             mode="edit"
+            type={type}
             accessoryId={accessory.accessoryId}
             accessoryVariantId={accessory.accessoryVariantId}
             accessorySlug={accessory.accessorySlug!}

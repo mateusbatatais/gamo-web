@@ -4,13 +4,12 @@
 import React, { ChangeEvent, useState } from "react";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
-import { Select } from "@/components/atoms/Select/Select";
-import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Radio } from "@/components/atoms/Radio/Radio";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
+import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
 
 export type StatusType = "SELLING" | "LOOKING_FOR";
 
@@ -59,6 +58,14 @@ interface FormDataType<C extends string = string> {
   hasManual: boolean;
   condition: C;
   acceptsTrade: boolean;
+}
+
+interface TradeSectionData {
+  condition: string;
+  price: string;
+  acceptsTrade: boolean;
+  hasBox: boolean;
+  hasManual: boolean;
 }
 
 export function TradeFormBase<C extends string = string>({
@@ -149,6 +156,14 @@ export function TradeFormBase<C extends string = string>({
     ? conditionOptions
     : defaultConditionOptions;
 
+  const tradeSectionData: TradeSectionData = {
+    condition: formData.condition as string,
+    price: formData.price,
+    acceptsTrade: formData.acceptsTrade,
+    hasBox: formData.hasBox,
+    hasManual: formData.hasManual,
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col gap-4">
@@ -171,8 +186,6 @@ export function TradeFormBase<C extends string = string>({
           </div>
         </div>
 
-        {extraFields}
-
         <MainImageUpload
           label={translate("mainPhoto")}
           photo={photoMain}
@@ -186,59 +199,15 @@ export function TradeFormBase<C extends string = string>({
           t={translate}
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Select
-            name="condition"
-            value={formData.condition as unknown as string}
-            onChange={handleChange}
-            label={translate("condition")}
-            options={finalConditionOptions}
-          />
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              {translate("price")}
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-                R$
-              </span>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                className="pl-10 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                placeholder="0,00"
-                step="0.01"
-                min="0"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Checkbox
-            name="hasBox"
-            checked={formData.hasBox}
-            onChange={handleChange}
-            label={translate("hasBox")}
-          />
-
-          <Checkbox
-            name="hasManual"
-            checked={formData.hasManual}
-            onChange={handleChange}
-            label={translate("hasManual")}
-          />
-
-          <Checkbox
-            name="acceptsTrade"
-            checked={formData.acceptsTrade}
-            onChange={handleChange}
-            label={translate("acceptsTrade")}
-          />
-        </div>
+        <TradeSection
+          conditionOptions={finalConditionOptions as { value: string; label: string }[]}
+          formData={tradeSectionData}
+          handleChange={
+            handleChange as (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void
+          }
+          t={translate}
+          showPrice={true}
+        />
 
         <Textarea
           name="description"
@@ -272,6 +241,8 @@ export function TradeFormBase<C extends string = string>({
           onCancel={() => setCurrentCropImage(null)}
         />
       )}
+
+      {extraFields}
 
       <div className="flex justify-end gap-3 mt-6">
         <Button type="button" variant="outline" onClick={onCancel} label={translate("cancel")} />

@@ -17,9 +17,12 @@ import { Select } from "@/components/atoms/Select/Select";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
 import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { AccessorySelector } from "@/components/molecules/AccessorySelector/AccessorySelector";
+import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
+import { Radio } from "@/components/atoms/Radio/Radio";
 
 interface ConsoleFormProps {
   mode: "create" | "edit";
+  type?: "collection" | "trade";
   consoleId: number;
   consoleVariantId: number;
   variantSlug: string;
@@ -48,6 +51,7 @@ interface SelectedAccessoryVariant {
 
 export const ConsoleForm = ({
   mode,
+  type = "collection",
   consoleId,
   consoleVariantId,
   skinId,
@@ -59,6 +63,7 @@ export const ConsoleForm = ({
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole } = useUserConsoleMutation();
   const { createUserAccessory } = useUserAccessoryMutation();
+  const [showTrade, setShowTrade] = useState(false);
 
   const {
     photoMain,
@@ -75,14 +80,23 @@ export const ConsoleForm = ({
     setAdditionalPhotos,
   } = useCollectionForm(initialData?.photos || [], initialData?.photoMain || undefined);
 
-  const [formData, setFormData] = useState({
-    description: initialData?.description || "",
-    status: initialData?.status || "OWNED",
-    price: initialData?.price ? String(initialData.price) : "",
-    hasBox: initialData?.hasBox || false,
-    hasManual: initialData?.hasManual || false,
-    condition: initialData?.condition || "USED",
-    acceptsTrade: initialData?.acceptsTrade || false,
+  const [formData, setFormData] = useState(() => {
+    const status =
+      mode === "edit"
+        ? initialData?.status
+        : mode === "create" && type === "trade"
+          ? "SELLING"
+          : "OWNED";
+
+    return {
+      description: initialData?.description || "",
+      status,
+      price: initialData?.price ? String(initialData.price) : "",
+      hasBox: !!initialData?.hasBox,
+      hasManual: !!initialData?.hasManual,
+      condition: initialData?.condition || "USED",
+      acceptsTrade: !!initialData?.acceptsTrade,
+    };
   });
 
   const { data: storageOptions, isLoading: storageOptionsLoading } =
@@ -99,6 +113,13 @@ export const ConsoleForm = ({
     Record<number, SelectedAccessoryVariant>
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleRadioChange = (name: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const addSelectedAccessories = async (userConsoleId: number) => {
     if (!isAccessoriesOpen || !userConsoleId) return;
@@ -160,7 +181,7 @@ export const ConsoleForm = ({
         skinId: skinId || undefined,
         storageOptionId: selectedStorageOptionId,
         description: formData.description || undefined,
-        status: formData.status,
+        status: formData.status ?? "OWNED",
         price: formData.price ? parseFloat(formData.price) : undefined,
         hasBox: formData.hasBox,
         hasManual: formData.hasManual,
@@ -200,12 +221,6 @@ export const ConsoleForm = ({
     { value: "REFURBISHED", label: t("conditionRefurbished") },
   ];
 
-  const statusOptions = [
-    { value: "OWNED", label: t("statusOwned") },
-    { value: "SELLING", label: t("statusSelling") },
-    { value: "LOOKING_FOR", label: t("statusLookingFor") },
-  ];
-
   const storageOptionOptions =
     storageOptions?.map((option) => ({
       value: option.id.toString(),
@@ -225,6 +240,53 @@ export const ConsoleForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {initialData?.status === "OWNED" && (
+        <Checkbox
+          label={t("putUpForSale", { item: t("console") })}
+          checked={formData.status === "SELLING"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "SELLING" : "OWNED",
+            }));
+            setShowTrade(checked);
+          }}
+        />
+      )}
+      {initialData?.status === "LOOKING_FOR" && (
+        <Checkbox
+          label={t("moveToOwned", { item: t("console") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "LOOKING_FOR",
+            }));
+          }}
+        />
+      )}
+
+      {mode === "create" && type === "trade" && (
+        <div className="flex space-x-4">
+          <Radio
+            name="status"
+            value="SELLING"
+            checked={formData.status === "SELLING"}
+            onChange={() => handleRadioChange("status", "SELLING")}
+            label={t("statusSelling")}
+          />
+          <Radio
+            name="status"
+            value="LOOKING_FOR"
+            checked={formData.status === "LOOKING_FOR"}
+            onChange={() => handleRadioChange("status", "LOOKING_FOR")}
+            label={t("statusLookingFor")}
+          />
+        </div>
+      )}
+
       <div className="flex flex-col gap-4">
         <MainImageUpload
           label={t("mainPhoto")}
@@ -253,47 +315,47 @@ export const ConsoleForm = ({
         />
       )}
 
-      <Collapse title={t("tradeSection")} defaultOpen={formData.status !== "OWNED"}>
-        <TradeSection
-          conditionOptions={conditionOptions}
-          statusOptions={statusOptions}
-          formData={formData}
-          handleChange={handleChange}
-          t={t}
-          showPrice={true}
-          showStatus={true}
-        />
-        <Textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          label={t("description")}
-          placeholder={t("descriptionPlaceholder")}
-          rows={4}
-        />
-
-        <div className="mt-4">
-          <AdditionalImagesUpload
-            label={t("additionalPhotos")}
-            photos={additionalPhotos}
-            fileInputRef={additionalFileInputRef}
-            onImageUpload={(e) => handleImageUpload(e, "additional")}
-            onRemove={(index) => removeImage("additional", index)}
-            onCropComplete={(blob, index) => {
-              const url = URL.createObjectURL(blob);
-              const newPhotos = [...additionalPhotos];
-              newPhotos[index] = { url, blob };
-              setAdditionalPhotos(newPhotos);
-            }}
+      {(type === "trade" || showTrade) && (
+        <>
+          <TradeSection
+            conditionOptions={conditionOptions}
+            formData={formData}
+            handleChange={handleChange}
             t={t}
+            showPrice={true}
           />
-        </div>
-      </Collapse>
+          <Textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            label={t("description")}
+            placeholder={t("descriptionPlaceholder")}
+            rows={4}
+          />
+
+          <div className="mt-4">
+            <AdditionalImagesUpload
+              label={t("additionalPhotos")}
+              photos={additionalPhotos}
+              fileInputRef={additionalFileInputRef}
+              onImageUpload={(e) => handleImageUpload(e, "additional")}
+              onRemove={(index) => removeImage("additional", index)}
+              onCropComplete={(blob, index) => {
+                const url = URL.createObjectURL(blob);
+                const newPhotos = [...additionalPhotos];
+                newPhotos[index] = { url, blob };
+                setAdditionalPhotos(newPhotos);
+              }}
+              t={t}
+            />
+          </div>
+        </>
+      )}
 
       {accessoryVariants && accessoryVariants.length > 0 && (
         <Collapse
           title={t("includeAccessories")}
-          defaultOpen={mode === "edit"}
+          defaultOpen={false}
           onToggle={handleAccessoriesToggle}
         >
           <AccessorySelector

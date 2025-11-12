@@ -60,11 +60,14 @@ export const PublicProfileConsoleList = ({
   consoleItem,
   isOwner,
   isExpanded,
+  type,
   onToggleAccessories,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
   isExpanded?: boolean;
+  type?: "trade" | "collection";
+
   onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
@@ -232,6 +235,7 @@ export const PublicProfileConsoleList = ({
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <ConsoleForm
           mode="edit"
+          type={type}
           consoleId={consoleItem.consoleId}
           consoleVariantId={consoleItem.consoleVariantId}
           variantSlug={consoleItem.variantSlug}

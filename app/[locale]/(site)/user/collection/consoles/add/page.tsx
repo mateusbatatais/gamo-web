@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useConsoles } from "@/hooks/useConsoles";
 import { ConsoleVariant, SkinDetail } from "@/@types/catalog.types";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
@@ -114,6 +114,7 @@ export default function AddConsolePage() {
   const [selectedVariant, setSelectedVariant] = useState<ConsoleVariant | null>(null);
   const [selectedSkin, setSelectedSkin] = useState<SkinDetail | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("brand");
+  const searchParams = useSearchParams();
 
   // Refs para cada seção
   const brandSectionRef = useRef<HTMLDivElement>(null);
@@ -133,6 +134,7 @@ export default function AddConsolePage() {
     selectedVariant?.slug || "",
     locale || "pt",
   );
+  const type = searchParams.get("type");
 
   useEffect(() => {
     setItems([
@@ -402,6 +404,7 @@ export default function AddConsolePage() {
                 </h2>
                 <ConsoleForm
                   mode="create"
+                  type={type as "collection" | "trade" | undefined}
                   consoleId={variantDetails?.consoleId || 0}
                   consoleVariantId={selectedVariant.id}
                   variantSlug={selectedVariant.slug}

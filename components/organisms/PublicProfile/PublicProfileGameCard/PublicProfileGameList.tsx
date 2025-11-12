@@ -26,7 +26,15 @@ import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
 
-export const PublicProfileGameList = ({ game, isOwner }: { game: UserGame; isOwner: boolean }) => {
+export const PublicProfileGameList = ({
+  game,
+  isOwner,
+  type,
+}: {
+  game: UserGame;
+  isOwner: boolean;
+  type?: "collection" | "trade";
+}) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -197,6 +205,7 @@ export const PublicProfileGameList = ({ game, isOwner }: { game: UserGame; isOwn
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <GameForm
           mode="edit"
+          type={type}
           gameId={game.gameId}
           platformOptions={platformOptions}
           initialData={{

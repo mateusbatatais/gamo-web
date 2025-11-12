@@ -683,6 +683,7 @@ const PublicProfileMarketGridContent = ({
                     return (
                       <React.Fragment key={consoleItem.id}>
                         <PublicProfileConsoleTable
+                          type="trade"
                           consoleItem={consoleItem}
                           isOwner={isOwner || false}
                           isMarketGrid={true}
@@ -726,6 +727,7 @@ const PublicProfileMarketGridContent = ({
                 return (
                   <div key={consoleItem.id} className="flex flex-col gap-2">
                     <PublicProfileConsoleList
+                      type="trade"
                       consoleItem={consoleItem}
                       isOwner={isOwner || false}
                       isExpanded={isOpen}
@@ -785,6 +787,7 @@ const PublicProfileMarketGridContent = ({
                       "
                     >
                       <PublicProfileConsoleCompact
+                        type="trade"
                         consoleItem={consoleItem}
                         isOwner={isOwner || false}
                         isExpanded={isOpen}
@@ -848,6 +851,7 @@ const PublicProfileMarketGridContent = ({
                       "
                     >
                       <PublicProfileConsoleCard
+                        type="trade"
                         consoleItem={consoleItem}
                         isOwner={isOwner || false}
                         isExpanded={isOpen}
@@ -945,6 +949,7 @@ const PublicProfileMarketGridContent = ({
                   )}
                   {games.map((game) => (
                     <PublicProfileGameTable
+                      type="trade"
                       key={`game-${game.id}`}
                       game={game}
                       isOwner={isOwner || false}
@@ -965,7 +970,12 @@ const PublicProfileMarketGridContent = ({
                 />
               )}
               {games.map((game) => (
-                <PublicProfileGameList key={game.id} game={game} isOwner={isOwner || false} />
+                <PublicProfileGameList
+                  key={game.id}
+                  game={game}
+                  isOwner={isOwner || false}
+                  type="trade"
+                />
               ))}
             </div>
           ) : (
@@ -986,9 +996,19 @@ const PublicProfileMarketGridContent = ({
               )}
               {games.map((game) =>
                 viewMode === "compact" ? (
-                  <PublicProfileGameCompact key={game.id} game={game} isOwner={isOwner || false} />
+                  <PublicProfileGameCompact
+                    key={game.id}
+                    game={game}
+                    isOwner={isOwner || false}
+                    type="trade"
+                  />
                 ) : (
-                  <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner || false} />
+                  <PublicProfileGameCard
+                    key={game.id}
+                    game={game}
+                    isOwner={isOwner || false}
+                    type="trade"
+                  />
                 ),
               )}
             </div>
@@ -1093,6 +1113,7 @@ const PublicProfileMarketGridContent = ({
                       key={`accessory-${accessory.id}`}
                       accessory={accessory}
                       isOwner={isOwner || false}
+                      type="trade"
                     />
                   ))}
                 </tbody>
@@ -1115,6 +1136,7 @@ const PublicProfileMarketGridContent = ({
                   key={accessory.id}
                   accessory={accessory}
                   isOwner={isOwner || false}
+                  type="trade"
                 />
               ))}
             </div>
@@ -1142,12 +1164,14 @@ const PublicProfileMarketGridContent = ({
                     key={accessory.id}
                     accessory={accessory}
                     isOwner={isOwner || false}
+                    type="trade"
                   />
                 ) : (
                   <AccessoryCard
                     key={accessory.id}
                     accessory={accessory}
                     isOwner={isOwner || false}
+                    type="trade"
                   />
                 ),
               )}

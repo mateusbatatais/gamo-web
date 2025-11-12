@@ -19,9 +19,11 @@ import { SelectOption } from "@/components/atoms/Select/Select";
 export const PublicProfileGameCompact = ({
   game,
   isOwner,
+  type,
 }: {
   game: UserGame;
   isOwner: boolean;
+  type?: "collection" | "trade";
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -98,6 +100,7 @@ export const PublicProfileGameCompact = ({
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <GameForm
           mode="edit"
+          type={type}
           gameId={game.gameId}
           platformOptions={platformOptions}
           initialData={{

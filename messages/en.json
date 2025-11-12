@@ -475,7 +475,13 @@
     "platform": "Platform",
     "compatibleConsoles": "Compatible Consoles",
     "noConsoles": "No consoles in your collection",
-    "includeAccessories": "Add accessories"
+    "includeAccessories": "Add accessories",
+    "putUpForSale": "Put {item} for sale?",
+    "backToCollection": "Back {item} to your collection?",
+    "moveToOwned": "Move {item} to your collection?",
+    "game": "Game",
+    "console": "Console",
+    "accessory": "Accessory"
   },
   "SimpleAccessoryForm": {
     "description": "Select the consoles from your collection that are compatible with this accessory:",

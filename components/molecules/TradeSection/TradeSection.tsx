@@ -5,41 +5,32 @@ import React from "react";
 import { Select } from "@/components/atoms/Select/Select";
 import { Input } from "@/components/atoms/Input/Input";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
-import { CollectionFormData } from "@/@types/form.types";
+
+export interface TradeSectionFormData {
+  condition: string;
+  price: string;
+  acceptsTrade: boolean;
+  hasBox: boolean;
+  hasManual: boolean;
+}
 
 interface TradeSectionProps {
   conditionOptions: { value: string; label: string }[];
-  statusOptions: { value: string; label: string }[];
-  formData: CollectionFormData;
+  formData: TradeSectionFormData;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   t: (key: string) => string;
   showPrice?: boolean;
-  showStatus?: boolean;
 }
 
 export const TradeSection = ({
   conditionOptions,
-  statusOptions,
   formData,
   handleChange,
   t: translate,
   showPrice = true,
-  showStatus = true,
 }: TradeSectionProps) => {
   return (
     <div className="space-y-4">
-      {showStatus && (
-        <div className="flex-1 min-w-0">
-          <Select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            label={translate("status")}
-            options={statusOptions}
-          />
-        </div>
-      )}
-
       <div className="flex flex-col md:flex-row gap-4 flex-wrap">
         <div className="flex-1 min-w-0">
           <Select
@@ -66,7 +57,7 @@ export const TradeSection = ({
           </div>
         )}
       </div>
-      <div className="space-y-2">
+      <div className="space-y-2 mb-3">
         <label className="block text-sm font-medium">{translate("extras")}</label>
         <div className="flex gap-2 flex-col sm:flex-row sm:gap-4">
           <Checkbox

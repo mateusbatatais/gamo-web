@@ -26,8 +26,8 @@ interface PublicProfileConsoleTableProps {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner: boolean;
   isMarketGrid?: boolean;
+  type?: "trade" | "collection";
 
-  // suporte ao toggle vindo do Grid
   isExpanded?: boolean;
   onToggleAccessories?: () => void;
 }
@@ -37,6 +37,7 @@ export const PublicProfileConsoleTable = ({
   isOwner,
   isMarketGrid = false,
   isExpanded = false,
+  type,
   onToggleAccessories,
 }: PublicProfileConsoleTableProps) => {
   const t = useTranslations("PublicProfile");
@@ -157,6 +158,7 @@ export const PublicProfileConsoleTable = ({
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <ConsoleForm
           mode="edit"
+          type={type}
           consoleId={consoleItem.consoleId}
           consoleVariantId={consoleItem.consoleVariantId}
           variantSlug={consoleItem.variantSlug}
