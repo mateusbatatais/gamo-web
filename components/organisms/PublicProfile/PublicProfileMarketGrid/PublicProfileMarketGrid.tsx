@@ -559,47 +559,54 @@ const PublicProfileMarketGridContent = ({
 
   return (
     <div>
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="w-full sm:w-auto flex-1">
+      <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="w-full lg:flex-1">
           <SearchBar compact searchPath={`/user/${slug}/market`} placeholder={t("searchMarket")} />
         </div>
-        <div className="flex items-center gap-4 flex-wrap">
-          <ToggleGroup
-            items={toggleItems}
-            value={type}
-            onChange={handleTypeChange}
-            variant="secondary"
-            size="sm"
-          />
-          <SortSelect
-            options={SORT_OPTIONS}
-            value={sort}
-            onChange={handleSortChange}
-            className="w-full sm:w-auto"
-          />
-          <Select
-            options={PER_PAGE_OPTIONS}
-            value={perPage.toString()}
-            onChange={(e) => handlePerPageChange(e.target.value)}
-            className="w-20"
-            size="sm"
-          />
-          <Dropdown
-            items={VIEW_MODE_OPTIONS.map((option) => ({
-              id: option.value,
-              label: option.label,
-              icon: option.icon,
-              onClick: () => handleViewModeChange(option.value as ViewMode),
-            }))}
-            trigger={
-              <Button
-                variant="outline"
-                size="sm"
-                icon={VIEW_MODE_OPTIONS.find((option) => option.value === viewMode)?.icon}
-              />
-            }
-            menuClassName="min-w-40"
-          />
+
+        <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+          <div className="w-full md:w-full lg:w-auto">
+            <ToggleGroup
+              items={toggleItems}
+              value={type}
+              onChange={handleTypeChange}
+              variant="secondary"
+              size="sm"
+              className="w-full lg:w-auto"
+            />
+          </div>
+
+          <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-start lg:justify-end">
+            <SortSelect
+              options={SORT_OPTIONS}
+              value={sort}
+              onChange={handleSortChange}
+              className="w-full lg:w-auto min-w-50"
+            />
+            <Select
+              options={PER_PAGE_OPTIONS}
+              value={perPage.toString()}
+              onChange={(e) => handlePerPageChange(e.target.value)}
+              className="min-w-25"
+              size="sm"
+            />
+            <Dropdown
+              items={VIEW_MODE_OPTIONS.map((option) => ({
+                id: option.value,
+                label: option.label,
+                icon: option.icon,
+                onClick: () => handleViewModeChange(option.value as ViewMode),
+              }))}
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={VIEW_MODE_OPTIONS.find((option) => option.value === viewMode)?.icon}
+                />
+              }
+              menuClassName="min-w-40"
+            />
+          </div>
         </div>
       </div>
 

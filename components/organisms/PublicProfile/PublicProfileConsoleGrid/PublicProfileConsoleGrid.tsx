@@ -446,63 +446,67 @@ const PublicProfileConsoleGridContent = ({
 
   return (
     <div>
-      {/* header de filtros/ordenação */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="w-full sm:w-auto flex-1">
+      <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="w-full lg:flex-1">
           <SearchBar compact searchPath={`/user/${slug}`} placeholder={t("searchConsoles")} />
         </div>
-        <div className="flex items-center gap-4 flex-wrap">
-          <SortSelect
-            options={SORT_OPTIONS}
-            value={sort}
-            onChange={handleSortChange}
-            className="w-full sm:w-auto"
-          />
-          <Select
-            options={PER_PAGE_OPTIONS}
-            value={perPage.toString()}
-            onChange={(e) => handlePerPageChange(e.target.value)}
-            className="w-20"
-            size="sm"
-          />
-          <Dropdown
-            items={[
-              { value: "grid", label: t("viewMode.grid"), icon: <Grid3X3 size={16} /> },
-              { value: "compact", label: t("viewMode.compact"), icon: <ListChecks size={16} /> },
-              { value: "list", label: t("viewMode.list"), icon: <List size={16} /> },
-              { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
-            ].map((option) => ({
-              id: option.value,
-              label: option.label,
-              icon: option.icon,
-              onClick: () => setViewMode(option.value as ViewMode),
-            }))}
-            trigger={
-              <Button
-                variant="outline"
-                size="sm"
-                icon={
-                  [
-                    ["grid", <Grid3X3 size={16} key="g" />],
-                    ["compact", <ListChecks size={16} key="c" />],
-                    ["list", <List size={16} key="l" />],
-                    ["table", <Table size={16} key="t" />],
-                  ].find(([v]) => v === viewMode)?.[1] as React.ReactNode
-                }
-              />
-            }
-            menuClassName="min-w-40"
-          />
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsFilterDrawerOpen(true)}
-            icon={<Settings2 size={16} />}
-          />
+
+        <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+          <div className="w-full md:w-full lg:w-auto">
+            <SortSelect
+              options={SORT_OPTIONS}
+              value={sort}
+              onChange={handleSortChange}
+              className="w-full lg:w-auto"
+            />
+          </div>
+
+          <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-start lg:justify-end">
+            <Select
+              options={PER_PAGE_OPTIONS}
+              value={perPage.toString()}
+              onChange={(e) => handlePerPageChange(e.target.value)}
+              className="min-w-25"
+              size="sm"
+            />
+            <Dropdown
+              items={[
+                { value: "grid", label: t("viewMode.grid"), icon: <Grid3X3 size={16} /> },
+                { value: "compact", label: t("viewMode.compact"), icon: <ListChecks size={16} /> },
+                { value: "list", label: t("viewMode.list"), icon: <List size={16} /> },
+                { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
+              ].map((option) => ({
+                id: option.value,
+                label: option.label,
+                icon: option.icon,
+                onClick: () => setViewMode(option.value as ViewMode),
+              }))}
+              trigger={
+                <Button
+                  variant="outline"
+                  size="sm"
+                  icon={
+                    [
+                      ["grid", <Grid3X3 size={16} key="g" />],
+                      ["compact", <ListChecks size={16} key="c" />],
+                      ["list", <List size={16} key="l" />],
+                      ["table", <Table size={16} key="t" />],
+                    ].find(([v]) => v === viewMode)?.[1] as React.ReactNode
+                  }
+                />
+              }
+              menuClassName="min-w-40"
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsFilterDrawerOpen(true)}
+              icon={<Settings2 size={16} />}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Drawer de Filtros */}
       <Drawer
         open={isFilterDrawerOpen}
         onClose={() => setIsFilterDrawerOpen(false)}

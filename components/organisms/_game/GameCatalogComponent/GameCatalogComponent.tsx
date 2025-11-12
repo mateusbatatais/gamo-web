@@ -7,7 +7,6 @@ import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import clsx from "clsx";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { useTranslations } from "next-intl";
@@ -17,6 +16,9 @@ import GameFilterContainer from "@/components/molecules/Filter/GameFilterContain
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useGames } from "@/hooks/useGames";
 import { Game } from "@/@types/catalog.types";
+import { Drawer } from "@/components/atoms/Drawer/Drawer";
+import { Button } from "@/components/atoms/Button/Button";
+import { Settings2 } from "lucide-react";
 
 interface GameCatalogComponentProps {
   page: number;
@@ -24,7 +26,7 @@ interface GameCatalogComponentProps {
 }
 
 const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const t = useTranslations();
   const router = useRouter();
@@ -249,61 +251,61 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
       </div>
 
       <div className="w-full lg:w-3/4">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="w-full sm:w-auto flex-1">
+        {/* Header com controles - REVISADO */}
+        <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          {/* Searchbar - 100% em lg */}
+          <div className="w-full lg:flex-1">
             <SearchBar compact searchPath="/game-catalog" placeholder="Buscar jogos..." />
           </div>
-          <div className="flex items-center justify-between sm:justify-end gap-4">
-            <SortSelect
-              options={SORT_OPTIONS}
-              value={sort}
-              onChange={handleSortChange}
-              className="w-full sm:w-auto"
-            />
-            <ViewToggle
-              onViewChange={(newView) => setView(newView)}
-              storageKey="game-catalog-view"
-            />
+
+          {/* Grupo de controles - reorganizado por breakpoint */}
+          <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+            {/* SortSelect - em md: 100%, em lg: normal */}
+            <div className="w-full md:w-full lg:w-auto">
+              <SortSelect
+                options={SORT_OPTIONS}
+                value={sort}
+                onChange={handleSortChange}
+                className="w-full lg:w-auto"
+              />
+            </div>
+
+            {/* Demais controles - linha em lg, empilhados em md */}
+            <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-between lg:justify-end">
+              <ViewToggle
+                onViewChange={(newView) => setView(newView)}
+                storageKey="game-catalog-view"
+              />
+
+              {/* Botão de filtros - visível apenas em mobile */}
+              <div className="lg:hidden">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsFilterDrawerOpen(true)}
+                  icon={<Settings2 size={16} />}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Filtros para mobile */}
-        <div className="lg:hidden mb-6">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between font-medium"
-          >
-            <span>{t("filters.label")}</span>
-            <svg
-              className={clsx(
-                "w-5 h-5 transform transition-transform",
-                showFilters ? "rotate-180" : "",
-              )}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-
-          {showFilters && (
-            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow">
-              <GameFilterContainer
-                onGenreChange={handleGenreChange}
-                onPlatformChange={handlePlatformChange}
-                selectedGenres={selectedGenres}
-                selectedPlatforms={selectedPlatforms}
-                clearFilters={clearFilters}
-              />
-            </div>
-          )}
-        </div>
+        {/* Drawer de Filtros para Mobile */}
+        <Drawer
+          open={isFilterDrawerOpen}
+          onClose={() => setIsFilterDrawerOpen(false)}
+          title="Filtrar Jogos"
+          anchor="right"
+          className="w-full max-w-md"
+        >
+          <GameFilterContainer
+            onGenreChange={handleGenreChange}
+            onPlatformChange={handlePlatformChange}
+            selectedGenres={selectedGenres}
+            selectedPlatforms={selectedPlatforms}
+            clearFilters={clearFilters}
+          />
+        </Drawer>
 
         {error ? (
           <EmptyState
@@ -317,11 +319,11 @@ const GameCatalogComponent = ({ page, perPage }: GameCatalogComponentProps) => {
         ) : games?.items && games.items.length > 0 ? (
           <>
             <div
-              className={clsx(
+              className={
                 view === "grid"
                   ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
-                  : "flex flex-col space-y-6",
-              )}
+                  : "flex flex-col space-y-6"
+              }
             >
               {games.items.map((game: Game) => (
                 <GameCard

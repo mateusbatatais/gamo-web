@@ -7,7 +7,6 @@ import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { useSearchParams } from "next/navigation";
-import clsx from "clsx";
 import { AccessoryCardSkeleton } from "@/components/molecules/_accessory/AccessoryCard/AccessoryCard.skeleton";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
@@ -17,6 +16,9 @@ import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useAccessories } from "@/hooks/useAccessories";
 import { Accessory } from "@/@types/catalog.types";
 import AccessoryFilterContainer from "@/components/molecules/Filter/AccessoryFilterContainer";
+import { Drawer } from "@/components/atoms/Drawer/Drawer";
+import { Button } from "@/components/atoms/Button/Button";
+import { Settings2 } from "lucide-react";
 
 interface AccessoryCatalogComponentProps {
   locale: string;
@@ -25,7 +27,7 @@ interface AccessoryCatalogComponentProps {
 }
 
 const AccessoryCatalogComponent = ({ locale, page, perPage }: AccessoryCatalogComponentProps) => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const [sort, setSort] = useState<string>("name-asc");
   const t = useTranslations();
@@ -281,64 +283,64 @@ const AccessoryCatalogComponent = ({ locale, page, perPage }: AccessoryCatalogCo
 
       {/* Conteúdo principal */}
       <div className="w-full lg:w-3/4">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="w-full sm:w-auto flex-1">
+        {/* Header com controles - REVISADO */}
+        <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          {/* Searchbar - 100% em lg */}
+          <div className="w-full lg:flex-1">
             <SearchBar compact searchPath="/accessory-catalog" placeholder="Buscar acessórios..." />
           </div>
-          <div className="flex items-center justify-between sm:justify-end gap-4">
-            <SortSelect
-              options={SORT_OPTIONS}
-              value={sort}
-              onChange={handleSortChange}
-              className="w-full sm:w-auto"
-            />
-            <ViewToggle
-              onViewChange={(newView) => setView(newView)}
-              storageKey="accessory-catalog-view"
-            />
+
+          {/* Grupo de controles - reorganizado por breakpoint */}
+          <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+            {/* SortSelect - em md: 100%, em lg: normal */}
+            <div className="w-full md:w-full lg:w-auto">
+              <SortSelect
+                options={SORT_OPTIONS}
+                value={sort}
+                onChange={handleSortChange}
+                className="w-full lg:w-auto"
+              />
+            </div>
+
+            {/* Demais controles - linha em lg, empilhados em md */}
+            <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-between lg:justify-end">
+              <ViewToggle
+                onViewChange={(newView) => setView(newView)}
+                storageKey="accessory-catalog-view"
+              />
+
+              {/* Botão de filtros - visível apenas em mobile */}
+              <div className="lg:hidden">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsFilterDrawerOpen(true)}
+                  icon={<Settings2 size={16} />}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Filtros para mobile */}
-        <div className="lg:hidden mb-6">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between font-medium"
-          >
-            <span>{t("filters.label")}</span>
-            <svg
-              className={clsx(
-                "w-5 h-5 transform transition-transform",
-                showFilters ? "rotate-180" : "",
-              )}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-
-          {showFilters && (
-            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow">
-              <AccessoryFilterContainer
-                selectedTypes={selectedTypes}
-                selectedSubTypes={selectedSubTypes}
-                selectedConsoles={selectedConsoles}
-                onTypeChange={handleTypeChange}
-                onSubTypeChange={handleSubTypeChange}
-                onConsoleChange={handleConsoleChange}
-                clearFilters={clearFilters}
-                locale={locale}
-              />
-            </div>
-          )}
-        </div>
+        {/* Drawer de Filtros para Mobile */}
+        <Drawer
+          open={isFilterDrawerOpen}
+          onClose={() => setIsFilterDrawerOpen(false)}
+          title="Filtrar Acessórios"
+          anchor="right"
+          className="w-full max-w-md"
+        >
+          <AccessoryFilterContainer
+            selectedTypes={selectedTypes}
+            selectedSubTypes={selectedSubTypes}
+            selectedConsoles={selectedConsoles}
+            onTypeChange={handleTypeChange}
+            onSubTypeChange={handleSubTypeChange}
+            onConsoleChange={handleConsoleChange}
+            clearFilters={clearFilters}
+            locale={locale}
+          />
+        </Drawer>
 
         {error ? (
           <EmptyState

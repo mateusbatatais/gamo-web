@@ -8,7 +8,6 @@ import Pagination from "@/components/molecules/Pagination/Pagination";
 import { EmptyState } from "@/components/atoms/EmptyState/EmptyState";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { useSearchParams } from "next/navigation";
-import clsx from "clsx";
 import { ConsoleCardSkeleton } from "@/components/molecules/_console/ConsoleCard/ConsoleCard.skeleton";
 import { ViewToggle, ViewType } from "@/components/molecules/ViewToggle/ViewToggle";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
@@ -17,6 +16,9 @@ import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { useConsoles } from "@/hooks/useConsoles";
 import { ConsoleVariant } from "@/@types/catalog.types";
+import { Drawer } from "@/components/atoms/Drawer/Drawer";
+import { Button } from "@/components/atoms/Button/Button";
+import { Settings2 } from "lucide-react";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -25,7 +27,7 @@ interface ConsoleCatalogComponentProps {
 }
 
 const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogComponentProps) => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [view, setView] = useState<ViewType>("grid");
   const [sort, setSort] = useState<string>("releaseDate-desc");
   const t = useTranslations();
@@ -394,71 +396,70 @@ const ConsoleCatalogComponent = ({ locale, page, perPage }: ConsoleCatalogCompon
 
       {/* Conteúdo principal */}
       <div className="w-full lg:w-3/4">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="w-full sm:w-auto flex-1">
+        {/* Header com controles - REVISADO */}
+        <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          {/* Searchbar - 100% em lg */}
+          <div className="w-full lg:flex-1">
             <SearchBar compact searchPath="/console-catalog" placeholder="Buscar consoles..." />
           </div>
-          <div className="flex items-center justify-between sm:justify-end gap-4">
-            <SortSelect
-              options={SORT_OPTIONS}
-              value={sort}
-              onChange={handleSortChange}
-              className="w-full sm:w-auto"
-            />
-            <ViewToggle onViewChange={(newView) => setView(newView)} storageKey="catalog-view" />
+
+          {/* Grupo de controles - reorganizado por breakpoint */}
+          <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+            {/* SortSelect - em md: 100%, em lg: normal */}
+            <div className="w-full md:w-full lg:w-auto">
+              <SortSelect
+                options={SORT_OPTIONS}
+                value={sort}
+                onChange={handleSortChange}
+                className="w-full lg:w-auto"
+              />
+            </div>
+
+            {/* Demais controles - linha em lg, empilhados em md */}
+            <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-between lg:justify-end">
+              <ViewToggle onViewChange={(newView) => setView(newView)} storageKey="catalog-view" />
+
+              {/* Botão de filtros - visível apenas em mobile */}
+              <div className="lg:hidden">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setIsFilterDrawerOpen(true)}
+                  icon={<Settings2 size={16} />}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Filtros para mobile */}
-        <div className="lg:hidden mb-6">
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            data-testid="mobile-filters-toggle"
-            className="w-full py-3 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-between font-medium"
-          >
-            <span>{t("filters.label")}</span>
-            <svg
-              className={clsx(
-                "w-5 h-5 transform transition-transform",
-                showFilters ? "rotate-180" : "",
-              )}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-
-          {showFilters && (
-            <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow">
-              <ConsoleFilterContainer
-                onBrandChange={handleBrandChange}
-                onGenerationChange={handleGenerationChange}
-                onModelChange={handleModelChange}
-                onAllDigitalChange={handleAllDigitalChange}
-                onTypeChange={handleTypeChange}
-                onMediaFormatChange={handleMediaFormatChange}
-                onRetroCompatibleChange={handleRetroCompatibleChange}
-                onStorageChange={handleStorageChange}
-                selectedStorageRanges={selectedStorageRanges}
-                selectedBrands={selectedBrands}
-                selectedGenerations={selectedGenerations}
-                selectedAllDigital={selectedAllDigital}
-                selectedTypes={selectedTypes}
-                selectedModels={selectedModels}
-                selectedMediaFormats={selectedMediaFormats}
-                retroCompatible={retroCompatible}
-                clearFilters={clearFilters}
-              />
-            </div>
-          )}
-        </div>
+        {/* Drawer de Filtros para Mobile */}
+        <Drawer
+          open={isFilterDrawerOpen}
+          onClose={() => setIsFilterDrawerOpen(false)}
+          title="Filtrar Consoles"
+          anchor="right"
+          className="w-full max-w-md"
+        >
+          <ConsoleFilterContainer
+            onBrandChange={handleBrandChange}
+            onGenerationChange={handleGenerationChange}
+            onModelChange={handleModelChange}
+            onAllDigitalChange={handleAllDigitalChange}
+            onTypeChange={handleTypeChange}
+            onMediaFormatChange={handleMediaFormatChange}
+            onRetroCompatibleChange={handleRetroCompatibleChange}
+            onStorageChange={handleStorageChange}
+            selectedStorageRanges={selectedStorageRanges}
+            selectedBrands={selectedBrands}
+            selectedGenerations={selectedGenerations}
+            selectedAllDigital={selectedAllDigital}
+            selectedTypes={selectedTypes}
+            selectedModels={selectedModels}
+            selectedMediaFormats={selectedMediaFormats}
+            retroCompatible={retroCompatible}
+            clearFilters={clearFilters}
+          />
+        </Drawer>
 
         {error ? (
           <EmptyState
