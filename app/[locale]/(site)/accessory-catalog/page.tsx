@@ -8,10 +8,9 @@ import AccessoryCatalogComponent from "@/components/organisms/_accessory/Accesso
 const AccessoryCatalogPageWrapper = () => {
   const searchParams = useSearchParams();
   const locale = useLocale();
-  const page = parseInt(searchParams.get("page") || "1", 10);
   const perPage = parseInt(searchParams.get("perPage") || "12", 10);
 
-  return <AccessoryCatalogComponent locale={locale} page={page} perPage={perPage} />;
+  return <AccessoryCatalogComponent locale={locale} perPage={perPage} />;
 };
 
 export default AccessoryCatalogPageWrapper;

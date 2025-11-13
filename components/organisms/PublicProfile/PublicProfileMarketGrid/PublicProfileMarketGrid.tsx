@@ -1,3 +1,4 @@
+// components/organisms/PublicProfile/PublicProfileMarketGrid/PublicProfileMarketGrid.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -18,7 +19,7 @@ import {
 } from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import { useSearchParams, useRouter } from "next/navigation";
+import { UserConsole } from "@/@types/collection.types";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
@@ -35,14 +36,18 @@ import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
 import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
 import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
 import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
-import { UserConsole } from "@/@types/collection.types";
-import {
-  MarketConsoleAccessoriesGrid,
-  MarketConsoleAccessoriesCompact,
-  MarketConsoleAccessoriesList,
-  MarketConsoleAccessoriesTable,
-} from "./MarketConsoleAccessories";
 import { EmptyCard } from "../EmptyCard/EmptyCard";
+import { usePublicProfileCatalog } from "@/hooks/usePublicProfileCatalog";
+import { useGameFilters } from "@/hooks/useGameFilters";
+import { useConsoleFilters } from "@/hooks/useConsoleFilters";
+import { useAccessoryFilters } from "@/hooks/useAccessoryFilters";
+import { ViewMode } from "@/@types/catalog-state.types";
+import {
+  ConsoleAccessories,
+  ConsoleAccessoriesCompact,
+  ConsoleAccessoriesList,
+  ConsoleAccessoriesTable,
+} from "../PublicProfileConsoleGrid/ConsoleAccessories";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -59,15 +64,10 @@ export const PublicProfileMarketGrid = ({
 }: PublicProfileMarketGridProps) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <PublicProfileMarketGridContent slug={slug} locale={locale} isOwner={isOwner || false} />
+      <PublicProfileMarketGridContent slug={slug} locale={locale} isOwner={isOwner} />
     </QueryClientProvider>
   );
 };
-
-type ViewMode = "grid" | "compact" | "list" | "table";
-
-// Chave para armazenar as preferências no localStorage
-const STORAGE_KEY = "userMarketViewPreferences";
 
 // Hooks de colunas responsivas
 function useResponsiveColumns(): number {
@@ -75,11 +75,9 @@ function useResponsiveColumns(): number {
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w >= 1024)
-        setCols(4); // lg
-      else if (w >= 768)
-        setCols(3); // md
-      else setCols(2); // base
+      if (w >= 1024) setCols(4);
+      else if (w >= 768) setCols(3);
+      else setCols(2);
     };
     update();
     window.addEventListener("resize", update);
@@ -115,13 +113,17 @@ const PublicProfileMarketGridContent = ({
   isOwner,
 }: PublicProfileMarketGridProps) => {
   const t = useTranslations("PublicProfile");
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [localPerPage, setLocalPerPage] = useState(50);
   const [isGameFilterOpen, setIsGameFilterOpen] = useState(false);
   const [isConsoleFilterOpen, setIsConsoleFilterOpen] = useState(false);
   const [isAccessoryFilterOpen, setIsAccessoryFilterOpen] = useState(false);
+
+  // Estado do catálogo principal
+  const catalogState = usePublicProfileCatalog({
+    storageKey: "userMarketViewPreferences",
+    defaultViewMode: "grid",
+    defaultPerPage: 50,
+    defaultSort: "createdAt-desc",
+  });
 
   // Estados para colapse de acessórios em consoles
   const [openGridId, setOpenGridId] = useState<number | null>(null);
@@ -134,104 +136,18 @@ const PublicProfileMarketGridContent = ({
   const gridCols = useResponsiveColumns();
   const compactCols = useCompactColumns();
 
-  // Estados para filtros de jogos
-  const [gameGenres, setGameGenres] = useState<number[]>([]);
-  const [gamePlatforms, setGamePlatforms] = useState<number[]>([]);
-
-  // Estados para filtros de consoles
-  const [consoleBrands, setConsoleBrands] = useState<string[]>([]);
-  const [consoleGenerations, setConsoleGenerations] = useState<string[]>([]);
-  const [consoleModels, setConsoleModels] = useState<string[]>([]);
-  const [consoleTypes, setConsoleTypes] = useState<string[]>([]);
-  const [consoleAllDigital, setConsoleAllDigital] = useState<boolean>(false);
-  const [consoleMediaFormats, setConsoleMediaFormats] = useState<string[]>([]);
-  const [consoleRetroCompatible, setConsoleRetroCompatible] = useState<boolean>(false);
-  const [consoleStorageRanges, setConsoleStorageRanges] = useState<string[]>([]);
-
-  // Estados para filtros de acessórios
-  const [accessoryTypes, setAccessoryTypes] = useState<string[]>([]);
-  const [accessorySubTypes, setAccessorySubTypes] = useState<string[]>([]);
-  const [accessoryConsoles, setAccessoryConsoles] = useState<string[]>([]);
-
-  // Estados para paginação de acessórios
+  // Estado para acessórios avulsos
   const [accessoriesPage, setAccessoriesPage] = useState(1);
   const [accessoriesPerPage, setAccessoriesPerPage] = useState(20);
   const [accessoriesSort, setAccessoriesSort] = useState("createdAt-desc");
 
-  useEffect(() => {
-    const savedPreferences = localStorage.getItem(STORAGE_KEY);
-    if (savedPreferences) {
-      try {
-        const preferences = JSON.parse(savedPreferences);
-        if (preferences.viewMode) {
-          setViewMode(preferences.viewMode);
-        }
-        if (preferences.perPage) {
-          setLocalPerPage(Number(preferences.perPage));
-        }
-      } catch (error) {
-        console.error("Error parsing saved preferences:", error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    const preferences = {
-      viewMode,
-      perPage: localPerPage.toString(),
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
-  }, [viewMode, localPerPage]);
-
-  // Obter parâmetros da URL
-  const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
-  const type = searchParams.get("type") || "selling";
-  const defaultSort = "createdAt-desc";
-  const sortParam = searchParams.get("sort");
-  const validSortOptions = ["createdAt-asc", "createdAt-desc", "price-asc", "price-desc"];
-  const sort = sortParam && validSortOptions.includes(sortParam) ? sortParam : defaultSort;
-  const search = searchParams.get("search") || "";
-  const brand = searchParams.get("brand") || "";
-  const generation = searchParams.get("generation") || "";
-  const model = searchParams.get("model") || "";
-  const consoleType = searchParams.get("consoleType") || "";
-  const allDigital = searchParams.get("allDigital") || "";
-  const mediaFormats = searchParams.get("mediaFormats") || "";
-  const retroCompatible = searchParams.get("retroCompatible") || "";
-  const storage = searchParams.get("storage") || "";
-  const accessoryType = searchParams.get("accessoryType") || "";
-  const accessorySubType = searchParams.get("accessorySubType") || "";
-  const accessoryConsole = searchParams.get("accessoryConsole") || "";
-
-  // Inicializar estados dos filtros a partir dos parâmetros da URL
-  useEffect(() => {
-    setConsoleBrands(brand ? brand.split(",").filter(Boolean) : []);
-    setConsoleGenerations(generation ? generation.split(",").filter(Boolean) : []);
-    setConsoleModels(model ? model.split(",").filter(Boolean) : []);
-    setConsoleTypes(consoleType ? consoleType.split(",").filter(Boolean) : []);
-    setConsoleAllDigital(allDigital === "true");
-    setConsoleMediaFormats(mediaFormats ? mediaFormats.split(",").filter(Boolean) : []);
-    setConsoleRetroCompatible(retroCompatible === "true");
-    setConsoleStorageRanges(storage ? storage.split(",").filter(Boolean) : []);
-    setAccessoryTypes(accessoryType ? accessoryType.split(",").filter(Boolean) : []);
-    setAccessorySubTypes(accessorySubType ? accessorySubType.split(",").filter(Boolean) : []);
-    setAccessoryConsoles(accessoryConsole ? accessoryConsole.split(",").filter(Boolean) : []);
-  }, [
-    brand,
-    generation,
-    model,
-    consoleType,
-    allDigital,
-    mediaFormats,
-    retroCompatible,
-    storage,
-    accessoryType,
-    accessorySubType,
-    accessoryConsole,
-  ]);
+  // Filtros
+  const gameFilters = useGameFilters();
+  const consoleFilters = useConsoleFilters();
+  const accessoryFilters = useAccessoryFilters();
 
   // Determinar o status baseado no tipo selecionado
+  const type = catalogState.searchParams?.get("type") || "selling";
   const status = type === "looking" ? "LOOKING_FOR" : "SELLING";
 
   // Buscar itens baseado no tipo selecionado
@@ -243,12 +159,12 @@ const PublicProfileMarketGridContent = ({
     slug,
     locale,
     status,
-    page,
-    perPage,
-    sort,
-    search,
-    gameGenres,
-    gamePlatforms,
+    catalogState.page,
+    catalogState.perPage,
+    catalogState.sort,
+    catalogState.searchQuery,
+    gameFilters.selectedGenres,
+    gameFilters.selectedPlatforms,
   );
 
   const {
@@ -259,18 +175,18 @@ const PublicProfileMarketGridContent = ({
     slug,
     locale,
     status,
-    page,
-    perPage,
-    sort,
-    search,
-    consoleBrands.join(","),
-    consoleGenerations.join(","),
-    consoleModels.join(","),
-    consoleTypes.join(","),
-    consoleMediaFormats.join(","),
-    consoleStorageRanges.join(","),
-    consoleRetroCompatible,
-    consoleAllDigital,
+    catalogState.page,
+    catalogState.perPage,
+    catalogState.sort,
+    catalogState.searchQuery,
+    consoleFilters.selectedBrands.join(","),
+    consoleFilters.selectedGenerations.join(","),
+    consoleFilters.selectedModels.join(","),
+    consoleFilters.selectedTypes.join(","),
+    consoleFilters.selectedMediaFormats.join(","),
+    consoleFilters.selectedStorageRanges.join(","),
+    consoleFilters.retroCompatible,
+    consoleFilters.selectedAllDigital,
     status,
   );
 
@@ -284,9 +200,9 @@ const PublicProfileMarketGridContent = ({
     accessoriesPerPage,
     accessoriesSort,
     status,
-    accessoryTypes.join(","),
-    accessorySubTypes.join(","),
-    accessoryConsoles.join(","),
+    accessoryFilters.selectedTypes.join(","),
+    accessoryFilters.selectedSubTypes.join(","),
+    accessoryFilters.selectedConsoles.join(","),
   );
 
   const isLoading = gamesLoading || consolesLoading || accessoriesLoading;
@@ -304,7 +220,7 @@ const PublicProfileMarketGridContent = ({
     { value: "looking", label: t("lookingFor") },
   ];
 
-  // Opções de ordenação compatíveis com ambas as APIs (jogos, consoles e acessórios)
+  // Opções de ordenação compatíveis com ambas as APIs
   const SORT_OPTIONS: SortOption[] = [
     { value: "createdAt-desc", label: t("order.createdAtDesc") },
     { value: "createdAt-asc", label: t("order.createdAtAsc") },
@@ -327,21 +243,9 @@ const PublicProfileMarketGridContent = ({
     { value: "table", label: t("viewMode.table"), icon: <Table size={16} /> },
   ];
 
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", newPage.toString());
-    router.push(`?${params.toString()}`);
-  };
-
+  // Handlers para acessórios avulsos
   const handleAccessoriesPageChange = (newPage: number) => {
     setAccessoriesPage(newPage);
-  };
-
-  const handleSortChange = (newSort: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sort", newSort);
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
   };
 
   const handleAccessoriesSortChange = (newSort: string) => {
@@ -349,151 +253,19 @@ const PublicProfileMarketGridContent = ({
     setAccessoriesPage(1);
   };
 
-  const handlePerPageChange = (newPerPage: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("perPage", newPerPage);
-    params.set("page", "1");
-    setLocalPerPage(Number(newPerPage));
-    router.push(`?${params.toString()}`);
-  };
-
-  const handleAccessoriesPerPageChange = (newPerPage: string) => {
-    setAccessoriesPerPage(Number(newPerPage));
+  const handleAccessoriesPerPageChange = (newPerPage: number) => {
+    setAccessoriesPerPage(newPerPage);
     setAccessoriesPage(1);
   };
 
-  const handleViewModeChange = (mode: ViewMode) => {
-    setViewMode(mode);
-  };
-
+  // Handlers para tipo (selling/looking)
   const handleTypeChange = (newType: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("type", newType);
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
-  };
-
-  const handleGameGenreChange = (genres: number[]) => {
-    setGameGenres(genres);
-  };
-
-  const handleGamePlatformChange = (platforms: number[]) => {
-    setGamePlatforms(platforms);
-  };
-
-  const clearGameFilters = () => {
-    setGameGenres([]);
-    setGamePlatforms([]);
-  };
-
-  const handleConsoleBrandChange = (brands: string[]) => {
-    setConsoleBrands(brands);
-    updateURL({ brand: brands.join(",") });
-  };
-
-  const handleConsoleGenerationChange = (generations: string[]) => {
-    setConsoleGenerations(generations);
-    updateURL({ generation: generations.join(",") });
-  };
-
-  const handleConsoleModelChange = (models: string[]) => {
-    setConsoleModels(models);
-    updateURL({ model: models.join(",") });
-  };
-
-  const handleConsoleTypeChange = (types: string[]) => {
-    setConsoleTypes(types);
-    updateURL({ consoleType: types.join(",") });
-  };
-
-  const handleConsoleAllDigitalChange = (allDigital: boolean) => {
-    setConsoleAllDigital(allDigital);
-    updateURL({ allDigital: allDigital ? "true" : "" });
-  };
-
-  const handleConsoleMediaFormatChange = (formats: string[]) => {
-    setConsoleMediaFormats(formats);
-    updateURL({ mediaFormats: formats.join(",") });
-  };
-
-  const handleConsoleRetroCompatibleChange = (isRetroCompatible: boolean) => {
-    setConsoleRetroCompatible(isRetroCompatible);
-    updateURL({ retroCompatible: isRetroCompatible.toString() });
-  };
-
-  const handleConsoleStorageChange = (ranges: string[]) => {
-    setConsoleStorageRanges(ranges);
-    updateURL({ storage: ranges.join(",") });
-  };
-
-  const handleAccessoryTypeChange = (types: string[]) => {
-    setAccessoryTypes(types);
-    updateURL({ accessoryType: types.join(",") });
-  };
-
-  const handleAccessorySubTypeChange = (subTypes: string[]) => {
-    setAccessorySubTypes(subTypes);
-    updateURL({ accessorySubType: subTypes.join(",") });
-  };
-
-  const handleAccessoryConsoleChange = (consoles: string[]) => {
-    setAccessoryConsoles(consoles);
-    updateURL({ accessoryConsole: consoles.join(",") });
-  };
-
-  // Função para atualizar a URL com filtros
-  const updateURL = (newParams: Record<string, string>) => {
-    const params = new URLSearchParams(searchParams.toString());
-    Object.entries(newParams).forEach(([key, value]) => {
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-    });
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
-  };
-
-  const clearConsoleFilters = () => {
-    setConsoleBrands([]);
-    setConsoleGenerations([]);
-    setConsoleModels([]);
-    setConsoleTypes([]);
-    setConsoleAllDigital(false);
-    setConsoleMediaFormats([]);
-    setConsoleRetroCompatible(false);
-    setConsoleStorageRanges([]);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("brand");
-    params.delete("generation");
-    params.delete("model");
-    params.delete("consoleType");
-    params.delete("allDigital");
-    params.delete("mediaFormats");
-    params.delete("retroCompatible");
-    params.delete("storage");
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
-  };
-
-  const clearAccessoryFilters = () => {
-    setAccessoryTypes([]);
-    setAccessorySubTypes([]);
-    setAccessoryConsoles([]);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("accessoryType");
-    params.delete("accessorySubType");
-    params.delete("accessoryConsole");
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
+    catalogState.updateURL({ type: newType, page: "1" });
   };
 
   // Funções para colapse de acessórios
-  const handleToggleGrid = (index: number, id: number) => {
-    const rowStart = index - (index % gridCols);
+  const handleToggleGrid = (gridIndex: number, id: number) => {
+    const rowStart = gridIndex - (gridIndex % gridCols);
     if (openGridId === id) {
       setOpenGridId(null);
       setOpenGridRowStart(null);
@@ -507,8 +279,8 @@ const PublicProfileMarketGridContent = ({
     setOpenGridRowStart(rowStart);
   };
 
-  const handleToggleCompact = (index: number, id: number) => {
-    const rowStart = index - (index % compactCols);
+  const handleToggleCompact = (gridIndex: number, id: number) => {
+    const rowStart = gridIndex - (gridIndex % compactCols);
     if (openCompactId === id) {
       setOpenCompactId(null);
       setOpenCompactRowStart(null);
@@ -530,8 +302,7 @@ const PublicProfileMarketGridContent = ({
     setOpenTableId((prev) => (prev === id ? null : id));
   };
 
-  // Renderização de acessórios dos consoles extraída para componentes
-
+  // Loading state
   if (isLoading) {
     return (
       <div>
@@ -547,6 +318,7 @@ const PublicProfileMarketGridContent = ({
     );
   }
 
+  // Error state
   if (error) {
     return (
       <Card>
@@ -559,6 +331,7 @@ const PublicProfileMarketGridContent = ({
 
   return (
     <div>
+      {/* Header */}
       <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="w-full lg:flex-1">
           <SearchBar compact searchPath={`/user/${slug}/market`} placeholder={t("searchMarket")} />
@@ -579,14 +352,14 @@ const PublicProfileMarketGridContent = ({
           <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-start lg:justify-end">
             <SortSelect
               options={SORT_OPTIONS}
-              value={sort}
-              onChange={handleSortChange}
+              value={catalogState.sort}
+              onChange={catalogState.setSort}
               className="w-full lg:w-auto min-w-50"
             />
             <Select
               options={PER_PAGE_OPTIONS}
-              value={perPage.toString()}
-              onChange={(e) => handlePerPageChange(e.target.value)}
+              value={catalogState.perPage.toString()}
+              onChange={(e) => catalogState.setPerPage(Number(e.target.value))}
               className="min-w-25"
               size="sm"
             />
@@ -595,13 +368,15 @@ const PublicProfileMarketGridContent = ({
                 id: option.value,
                 label: option.label,
                 icon: option.icon,
-                onClick: () => handleViewModeChange(option.value as ViewMode),
+                onClick: () => catalogState.setViewMode(option.value as ViewMode),
               }))}
               trigger={
                 <Button
                   variant="outline"
                   size="sm"
-                  icon={VIEW_MODE_OPTIONS.find((option) => option.value === viewMode)?.icon}
+                  icon={
+                    VIEW_MODE_OPTIONS.find((option) => option.value === catalogState.viewMode)?.icon
+                  }
                 />
               }
               menuClassName="min-w-40"
@@ -622,7 +397,7 @@ const PublicProfileMarketGridContent = ({
               size="sm"
               onClick={() => setIsConsoleFilterOpen(true)}
               icon={<Settings2 size={16} />}
-            ></Button>
+            />
           </div>
 
           {/* Drawer de Filtros para Consoles */}
@@ -634,27 +409,27 @@ const PublicProfileMarketGridContent = ({
             className="w-full max-w-md"
           >
             <ConsoleFilterContainer
-              onBrandChange={handleConsoleBrandChange}
-              onGenerationChange={handleConsoleGenerationChange}
-              onModelChange={handleConsoleModelChange}
-              onAllDigitalChange={handleConsoleAllDigitalChange}
-              onTypeChange={handleConsoleTypeChange}
-              onMediaFormatChange={handleConsoleMediaFormatChange}
-              onRetroCompatibleChange={handleConsoleRetroCompatibleChange}
-              onStorageChange={handleConsoleStorageChange}
-              selectedBrands={consoleBrands}
-              selectedGenerations={consoleGenerations}
-              selectedModels={consoleModels}
-              selectedAllDigital={consoleAllDigital}
-              selectedTypes={consoleTypes}
-              selectedMediaFormats={consoleMediaFormats}
-              retroCompatible={consoleRetroCompatible}
-              selectedStorageRanges={consoleStorageRanges}
-              clearFilters={clearConsoleFilters}
+              onBrandChange={consoleFilters.handleBrandChange}
+              onGenerationChange={consoleFilters.handleGenerationChange}
+              onModelChange={consoleFilters.handleModelChange}
+              onAllDigitalChange={consoleFilters.handleAllDigitalChange}
+              onTypeChange={consoleFilters.handleTypeChange}
+              onMediaFormatChange={consoleFilters.handleMediaFormatChange}
+              onRetroCompatibleChange={consoleFilters.handleRetroCompatibleChange}
+              onStorageChange={consoleFilters.handleStorageChange}
+              selectedBrands={consoleFilters.selectedBrands}
+              selectedGenerations={consoleFilters.selectedGenerations}
+              selectedModels={consoleFilters.selectedModels}
+              selectedAllDigital={consoleFilters.selectedAllDigital}
+              selectedTypes={consoleFilters.selectedTypes}
+              selectedMediaFormats={consoleFilters.selectedMediaFormats}
+              retroCompatible={consoleFilters.retroCompatible}
+              selectedStorageRanges={consoleFilters.selectedStorageRanges}
+              clearFilters={consoleFilters.clearFilters}
             />
           </Drawer>
 
-          {viewMode === "table" ? (
+          {catalogState.viewMode === "table" ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -671,7 +446,7 @@ const PublicProfileMarketGridContent = ({
                 <tbody>
                   {isOwner && (
                     <tr>
-                      <td colSpan={7 + (isOwner ? 1 : 0)}>
+                      <td colSpan={6 + (isOwner ? 1 : 0)}>
                         <EmptyCard
                           text={t("txtConsole")}
                           buttonLabel={
@@ -692,7 +467,7 @@ const PublicProfileMarketGridContent = ({
                         <PublicProfileConsoleTable
                           type="trade"
                           consoleItem={consoleItem}
-                          isOwner={isOwner || false}
+                          isOwner={isOwner}
                           isMarketGrid={true}
                           isExpanded={isExpanded}
                           onToggleAccessories={
@@ -703,12 +478,12 @@ const PublicProfileMarketGridContent = ({
                         />
                         {isExpanded && (
                           <tr className="bg-gray-50 dark:bg-gray-800">
-                            <td colSpan={7 + (isOwner ? 1 : 0)} className="p-4">
-                              <MarketConsoleAccessoriesTable
+                            <td colSpan={6 + (isOwner ? 1 : 0)} className="p-4">
+                              <ConsoleAccessoriesTable
                                 item={consoleItem}
-                                isOwner={isOwner || false}
+                                isOwner={isOwner}
+                                sale={true}
                                 locale={locale}
-                                t={t}
                               />
                             </td>
                           </tr>
@@ -719,7 +494,7 @@ const PublicProfileMarketGridContent = ({
                 </tbody>
               </table>
             </div>
-          ) : viewMode === "list" ? (
+          ) : catalogState.viewMode === "list" ? (
             <div className="space-y-4">
               {isOwner && (
                 <EmptyCard
@@ -736,23 +511,24 @@ const PublicProfileMarketGridContent = ({
                     <PublicProfileConsoleList
                       type="trade"
                       consoleItem={consoleItem}
-                      isOwner={isOwner || false}
+                      isOwner={isOwner}
                       isExpanded={isOpen}
                       onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
                     />
                     {isOpen && (
                       <div>
-                        <MarketConsoleAccessoriesList
+                        <ConsoleAccessoriesList
                           item={consoleItem}
-                          isOwner={isOwner || false}
-                        />
+                          isOwner={isOwner}
+                          sale={true}
+                        />{" "}
                       </div>
                     )}
                   </div>
                 );
               })}
             </div>
-          ) : viewMode === "compact" ? (
+          ) : catalogState.viewMode === "compact" ? (
             <div className="flex flex-wrap gap-3">
               {isOwner && (
                 <div
@@ -774,13 +550,19 @@ const PublicProfileMarketGridContent = ({
               )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openCompactId === consoleItem.id;
-                const rowEndIndex = index - (index % compactCols) + (compactCols - 1);
-                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+
+                const gridIndex = isOwner ? index + 1 : index;
+                const rowStart = gridIndex - (gridIndex % compactCols);
+                const rowEndIndex = rowStart + (compactCols - 1);
+                const isRowEnd =
+                  gridIndex === rowEndIndex ||
+                  gridIndex === (isOwner ? consoles.length : consoles.length - 1);
+
                 const shouldRenderAccessoriesRow =
                   openCompactRowStart !== null &&
                   isRowEnd &&
-                  index >= openCompactRowStart &&
-                  index < openCompactRowStart + compactCols;
+                  gridIndex >= openCompactRowStart &&
+                  gridIndex < openCompactRowStart + compactCols;
 
                 return (
                   <div key={consoleItem.id} className="contents">
@@ -796,19 +578,20 @@ const PublicProfileMarketGridContent = ({
                       <PublicProfileConsoleCompact
                         type="trade"
                         consoleItem={consoleItem}
-                        isOwner={isOwner || false}
+                        isOwner={isOwner}
                         isExpanded={isOpen}
                         onToggleAccessories={() =>
-                          handleToggleCompact(index, consoleItem.id as number)
-                        }
+                          handleToggleCompact(gridIndex, consoleItem.id as number)
+                        } // ← Passar gridIndex
                       />
                     </div>
 
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
-                        <MarketConsoleAccessoriesCompact
+                        <ConsoleAccessoriesCompact
                           item={consoles.find((c) => c.id === openCompactId)}
-                          isOwner={isOwner || false}
+                          isOwner={isOwner}
+                          sale={true}
                         />
                       </div>
                     )}
@@ -838,13 +621,20 @@ const PublicProfileMarketGridContent = ({
               )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openGridId === consoleItem.id;
-                const rowEndIndex = index - (index % gridCols) + (gridCols - 1);
-                const isRowEnd = index === rowEndIndex || index === consoles.length - 1;
+
+                // CORREÇÃO: Usar gridIndex ajustado como no ConsoleGrid
+                const gridIndex = isOwner ? index + 1 : index;
+                const rowStart = gridIndex - (gridIndex % gridCols);
+                const rowEndIndex = rowStart + (gridCols - 1);
+                const isRowEnd =
+                  gridIndex === rowEndIndex ||
+                  gridIndex === (isOwner ? consoles.length : consoles.length - 1);
+
                 const shouldRenderAccessoriesRow =
                   openGridRowStart !== null &&
                   isRowEnd &&
-                  index >= openGridRowStart &&
-                  index < openGridRowStart + gridCols;
+                  gridIndex >= openGridRowStart &&
+                  gridIndex < openGridRowStart + gridCols;
 
                 return (
                   <div key={consoleItem.id} className="contents">
@@ -860,19 +650,20 @@ const PublicProfileMarketGridContent = ({
                       <PublicProfileConsoleCard
                         type="trade"
                         consoleItem={consoleItem}
-                        isOwner={isOwner || false}
+                        isOwner={isOwner}
                         isExpanded={isOpen}
                         onToggleAccessories={() =>
-                          handleToggleGrid(index, consoleItem.id as number)
-                        }
+                          handleToggleGrid(gridIndex, consoleItem.id as number)
+                        } // ← Passar gridIndex
                       />
                     </div>
 
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
-                        <MarketConsoleAccessoriesGrid
+                        <ConsoleAccessories
                           item={consoles.find((c) => c.id === openGridId)}
-                          isOwner={isOwner || false}
+                          isOwner={isOwner}
+                          sale={true}
                         />
                       </div>
                     )}
@@ -885,9 +676,9 @@ const PublicProfileMarketGridContent = ({
           {consolesMeta && consolesMeta.totalPages > 1 && (
             <div className="mt-8">
               <Pagination
-                currentPage={page}
+                currentPage={catalogState.page}
                 totalPages={consolesMeta.totalPages}
-                onPageChange={handlePageChange}
+                onPageChange={catalogState.setPage}
               />
             </div>
           )}
@@ -906,7 +697,7 @@ const PublicProfileMarketGridContent = ({
               size="sm"
               onClick={() => setIsGameFilterOpen(true)}
               icon={<Settings2 size={16} />}
-            ></Button>
+            />
           </div>
 
           {/* Drawer de Filtros para Jogos */}
@@ -918,15 +709,15 @@ const PublicProfileMarketGridContent = ({
             className="w-full max-w-md"
           >
             <GameFilterContainer
-              onGenreChange={handleGameGenreChange}
-              onPlatformChange={handleGamePlatformChange}
-              selectedGenres={gameGenres}
-              selectedPlatforms={gamePlatforms}
-              clearFilters={clearGameFilters}
+              onGenreChange={gameFilters.handleGenreChange}
+              onPlatformChange={gameFilters.handlePlatformChange}
+              selectedGenres={gameFilters.selectedGenres}
+              selectedPlatforms={gameFilters.selectedPlatforms}
+              clearFilters={gameFilters.clearFilters}
             />
           </Drawer>
 
-          {viewMode === "table" ? (
+          {catalogState.viewMode === "table" ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -959,14 +750,14 @@ const PublicProfileMarketGridContent = ({
                       type="trade"
                       key={`game-${game.id}`}
                       game={game}
-                      isOwner={isOwner || false}
+                      isOwner={isOwner}
                       isMarketGrid={true}
                     />
                   ))}
                 </tbody>
               </table>
             </div>
-          ) : viewMode === "list" ? (
+          ) : catalogState.viewMode === "list" ? (
             <div className="space-y-4">
               {isOwner && (
                 <EmptyCard
@@ -977,18 +768,13 @@ const PublicProfileMarketGridContent = ({
                 />
               )}
               {games.map((game) => (
-                <PublicProfileGameList
-                  key={game.id}
-                  game={game}
-                  isOwner={isOwner || false}
-                  type="trade"
-                />
+                <PublicProfileGameList key={game.id} game={game} isOwner={isOwner} type="trade" />
               ))}
             </div>
           ) : (
             <div
               className={`grid ${
-                viewMode === "grid"
+                catalogState.viewMode === "grid"
                   ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                   : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
               } gap-6`}
@@ -998,24 +784,19 @@ const PublicProfileMarketGridContent = ({
                   text={t("txtGame")}
                   buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
                   buttonLink="/user/collection/games/add/"
-                  viewMode={viewMode === "grid" ? "card" : "compact"}
+                  viewMode={catalogState.viewMode === "grid" ? "card" : "compact"}
                 />
               )}
               {games.map((game) =>
-                viewMode === "compact" ? (
+                catalogState.viewMode === "compact" ? (
                   <PublicProfileGameCompact
                     key={game.id}
                     game={game}
-                    isOwner={isOwner || false}
+                    isOwner={isOwner}
                     type="trade"
                   />
                 ) : (
-                  <PublicProfileGameCard
-                    key={game.id}
-                    game={game}
-                    isOwner={isOwner || false}
-                    type="trade"
-                  />
+                  <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner} type="trade" />
                 ),
               )}
             </div>
@@ -1024,9 +805,9 @@ const PublicProfileMarketGridContent = ({
           {gamesMeta && gamesMeta.totalPages > 1 && (
             <div className="mt-8">
               <Pagination
-                currentPage={page}
+                currentPage={catalogState.page}
                 totalPages={gamesMeta.totalPages}
-                onPageChange={handlePageChange}
+                onPageChange={catalogState.setPage}
               />
             </div>
           )}
@@ -1045,7 +826,7 @@ const PublicProfileMarketGridContent = ({
               size="sm"
               onClick={() => setIsAccessoryFilterOpen(true)}
               icon={<Settings2 size={16} />}
-            ></Button>
+            />
           </div>
 
           {/* Drawer de Filtros para Acessórios */}
@@ -1057,13 +838,13 @@ const PublicProfileMarketGridContent = ({
             className="w-full max-w-md"
           >
             <AccessoryFilterContainer
-              selectedTypes={accessoryTypes}
-              selectedSubTypes={accessorySubTypes}
-              selectedConsoles={accessoryConsoles}
-              onTypeChange={handleAccessoryTypeChange}
-              onSubTypeChange={handleAccessorySubTypeChange}
-              onConsoleChange={handleAccessoryConsoleChange}
-              clearFilters={clearAccessoryFilters}
+              selectedTypes={accessoryFilters.selectedTypes}
+              selectedSubTypes={accessoryFilters.selectedSubTypes}
+              selectedConsoles={accessoryFilters.selectedConsoles}
+              onTypeChange={accessoryFilters.handleTypeChange}
+              onSubTypeChange={accessoryFilters.handleSubTypeChange}
+              onConsoleChange={accessoryFilters.handleConsoleChange}
+              clearFilters={accessoryFilters.clearFilters}
               locale={locale}
             />
           </Drawer>
@@ -1079,13 +860,13 @@ const PublicProfileMarketGridContent = ({
             <Select
               options={PER_PAGE_OPTIONS}
               value={accessoriesPerPage.toString()}
-              onChange={(e) => handleAccessoriesPerPageChange(e.target.value)}
+              onChange={(e) => handleAccessoriesPerPageChange(Number(e.target.value))}
               className="w-20"
               size="sm"
             />
           </div>
 
-          {viewMode === "table" ? (
+          {catalogState.viewMode === "table" ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -1119,14 +900,14 @@ const PublicProfileMarketGridContent = ({
                     <AccessoryTableRow
                       key={`accessory-${accessory.id}`}
                       accessory={accessory}
-                      isOwner={isOwner || false}
+                      isOwner={isOwner}
                       type="trade"
                     />
                   ))}
                 </tbody>
               </table>
             </div>
-          ) : viewMode === "list" ? (
+          ) : catalogState.viewMode === "list" ? (
             <div className="space-y-4">
               {isOwner && (
                 <EmptyCard
@@ -1142,7 +923,7 @@ const PublicProfileMarketGridContent = ({
                 <AccessoryListItem
                   key={accessory.id}
                   accessory={accessory}
-                  isOwner={isOwner || false}
+                  isOwner={isOwner}
                   type="trade"
                 />
               ))}
@@ -1150,7 +931,7 @@ const PublicProfileMarketGridContent = ({
           ) : (
             <div
               className={`grid ${
-                viewMode === "grid"
+                catalogState.viewMode === "grid"
                   ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
                   : "grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3"
               } gap-6`}
@@ -1162,22 +943,22 @@ const PublicProfileMarketGridContent = ({
                     type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")
                   }
                   buttonLink="/user/collection/accessories/add/"
-                  viewMode={viewMode === "grid" ? "card" : "compact"}
+                  viewMode={catalogState.viewMode === "grid" ? "card" : "compact"}
                 />
               )}
               {accessories.map((accessory) =>
-                viewMode === "compact" ? (
+                catalogState.viewMode === "compact" ? (
                   <AccessoryCompactCard
                     key={accessory.id}
                     accessory={accessory}
-                    isOwner={isOwner || false}
+                    isOwner={isOwner}
                     type="trade"
                   />
                 ) : (
                   <AccessoryCard
                     key={accessory.id}
                     accessory={accessory}
-                    isOwner={isOwner || false}
+                    isOwner={isOwner}
                     type="trade"
                   />
                 ),

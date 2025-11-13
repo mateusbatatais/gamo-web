@@ -18,7 +18,7 @@ import { SelectOption } from "@/components/atoms/Select/Select";
 // Adicione a prop isMarketGrid à interface
 interface PublicProfileGameTableProps {
   game: UserGame;
-  isOwner: boolean;
+  isOwner?: boolean;
   isMarketGrid?: boolean;
   type?: "collection" | "trade";
 }

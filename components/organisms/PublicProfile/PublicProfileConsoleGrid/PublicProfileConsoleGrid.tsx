@@ -1,49 +1,70 @@
+// components/organisms/PublicProfile/PublicProfileConsoleGrid/PublicProfileConsoleGrid.tsx
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { PublicProfileConsoleCard } from "../PublicProfileConsoleCard/PublicProfileConsoleCard";
+import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
+import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
+import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";
 import { useUserConsolesPublic, useUserAccessoriesPublic } from "@/hooks/usePublicProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
 import { UserAccessory, UserConsole } from "@/@types/collection.types";
-import { useSearchParams, useRouter } from "next/navigation";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { SortOption, SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { Drawer } from "@/components/atoms/Drawer/Drawer";
 import { Settings2, Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
-import FilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
 import { Select } from "@/components/atoms/Select/Select";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
-import { PublicProfileConsoleTable } from "../PublicProfileConsoleCard/PublicProfileConsoleTable";
-import { PublicProfileConsoleList } from "../PublicProfileConsoleCard/PublicProfileConsoleList";
-import { PublicProfileConsoleCompact } from "../PublicProfileConsoleCard/PublicProfileConsoleCompact";
+import { EmptyCard } from "../EmptyCard/EmptyCard";
+import { usePublicProfileCatalog } from "@/hooks/usePublicProfileCatalog";
+import { useConsoleFilters } from "@/hooks/useConsoleFilters";
+import ConsoleFilterContainer from "@/components/molecules/Filter/ConsoleFilterContainer";
+import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
+import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
+import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
+import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
 import {
   ConsoleAccessories,
   ConsoleAccessoriesCompact,
   ConsoleAccessoriesList,
   ConsoleAccessoriesTable,
 } from "./ConsoleAccessories";
-import { AccessoryCard } from "../AccessoryCard/AccessoryCard";
-import { AccessoryCompactCard } from "../AccessoryCard/AccessoryCompactCard";
-import { AccessoryListItem } from "../AccessoryCard/AccessoryListItem";
-import { AccessoryTableRow } from "../AccessoryCard/AccessoryTableRow";
-import { EmptyCard } from "../EmptyCard/EmptyCard";
+import { ViewMode } from "@/@types/catalog-state.types";
 
-// Hooks de colunas
+interface PublicProfileConsoleGridProps {
+  slug: string;
+  locale: string;
+  isOwner?: boolean;
+}
+
+const queryClient = new QueryClient();
+
+export const PublicProfileConsoleGrid = ({
+  slug,
+  locale,
+  isOwner = false,
+}: PublicProfileConsoleGridProps) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <PublicProfileConsoleGridContent slug={slug} locale={locale} isOwner={isOwner} />
+    </QueryClientProvider>
+  );
+};
+
+// Hooks de colunas responsivas
 function useResponsiveColumns(): number {
   const [cols, setCols] = useState<number>(2);
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w >= 1024)
-        setCols(4); // lg
-      else if (w >= 768)
-        setCols(3); // md
-      else setCols(2); // base
+      if (w >= 1024) setCols(4);
+      else if (w >= 768) setCols(3);
+      else setCols(2);
     };
     update();
     window.addEventListener("resize", update);
@@ -69,118 +90,51 @@ function useCompactColumns(): number {
   return cols;
 }
 
-interface PublicProfileConsoleGridProps {
-  slug: string;
-  locale: string;
-  isOwner?: boolean;
-}
-
-const queryClient = new QueryClient();
-
-export const PublicProfileConsoleGrid = ({
-  slug,
-  locale,
-  isOwner = false,
-}: PublicProfileConsoleGridProps) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <PublicProfileConsoleGridContent slug={slug} locale={locale} isOwner={isOwner} />
-    </QueryClientProvider>
-  );
-};
-
-type ViewMode = "grid" | "compact" | "list" | "table";
-const STORAGE_KEY = "userConsolesViewPreferences";
-
 const PublicProfileConsoleGridContent = ({
   slug,
   locale,
   isOwner,
 }: PublicProfileConsoleGridProps) => {
   const t = useTranslations("PublicProfile");
-  const searchParams = useSearchParams();
-  const router = useRouter();
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [localPerPage, setLocalPerPage] = useState(50);
 
-  // Estados para acessórios avulsos
+  // Estado do catálogo principal
+  const catalogState = usePublicProfileCatalog({
+    storageKey: "userConsolesViewPreferences",
+    defaultViewMode: "grid",
+    defaultPerPage: 50,
+    defaultSort: "name-asc", // ← VALOR VÁLIDO
+  });
+
+  // Estado para acessórios avulsos
   const [accessoriesPage, setAccessoriesPage] = useState(1);
   const [accessoriesPerPage, setAccessoriesPerPage] = useState(20);
   const [accessoriesSort, setAccessoriesSort] = useState("createdAt-desc");
 
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const prefs: { viewMode?: ViewMode; perPage?: string } = JSON.parse(saved);
-        if (prefs.viewMode) setViewMode(prefs.viewMode);
-        if (prefs.perPage) setLocalPerPage(Number(prefs.perPage));
-      } catch {
-        // ignore
-      }
-    }
-  }, []);
+  // Filtros de consoles
+  const consoleFilters = useConsoleFilters();
 
-  useEffect(() => {
-    const prefs = { viewMode, perPage: localPerPage.toString() };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-  }, [viewMode, localPerPage]);
-
-  // URL params
-  const page = parseInt(searchParams.get("page") || "1");
-  const perPage = parseInt(searchParams.get("perPage") || localPerPage.toString());
-  const sort = searchParams.get("sort") || "name-asc";
-  const search = searchParams.get("search") || "";
-  const brand = searchParams.get("brand") || "";
-  const generation = searchParams.get("generation") || "";
-  const model = searchParams.get("model") || "";
-  const type = searchParams.get("type") || "";
-  const allDigital = searchParams.get("allDigital") || "";
-
-  // Filtros
-  const [selectedBrands, setSelectedBrands] = useState<string[]>(
-    brand ? brand.split(",").filter(Boolean) : [],
-  );
-  const [selectedGenerations, setSelectedGenerations] = useState<string[]>(
-    generation ? generation.split(",").filter(Boolean) : [],
-  );
-  const [selectedModels, setSelectedModels] = useState<string[]>(
-    model ? model.split(",").filter(Boolean) : [],
-  );
-  const [selectedTypes, setSelectedTypes] = useState<string[]>(
-    type ? type.split(",").filter(Boolean) : [],
-  );
-  const [selectedAllDigital, setSelectedAllDigital] = useState<boolean>(allDigital === "true");
-  const [selectedMediaFormats, setSelectedMediaFormats] = useState<string[]>(
-    searchParams.get("mediaFormats")?.split(",").filter(Boolean) || [],
-  );
-  const [retroCompatible, setRetroCompatible] = useState<boolean>(
-    searchParams.get("retroCompatible") === "true",
-  );
-  const [selectedStorageRanges, setSelectedStorageRanges] = useState<string[]>(
-    searchParams.get("storage")?.split(",").filter(Boolean) || [],
-  );
-
+  // Buscar dados de consoles
   const { data, isLoading, error } = useUserConsolesPublic(
     slug,
     locale,
     "OWNED",
-    page,
-    perPage,
-    sort,
-    search,
-    selectedBrands.join(","),
-    selectedGenerations.join(","),
-    selectedModels.join(","),
-    selectedTypes.join(","),
-    selectedMediaFormats.join(","),
-    selectedStorageRanges.join(","),
-    retroCompatible,
-    selectedAllDigital,
+    catalogState.page,
+    catalogState.perPage,
+    catalogState.sort,
+    catalogState.searchQuery,
+    consoleFilters.selectedBrands.join(","),
+    consoleFilters.selectedGenerations.join(","),
+    consoleFilters.selectedModels.join(","),
+    consoleFilters.selectedTypes.join(","),
+    consoleFilters.selectedMediaFormats.join(","),
+    consoleFilters.selectedStorageRanges.join(","),
+    consoleFilters.retroCompatible,
+    consoleFilters.selectedAllDigital,
     "OWNED",
   );
 
+  // Buscar dados de acessórios avulsos
   const {
     data: accessoriesData,
     isLoading: accessoriesLoading,
@@ -192,11 +146,31 @@ const PublicProfileConsoleGridContent = ({
   const accessories = accessoriesData?.items || [];
   const accessoriesMeta = accessoriesData?.meta;
 
+  // Estados para colapse de acessórios
+  const gridCols = useResponsiveColumns();
+  const compactCols = useCompactColumns();
+
+  const [openGridId, setOpenGridId] = useState<number | null>(null);
+  const [openGridRowStart, setOpenGridRowStart] = useState<number | null>(null);
+  const [openCompactId, setOpenCompactId] = useState<number | null>(null);
+  const [openCompactRowStart, setOpenCompactRowStart] = useState<number | null>(null);
+  const [openListId, setOpenListId] = useState<number | null>(null);
+  const [openTableId, setOpenTableId] = useState<number | null>(null);
+
+  // Console selecionado para colapse
+  const selectedGridConsole = useMemo(
+    () => (openGridId != null ? consoles.find((c) => c.id === openGridId) : undefined),
+    [openGridId, consoles],
+  );
+
+  // Opções de ordenação
   const SORT_OPTIONS: SortOption[] = [
     { value: "name-asc", label: t("order.nameAsc") },
     { value: "name-desc", label: t("order.nameDesc") },
-    { value: "addedDate-desc", label: t("order.addedDateDesc") },
-    { value: "addedDate-asc", label: t("order.addedDateAsc") },
+    { value: "createdAt-asc", label: t("order.createdAtAsc") },
+    { value: "createdAt-desc", label: t("order.createdAtDesc") },
+    { value: "price-asc", label: t("order.priceAsc") },
+    { value: "price-desc", label: t("order.priceDesc") },
   ];
 
   const PER_PAGE_OPTIONS = [
@@ -214,27 +188,10 @@ const PublicProfileConsoleGridContent = ({
     { value: "price-desc", label: "Preço (maior)" },
   ];
 
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("page", newPage.toString());
-    router.push(`?${params.toString()}`);
-  };
+  const consoleHasAccessories = (item: UserConsole) =>
+    Array.isArray(item.accessories) && item.accessories.length > 0;
 
-  const handleSortChange = (newSort: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sort", newSort);
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
-  };
-
-  const handlePerPageChange = (newPerPage: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("perPage", newPerPage);
-    params.set("page", "1");
-    setLocalPerPage(Number(newPerPage));
-    router.push(`?${params.toString()}`);
-  };
-
+  // Handlers para acessórios avulsos
   const handleAccessoriesPageChange = (newPage: number) => {
     setAccessoriesPage(newPage);
   };
@@ -249,36 +206,7 @@ const PublicProfileConsoleGridContent = ({
     setAccessoriesPage(1);
   };
 
-  const clearFilters = () => {
-    setSelectedBrands([]);
-    setSelectedGenerations([]);
-    setSelectedModels([]);
-    setSelectedTypes([]);
-    setSelectedAllDigital(false);
-    setSelectedMediaFormats([]);
-    setRetroCompatible(false);
-    setSelectedStorageRanges([]);
-
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("brand");
-    params.delete("generation");
-    params.delete("model");
-    params.delete("type");
-    params.delete("allDigital");
-    params.set("page", "1");
-    router.push(`?${params.toString()}`);
-  };
-
-  // --------- Estado do colapse por modo ----------
-  const gridCols = useResponsiveColumns();
-  const [openGridId, setOpenGridId] = useState<number | null>(null);
-  const [openGridRowStart, setOpenGridRowStart] = useState<number | null>(null);
-
-  const selectedGridConsole = useMemo(
-    () => (openGridId != null ? consoles.find((c) => c.id === openGridId) : undefined),
-    [openGridId, consoles],
-  );
-
+  // Handlers para colapse de acessórios
   const handleToggleGrid = (gridIndex: number, id: number) => {
     const rowStart = gridIndex - (gridIndex % gridCols);
     if (openGridId === id) {
@@ -293,11 +221,6 @@ const PublicProfileConsoleGridContent = ({
     setOpenGridId(id);
     setOpenGridRowStart(rowStart);
   };
-
-  // COMPACT
-  const compactCols = useCompactColumns();
-  const [openCompactId, setOpenCompactId] = useState<number | null>(null);
-  const [openCompactRowStart, setOpenCompactRowStart] = useState<number | null>(null);
 
   const handleToggleCompact = (gridIndex: number, id: number) => {
     const rowStart = gridIndex - (gridIndex % compactCols);
@@ -314,17 +237,9 @@ const PublicProfileConsoleGridContent = ({
     setOpenCompactRowStart(rowStart);
   };
 
-  // LIST
-  const [openListId, setOpenListId] = useState<number | null>(null);
   const handleToggleList = (id: number) => {
     setOpenListId((prev) => (prev === id ? null : id));
   };
-
-  // TABLE
-  const [openTableId, setOpenTableId] = useState<number | null>(null);
-  const tableCols = 1 /*expander*/ + 2 /*Console + Skin*/ + (isOwner ? 1 : 0);
-
-  // --------- Renderizadores de acessórios extraídos ----------
 
   // Funções de renderização para acessórios avulsos
   const renderAccessoriesGrid = (accessories: UserAccessory[]) => (
@@ -338,7 +253,7 @@ const PublicProfileConsoleGridContent = ({
         />
       )}
       {accessories.map((accessory) => (
-        <AccessoryCard key={accessory.id} accessory={accessory} isOwner={isOwner || false} />
+        <AccessoryCard key={accessory.id} accessory={accessory} isOwner={isOwner} />
       ))}
     </div>
   );
@@ -364,7 +279,7 @@ const PublicProfileConsoleGridContent = ({
             xl:flex-[0_0_calc(12.5%_-_.65625rem)]
           "
         >
-          <AccessoryCompactCard accessory={accessory} isOwner={isOwner || false} />
+          <AccessoryCompactCard accessory={accessory} isOwner={isOwner} />
         </div>
       ))}
     </div>
@@ -381,7 +296,7 @@ const PublicProfileConsoleGridContent = ({
         />
       )}
       {accessories.map((accessory) => (
-        <AccessoryListItem key={accessory.id} accessory={accessory} isOwner={isOwner || false} />
+        <AccessoryListItem key={accessory.id} accessory={accessory} isOwner={isOwner} />
       ))}
     </div>
   );
@@ -407,18 +322,14 @@ const PublicProfileConsoleGridContent = ({
             />
           )}
           {accessories.map((accessory) => (
-            <AccessoryTableRow
-              key={accessory.id}
-              accessory={accessory}
-              isOwner={isOwner || false}
-            />
+            <AccessoryTableRow key={accessory.id} accessory={accessory} isOwner={isOwner} />
           ))}
         </tbody>
       </table>
     </div>
   );
 
-  // --------- UI ---------
+  // Loading state
   if (isLoading) {
     return (
       <div>
@@ -434,6 +345,7 @@ const PublicProfileConsoleGridContent = ({
     );
   }
 
+  // Error state
   if (error) {
     return (
       <Card>
@@ -446,6 +358,7 @@ const PublicProfileConsoleGridContent = ({
 
   return (
     <div>
+      {/* Header */}
       <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="w-full lg:flex-1">
           <SearchBar compact searchPath={`/user/${slug}`} placeholder={t("searchConsoles")} />
@@ -455,8 +368,8 @@ const PublicProfileConsoleGridContent = ({
           <div className="w-full md:w-full lg:w-auto">
             <SortSelect
               options={SORT_OPTIONS}
-              value={sort}
-              onChange={handleSortChange}
+              value={catalogState.sort}
+              onChange={catalogState.setSort}
               className="w-full lg:w-auto"
             />
           </div>
@@ -464,8 +377,8 @@ const PublicProfileConsoleGridContent = ({
           <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-start lg:justify-end">
             <Select
               options={PER_PAGE_OPTIONS}
-              value={perPage.toString()}
-              onChange={(e) => handlePerPageChange(e.target.value)}
+              value={catalogState.perPage.toString()}
+              onChange={(e) => catalogState.setPerPage(Number(e.target.value))}
               className="min-w-25"
               size="sm"
             />
@@ -479,7 +392,7 @@ const PublicProfileConsoleGridContent = ({
                 id: option.value,
                 label: option.label,
                 icon: option.icon,
-                onClick: () => setViewMode(option.value as ViewMode),
+                onClick: () => catalogState.setViewMode(option.value as ViewMode),
               }))}
               trigger={
                 <Button
@@ -491,7 +404,7 @@ const PublicProfileConsoleGridContent = ({
                       ["compact", <ListChecks size={16} key="c" />],
                       ["list", <List size={16} key="l" />],
                       ["table", <Table size={16} key="t" />],
-                    ].find(([v]) => v === viewMode)?.[1] as React.ReactNode
+                    ].find(([v]) => v === catalogState.viewMode)?.[1] as React.ReactNode
                   }
                 />
               }
@@ -507,6 +420,7 @@ const PublicProfileConsoleGridContent = ({
         </div>
       </div>
 
+      {/* Drawer de Filtros */}
       <Drawer
         open={isFilterDrawerOpen}
         onClose={() => setIsFilterDrawerOpen(false)}
@@ -514,28 +428,28 @@ const PublicProfileConsoleGridContent = ({
         anchor="right"
         className="w-full max-w-md"
       >
-        <FilterContainer
-          onBrandChange={setSelectedBrands}
-          onGenerationChange={setSelectedGenerations}
-          onModelChange={setSelectedModels}
-          onAllDigitalChange={setSelectedAllDigital}
-          onTypeChange={setSelectedTypes}
-          onMediaFormatChange={setSelectedMediaFormats}
-          onRetroCompatibleChange={setRetroCompatible}
-          onStorageChange={setSelectedStorageRanges}
-          selectedStorageRanges={selectedStorageRanges}
-          selectedBrands={selectedBrands}
-          selectedGenerations={selectedGenerations}
-          selectedModels={selectedModels}
-          selectedAllDigital={selectedAllDigital}
-          selectedTypes={selectedTypes}
-          selectedMediaFormats={selectedMediaFormats}
-          retroCompatible={retroCompatible}
-          clearFilters={clearFilters}
+        <ConsoleFilterContainer
+          onBrandChange={consoleFilters.handleBrandChange}
+          onGenerationChange={consoleFilters.handleGenerationChange}
+          onModelChange={consoleFilters.handleModelChange}
+          onAllDigitalChange={consoleFilters.handleAllDigitalChange}
+          onTypeChange={consoleFilters.handleTypeChange}
+          onMediaFormatChange={consoleFilters.handleMediaFormatChange}
+          onRetroCompatibleChange={consoleFilters.handleRetroCompatibleChange}
+          onStorageChange={consoleFilters.handleStorageChange}
+          selectedStorageRanges={consoleFilters.selectedStorageRanges}
+          selectedBrands={consoleFilters.selectedBrands}
+          selectedGenerations={consoleFilters.selectedGenerations}
+          selectedModels={consoleFilters.selectedModels}
+          selectedAllDigital={consoleFilters.selectedAllDigital}
+          selectedTypes={consoleFilters.selectedTypes}
+          selectedMediaFormats={consoleFilters.selectedMediaFormats}
+          retroCompatible={consoleFilters.retroCompatible}
+          clearFilters={consoleFilters.clearFilters}
         />
       </Drawer>
 
-      {/* conteúdo */}
+      {/* Conteúdo de Consoles */}
       {!consoles || consoles.length === 0 ? (
         <Card>
           <div className="py-12">
@@ -554,7 +468,8 @@ const PublicProfileConsoleGridContent = ({
         <>
           <h2 className="text-xl font-semibold mb-6 dark:text-white">{t("collection")}</h2>
 
-          {viewMode === "table" ? (
+          {/* Renderização por view mode - CORRIGIDA */}
+          {catalogState.viewMode === "table" ? (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -577,13 +492,12 @@ const PublicProfileConsoleGridContent = ({
                   )}
                   {consoles.map((consoleItem: UserConsole) => {
                     const isExpanded = openTableId === consoleItem.id;
-                    const canExpand =
-                      Array.isArray(consoleItem.accessories) && consoleItem.accessories.length > 0;
+                    const canExpand = consoleHasAccessories(consoleItem);
                     return (
                       <React.Fragment key={consoleItem.id}>
                         <PublicProfileConsoleTable
                           consoleItem={consoleItem}
-                          isOwner={isOwner || false}
+                          isOwner={isOwner}
                           isExpanded={isExpanded}
                           onToggleAccessories={
                             canExpand
@@ -594,13 +508,11 @@ const PublicProfileConsoleGridContent = ({
                               : undefined
                           }
                         />
+                        {/* CORREÇÃO: Renderizar acessórios quando expandido */}
                         {isExpanded && (
                           <tr className="bg-gray-50 dark:bg-gray-800">
-                            <td colSpan={tableCols} className="p-4">
-                              <ConsoleAccessoriesTable
-                                item={consoleItem}
-                                isOwner={isOwner || false}
-                              />
+                            <td colSpan={isOwner ? 4 : 3} className="p-4">
+                              <ConsoleAccessoriesTable item={consoleItem} isOwner={isOwner} />
                             </td>
                           </tr>
                         )}
@@ -610,7 +522,7 @@ const PublicProfileConsoleGridContent = ({
                 </tbody>
               </table>
             </div>
-          ) : viewMode === "list" ? (
+          ) : catalogState.viewMode === "list" ? (
             <div className="space-y-4">
               {isOwner && (
                 <EmptyCard
@@ -626,31 +538,24 @@ const PublicProfileConsoleGridContent = ({
                   <div key={consoleItem.id} className="flex flex-col gap-2">
                     <PublicProfileConsoleList
                       consoleItem={consoleItem}
-                      isOwner={isOwner || false}
+                      isOwner={isOwner}
                       isExpanded={isOpen}
                       onToggleAccessories={() => handleToggleList(consoleItem.id as number)}
                     />
+                    {/* CORREÇÃO: Renderizar acessórios quando expandido */}
                     {isOpen && (
                       <div>
-                        <ConsoleAccessoriesList item={consoleItem} isOwner={isOwner || false} />
+                        <ConsoleAccessoriesList item={consoleItem} isOwner={isOwner} />
                       </div>
                     )}
                   </div>
                 );
               })}
             </div>
-          ) : viewMode === "compact" ? (
+          ) : catalogState.viewMode === "compact" ? (
             <div className="flex flex-wrap gap-3">
               {isOwner && (
-                <div
-                  className="
-                        box-border min-w-0 flex flex-col
-                        flex-[0_0_calc(33.333%_-_.5rem)]       /* 3 col */
-                        md:flex-[0_0_calc(25%_-_.5625rem)]     /* 4 col */
-                        lg:flex-[0_0_calc(16.666%_-_.625rem)]  /* 6 col */
-                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]  /* 8 col */
-                      "
-                >
+                <div className="box-border min-w-0 flex flex-col flex-[0_0_calc(33.333%_-_.5rem)] md:flex-[0_0_calc(25%_-_.5625rem)] lg:flex-[0_0_calc(16.666%_-_.625rem)] xl:flex-[0_0_calc(12.5%_-_.65625rem)]">
                   <EmptyCard
                     text={t("txtConsole")}
                     buttonLabel={t("txtAddConsole")}
@@ -661,14 +566,12 @@ const PublicProfileConsoleGridContent = ({
               )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openCompactId === consoleItem.id;
-
                 const gridIndex = isOwner ? index + 1 : index;
                 const rowStart = gridIndex - (gridIndex % compactCols);
                 const rowEndIndex = rowStart + (compactCols - 1);
                 const isRowEnd =
                   gridIndex === rowEndIndex ||
                   gridIndex === (isOwner ? consoles.length : consoles.length - 1);
-
                 const shouldRenderAccessoriesRow =
                   openCompactRowStart !== null &&
                   isRowEnd &&
@@ -677,18 +580,10 @@ const PublicProfileConsoleGridContent = ({
 
                 return (
                   <div key={consoleItem.id} className="contents">
-                    <div
-                      className="
-                        box-border min-w-0 flex flex-col
-                        flex-[0_0_calc(33.333%_-_.5rem)]
-                        md:flex-[0_0_calc(25%_-_.5625rem)]
-                        lg:flex-[0_0_calc(16.666%_-_.625rem)]
-                        xl:flex-[0_0_calc(12.5%_-_.65625rem)]
-                      "
-                    >
+                    <div className="box-border min-w-0 flex flex-col flex-[0_0_calc(33.333%_-_.5rem)] md:flex-[0_0_calc(25%_-_.5625rem)] lg:flex-[0_0_calc(16.666%_-_.625rem)] xl:flex-[0_0_calc(12.5%_-_.65625rem)]">
                       <PublicProfileConsoleCompact
                         consoleItem={consoleItem}
-                        isOwner={isOwner || false}
+                        isOwner={isOwner}
                         isExpanded={isOpen}
                         onToggleAccessories={() =>
                           handleToggleCompact(gridIndex, consoleItem.id as number)
@@ -696,11 +591,12 @@ const PublicProfileConsoleGridContent = ({
                       />
                     </div>
 
+                    {/* CORREÇÃO: Renderizar acessórios quando expandido */}
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
                         <ConsoleAccessoriesCompact
                           item={consoles.find((c) => c.id === openCompactId)}
-                          isOwner={isOwner || false}
+                          isOwner={isOwner}
                         />
                       </div>
                     )}
@@ -709,17 +605,10 @@ const PublicProfileConsoleGridContent = ({
               })}
             </div>
           ) : (
+            // View mode GRID
             <div className="flex flex-wrap gap-6">
               {isOwner && (
-                <div
-                  className="
-                        box-border min-w-0
-                        flex-[0_0_calc(50%_-_.75rem)]
-                        md:flex-[0_0_calc(33.333%_-_1rem)]
-                        lg:flex-[0_0_calc(25%_-_1.125rem)]
-                        flex flex-col
-                      "
-                >
+                <div className="box-border min-w-0 flex-[0_0_calc(50%_-_.75rem)] md:flex-[0_0_calc(33.333%_-_1rem)] lg:flex-[0_0_calc(25%_-_1.125rem)] flex flex-col">
                   <EmptyCard
                     text={t("txtConsole")}
                     buttonLabel={t("txtAddConsole")}
@@ -730,14 +619,12 @@ const PublicProfileConsoleGridContent = ({
               )}
               {consoles.map((consoleItem: UserConsole, index: number) => {
                 const isOpen = openGridId === consoleItem.id;
-
                 const gridIndex = isOwner ? index + 1 : index;
                 const rowStart = gridIndex - (gridIndex % gridCols);
                 const rowEndIndex = rowStart + (gridCols - 1);
                 const isRowEnd =
                   gridIndex === rowEndIndex ||
                   gridIndex === (isOwner ? consoles.length : consoles.length - 1);
-
                 const shouldRenderAccessoriesRow =
                   openGridRowStart !== null &&
                   isRowEnd &&
@@ -746,18 +633,10 @@ const PublicProfileConsoleGridContent = ({
 
                 return (
                   <div key={consoleItem.id} className="contents">
-                    <div
-                      className="
-                        box-border min-w-0
-                        flex-[0_0_calc(50%_-_.75rem)]
-                        md:flex-[0_0_calc(33.333%_-_1rem)]
-                        lg:flex-[0_0_calc(25%_-_1.125rem)]
-                        flex flex-col
-                      "
-                    >
+                    <div className="box-border min-w-0 flex-[0_0_calc(50%_-_.75rem)] md:flex-[0_0_calc(33.333%_-_1rem)] lg:flex-[0_0_calc(25%_-_1.125rem)] flex flex-col">
                       <PublicProfileConsoleCard
                         consoleItem={consoleItem}
-                        isOwner={isOwner || false}
+                        isOwner={isOwner}
                         isExpanded={isOpen}
                         onToggleAccessories={() =>
                           handleToggleGrid(gridIndex, consoleItem.id as number)
@@ -765,9 +644,10 @@ const PublicProfileConsoleGridContent = ({
                       />
                     </div>
 
+                    {/* CORREÇÃO: Renderizar acessórios quando expandido */}
                     {shouldRenderAccessoriesRow && (
                       <div className="basis-full">
-                        <ConsoleAccessories item={selectedGridConsole} isOwner={isOwner || false} />
+                        <ConsoleAccessories item={selectedGridConsole} isOwner={isOwner} />
                       </div>
                     )}
                   </div>
@@ -778,17 +658,18 @@ const PublicProfileConsoleGridContent = ({
         </>
       )}
 
+      {/* Paginação de Consoles */}
       {meta && meta.totalPages > 1 && (
         <div className="mt-8">
           <Pagination
-            currentPage={page}
+            currentPage={catalogState.page}
             totalPages={meta.totalPages}
-            onPageChange={handlePageChange}
+            onPageChange={catalogState.setPage}
           />
         </div>
       )}
 
-      {/* Seção de Acessórios Avulsos */}
+      {/* Seção de Acessórios Avulsos - MANTIDA DO ORIGINAL */}
       {accessoriesLoading && (
         <div className="mt-12">
           <h2 className="text-xl font-semibold mb-6 dark:text-white">Acessórios Avulsos</h2>
@@ -835,10 +716,10 @@ const PublicProfileConsoleGridContent = ({
             </div>
           </div>
 
-          {viewMode === "grid" && renderAccessoriesGrid(accessories)}
-          {viewMode === "compact" && renderAccessoriesCompactView(accessories)}
-          {viewMode === "list" && renderAccessoriesListView(accessories)}
-          {viewMode === "table" && renderAccessoriesTableView(accessories)}
+          {catalogState.viewMode === "grid" && renderAccessoriesGrid(accessories)}
+          {catalogState.viewMode === "compact" && renderAccessoriesCompactView(accessories)}
+          {catalogState.viewMode === "list" && renderAccessoriesListView(accessories)}
+          {catalogState.viewMode === "table" && renderAccessoriesTableView(accessories)}
 
           {accessoriesMeta && accessoriesMeta.totalPages > 1 && (
             <div className="mt-8">

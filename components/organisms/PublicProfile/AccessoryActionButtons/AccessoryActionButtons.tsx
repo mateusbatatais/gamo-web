@@ -14,7 +14,7 @@ import { useUserAccessory } from "@/hooks/useUserAccessory";
 
 interface AccessoryActionButtonsProps {
   accessory: UserAccessory;
-  isOwner: boolean;
+  isOwner?: boolean;
   compact?: boolean;
   customClassName?: string;
   type?: "collection" | "trade";

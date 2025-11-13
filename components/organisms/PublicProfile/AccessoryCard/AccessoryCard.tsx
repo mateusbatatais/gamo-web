@@ -8,7 +8,7 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 
 interface AccessoryCardProps {
   accessory: UserAccessory;
-  isOwner: boolean;
+  isOwner?: boolean;
   type?: "collection" | "trade";
 }
 

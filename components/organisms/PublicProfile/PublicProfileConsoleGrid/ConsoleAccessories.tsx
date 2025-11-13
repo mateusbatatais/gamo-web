@@ -13,6 +13,9 @@ interface AccessoryLite {
   variantName?: string;
   accessorySlug?: string;
   photoMain?: string;
+  price?: number | null;
+  condition?: string;
+  acceptsTrade?: boolean | null;
 }
 
 function hasAccessories(
@@ -95,7 +98,15 @@ function SafeAccessoryImage({
   );
 }
 
-function AccessoriesCard({ acc, isOwner = false }: { acc: AccessoryLite; isOwner?: boolean }) {
+function AccessoriesCard({
+  acc,
+  isOwner = false,
+  sale = false,
+}: {
+  acc: AccessoryLite;
+  isOwner?: boolean;
+  sale?: boolean;
+}) {
   return (
     <div className="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div className="h-36 bg-gray-100 dark:bg-gray-700 relative">
@@ -117,6 +128,22 @@ function AccessoriesCard({ acc, isOwner = false }: { acc: AccessoryLite; isOwner
             <p className="text-xs text-gray-500 dark:text-gray-400">{acc.accessorySlug}</p>
           </div>
         </div>
+        {/* Informações de venda quando sale=true */}
+        {sale && (
+          <div className="space-y-1 mt-2">
+            {acc.price && (
+              <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                R$ {acc.price.toFixed(2)}
+              </p>
+            )}
+            {acc.condition && (
+              <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{acc.condition}</p>
+            )}
+            {acc.acceptsTrade && (
+              <p className="text-xs text-blue-600 dark:text-blue-400">Aceita troca</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -125,9 +152,11 @@ function AccessoriesCard({ acc, isOwner = false }: { acc: AccessoryLite; isOwner
 export function ConsoleAccessories({
   item,
   isOwner = false,
+  sale = false,
 }: {
   item?: UserConsole;
   isOwner?: boolean;
+  sale?: boolean;
 }) {
   if (!item || !hasAccessories(item)) {
     return (
@@ -145,7 +174,7 @@ export function ConsoleAccessories({
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
         {item.accessories.map((acc) => (
           <div key={(acc as AccessoryLite).id} className="aspect-square">
-            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} />
+            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} sale={sale} />
           </div>
         ))}
       </div>
@@ -156,9 +185,11 @@ export function ConsoleAccessories({
 export function ConsoleAccessoriesCompact({
   item,
   isOwner = false,
+  sale = false,
 }: {
   item?: UserConsole;
   isOwner?: boolean;
+  sale?: boolean;
 }) {
   if (!item || !hasAccessories(item)) {
     return (
@@ -176,7 +207,7 @@ export function ConsoleAccessoriesCompact({
       <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
         {item.accessories.map((acc) => (
           <div key={(acc as AccessoryLite).id} className="aspect-square">
-            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} />
+            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} sale={sale} />
           </div>
         ))}
       </div>
@@ -187,9 +218,11 @@ export function ConsoleAccessoriesCompact({
 export function ConsoleAccessoriesList({
   item,
   isOwner = false,
+  sale = false,
 }: {
   item?: UserConsole;
   isOwner?: boolean;
+  sale?: boolean;
 }) {
   if (!item || !hasAccessories(item)) {
     return (
@@ -217,16 +250,36 @@ export function ConsoleAccessoriesList({
                     className="w-full h-full"
                   />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="font-medium dark:text-white truncate">{a.variantName}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                     {a.accessorySlug}
                   </p>
+                  {/* Informações de venda quando sale=true */}
+                  {sale && (
+                    <div className="flex gap-4 mt-1">
+                      {a.price && (
+                        <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                          R$ {a.price.toFixed(2)}
+                        </span>
+                      )}
+                      {a.condition && (
+                        <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                          {a.condition}
+                        </span>
+                      )}
+                      {a.acceptsTrade && (
+                        <span className="text-xs text-blue-600 dark:text-blue-400">
+                          Aceita troca
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <AccessoryActionButtons
                   accessory={a as unknown as UserAccessory}
                   isOwner={isOwner}
-                  customClassName="flex-grow justify-end"
+                  customClassName="flex-shrink-0"
                 />
               </div>
             </Card>
@@ -240,9 +293,12 @@ export function ConsoleAccessoriesList({
 export function ConsoleAccessoriesTable({
   item,
   isOwner = false,
+  sale = false,
 }: {
   item?: UserConsole;
   isOwner?: boolean;
+  sale?: boolean;
+  locale?: string;
 }) {
   if (!item || !hasAccessories(item)) {
     return (
@@ -261,7 +317,15 @@ export function ConsoleAccessoriesTable({
           <tr className="border-t border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
             <th className="p-2 text-left">Acessório</th>
             <th className="p-2 text-left">Slug</th>
-            {isOwner && <th className="p-2 ">Ações</th>}
+            {/* Colunas adicionais para venda */}
+            {sale && (
+              <>
+                <th className="p-2 text-left">Preço</th>
+                <th className="p-2 text-left">Condição</th>
+                <th className="p-2 text-left">Aceita Troca</th>
+              </>
+            )}
+            {isOwner && <th className="p-2 text-center">Ações</th>}
           </tr>
         </thead>
         <tbody>
@@ -282,8 +346,34 @@ export function ConsoleAccessoriesTable({
                   </div>
                 </td>
                 <td className="p-2 text-sm text-gray-600 dark:text-gray-300">{a.accessorySlug}</td>
+                {/* Células adicionais para venda */}
+                {sale && (
+                  <>
+                    <td className="p-2">
+                      {a.price ? (
+                        <span className="font-semibold text-green-600 dark:text-green-400">
+                          R$ {a.price.toFixed(2)}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">-</span>
+                      )}
+                    </td>
+                    <td className="p-2">
+                      <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">
+                        {a.condition || "-"}
+                      </span>
+                    </td>
+                    <td className="p-2">
+                      {a.acceptsTrade ? (
+                        <span className="text-xs text-blue-600 dark:text-blue-400">Sim</span>
+                      ) : (
+                        <span className="text-xs text-gray-400">Não</span>
+                      )}
+                    </td>
+                  </>
+                )}
                 {isOwner && (
-                  <td className="p-2 text-center  flex justify-center">
+                  <td className="p-2 text-center">
                     <AccessoryActionButtons
                       accessory={a as unknown as UserAccessory}
                       isOwner={isOwner}

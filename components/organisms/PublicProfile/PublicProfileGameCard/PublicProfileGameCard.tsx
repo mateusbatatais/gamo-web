@@ -32,7 +32,7 @@ export const PublicProfileGameCard = ({
   type,
 }: {
   game: UserGame;
-  isOwner: boolean;
+  isOwner?: boolean;
   type?: "collection" | "trade";
 }) => {
   const t = useTranslations("PublicProfile");

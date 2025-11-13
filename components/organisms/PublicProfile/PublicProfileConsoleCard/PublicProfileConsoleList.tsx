@@ -64,7 +64,7 @@ export const PublicProfileConsoleList = ({
   onToggleAccessories,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
-  isOwner: boolean;
+  isOwner?: boolean;
   isExpanded?: boolean;
   type?: "trade" | "collection";
 

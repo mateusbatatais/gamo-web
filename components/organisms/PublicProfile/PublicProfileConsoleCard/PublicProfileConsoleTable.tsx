@@ -24,7 +24,7 @@ function hasAccessories(
 
 interface PublicProfileConsoleTableProps {
   consoleItem: UserConsole & { status: CollectionStatus };
-  isOwner: boolean;
+  isOwner?: boolean;
   isMarketGrid?: boolean;
   type?: "trade" | "collection";
 
