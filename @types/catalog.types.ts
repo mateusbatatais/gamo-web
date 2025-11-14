@@ -51,12 +51,14 @@ export interface SkinDetail {
 // Respostas paginadas
 export interface PaginatedResponse<T> {
   items: T[];
-  meta: {
-    total: number;
-    page: number;
-    perPage: number;
-    totalPages: number;
-  };
+  meta: PaginationMeta;
+}
+
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  perPage: number;
+  totalPages: number;
 }
 
 export interface GameWithStats extends Game {

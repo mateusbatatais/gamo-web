@@ -1,0 +1,61 @@
+// hooks/useGameData.ts
+"use client";
+
+import { useUserGamesPublic } from "@/hooks/usePublicProfile";
+import { UserGame } from "@/@types/collection.types";
+import { PaginationMeta } from "@/@types/catalog.types";
+
+interface UseGameDataProps {
+  slug: string;
+  locale: string;
+  status: "OWNED" | "SELLING" | "LOOKING_FOR";
+  page: number;
+  perPage: number;
+  sort: string;
+  searchQuery: string;
+  gameFilters: {
+    selectedGenres: number[];
+    selectedPlatforms: number[];
+  };
+}
+
+interface UseGameDataReturn {
+  games: UserGame[];
+  gamesMeta: PaginationMeta | undefined;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export function useGameData({
+  slug,
+  locale,
+  status,
+  page,
+  perPage,
+  sort,
+  searchQuery,
+  gameFilters,
+}: UseGameDataProps): UseGameDataReturn {
+  const {
+    data: gamesData,
+    isLoading,
+    error,
+  } = useUserGamesPublic(
+    slug,
+    locale,
+    status,
+    page,
+    perPage,
+    sort,
+    searchQuery,
+    gameFilters.selectedGenres,
+    gameFilters.selectedPlatforms,
+  );
+
+  return {
+    games: gamesData?.items || [],
+    gamesMeta: gamesData?.meta,
+    isLoading,
+    error: error || null,
+  };
+}

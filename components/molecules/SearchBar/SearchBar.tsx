@@ -12,8 +12,8 @@ interface SearchBarProps {
   className?: string;
   variant?: "header" | "page";
   compact?: boolean;
-  searchPath: string; // Caminho base para busca, ex: '/game-catalog' ou '/console-catalog'
-  placeholder?: string; // Placeholder customizável
+  searchPath: string;
+  placeholder?: string;
 }
 
 export function SearchBar({
