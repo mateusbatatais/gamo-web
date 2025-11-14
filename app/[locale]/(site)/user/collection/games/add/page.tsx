@@ -153,12 +153,8 @@ export default function AddGamePage() {
   // useEffect para controlar o scroll baseado no currentStep
   useEffect(() => {
     const timer = setTimeout(() => {
-      switch (currentStep) {
-        case "form":
-          scrollToSection(formSectionRef);
-          break;
-        default:
-          break;
+      if (currentStep === "form") {
+        scrollToSection(formSectionRef);
       }
     }, 150);
 
