@@ -11,8 +11,6 @@ import { PublicProfileGameTable } from "../PublicProfileGameCard/PublicProfileGa
 import { PublicProfileGameCompact } from "../PublicProfileGameCard/PublicProfileGameCompact";
 import { EmptyCard } from "../EmptyCard/EmptyCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
-import { Button } from "@/components/atoms/Button/Button";
-import { Settings2 } from "lucide-react";
 import { Card } from "@/components/atoms/Card/Card";
 
 interface GameGridSectionProps {
@@ -24,7 +22,6 @@ interface GameGridSectionProps {
   viewMode: ViewMode;
   currentPage: number;
   onPageChange: (page: number) => void;
-  onFilterOpen: () => void;
   title: string;
   emptyMessage: string;
   addButtonText: string;
@@ -38,7 +35,6 @@ export const GameGridSection: React.FC<GameGridSectionProps> = ({
   viewMode,
   currentPage,
   onPageChange,
-  onFilterOpen,
   title,
   emptyMessage,
   addButtonText,
@@ -51,7 +47,6 @@ export const GameGridSection: React.FC<GameGridSectionProps> = ({
       {/* Header da Seção */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold dark:text-white">{title}</h2>
-        <Button variant="outline" size="sm" onClick={onFilterOpen} icon={<Settings2 size={16} />} />
       </div>
 
       {/* Conteúdo */}
@@ -84,13 +79,17 @@ export const GameGridSection: React.FC<GameGridSectionProps> = ({
             </thead>
             <tbody>
               {isOwner && (
-                <EmptyCard
-                  text={t("txtGame")}
-                  buttonLabel={addButtonText}
-                  buttonLink={addButtonLink}
-                  viewMode="table"
-                  isGame={true}
-                />
+                <tr>
+                  <td colSpan={6 + (isOwner ? 1 : 0)}>
+                    <EmptyCard
+                      text={t("txtGame")}
+                      buttonLabel={addButtonText}
+                      buttonLink={addButtonLink}
+                      viewMode="table"
+                      isGame={true}
+                    />
+                  </td>
+                </tr>
               )}
               {games.map((game: UserGame) => (
                 <PublicProfileGameTable key={game.id} game={game} isOwner={isOwner} />

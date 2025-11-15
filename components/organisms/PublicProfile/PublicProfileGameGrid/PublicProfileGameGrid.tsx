@@ -145,7 +145,6 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         viewMode={catalogState.viewMode}
         currentPage={catalogState.page}
         onPageChange={catalogState.setPage}
-        onFilterOpen={() => setIsFilterOpen(true)}
         title={t("gamesCollection")}
         emptyMessage={t("noGames")}
         addButtonText={t("txtAddGame")}

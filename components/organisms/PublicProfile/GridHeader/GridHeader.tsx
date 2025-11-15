@@ -119,7 +119,7 @@ export const GridHeader: React.FC<GridHeaderProps> = ({
           {/* Filter Button (opcional) */}
           {showFilterButton && onFilterOpen && (
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={onFilterOpen}
               icon={<Settings2 size={16} />}

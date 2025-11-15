@@ -4,6 +4,7 @@ import React from "react";
 import { Card } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface EmptyCardProps {
   text: string;
@@ -23,6 +24,7 @@ export const EmptyCard = ({
   isGame = false,
 }: EmptyCardProps) => {
   const router = useRouter();
+  const t = useTranslations("emptyCard");
 
   // Versão Compact
   if (viewMode === "compact") {
@@ -45,7 +47,7 @@ export const EmptyCard = ({
               onClick={() => router.push(`/user/collection/games/import`)}
               size="sm"
             >
-              Importar em massa
+              {t("massImport")}
             </Button>
           )}
         </div>
@@ -78,7 +80,7 @@ export const EmptyCard = ({
                   variant="secondary"
                   onClick={() => router.push(`/user/collection/games/import`)}
                 >
-                  Importar em massa
+                  {t("massImport")}
                 </Button>
               )}
             </div>
@@ -91,21 +93,15 @@ export const EmptyCard = ({
   // Versão Table
   if (viewMode === "table") {
     return (
-      <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 border-dashed">
-        {space && <td className="p-2 w-10"></td>}
-
-        <td className="py-1">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 flex-shrink-0 bg-gray-50 dark:bg-gray-800 relative flex items-center justify-center">
-              <span className="text-xl text-gray-400 dark:text-gray-500">📦</span>
-            </div>
-            <div>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">{text}</p>
-            </div>
+      <>
+        {space && <div className=" w-10"></div>}
+        <div className="flex items-center gap-3 ">
+          <div className="w-12 h-12 flex-shrink-0 bg-gray-50 dark:bg-gray-800 relative flex items-center justify-center">
+            <span className="text-xl text-gray-400 dark:text-gray-500">📦</span>
           </div>
-        </td>
-
-        <td className="p-2 text-end" colSpan={4}>
+          <div>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">{text}</p>
+          </div>
           <Button variant="primary" onClick={() => router.push(buttonLink)} size="sm">
             {buttonLabel}
           </Button>
@@ -116,11 +112,11 @@ export const EmptyCard = ({
               className="ms-2"
               onClick={() => router.push(`/user/collection/games/import`)}
             >
-              Importar em massa
+              {t("massImport")}
             </Button>
           )}
-        </td>
-      </tr>
+        </div>
+      </>
     );
   }
 
@@ -144,7 +140,7 @@ export const EmptyCard = ({
               variant="secondary"
               onClick={() => router.push(`/user/collection/games/import`)}
             >
-              Importar em massa
+              {t("massImport")}
             </Button>
           )}
         </div>

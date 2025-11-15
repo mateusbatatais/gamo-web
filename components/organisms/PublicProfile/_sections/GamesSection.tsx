@@ -51,7 +51,12 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
         <h2 className="text-xl font-semibold dark:text-white">
           {type === "selling" ? t("gamesForSale") : t("gamesLookingFor")}
         </h2>
-        <Button variant="outline" size="sm" onClick={onFilterOpen} icon={<Settings2 size={16} />} />
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onFilterOpen}
+          icon={<Settings2 size={16} />}
+        />
       </div>
 
       {games.length === 0 ? (

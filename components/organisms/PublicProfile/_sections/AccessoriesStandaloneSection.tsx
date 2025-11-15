@@ -112,12 +112,16 @@ export const AccessoriesStandaloneSection: React.FC<AccessoriesStandaloneSection
             </thead>
             <tbody>
               {isOwner && (
-                <EmptyCard
-                  text={t("txtAccessory")}
-                  buttonLabel={addButtonText}
-                  buttonLink={addButtonLink}
-                  viewMode="table"
-                />
+                <tr>
+                  <td colSpan={6 + (isOwner ? 1 : 0)}>
+                    <EmptyCard
+                      text={t("txtAccessory")}
+                      buttonLabel={addButtonText}
+                      buttonLink={addButtonLink}
+                      viewMode="table"
+                    />
+                  </td>
+                </tr>
               )}
               {accessories.map((accessory) => (
                 <AccessoryTableRow key={accessory.id} accessory={accessory} isOwner={isOwner} />

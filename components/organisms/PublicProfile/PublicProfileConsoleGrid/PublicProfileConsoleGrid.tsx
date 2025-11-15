@@ -189,7 +189,6 @@ const PublicProfileConsoleGridContent = ({
         collapseManager={collapseManager}
         gridCols={gridCols}
         compactCols={compactCols}
-        onFilterOpen={() => setIsFilterOpen(true)}
         locale={locale}
         title={t("collection")}
         emptyMessage={t("noConsoles")}

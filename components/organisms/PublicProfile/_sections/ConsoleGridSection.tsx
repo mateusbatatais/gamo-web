@@ -17,8 +17,6 @@ import {
 } from "../PublicProfileConsoleGrid/ConsoleAccessories";
 import { EmptyCard } from "../EmptyCard/EmptyCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
-import { Button } from "@/components/atoms/Button/Button";
-import { Settings2 } from "lucide-react";
 import { Card } from "@/components/atoms/Card/Card";
 import { UseCollapseManagerReturn } from "../_hooks/useCollapseManager";
 
@@ -34,7 +32,6 @@ interface ConsoleGridSectionProps {
   collapseManager: UseCollapseManagerReturn;
   gridCols: number;
   compactCols: number;
-  onFilterOpen: () => void;
   locale: string;
   title: string;
   emptyMessage: string;
@@ -52,7 +49,6 @@ export const ConsoleGridSection: React.FC<ConsoleGridSectionProps> = ({
   collapseManager,
   gridCols,
   compactCols,
-  onFilterOpen,
   title,
   emptyMessage,
   addButtonText,
@@ -68,7 +64,6 @@ export const ConsoleGridSection: React.FC<ConsoleGridSectionProps> = ({
       {/* Header da Seção */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold dark:text-white">{title}</h2>
-        <Button variant="outline" size="sm" onClick={onFilterOpen} icon={<Settings2 size={16} />} />
       </div>
 
       {/* Conteúdo */}
@@ -99,13 +94,17 @@ export const ConsoleGridSection: React.FC<ConsoleGridSectionProps> = ({
             </thead>
             <tbody>
               {isOwner && (
-                <EmptyCard
-                  text={t("txtConsole")}
-                  buttonLabel={addButtonText}
-                  buttonLink={addButtonLink}
-                  viewMode="table"
-                  space={true}
-                />
+                <tr>
+                  <td colSpan={isOwner ? 4 : 3}>
+                    <EmptyCard
+                      text={t("txtConsole")}
+                      buttonLabel={addButtonText}
+                      buttonLink={addButtonLink}
+                      viewMode="table"
+                      space={true}
+                    />
+                  </td>
+                </tr>
               )}
               {consoles.map((consoleItem: UserConsole) => {
                 const isExpanded = collapseManager.openTableId === consoleItem.id;

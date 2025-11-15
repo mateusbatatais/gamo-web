@@ -751,5 +751,8 @@
   },
   "button": {
     "viewdetails": "View details"
+  },
+  "emptyCard": {
+    "massImport": "Mass Import"
   }
 }

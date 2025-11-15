@@ -66,7 +66,12 @@ export const AccessoriesSection: React.FC<AccessoriesSectionProps> = ({
         <h2 className="text-xl font-semibold dark:text-white">
           {type === "selling" ? t("accessoriesForSale") : t("accessoriesLookingFor")}
         </h2>
-        <Button variant="outline" size="sm" onClick={onFilterOpen} icon={<Settings2 size={16} />} />
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onFilterOpen}
+          icon={<Settings2 size={16} />}
+        />
       </div>
 
       {/* Controles de ordenação e paginação para acessórios */}

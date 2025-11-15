@@ -751,5 +751,8 @@
   },
   "button": {
     "viewdetails": "Ver detalhes"
+  },
+  "emptyCard": {
+    "massImport": "Importar em massa"
   }
 }
