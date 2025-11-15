@@ -43,7 +43,7 @@ export const AccessorySelector = ({
   return (
     <div className="space-y-2">
       {Object.entries(variantsByType).map(([type, typeVariants]) => (
-        <SimpleCollapse key={type} title={type} defaultOpen={true}>
+        <SimpleCollapse key={type} title={type} defaultOpen={false}>
           <div className="flex gap-2 flex-wrap">
             {typeVariants.map((variant) => {
               const selected = selectedVariants[variant.id] || {
