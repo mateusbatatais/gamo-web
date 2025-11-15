@@ -358,6 +358,12 @@
   },
   "Collection": {},
   "PublicProfile": {
+    "noGamesForSale": "Este usuário ainda nao possui jogos para venda",
+    "noGamesLookingFor": "Este usuário ainda nao possui jogos procurando troca",
+    "noConsolesLookingFor": "Este usuário ainda nao possui consoles procurando troca",
+    "noConsolesForSale": "Este usuário ainda nao possui consoles para venda",
+    "noAccessoriesForSale": "Este usuário ainda nao possui acessórios para venda",
+    "noAccessoriesLookingFor": "Este usuário ainda nao possui acessórios procurando troca",
     "catalog": {},
     "noItemsLookingFor": "Este usuário ainda nao possui itens procurando troca",
     "viewMode": {

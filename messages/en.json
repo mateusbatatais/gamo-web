@@ -358,6 +358,12 @@
   },
   "Collection": {},
   "PublicProfile": {
+    "noGamesForSale": "This user hasn't listed any games for sale yet",
+    "noGamesLookingFor": "This user hasn't listed any games looking for trade yet",
+    "noConsolesLookingFor": "This user hasn't listed any consoles looking for trade yet",
+    "noConsolesForSale": "This user hasn't listed any consoles for sale yet",
+    "noAccessoriesForSale": "This user hasn't listed any accessories for sale yet",
+    "noAccessoriesLookingFor": "This user hasn't listed any accessories looking for trade yet",
     "catalog": {},
     "noItemsLookingFor": "This user hasn't listed any items looking for trade yet",
     "viewMode": {
