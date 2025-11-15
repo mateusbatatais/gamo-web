@@ -146,7 +146,6 @@ export const AccessoryForm = ({
     { value: "REFURBISHED", label: t("conditionRefurbished") },
   ];
 
-  const ownedConsoles = userConsoles?.filter((console) => console.status === "OWNED") || [];
   const handleRadioChange = (name: keyof typeof formData, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -183,6 +182,19 @@ export const AccessoryForm = ({
           }}
         />
       )}
+      {initialData?.status === "SELLING" && (
+        <Checkbox
+          label={t("backToCollection", { item: t("game") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "SELLING",
+            }));
+          }}
+        />
+      )}
 
       {mode === "create" && type === "trade" && (
         <div className="flex space-x-4">
@@ -207,14 +219,14 @@ export const AccessoryForm = ({
         <h4 className="font-medium mb-2">{t("compatibleConsoles")}</h4>
         {isLoading ? (
           <Spinner />
-        ) : ownedConsoles.length === 0 ? (
+        ) : userConsoles?.length === 0 ? (
           <p className="text-sm text-gray-500">{t("noConsoles")}</p>
         ) : (
           <div className="space-y-2">
-            {ownedConsoles.map((userConsole) => (
+            {userConsoles?.map((userConsole) => (
               <Checkbox
                 key={userConsole.id}
-                label={`${userConsole.name} (${userConsole.status})`}
+                label={`${userConsole.name} (${t(userConsole.status)})`}
                 checked={selectedConsoleIds.includes(userConsole.id || 0)}
                 onChange={() => handleCheckboxChange(userConsole.id || 0)}
               />

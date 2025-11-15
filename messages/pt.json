@@ -487,7 +487,10 @@
     "backToCollection": "Voltar {item} para a coleção?",
     "game": "Jogo",
     "console": "Console",
-    "accessory": "Acessório"
+    "accessory": "Acessório",
+    "SELLING": "Vendendo",
+    "LOOKING_FOR": "Procurando",
+    "OWNED": "Coleção"
   },
   "SimpleAccessoryForm": {
     "description": "Selecione os consoles da sua coleção que são compatíveis com este acessório:",

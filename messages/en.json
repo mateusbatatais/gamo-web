@@ -487,7 +487,10 @@
     "moveToOwned": "Move {item} to your collection?",
     "game": "Game",
     "console": "Console",
-    "accessory": "Accessory"
+    "accessory": "Accessory",
+    "SELLING": "for sale",
+    "LOOKING_FOR": "looking for",
+    "OWNED": "in collection"
   },
   "SimpleAccessoryForm": {
     "description": "Select the consoles from your collection that are compatible with this accessory:",

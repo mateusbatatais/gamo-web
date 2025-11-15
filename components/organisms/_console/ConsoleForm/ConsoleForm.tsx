@@ -267,6 +267,19 @@ export const ConsoleForm = ({
           }}
         />
       )}
+      {initialData?.status === "SELLING" && (
+        <Checkbox
+          label={t("backToCollection", { item: t("game") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "SELLING",
+            }));
+          }}
+        />
+      )}
 
       {mode === "create" && type === "trade" && (
         <div className="flex space-x-4">
