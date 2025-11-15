@@ -76,7 +76,7 @@ const PublicProfileMarketGridContent = ({
   const accessoryFilters = useAccessoryFilters();
 
   // Determinar o status
-  const type = catalogState.searchParams?.get("type") || "selling";
+  const type = catalogState.searchParams?.get("tradetype") || "selling";
   const status = type === "looking" ? "LOOKING_FOR" : "SELLING";
 
   // Dados do mercado
@@ -165,7 +165,7 @@ const PublicProfileMarketGridContent = ({
   };
 
   const handleTypeChange = (newType: string) => {
-    catalogState.updateURL({ type: newType, page: "1" });
+    catalogState.updateURL({ tradetype: newType, page: "1" });
   };
 
   // Loading state
