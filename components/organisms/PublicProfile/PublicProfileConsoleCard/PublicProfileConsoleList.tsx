@@ -32,6 +32,8 @@ import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -67,7 +69,6 @@ export const PublicProfileConsoleList = ({
   isOwner?: boolean;
   isExpanded?: boolean;
   type?: "trade" | "collection";
-
   onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
@@ -76,6 +77,7 @@ export const PublicProfileConsoleList = ({
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
+  const { getConsolesQueryKey } = useCatalogQueryKeys();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
@@ -100,7 +102,16 @@ export const PublicProfileConsoleList = ({
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-4">
+      <Card
+        className={`
+        overflow-hidden hover:shadow-lg transition-shadow !p-4
+        ${
+          consoleItem.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border border-gray-200 dark:border-gray-700"
+        }
+      `}
+      >
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
             {safeImageUrl ? (
@@ -163,6 +174,13 @@ export const PublicProfileConsoleList = ({
 
                 {isOwner && (
                   <>
+                    <FavoriteToggle
+                      itemId={consoleItem.consoleId}
+                      itemType="CONSOLE"
+                      isFavorite={consoleItem.isFavorite}
+                      queryKey={getConsolesQueryKey()}
+                      size="sm"
+                    />
                     <Button
                       onClick={() => setShowEditModal(true)}
                       aria-label={t("editItem")}

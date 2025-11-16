@@ -13,6 +13,8 @@ import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import { useTranslations } from "next-intl";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -34,7 +36,6 @@ export const PublicProfileConsoleCompact = ({
   isOwner?: boolean;
   isExpanded?: boolean;
   type?: "trade" | "collection";
-
   onToggleAccessories?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
@@ -43,6 +44,7 @@ export const PublicProfileConsoleCompact = ({
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
+  const { getConsolesQueryKey } = useCatalogQueryKeys();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
@@ -52,15 +54,33 @@ export const PublicProfileConsoleCompact = ({
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group aspect-square">
+      <Card
+        className={`
+        overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group aspect-square
+        ${
+          consoleItem.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border border-gray-200 dark:border-gray-700"
+        }
+      `}
+      >
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2 right-2 flex z-20 opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+            <FavoriteToggle
+              itemId={consoleItem.consoleId}
+              itemType="CONSOLE"
+              isFavorite={consoleItem.isFavorite}
+              queryKey={getConsolesQueryKey()}
+              size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
+            />
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}
               icon={<Pencil size={12} />}
               variant="transparent"
               size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
             />
             <Button
               onClick={() => setShowDeleteModal(true)}
@@ -69,6 +89,7 @@ export const PublicProfileConsoleCompact = ({
               aria-label={t("deleteItem")}
               icon={<Trash size={12} />}
               size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
             />
           </div>
         )}

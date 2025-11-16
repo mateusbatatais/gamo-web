@@ -25,6 +25,8 @@ import Link from "next/link";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 export const PublicProfileGameList = ({
   game,
@@ -40,6 +42,7 @@ export const PublicProfileGameList = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
+  const { getGamesQueryKey } = useCatalogQueryKeys();
 
   const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
@@ -55,7 +58,16 @@ export const PublicProfileGameList = ({
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-4">
+      <Card
+        className={`
+        overflow-hidden hover:shadow-lg transition-shadow !p-4
+        ${
+          game.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border border-gray-200 dark:border-gray-700"
+        }
+      `}
+      >
         <div className="flex items-center gap-4">
           <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
             {game.photoMain ? (
@@ -98,6 +110,13 @@ export const PublicProfileGameList = ({
 
               {isOwner && (
                 <div className="flex gap-2">
+                  <FavoriteToggle
+                    itemId={game.gameId}
+                    itemType="GAME"
+                    isFavorite={game.isFavorite}
+                    queryKey={getGamesQueryKey()}
+                    size="sm"
+                  />
                   <Button
                     onClick={() => setShowEditModal(true)}
                     aria-label={t("editItem")}
@@ -117,6 +136,7 @@ export const PublicProfileGameList = ({
               )}
             </div>
 
+            {/* Resto do conteúdo permanece igual */}
             <div className="flex flex-wrap gap-4 items-center">
               {game.progress && game.progress > 0 && (
                 <div className="flex items-center gap-2">
@@ -202,6 +222,7 @@ export const PublicProfileGameList = ({
         </div>
       </Card>
 
+      {/* Diálogos permanecem iguais */}
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <GameForm
           mode="edit"

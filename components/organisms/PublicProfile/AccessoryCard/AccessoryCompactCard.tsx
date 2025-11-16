@@ -5,6 +5,8 @@ import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 interface AccessoryCompactCardProps {
   accessory: UserAccessory;
@@ -15,12 +17,36 @@ interface AccessoryCompactCardProps {
 export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryCompactCardProps) => {
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
+  const { getAccessoriesQueryKey } = useCatalogQueryKeys();
 
   return (
-    <div className="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow aspect-square relative group">
+    <div
+      className={`
+        rounded-lg border overflow-hidden hover:shadow-md transition-shadow aspect-square relative group
+        ${
+          accessory.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border-gray-200 dark:border-gray-700"
+        }
+      `}
+    >
       {isOwner && (
         <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
           <AccessoryActionButtons accessory={accessory} isOwner={isOwner} type={type} compact />
+        </div>
+      )}
+
+      {/* Botão de favorito - posicionado no canto superior esquerdo */}
+      {isOwner && accessory.accessoryId && (
+        <div className="absolute top-2 left-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+          <FavoriteToggle
+            itemId={accessory.accessoryId}
+            itemType="ACCESSORY"
+            isFavorite={accessory.isFavorite}
+            queryKey={getAccessoriesQueryKey()}
+            size="sm"
+            className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
+          />
         </div>
       )}
 

@@ -14,8 +14,9 @@ import { UserGame } from "@/@types/collection.types";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
-// Adicione a prop isMarketGrid à interface
 interface PublicProfileGameTableProps {
   game: UserGame;
   isOwner?: boolean;
@@ -34,6 +35,8 @@ export const PublicProfileGameTable = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
+  const { getGamesQueryKey } = useCatalogQueryKeys();
+
   const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
   const platformOptions: SelectOption[] =
@@ -45,9 +48,15 @@ export const PublicProfileGameTable = ({
   const handleDelete = () => {
     deleteGame(game.id || 0);
   };
+
   return (
     <>
-      <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+      <tr
+        className={`
+        border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800
+        ${game.isFavorite ? "bg-primary-50 dark:bg-primary-900/20" : ""}
+      `}
+      >
         <td className="py-1">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
@@ -140,6 +149,13 @@ export const PublicProfileGameTable = ({
         {isOwner && (
           <td className="p-2">
             <div className="flex gap-2">
+              <FavoriteToggle
+                itemId={game.gameId}
+                itemType="GAME"
+                isFavorite={game.isFavorite}
+                queryKey={getGamesQueryKey()}
+                size="sm"
+              />
               <Button
                 onClick={() => setShowEditModal(true)}
                 aria-label={t("editItem")}

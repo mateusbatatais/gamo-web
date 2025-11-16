@@ -38,6 +38,7 @@ export interface UserConsole extends BaseCollectionItem {
     profileImage: string | null;
   };
   accessories?: UserAccessory[];
+  isFavorite?: boolean;
 }
 
 // Jogo na coleção do usuário
@@ -52,6 +53,7 @@ export interface UserGame extends BaseCollectionItem {
   gameImageUrl?: string;
   platformId?: number;
   gameSlug?: string;
+  isFavorite?: boolean;
 }
 
 export interface UserAccessory {
@@ -81,4 +83,5 @@ export interface UserAccessory {
     slug: string;
     profileImage: string | null;
   };
+  isFavorite?: boolean;
 }

@@ -15,6 +15,8 @@ import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import { useTranslations } from "next-intl";
 import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 export const PublicProfileGameCompact = ({
   game,
@@ -30,6 +32,7 @@ export const PublicProfileGameCompact = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
+  const { getGamesQueryKey } = useCatalogQueryKeys();
 
   const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
@@ -45,15 +48,33 @@ export const PublicProfileGameCompact = ({
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group aspect-square">
+      <Card
+        className={`
+        overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group aspect-square
+        ${
+          game.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border border-gray-200 dark:border-gray-700"
+        }
+      `}
+      >
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute top-2 right-2 flex z-10 opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+            <FavoriteToggle
+              itemId={game.gameId}
+              itemType="GAME"
+              isFavorite={game.isFavorite}
+              queryKey={getGamesQueryKey()}
+              size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
+            />
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}
               icon={<Pencil size={12} />}
               variant="transparent"
               size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
             />
             <Button
               onClick={() => setShowDeleteModal(true)}
@@ -62,6 +83,7 @@ export const PublicProfileGameCompact = ({
               aria-label={t("deleteItem")}
               icon={<Trash size={12} />}
               size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
             />
           </div>
         )}

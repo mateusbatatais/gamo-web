@@ -33,6 +33,8 @@ import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
 import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
 function hasAccessories(
@@ -76,6 +78,7 @@ export const PublicProfileConsoleCard = ({
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
+  const { getConsolesQueryKey } = useCatalogQueryKeys();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
@@ -100,15 +103,33 @@ export const PublicProfileConsoleCard = ({
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-0 relative">
+      <Card
+        className={`
+        overflow-hidden hover:shadow-lg transition-shadow !p-0 relative
+        ${
+          consoleItem.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border border-gray-200 dark:border-gray-700"
+        }
+      `}
+      >
         {isOwner && (
-          <div className="absolute top-2 right-2 flex z-1">
+          <div className="absolute top-2 right-2 flex z-1 gap-1">
+            <FavoriteToggle
+              itemId={consoleItem.consoleId}
+              itemType="CONSOLE"
+              isFavorite={consoleItem.isFavorite}
+              queryKey={getConsolesQueryKey()}
+              size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
+            />
             <Button
               onClick={() => setShowEditModal(true)}
               aria-label={t("editItem")}
               icon={<Pencil size={16} />}
               variant="transparent"
               size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
             />
             <Button
               onClick={() => setShowDeleteModal(true)}
@@ -117,6 +138,7 @@ export const PublicProfileConsoleCard = ({
               aria-label={t("deleteItem")}
               icon={<Trash size={16} />}
               size="sm"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-700"
             />
           </div>
         )}

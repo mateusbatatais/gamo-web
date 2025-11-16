@@ -5,6 +5,8 @@ import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 interface AccessoryTableRowProps {
   accessory: UserAccessory;
@@ -15,9 +17,15 @@ interface AccessoryTableRowProps {
 export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRowProps) => {
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
+  const { getAccessoriesQueryKey } = useCatalogQueryKeys();
 
   return (
-    <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+    <tr
+      className={`
+        border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800
+        ${accessory.isFavorite ? "bg-primary-50 dark:bg-primary-900/20" : ""}
+      `}
+    >
       <td className="py-2">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
@@ -72,7 +80,26 @@ export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRo
 
       {isOwner && (
         <td className="p-2">
-          <AccessoryActionButtons accessory={accessory} isOwner={isOwner} type={type} />
+          <div className="flex gap-2">
+            {/* Botão de favorito - integrado com os outros botões */}
+            {accessory.accessoryId && (
+              <FavoriteToggle
+                itemId={accessory.accessoryId}
+                itemType="ACCESSORY"
+                isFavorite={accessory.isFavorite}
+                queryKey={getAccessoriesQueryKey()}
+                size="sm"
+              />
+            )}
+
+            <AccessoryActionButtons
+              accessory={accessory}
+              isOwner={isOwner}
+              type={type}
+              // Removemos o botão de favorito do AccessoryActionButtons
+              // já que agora ele está integrado aqui
+            />
+          </div>
         </td>
       )}
     </tr>

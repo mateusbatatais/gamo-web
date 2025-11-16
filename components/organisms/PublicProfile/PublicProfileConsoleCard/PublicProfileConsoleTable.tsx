@@ -12,6 +12,8 @@ import { ConsoleForm } from "../../_console/ConsoleForm/ConsoleForm";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -27,7 +29,6 @@ interface PublicProfileConsoleTableProps {
   isOwner?: boolean;
   isMarketGrid?: boolean;
   type?: "trade" | "collection";
-
   isExpanded?: boolean;
   onToggleAccessories?: () => void;
 }
@@ -46,6 +47,7 @@ export const PublicProfileConsoleTable = ({
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
+  const { getConsolesQueryKey } = useCatalogQueryKeys();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
@@ -55,7 +57,12 @@ export const PublicProfileConsoleTable = ({
 
   return (
     <>
-      <tr className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800">
+      <tr
+        className={`
+        border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800
+        ${consoleItem.isFavorite ? "bg-primary-50 dark:bg-primary-900/20" : ""}
+      `}
+      >
         {/* Coluna do expander - só exibe se houver acessórios */}
         <td className="p-2 w-10">
           {onToggleAccessories && canExpand && (
@@ -136,6 +143,13 @@ export const PublicProfileConsoleTable = ({
         {isOwner && (
           <td className="p-2">
             <div className="flex gap-2">
+              <FavoriteToggle
+                itemId={consoleItem.consoleId}
+                itemType="CONSOLE"
+                isFavorite={consoleItem.isFavorite}
+                queryKey={getConsolesQueryKey()}
+                size="sm"
+              />
               <Button
                 onClick={() => setShowEditModal(true)}
                 aria-label={t("editItem")}

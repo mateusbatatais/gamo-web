@@ -8,6 +8,8 @@ import { Badge } from "@/components/atoms/Badge/Badge";
 import { Card } from "@/components/atoms/Card/Card";
 import { useTranslations } from "next-intl";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
+import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
 interface AccessoryListItemProps {
   accessory: UserAccessory;
@@ -19,9 +21,19 @@ export const AccessoryListItem = ({ accessory, isOwner, type }: AccessoryListIte
   const t = useTranslations("PublicProfile");
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
+  const { getAccessoriesQueryKey } = useCatalogQueryKeys();
 
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-4">
+    <Card
+      className={`
+        overflow-hidden hover:shadow-lg transition-shadow !p-4
+        ${
+          accessory.isFavorite
+            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
+            : "border border-gray-200 dark:border-gray-700"
+        }
+      `}
+    >
       <div className="flex items-center gap-4">
         <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
           {safeImageUrl ? (
@@ -54,7 +66,27 @@ export const AccessoryListItem = ({ accessory, isOwner, type }: AccessoryListIte
                   `${accessory.type}${accessory.subType ? ` • ${accessory.subType}` : ""}`}
               </p>
             </div>
-            <AccessoryActionButtons accessory={accessory} isOwner={isOwner} type={type} />
+
+            <div className="flex gap-2 items-center">
+              {/* Botão de favorito - integrado com os outros botões */}
+              {isOwner && accessory.accessoryId && (
+                <FavoriteToggle
+                  itemId={accessory.accessoryId}
+                  itemType="ACCESSORY"
+                  isFavorite={accessory.isFavorite}
+                  queryKey={getAccessoriesQueryKey()}
+                  size="sm"
+                />
+              )}
+
+              <AccessoryActionButtons
+                accessory={accessory}
+                isOwner={isOwner}
+                type={type}
+                // Removemos o botão de favorito do AccessoryActionButtons
+                // já que agora ele está integrado aqui
+              />
+            </div>
           </div>
 
           {accessory.price && (
