@@ -118,7 +118,7 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
             ❤️ {profile.gamesFavorited} Jogos Favoritos
           </Badge>
           <Badge className="text-sm" variant="soft">
-            ⭐ 50 Reviews
+            ⭐ XX Reviews
           </Badge>
         </div>
       </div>

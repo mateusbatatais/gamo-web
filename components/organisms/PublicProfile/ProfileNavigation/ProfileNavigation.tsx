@@ -24,7 +24,6 @@ export const ProfileNavigation = ({ slug }: ProfileNavigationProps) => {
     { id: "", label: t("collection"), icon: "📚" },
     { id: "games", label: t("games"), icon: "👾" },
     { id: "market", label: t("market"), icon: "🛒" },
-    { id: "reviews", label: t("reviews"), icon: "⭐" },
   ];
 
   const pathParts = pathname.split("/");
