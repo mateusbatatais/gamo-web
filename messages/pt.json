@@ -59,7 +59,9 @@
     "siteName": "Gamo",
     "siteDescription": "A plataforma Gamo ajuda usuários a gerenciar seus consoles.",
     "notEdited": "Ajuste o corte",
-    "siteKeywords": "jogos,coleções, gamer"
+    "siteKeywords": "jogos,coleções, gamer",
+    "showLess": "Mostrar menos",
+    "showMore": "Mostrar mais"
   },
   "Breadcrumbs": {
     "game-catalog": "Catálogo de Jogos",

@@ -27,6 +27,7 @@ import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import TruncatedText from "@/components/atoms/TruncatedText/TruncatedText";
 
 export const PublicProfileGameList = ({
   game,
@@ -68,7 +69,7 @@ export const PublicProfileGameList = ({
         }
       `}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-start gap-4">
           <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
             {game.photoMain ? (
               <Image
@@ -94,18 +95,19 @@ export const PublicProfileGameList = ({
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start">
               <div className="flex-1 min-w-0">
                 <Link href={`/game/${game.gameSlug}`} target="_blank">
-                  <h3 className="font-bold text-lg dark:text-white line-clamp-1 hover:text-primary-500">
-                    {game.gameTitle}
+                  <h3 className="font-bold text-xs sm:text-lg dark:text-white line-clamp-2 hover:text-primary-500">
+                    {game.gameTitle} (
+                    {game.platformId && (
+                      <span className="text-gray-500 dark:text-gray-400 mt-1">
+                        {platformsMap[game.platformId]}
+                      </span>
+                    )}
+                    )
                   </h3>
                 </Link>
-                {game.platformId && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {platformsMap[game.platformId]}
-                  </p>
-                )}
               </div>
 
               {isOwner && (
@@ -136,13 +138,17 @@ export const PublicProfileGameList = ({
               )}
             </div>
 
+            {game.review && <TruncatedText text={game.review} maxLength={150} className="mt-3" />}
+
             {/* Resto do conteúdo permanece igual */}
             <div className="flex flex-wrap gap-4 items-center">
-              {game.progress && game.progress > 0 && (
+              {game.progress && game.progress > 0 ? (
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-500 dark:text-gray-400">{t("progress")}</span>
                   <span className="text-sm font-medium">{game.progress * 10}%</span>
                 </div>
+              ) : (
+                ""
               )}
 
               {game.price && (

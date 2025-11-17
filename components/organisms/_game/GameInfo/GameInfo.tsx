@@ -7,6 +7,7 @@ import { Card } from "@/components/atoms/Card/Card";
 import { Gamepad } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { PlatformIcons } from "@/components/molecules/RenderPlatformIcons/RenderPlatformIcons";
+import TruncatedText from "@/components/atoms/TruncatedText/TruncatedText";
 import { GameWithStats } from "@/@types/catalog.types";
 
 interface GameInfoProps {
@@ -16,12 +17,6 @@ interface GameInfoProps {
 export default function GameInfo({ game }: GameInfoProps) {
   const t = useTranslations("GameDetails");
   const [imageError, setImageError] = useState(false);
-  const [expandedDescription, setExpandedDescription] = useState(false);
-  const maxLength = 150;
-  const description = game.description ?? "";
-  const truncatedDescription =
-    description.slice(0, maxLength) + (description.length > maxLength ? "..." : "");
-  const shouldShowReadMore = description.length > maxLength;
 
   return (
     <Card className="mb-8">
@@ -56,23 +51,7 @@ export default function GameInfo({ game }: GameInfoProps) {
           {game.parentPlatforms.length && <PlatformIcons platforms={game.parentPlatforms} />}
 
           {game.description && (
-            <div className="mt-3">
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {expandedDescription ? game.description : truncatedDescription}
-              </p>
-              {shouldShowReadMore && (
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setExpandedDescription(!expandedDescription);
-                  }}
-                  className="text-primary-600 dark:text-primary-400 text-sm font-medium mt-1 hover:underline focus:outline-none"
-                >
-                  {expandedDescription ? "Ver menos" : "Ver mais"}
-                </button>
-              )}
-            </div>
+            <TruncatedText text={game.description} maxLength={150} className="mt-3" />
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 mt-3">
