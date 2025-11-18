@@ -30,6 +30,8 @@ interface ConsoleFilterContainerProps {
   retroCompatible: boolean;
   clearFilters: () => void;
   className?: string;
+  onFavoriteChange?: (showOnlyFavorites: boolean) => void;
+  showOnlyFavorites?: boolean;
 }
 
 const ConsoleFilterContainer = ({
@@ -51,6 +53,8 @@ const ConsoleFilterContainer = ({
   retroCompatible,
   clearFilters,
   className,
+  onFavoriteChange,
+  showOnlyFavorites = false,
 }: ConsoleFilterContainerProps) => {
   const t = useTranslations();
 
@@ -80,16 +84,25 @@ const ConsoleFilterContainer = ({
       />
 
       <SingleCheckboxFilter
-        label="Retrocompatível"
+        label={t("filters.retroCompatible")}
         checked={retroCompatible}
         onChange={onRetroCompatibleChange}
+        description={t("filters.retroCompatible")}
       />
       <SingleCheckboxFilter
-        label="All Digital"
+        label={t("filters.allDigital")}
         checked={selectedAllDigital}
         onChange={onAllDigitalChange}
-        description="Mostrar apenas consoles digitais"
+        description={t("filters.allDigitalDescription")}
       />
+      {onFavoriteChange && (
+        <SingleCheckboxFilter
+          label={t("filters.onlyFavorites")}
+          checked={showOnlyFavorites}
+          onChange={onFavoriteChange}
+          description={t("filters.onlyFavoritesDescription")}
+        />
+      )}
     </div>
   );
 };

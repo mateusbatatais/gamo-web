@@ -86,6 +86,7 @@ const PublicProfileConsoleGridContent = ({
       selectedStorageRanges: consoleFilters.selectedStorageRanges,
       retroCompatible: consoleFilters.retroCompatible,
       selectedAllDigital: consoleFilters.selectedAllDigital,
+      showOnlyFavorites: consoleFilters.showOnlyFavorites,
     },
     accessoriesPage,
     accessoriesPerPage,

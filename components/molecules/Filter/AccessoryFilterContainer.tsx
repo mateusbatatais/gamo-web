@@ -5,6 +5,7 @@ import AccessorySybTypeFilter from "./AccessorySybTypeFilter/AccessorySybTypeFil
 import AccessoryTypeFilter from "./AccessoryTypeFilter/AccessoryTypeFilter";
 import ConsoleFilter from "./ConsoleFilter/ConsoleFilter";
 import clsx from "clsx";
+import SingleCheckboxFilter from "./SingleCheckboxFilter/SingleCheckboxFilter";
 
 interface AccessoryFilterContainerProps {
   selectedTypes: string[];
@@ -16,6 +17,8 @@ interface AccessoryFilterContainerProps {
   clearFilters: () => void;
   className?: string;
   locale?: string;
+  onFavoriteChange?: (showOnlyFavorites: boolean) => void;
+  showOnlyFavorites?: boolean;
 }
 
 const AccessoryFilterContainer = ({
@@ -28,6 +31,8 @@ const AccessoryFilterContainer = ({
   clearFilters,
   className,
   locale = "pt",
+  onFavoriteChange,
+  showOnlyFavorites = false,
 }: AccessoryFilterContainerProps) => {
   const t = useTranslations();
 
@@ -37,6 +42,7 @@ const AccessoryFilterContainer = ({
         <h3 className="text-lg font-semibold">{t("filters.label")}</h3>
         <Button variant="outline" size="sm" onClick={clearFilters} label={t("filters.clear")} />
       </div>
+
       <AccessoryTypeFilter
         selectedTypes={selectedTypes}
         onTypeChange={onTypeChange}
@@ -53,6 +59,15 @@ const AccessoryFilterContainer = ({
         onConsoleChange={onConsoleChange}
         locale={locale}
       />
+
+      {onFavoriteChange && (
+        <SingleCheckboxFilter
+          label={t("filters.onlyFavorites")}
+          checked={showOnlyFavorites}
+          onChange={onFavoriteChange}
+          description={t("filters.onlyFavoritesDescription")}
+        />
+      )}
     </div>
   );
 };

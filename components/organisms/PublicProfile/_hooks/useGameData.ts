@@ -16,6 +16,7 @@ interface UseGameDataProps {
   gameFilters: {
     selectedGenres: number[];
     selectedPlatforms: number[];
+    showOnlyFavorites?: boolean;
   };
 }
 
@@ -50,6 +51,7 @@ export function useGameData({
     searchQuery,
     gameFilters.selectedGenres,
     gameFilters.selectedPlatforms,
+    gameFilters.showOnlyFavorites,
   );
 
   return {

@@ -69,6 +69,7 @@ export function useUserConsolesPublic(
   retroCompatible?: boolean,
   allDigital?: boolean,
   accessoryStatus?: string,
+  showOnlyFavorites?: boolean,
 ) {
   const { apiFetch } = useApiClient();
 
@@ -85,6 +86,7 @@ export function useUserConsolesPublic(
   if (type) queryParams.append("type", type);
   if (mediaFormats) queryParams.append("mediaFormats", mediaFormats);
   if (accessoryStatus) queryParams.append("accessoryStatus", accessoryStatus);
+  if (showOnlyFavorites) queryParams.append("isFavorite", "true");
 
   queryParams.append("includeAccessories", "true");
 
@@ -117,6 +119,7 @@ export function useUserConsolesPublic(
       retroCompatible,
       allDigital,
       accessoryStatus,
+      showOnlyFavorites, // ← Adicione esta linha
     ],
     queryFn: () => apiFetch(`/public/profile/${slug}/consoles?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,
@@ -133,6 +136,7 @@ export function useUserGamesPublic(
   search?: string,
   genres?: number[],
   platforms?: number[],
+  showOnlyFavorites?: boolean,
 ) {
   const { apiFetch } = useApiClient();
 
@@ -145,6 +149,7 @@ export function useUserGamesPublic(
   if (search) queryParams.append("search", search);
   if (genres && genres.length > 0) queryParams.append("genres", genres.join(","));
   if (platforms && platforms.length > 0) queryParams.append("platforms", platforms.join(","));
+  if (showOnlyFavorites) queryParams.append("isFavorite", "true");
 
   return useQuery<PaginatedResponse<UserGame>>({
     queryKey: [
@@ -158,6 +163,7 @@ export function useUserGamesPublic(
       search,
       genres,
       platforms,
+      showOnlyFavorites,
     ],
     queryFn: () => apiFetch(`/public/profile/${slug}/games?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,

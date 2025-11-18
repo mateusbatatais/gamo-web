@@ -13,6 +13,7 @@ interface UseGamesOptions {
   selectedGenres?: number[];
   selectedPlatforms?: number[];
   searchQuery?: string;
+  showOnlyFavorites?: boolean;
 }
 
 export function useGames({
@@ -22,6 +23,7 @@ export function useGames({
   selectedGenres = [],
   selectedPlatforms = [],
   searchQuery = "",
+  showOnlyFavorites = false,
 }: UseGamesOptions) {
   const { apiFetch } = useApiClient();
   const { initialized } = useAuth();
@@ -35,6 +37,7 @@ export function useGames({
       selectedGenres.join(","),
       selectedPlatforms.join(","),
       searchQuery,
+      showOnlyFavorites,
     ],
     queryFn: async () => {
       if (!initialized) throw new Error("Auth not initialized");
@@ -48,6 +51,7 @@ export function useGames({
       if (searchQuery) params.append("search", searchQuery);
       if (selectedGenres.length > 0) params.append("genres", selectedGenres.join(","));
       if (selectedPlatforms.length > 0) params.append("platforms", selectedPlatforms.join(","));
+      if (showOnlyFavorites) params.append("isFavorite", "true");
 
       return await apiFetch(`/games?${params.toString()}`);
     },

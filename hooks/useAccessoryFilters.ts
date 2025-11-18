@@ -8,9 +8,11 @@ export interface UseAccessoryFiltersReturn {
   selectedTypes: string[];
   selectedSubTypes: string[];
   selectedConsoles: string[];
+  showOnlyFavorites: boolean;
   handleTypeChange: (types: string[]) => void;
   handleSubTypeChange: (subTypes: string[]) => void;
   handleConsoleChange: (consoles: string[]) => void;
+  handleFavoriteChange: (showOnlyFavorites: boolean) => void;
   clearFilters: () => void;
 }
 
@@ -29,6 +31,10 @@ export const useAccessoryFilters = (): UseAccessoryFiltersReturn => {
 
   const [selectedConsoles, setSelectedConsoles] = useState<string[]>(
     searchParams.get("console")?.split(",").filter(Boolean) || [],
+  );
+
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState<boolean>(
+    searchParams.get("isFavorite") === "true",
   );
 
   const updateURL = useCallback(
@@ -73,15 +79,25 @@ export const useAccessoryFilters = (): UseAccessoryFiltersReturn => {
     [updateURL],
   );
 
+  const handleFavoriteChange = useCallback(
+    (favorites: boolean) => {
+      setShowOnlyFavorites(favorites);
+      updateURL({ isFavorite: favorites ? "true" : "" });
+    },
+    [updateURL],
+  );
+
   const clearFilters = useCallback(() => {
     setSelectedTypes([]);
     setSelectedSubTypes([]);
     setSelectedConsoles([]);
+    setShowOnlyFavorites(false);
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("type");
     params.delete("subType");
     params.delete("console");
+    params.delete("isFavorite");
     params.set("page", "1");
 
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
@@ -91,9 +107,11 @@ export const useAccessoryFilters = (): UseAccessoryFiltersReturn => {
     selectedTypes,
     selectedSubTypes,
     selectedConsoles,
+    showOnlyFavorites,
     handleTypeChange,
     handleSubTypeChange,
     handleConsoleChange,
+    handleFavoriteChange,
     clearFilters,
   };
 };

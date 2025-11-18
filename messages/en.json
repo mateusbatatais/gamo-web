@@ -69,6 +69,9 @@
     "showMore": "Show more"
   },
   "filters": {
+    "favorites": {
+      "onlyFavorites": "Only favorites"
+    },
     "label": "Filters",
     "clear": "Clear",
     "brand": {
@@ -95,7 +98,6 @@
     "mediaFormats": {
       "label": "Formatos de Mídia"
     },
-    "retroCompatible": {},
     "storage": {
       "label": "Storage",
       "upto1gb": "Up to 1GB",
@@ -115,7 +117,13 @@
       "label": "Filter by Console"
     },
     "showLess": "Show less",
-    "showMore": "Show more"
+    "showMore": "Show more",
+    "retroCompatible": "Retrocompatible",
+    "retroCompatibleDescription": "Only shows retrocompatible consoles",
+    "allDigital": "All Digital",
+    "allDigitalDescription": "Only shows digital consoles",
+    "onlyFavorites": "Only Favorites",
+    "onlyFavoritesDescription": "Show only favorites"
   },
   "order": {
     "nameAsc": "Name (A-Z)",

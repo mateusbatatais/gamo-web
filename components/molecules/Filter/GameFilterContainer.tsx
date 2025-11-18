@@ -4,6 +4,7 @@ import clsx from "clsx";
 import GenreFilter from "./GenreFilter/GenreFilter";
 import PlatformFilter from "./PlatformFilter/PlatformFilter";
 import { useTranslations } from "next-intl";
+import SingleCheckboxFilter from "./SingleCheckboxFilter/SingleCheckboxFilter";
 
 interface GameFilterContainerProps {
   onGenreChange: (selectedGenres: number[]) => void;
@@ -12,13 +13,18 @@ interface GameFilterContainerProps {
   selectedPlatforms: number[];
   clearFilters: () => void;
   className?: string;
+  // Tornar as props de favoritos opcionais
+  onFavoriteChange?: (showOnlyFavorites: boolean) => void;
+  showOnlyFavorites?: boolean;
 }
 
 const GameFilterContainer = ({
   onGenreChange,
   onPlatformChange,
+  onFavoriteChange,
   selectedGenres,
   selectedPlatforms,
+  showOnlyFavorites = false,
   clearFilters,
   className,
 }: GameFilterContainerProps) => {
@@ -33,6 +39,14 @@ const GameFilterContainer = ({
 
       <PlatformFilter selectedPlatforms={selectedPlatforms} onPlatformChange={onPlatformChange} />
       <GenreFilter selectedGenres={selectedGenres} onGenreChange={onGenreChange} />
+      {onFavoriteChange && (
+        <SingleCheckboxFilter
+          label={t("filters.onlyFavorites")}
+          checked={showOnlyFavorites}
+          onChange={onFavoriteChange}
+          description={t("filters.onlyFavoritesDescription")}
+        />
+      )}
     </div>
   );
 };

@@ -48,14 +48,14 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     defaultSort: "title-asc",
   });
 
-  // Filtros de games
+  // Filtros de games (AGORA INCLUI FAVORITOS)
   const gameFilters = useGameFilters();
 
   // Dados dos jogos
   const { games, gamesMeta, isLoading, error } = useGameData({
     slug,
     locale,
-    status: "OWNED", // Coleção normal, não marketplace
+    status: "OWNED",
     page: catalogState.page,
     perPage: catalogState.perPage,
     sort: catalogState.sort,
@@ -63,6 +63,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     gameFilters: {
       selectedGenres: gameFilters.selectedGenres,
       selectedPlatforms: gameFilters.selectedPlatforms,
+      showOnlyFavorites: gameFilters.showOnlyFavorites,
     },
   });
 
@@ -156,7 +157,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         <EmptyState type="games" isOwner={isOwner} viewMode={catalogState.viewMode} />
       )}
 
-      {/* ✅ GERENCIADOR DE FILTROS ESPECÍFICO */}
+      {/* ✅ GERENCIADOR DE FILTROS ESPECÍFICO (AGORA COM FAVORITOS) */}
       <GameFilterManager
         isFilterOpen={isFilterOpen}
         onFilterClose={() => setIsFilterOpen(false)}

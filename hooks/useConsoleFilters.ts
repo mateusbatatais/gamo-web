@@ -13,6 +13,7 @@ export interface UseConsoleFiltersReturn {
   selectedMediaFormats: string[];
   retroCompatible: boolean;
   selectedStorageRanges: string[];
+  showOnlyFavorites: boolean;
   handleBrandChange: (brands: string[]) => void;
   handleGenerationChange: (generations: string[]) => void;
   handleModelChange: (models: string[]) => void;
@@ -21,6 +22,7 @@ export interface UseConsoleFiltersReturn {
   handleMediaFormatChange: (formats: string[]) => void;
   handleRetroCompatibleChange: (isRetroCompatible: boolean) => void;
   handleStorageChange: (ranges: string[]) => void;
+  handleFavoriteChange: (showOnlyFavorites: boolean) => void;
   clearFilters: () => void;
 }
 
@@ -62,6 +64,10 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     searchParams.get("storage")?.split(",").filter(Boolean) || [],
   );
 
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState<boolean>(
+    searchParams.get("isFavorite") === "true",
+  );
+
   // Função para atualizar URL
   const updateURL = useCallback(
     (newParams: Record<string, string>) => {
@@ -81,7 +87,6 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     [searchParams, router, pathname],
   );
 
-  // Handlers para cada filtro
   const handleBrandChange = useCallback(
     (brands: string[]) => {
       setSelectedBrands(brands);
@@ -146,6 +151,14 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     [updateURL],
   );
 
+  const handleFavoriteChange = useCallback(
+    (favorites: boolean) => {
+      setShowOnlyFavorites(favorites);
+      updateURL({ isFavorite: favorites ? "true" : "" });
+    },
+    [updateURL],
+  );
+
   // Limpar todos os filtros
   const clearFilters = useCallback(() => {
     setSelectedBrands([]);
@@ -156,6 +169,7 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     setSelectedMediaFormats([]);
     setRetroCompatible(false);
     setSelectedStorageRanges([]);
+    setShowOnlyFavorites(false);
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("brand");
@@ -166,6 +180,7 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     params.delete("mediaFormats");
     params.delete("retroCompatible");
     params.delete("storage");
+    params.delete("isFavorite");
     params.set("page", "1");
 
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
@@ -180,6 +195,7 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     selectedMediaFormats,
     retroCompatible,
     selectedStorageRanges,
+    showOnlyFavorites,
     handleBrandChange,
     handleGenerationChange,
     handleModelChange,
@@ -188,6 +204,7 @@ export const useConsoleFilters = (): UseConsoleFiltersReturn => {
     handleMediaFormatChange,
     handleRetroCompatibleChange,
     handleStorageChange,
+    handleFavoriteChange,
     clearFilters,
   };
 };

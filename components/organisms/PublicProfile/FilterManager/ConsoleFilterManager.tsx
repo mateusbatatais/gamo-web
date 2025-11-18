@@ -34,6 +34,7 @@ export const ConsoleFilterManager: React.FC<ConsoleFilterManagerProps> = ({
         onMediaFormatChange={consoleFilters.handleMediaFormatChange}
         onRetroCompatibleChange={consoleFilters.handleRetroCompatibleChange}
         onStorageChange={consoleFilters.handleStorageChange}
+        onFavoriteChange={consoleFilters.handleFavoriteChange}
         selectedStorageRanges={consoleFilters.selectedStorageRanges}
         selectedBrands={consoleFilters.selectedBrands}
         selectedGenerations={consoleFilters.selectedGenerations}
@@ -42,6 +43,7 @@ export const ConsoleFilterManager: React.FC<ConsoleFilterManagerProps> = ({
         selectedTypes={consoleFilters.selectedTypes}
         selectedMediaFormats={consoleFilters.selectedMediaFormats}
         retroCompatible={consoleFilters.retroCompatible}
+        showOnlyFavorites={consoleFilters.showOnlyFavorites}
         clearFilters={consoleFilters.clearFilters}
       />
     </Drawer>

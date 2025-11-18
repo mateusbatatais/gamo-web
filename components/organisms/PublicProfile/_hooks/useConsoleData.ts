@@ -22,6 +22,7 @@ interface UseConsoleDataProps {
     selectedStorageRanges: string[];
     retroCompatible: boolean;
     selectedAllDigital: boolean;
+    showOnlyFavorites?: boolean;
   };
   accessoriesPage: number;
   accessoriesPerPage: number;
@@ -75,6 +76,7 @@ export function useConsoleData({
     consoleFilters.retroCompatible,
     consoleFilters.selectedAllDigital,
     status,
+    consoleFilters.showOnlyFavorites,
   );
 
   const {
