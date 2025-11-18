@@ -159,7 +159,7 @@ export default function GameDetailPage() {
       {childrenGames?.length > 0 && (
         <section className="mb-12">
           <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
-            {t("additions")} ({childrenGames.length})
+            {t("dlcs")} ({childrenGames.length})
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {childrenGames.map((game: Game) => (
