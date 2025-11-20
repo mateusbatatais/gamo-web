@@ -6,9 +6,9 @@ import InfoItem from "@/components/atoms/InfoItem/InfoItem";
 import { Card } from "@/components/atoms/Card/Card";
 import { Gamepad } from "lucide-react";
 import { Badge } from "@/components/atoms/Badge/Badge";
-import { PlatformIcons } from "@/components/molecules/RenderPlatformIcons/RenderPlatformIcons";
 import TruncatedText from "@/components/atoms/TruncatedText/TruncatedText";
 import { GameWithStats } from "@/@types/catalog.types";
+import { usePlatformMapping } from "@/hooks/usePlatformMapping";
 
 interface GameInfoProps {
   game: GameWithStats;
@@ -17,6 +17,9 @@ interface GameInfoProps {
 export default function GameInfo({ game }: GameInfoProps) {
   const t = useTranslations("GameDetails");
   const [imageError, setImageError] = useState(false);
+  const { getPlatformsByIds } = usePlatformMapping();
+
+  const platformObjects = getPlatformsByIds(game.platforms);
 
   return (
     <Card className="mb-8">
@@ -48,7 +51,18 @@ export default function GameInfo({ game }: GameInfoProps) {
               {game.esrbRating}
             </Badge>
           )}
-          {game.parentPlatforms.length && <PlatformIcons platforms={game.parentPlatforms} />}
+
+          {platformObjects.length > 0 && (
+            <div className="mt-3">
+              <div className="flex flex-wrap gap-2">
+                {platformObjects.map((platform) => (
+                  <Badge key={platform.id} variant="outline" className="text-xs">
+                    {platform.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
 
           {game.description && (
             <TruncatedText text={game.description} maxLength={150} className="mt-3" />
@@ -63,6 +77,7 @@ export default function GameInfo({ game }: GameInfoProps) {
             <InfoItem label={t("rating")} value={game.score || "-"} />
             <InfoItem label={t("year")} value={game.year || "-"} />
           </div>
+
           {(game.series?.games?.length ?? 0) > 0 ||
           game.children?.length > 0 ||
           game.parents?.length > 0 ? (
