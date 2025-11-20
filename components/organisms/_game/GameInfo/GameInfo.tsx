@@ -63,27 +63,32 @@ export default function GameInfo({ game }: GameInfoProps) {
             <InfoItem label={t("rating")} value={game.score || "-"} />
             <InfoItem label={t("year")} value={game.year || "-"} />
           </div>
-
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold mb-3">{t("relatedGames")}</h3>
-            <div className="flex flex-wrap gap-2">
-              {(game.series?.games?.length ?? 0) > 0 && (
-                <Badge variant="soft">
-                  {t("series")}: {game.series?.games?.length ?? 0}
-                </Badge>
-              )}
-              {game.children && game.children.length > 0 && (
-                <Badge variant="soft">
-                  {t("dlcs")}: {game.children.length}
-                </Badge>
-              )}
-              {game.parents && game.parents.length > 0 && (
-                <Badge variant="soft">
-                  {t("parents")}: {game.parents.length}
-                </Badge>
-              )}
+          {(game.series?.games?.length ?? 0) > 0 ||
+          game.children?.length > 0 ||
+          game.parents?.length > 0 ? (
+            <div className="mt-6">
+              <h3 className="text-xl font-semibold mb-3">{t("relatedGames")}</h3>
+              <div className="flex flex-wrap gap-2">
+                {(game.series?.games?.length ?? 0) > 0 && (
+                  <Badge variant="soft">
+                    {t("series")}: {game.series?.games?.length ?? 0}
+                  </Badge>
+                )}
+                {game.children && game.children.length > 0 && (
+                  <Badge variant="soft">
+                    {t("dlcs")}: {game.children.length}
+                  </Badge>
+                )}
+                {game.parents && game.parents.length > 0 && (
+                  <Badge variant="soft">
+                    {t("parents")}: {game.parents.length}
+                  </Badge>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </Card>
