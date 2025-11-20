@@ -72,7 +72,7 @@ const PublicProfileConsoleGridContent = ({
   const consoleData = useConsoleData({
     slug,
     locale,
-    status: "OWNED",
+    status: "OWNED,PREVIOUSLY_OWNED",
     page: catalogState.page,
     perPage: catalogState.perPage,
     sort: catalogState.sort,

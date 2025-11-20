@@ -35,7 +35,17 @@ export const AccessoryListItem = ({ accessory, isOwner, type }: AccessoryListIte
       `}
     >
       <div className="flex items-center gap-4">
-        <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+        <div
+          className={`
+              w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+              transition-all duration-300 ease-in-out
+              ${
+                accessory.status === "PREVIOUSLY_OWNED"
+                  ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                  : ""
+              }
+            `}
+        >
           {safeImageUrl ? (
             <Image
               src={safeImageUrl}
@@ -60,6 +70,12 @@ export const AccessoryListItem = ({ accessory, isOwner, type }: AccessoryListIte
             <div className="flex-1 min-w-0">
               <h3 className="font-bold text-lg dark:text-white line-clamp-1">
                 {accessory.variantName || "Acessório"}
+                {accessory.status === "PREVIOUSLY_OWNED" && (
+                  <span className="text-sm text-gray-700 font-normal">
+                    {" "}
+                    ({t("previouslyOwned")})
+                  </span>
+                )}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {accessory.type &&
@@ -68,7 +84,6 @@ export const AccessoryListItem = ({ accessory, isOwner, type }: AccessoryListIte
             </div>
 
             <div className="flex gap-2 items-center">
-              {/* Botão de favorito - integrado com os outros botões */}
               {isOwner && accessory.accessoryId && (
                 <FavoriteToggle
                   itemId={accessory.accessoryId}

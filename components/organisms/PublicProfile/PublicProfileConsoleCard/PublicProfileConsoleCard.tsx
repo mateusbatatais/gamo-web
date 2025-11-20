@@ -153,7 +153,17 @@ export const PublicProfileConsoleCard = ({
             </div>
           )}
         </div>
-        <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
+        <div
+          className={`
+            h-48 bg-gray-100 dark:bg-gray-700 relative 
+            transition-all duration-300 ease-in-out
+            ${
+              consoleItem.status === "PREVIOUSLY_OWNED"
+                ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                : ""
+            }
+          `}
+        >
           <SafeImage
             src={safeImageUrl}
             alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
@@ -161,6 +171,14 @@ export const PublicProfileConsoleCard = ({
             className="object-cover"
             priority={true}
           />
+
+          {consoleItem.status === "PREVIOUSLY_OWNED" && (
+            <div className="absolute bottom-2 left-2 z-10">
+              <div className="bg-gray-600/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+                {t("previouslyOwned")}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="p-4">

@@ -88,7 +88,17 @@ export const PublicProfileGameCompact = ({
           </div>
         )}
 
-        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+        <div
+          className={`
+            w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+            transition-all duration-300 ease-in-out
+            ${
+              game.status === "PREVIOUSLY_OWNED"
+                ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                : ""
+            }
+          `}
+        >
           {game.photoMain ? (
             <Image
               src={game.photoMain}

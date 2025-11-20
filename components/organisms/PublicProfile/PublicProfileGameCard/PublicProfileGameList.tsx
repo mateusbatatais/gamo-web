@@ -70,7 +70,17 @@ export const PublicProfileGameList = ({
       `}
       >
         <div className="flex items-start gap-4">
-          <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+          <div
+            className={`
+              w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+              transition-all duration-300 ease-in-out
+              ${
+                game.status === "PREVIOUSLY_OWNED"
+                  ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                  : ""
+              }
+            `}
+          >
             {game.photoMain ? (
               <Image
                 src={game.photoMain}
@@ -99,13 +109,20 @@ export const PublicProfileGameList = ({
               <div className="flex-1 min-w-0">
                 <Link href={`/game/${game.gameSlug}`} target="_blank">
                   <h3 className="font-bold text-xs sm:text-lg dark:text-white line-clamp-2 hover:text-primary-500">
-                    {game.gameTitle} (
+                    {game.gameTitle}
                     {game.platformId && (
-                      <span className="text-gray-500 dark:text-gray-400 mt-1">
-                        {platformsMap[game.platformId]}
+                      <span className="text-sm text-gray-700 font-normal">
+                        {" "}
+                        ({platformsMap[game.platformId]})
                       </span>
                     )}
-                    )
+
+                    {game.status === "PREVIOUSLY_OWNED" && (
+                      <span className="text-sm text-gray-700 font-normal">
+                        {" "}
+                        ({t("previouslyOwned")})
+                      </span>
+                    )}
                   </h3>
                 </Link>
               </div>
@@ -138,9 +155,8 @@ export const PublicProfileGameList = ({
               )}
             </div>
 
-            {game.review && <TruncatedText text={game.review} maxLength={150} className="mt-3" />}
+            {game.review && <TruncatedText text={game.review} maxLength={150} className="mb-1" />}
 
-            {/* Resto do conteúdo permanece igual */}
             <div className="flex flex-wrap gap-4 items-center">
               {game.progress && game.progress > 0 ? (
                 <div className="flex items-center gap-2">
@@ -228,7 +244,6 @@ export const PublicProfileGameList = ({
         </div>
       </Card>
 
-      {/* Diálogos permanecem iguais */}
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
         <GameForm
           mode="edit"

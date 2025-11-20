@@ -1,7 +1,7 @@
 // src/components/organisms/GameForm/GameForm.tsx
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
@@ -17,6 +17,7 @@ import { Rating } from "@/components/atoms/Rating/Rating";
 import { Range } from "@/components/atoms/Range/Range";
 import { Radio } from "@/components/atoms/Radio/Radio";
 import { SimpleCollapse } from "@/components/atoms/SimpleCollapse/SimpleCollapse";
+import { CollectionStatus, Condition, MediaType } from "@/@types/collection.types";
 
 interface GameFormProps {
   mode: "create" | "edit";
@@ -26,11 +27,11 @@ interface GameFormProps {
   initialData?: {
     id?: number;
     description?: string | null;
-    status?: "OWNED" | "SELLING" | "LOOKING_FOR";
+    status?: CollectionStatus;
     price?: number | null;
     hasBox?: boolean | null;
     hasManual?: boolean | null;
-    condition?: "NEW" | "USED" | "REFURBISHED" | null;
+    condition?: Condition | null;
     acceptsTrade?: boolean | null;
     photoMain?: string | null;
     photos?: string[] | null;
@@ -38,7 +39,7 @@ interface GameFormProps {
     rating?: number | null;
     review?: string | null;
     abandoned?: boolean | null;
-    media?: "PHYSICAL" | "DIGITAL";
+    media?: MediaType;
     platformId?: number;
   };
   onSuccess: () => void;
@@ -58,6 +59,7 @@ export const GameForm = ({
   const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
   const [showTrade, setShowTrade] = useState(false);
+  const [keepCopyInCollection, setKeepCopyInCollection] = useState(false);
 
   const {
     photoMain,
@@ -101,6 +103,12 @@ export const GameForm = ({
     };
   });
 
+  useEffect(() => {
+    if (formData.status !== "SELLING") {
+      setKeepCopyInCollection(false);
+    }
+  }, [formData.status]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
@@ -115,7 +123,6 @@ export const GameForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
     const payload = {
@@ -140,6 +147,17 @@ export const GameForm = ({
     if (mode === "create") {
       await createUserGame(payload);
     } else if (mode === "edit" && initialData?.id) {
+      if (formData.status === "SELLING" && keepCopyInCollection && initialData.status === "OWNED") {
+        const copyPayload = {
+          ...payload,
+          status: "PREVIOUSLY_OWNED" as const,
+          price: undefined,
+          acceptsTrade: false,
+        };
+
+        await createUserGame(copyPayload);
+      }
+
       await updateUserGame({ id: initialData.id, data: payload });
     }
 
@@ -167,18 +185,33 @@ export const GameForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {initialData?.status === "OWNED" && (
-        <Checkbox
-          label={t("putUpForSale", { item: t("game") })}
-          checked={formData.status === "SELLING"}
-          onChange={(e) => {
-            const checked = e.target.checked;
-            setFormData((prev) => ({
-              ...prev,
-              status: checked ? "SELLING" : "OWNED",
-            }));
-            setShowTrade(checked);
-          }}
-        />
+        <div className="space-y-3">
+          <Checkbox
+            label={t("putUpForSale", { item: t("game") })}
+            checked={formData.status === "SELLING"}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setFormData((prev) => ({
+                ...prev,
+                status: checked ? "SELLING" : "OWNED",
+              }));
+              setShowTrade(checked);
+            }}
+          />
+
+          {formData.status === "SELLING" && (
+            <div className="ml-6">
+              <Checkbox
+                label={t("keepCopyInCollection")}
+                checked={keepCopyInCollection}
+                onChange={(e) => setKeepCopyInCollection(e.target.checked)}
+              />
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {t("keepGameCopyInCollectionDescription")}
+              </p>
+            </div>
+          )}
+        </div>
       )}
       {initialData?.status === "LOOKING_FOR" && (
         <Checkbox
@@ -206,7 +239,40 @@ export const GameForm = ({
           }}
         />
       )}
+      {initialData?.status === "PREVIOUSLY_OWNED" && (
+        <Checkbox
+          label={t("moveToOwned", { item: t("game") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "PREVIOUSLY_OWNED",
+            }));
+          }}
+        />
+      )}
 
+      {mode === "create" && type === "collection" && (
+        <div className="space-y-4">
+          <div className="flex space-x-4">
+            <Radio
+              name="status"
+              value="OWNED"
+              checked={formData.status === "OWNED"}
+              onChange={() => handleRadioChange("status", "OWNED")}
+              label={t("statusOwned")}
+            />
+            <Radio
+              name="status"
+              value="PREVIOUSLY_OWNED"
+              checked={formData.status === "PREVIOUSLY_OWNED"}
+              onChange={() => handleRadioChange("status", "PREVIOUSLY_OWNED")}
+              label={t("statusPreviouslyOwned")}
+            />
+          </div>
+        </div>
+      )}
       {mode === "create" && type === "trade" && (
         <div className="flex space-x-4">
           <Radio
@@ -225,7 +291,6 @@ export const GameForm = ({
           />
         </div>
       )}
-
       <div className="flex flex-col gap-4">
         <MainImageUpload
           label={t("mainPhoto")}
@@ -258,7 +323,6 @@ export const GameForm = ({
           />
         </div>
       </div>
-
       {(type === "trade" || showTrade) && (
         <>
           <TradeSection
@@ -296,7 +360,6 @@ export const GameForm = ({
           </div>
         </>
       )}
-
       {type === "trade" ? (
         <SimpleCollapse title="Progresso e analise" defaultOpen={false} childrenClass="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -382,7 +445,6 @@ export const GameForm = ({
           />
         </>
       )}
-
       {currentCropImage && (
         <ImageCropper
           src={currentCropImage.url}
@@ -390,7 +452,6 @@ export const GameForm = ({
           onCancel={() => setCurrentCropImage(null)}
         />
       )}
-
       <div className="flex justify-end gap-3 mt-6">
         <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
         <Button

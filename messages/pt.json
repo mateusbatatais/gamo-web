@@ -368,6 +368,7 @@
   },
   "Collection": {},
   "PublicProfile": {
+    "previouslyOwned": "Já tive",
     "noGamesForSale": "Este usuário ainda nao possui jogos para venda",
     "noGamesLookingFor": "Este usuário ainda nao possui jogos procurando troca",
     "noConsolesLookingFor": "Este usuário ainda nao possui consoles procurando troca",
@@ -452,6 +453,9 @@
     "errorLoading": "Erro ao carregar"
   },
   "TradeForm": {
+    "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",
+    "keepCopyInCollectionDescription": "Útil caso você queira manter o histórico do item.",
+    "keepGameCopyInCollectionDescription": "É importante caso você tenha avaliado ou adicionado progresso ao jogo.",
     "mainPhoto": "Foto principal",
     "description": "Descrição",
     "descriptionPlaceholder": "Detalhes sobre seu item...",
@@ -498,7 +502,8 @@
     "accessory": "Acessório",
     "SELLING": "Vendendo",
     "LOOKING_FOR": "Procurando",
-    "OWNED": "Coleção"
+    "OWNED": "Coleção",
+    "statusPreviouslyOwned": "Já tive"
   },
   "SimpleAccessoryForm": {
     "description": "Selecione os consoles da sua coleção que são compatíveis com este acessório:",

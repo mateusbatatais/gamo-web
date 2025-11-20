@@ -55,7 +55,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
   const { games, gamesMeta, isLoading, error } = useGameData({
     slug,
     locale,
-    status: "OWNED",
+    status: "OWNED,PREVIOUSLY_OWNED",
     page: catalogState.page,
     perPage: catalogState.perPage,
     sort: catalogState.sort,

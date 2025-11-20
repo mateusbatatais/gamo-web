@@ -36,7 +36,6 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
         </div>
       )}
 
-      {/* Botão de favorito - posicionado no canto superior esquerdo */}
       {isOwner && accessory.accessoryId && (
         <div className="absolute top-2 left-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
           <FavoriteToggle
@@ -50,7 +49,17 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
         </div>
       )}
 
-      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+      <div
+        className={`
+            w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+            transition-all duration-300 ease-in-out
+            ${
+              accessory.status === "PREVIOUSLY_OWNED"
+                ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                : ""
+            }
+          `}
+      >
         {safeImageUrl ? (
           <Image
             src={safeImageUrl}

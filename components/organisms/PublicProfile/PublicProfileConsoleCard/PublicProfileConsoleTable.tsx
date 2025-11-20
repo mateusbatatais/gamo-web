@@ -63,7 +63,6 @@ export const PublicProfileConsoleTable = ({
         ${consoleItem.isFavorite ? "bg-primary-50 dark:bg-primary-900/20" : ""}
       `}
       >
-        {/* Coluna do expander - só exibe se houver acessórios */}
         <td className="p-2 w-10">
           {onToggleAccessories && canExpand && (
             <Button
@@ -79,7 +78,17 @@ export const PublicProfileConsoleTable = ({
 
         <td className="py-1">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+            <div
+              className={`
+              w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+              transition-all duration-300 ease-in-out
+              ${
+                consoleItem.status === "PREVIOUSLY_OWNED"
+                  ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                  : ""
+              }
+            `}
+            >
               {safeImageUrl ? (
                 <Image
                   src={safeImageUrl}
@@ -99,7 +108,15 @@ export const PublicProfileConsoleTable = ({
               )}
             </div>
             <div>
-              <h3 className="font-medium dark:text-white">{consoleItem.consoleName}</h3>
+              <h3 className="font-medium dark:text-white">
+                {consoleItem.consoleName}
+                {consoleItem.status === "PREVIOUSLY_OWNED" && (
+                  <span className="text-sm text-gray-700 font-normal">
+                    {" "}
+                    ({t("previouslyOwned")})
+                  </span>
+                )}
+              </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">{consoleItem.variantName}</p>
             </div>
           </div>

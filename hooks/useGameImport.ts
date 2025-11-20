@@ -6,6 +6,7 @@ import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Game } from "@/@types/catalog.types";
+import { CollectionStatus, Condition, MediaType } from "@/@types/collection.types";
 
 export interface ImportSession {
   id: number;
@@ -57,12 +58,12 @@ export interface ImportMatch {
   userData: {
     progress?: number;
     rating?: number;
-    status?: "OWNED" | "SELLING" | "LOOKING_FOR";
-    media?: "PHYSICAL" | "DIGITAL";
+    status?: CollectionStatus;
+    media?: MediaType;
     price?: number;
     hasBox?: boolean;
     hasManual?: boolean;
-    condition?: "NEW" | "USED" | "REFURBISHED";
+    condition?: Condition;
     acceptsTrade?: boolean;
     description?: string;
     abandoned?: boolean;

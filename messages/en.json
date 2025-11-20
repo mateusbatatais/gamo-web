@@ -368,6 +368,7 @@
   },
   "Collection": {},
   "PublicProfile": {
+    "previouslyOwned": "Previously Owned",
     "noGamesForSale": "This user hasn't listed any games for sale yet",
     "noGamesLookingFor": "This user hasn't listed any games looking for trade yet",
     "noConsolesLookingFor": "This user hasn't listed any consoles looking for trade yet",
@@ -452,6 +453,9 @@
     "errorLoading": "Error loading"
   },
   "TradeForm": {
+    "keepCopyInCollection": "Keep a copy in my collection (previously owned)",
+    "keepCopyInCollectionDescription": "Useful if you want to keep the item's history.",
+    "keepGameCopyInCollectionDescription": "Important if you have rated or added progress to the game.",
     "mainPhoto": "Main photo",
     "description": "Description",
     "descriptionPlaceholder": "Details about your item...",
@@ -498,7 +502,8 @@
     "accessory": "Accessory",
     "SELLING": "for sale",
     "LOOKING_FOR": "looking for",
-    "OWNED": "in collection"
+    "OWNED": "in collection",
+    "statusPreviouslyOwned": "Previously Owned"
   },
   "SimpleAccessoryForm": {
     "description": "Select the consoles from your collection that are compatible with this accessory:",

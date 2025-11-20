@@ -8,7 +8,7 @@ import { PaginationMeta } from "@/@types/catalog.types";
 interface UseConsoleDataProps {
   slug: string;
   locale: string;
-  status: "OWNED" | "SELLING" | "LOOKING_FOR";
+  status: string;
   page: number;
   perPage: number;
   sort: string;

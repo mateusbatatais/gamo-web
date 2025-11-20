@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
@@ -56,6 +56,7 @@ export const AccessoryForm = ({
     initialData?.compatibleUserConsoleIds || [],
   );
   const [showTrade, setShowTrade] = useState(false);
+  const [keepCopyInCollection, setKeepCopyInCollection] = useState(false);
 
   const {
     photoMain,
@@ -91,6 +92,12 @@ export const AccessoryForm = ({
       acceptsTrade: !!initialData?.acceptsTrade,
     };
   });
+
+  useEffect(() => {
+    if (formData.status !== "SELLING") {
+      setKeepCopyInCollection(false);
+    }
+  }, [formData.status]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -134,6 +141,17 @@ export const AccessoryForm = ({
     if (mode === "create") {
       await createUserAccessory(payload);
     } else if (mode === "edit" && initialData?.id) {
+      if (formData.status === "SELLING" && keepCopyInCollection && initialData.status === "OWNED") {
+        const copyPayload = {
+          ...payload,
+          status: "PREVIOUSLY_OWNED" as const,
+          price: undefined,
+          acceptsTrade: false,
+        };
+
+        await createUserAccessory(copyPayload);
+      }
+
       await updateUserAccessory({ id: initialData.id, data: payload });
     }
 
@@ -156,19 +174,35 @@ export const AccessoryForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {initialData?.status === "OWNED" && (
-        <Checkbox
-          label={t("putUpForSale", { item: t("accessory") })}
-          checked={formData.status === "SELLING"}
-          onChange={(e) => {
-            const checked = e.target.checked;
-            setFormData((prev) => ({
-              ...prev,
-              status: checked ? "SELLING" : "OWNED",
-            }));
-            setShowTrade(checked);
-          }}
-        />
+        <div className="space-y-3">
+          <Checkbox
+            label={t("putUpForSale", { item: t("accessory") })}
+            checked={formData.status === "SELLING"}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setFormData((prev) => ({
+                ...prev,
+                status: checked ? "SELLING" : "OWNED",
+              }));
+              setShowTrade(checked);
+            }}
+          />
+
+          {formData.status === "SELLING" && (
+            <div className="ml-6">
+              <Checkbox
+                label={t("keepCopyInCollection")}
+                checked={keepCopyInCollection}
+                onChange={(e) => setKeepCopyInCollection(e.target.checked)}
+              />
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {t("keepCopyInCollectionDescription")}
+              </p>
+            </div>
+          )}
+        </div>
       )}
+
       {initialData?.status === "LOOKING_FOR" && (
         <Checkbox
           label={t("moveToOwned", { item: t("accessory") })}
@@ -194,6 +228,40 @@ export const AccessoryForm = ({
             }));
           }}
         />
+      )}
+      {initialData?.status === "PREVIOUSLY_OWNED" && (
+        <Checkbox
+          label={t("moveToOwned", { item: t("accessory") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "PREVIOUSLY_OWNED",
+            }));
+          }}
+        />
+      )}
+
+      {mode === "create" && type === "collection" && (
+        <div className="space-y-4">
+          <div className="flex space-x-4">
+            <Radio
+              name="status"
+              value="OWNED"
+              checked={formData.status === "OWNED"}
+              onChange={() => handleRadioChange("status", "OWNED")}
+              label={t("statusOwned")}
+            />
+            <Radio
+              name="status"
+              value="PREVIOUSLY_OWNED"
+              checked={formData.status === "PREVIOUSLY_OWNED"}
+              onChange={() => handleRadioChange("status", "PREVIOUSLY_OWNED")}
+              label={t("statusPreviouslyOwned")}
+            />
+          </div>
+        </div>
       )}
 
       {mode === "create" && type === "trade" && (

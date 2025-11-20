@@ -113,7 +113,17 @@ export const PublicProfileConsoleList = ({
       `}
       >
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+          <div
+            className={`
+              w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+              transition-all duration-300 ease-in-out
+              ${
+                consoleItem.status === "PREVIOUSLY_OWNED"
+                  ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                  : ""
+              }
+            `}
+          >
             {safeImageUrl ? (
               <Image
                 src={safeImageUrl}
@@ -139,6 +149,12 @@ export const PublicProfileConsoleList = ({
                 <Link href={`/console/${consoleItem.variantSlug}`} target="_blank">
                   <h3 className="font-bold text-lg dark:text-white line-clamp-1 hover:text-primary-500">
                     {consoleItem.consoleName}
+                    {consoleItem.status === "PREVIOUSLY_OWNED" && (
+                      <span className="text-sm text-gray-700 font-normal">
+                        {" "}
+                        ({t("previouslyOwned")})
+                      </span>
+                    )}
                   </h3>
                 </Link>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">

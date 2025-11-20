@@ -2,12 +2,13 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
+import { useTranslations } from "next-intl";
 
 interface AccessoryCardProps {
   accessory: UserAccessory;
@@ -19,6 +20,7 @@ export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) 
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
   const { getAccessoriesQueryKey } = useCatalogQueryKeys();
+  const t = useTranslations("PublicProfile");
 
   return (
     <div
@@ -31,22 +33,30 @@ export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) 
         }
       `}
     >
-      <div className="h-48 bg-gray-100 dark:bg-gray-700 relative">
-        {safeImageUrl ? (
-          <Image
-            src={safeImageUrl}
-            alt={accessory.variantName || "Acessório"}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = "none";
-            }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">
-            <span className="text-3xl">🎮</span>
+      <div
+        className={`
+            h-48 bg-gray-100 dark:bg-gray-700 relative 
+            transition-all duration-300 ease-in-out
+            ${
+              accessory.status === "PREVIOUSLY_OWNED"
+                ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                : ""
+            }
+          `}
+      >
+        <SafeImage
+          src={safeImageUrl}
+          alt={accessory.variantName || "Acessório"}
+          sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+          className="object-cover"
+          priority={true}
+        />
+
+        {accessory.status === "PREVIOUSLY_OWNED" && (
+          <div className="absolute bottom-2 left-2 z-10">
+            <div className="bg-gray-600/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">
+              {t("previouslyOwned")}
+            </div>
           </div>
         )}
       </div>

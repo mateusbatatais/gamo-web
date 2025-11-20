@@ -1,4 +1,4 @@
-export type CollectionStatus = "OWNED" | "SELLING" | "LOOKING_FOR";
+export type CollectionStatus = "OWNED" | "SELLING" | "LOOKING_FOR" | "PREVIOUSLY_OWNED";
 export type MediaType = "PHYSICAL" | "DIGITAL";
 export type Condition = "NEW" | "USED" | "REFURBISHED";
 

@@ -19,6 +19,7 @@ import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { AccessorySelector } from "@/components/molecules/AccessorySelector/AccessorySelector";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Radio } from "@/components/atoms/Radio/Radio";
+import { CollectionStatus, Condition } from "@/@types/collection.types";
 
 interface ConsoleFormProps {
   mode: "create" | "edit";
@@ -30,11 +31,11 @@ interface ConsoleFormProps {
   initialData?: {
     id?: number;
     description?: string | null;
-    status?: "OWNED" | "SELLING" | "LOOKING_FOR";
+    status?: CollectionStatus;
     price?: number | null;
     hasBox?: boolean | null;
     hasManual?: boolean | null;
-    condition?: "NEW" | "USED" | "REFURBISHED" | null;
+    condition?: Condition | null;
     acceptsTrade?: boolean | null;
     photoMain?: string | null;
     photos?: string[] | null;
@@ -61,9 +62,10 @@ export const ConsoleForm = ({
   onCancel,
 }: ConsoleFormProps) => {
   const t = useTranslations("TradeForm");
-  const { createUserConsole, updateUserConsole } = useUserConsoleMutation();
+  const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
   const { createUserAccessory } = useUserAccessoryMutation();
   const [showTrade, setShowTrade] = useState(false);
+  const [keepCopyInCollection, setKeepCopyInCollection] = useState(false);
 
   const {
     photoMain,
@@ -71,6 +73,7 @@ export const ConsoleForm = ({
     currentCropImage,
     mainFileInputRef,
     additionalFileInputRef,
+    loading: uploadLoading,
     handleImageUpload,
     handleCropComplete,
     removeImage,
@@ -99,6 +102,12 @@ export const ConsoleForm = ({
     };
   });
 
+  useEffect(() => {
+    if (formData.status !== "SELLING") {
+      setKeepCopyInCollection(false);
+    }
+  }, [formData.status]);
+
   const { data: storageOptions, isLoading: storageOptionsLoading } =
     useStorageOptions(consoleVariantId);
   const { data: accessoryVariants, isLoading: accessoriesLoading } =
@@ -112,7 +121,6 @@ export const ConsoleForm = ({
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
   >({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleRadioChange = (name: keyof typeof formData, value: string) => {
     setFormData((prev) => ({
@@ -170,49 +178,54 @@ export const ConsoleForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
-    try {
-      const { mainPhotoUrl, additionalUrls } = await uploadImages();
+    const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
-      const payload = {
-        consoleId,
-        consoleVariantId,
-        skinId: skinId || undefined,
-        storageOptionId: selectedStorageOptionId,
-        description: formData.description || undefined,
-        status: formData.status ?? "OWNED",
-        price: formData.price ? parseFloat(formData.price) : undefined,
-        hasBox: formData.hasBox,
-        hasManual: formData.hasManual,
-        condition: formData.condition,
-        acceptsTrade: formData.acceptsTrade,
-        photoMain: mainPhotoUrl || undefined,
-        photos: additionalUrls,
-        variantSlug,
-      };
+    const payload = {
+      consoleId,
+      consoleVariantId,
+      skinId: skinId || undefined,
+      storageOptionId: selectedStorageOptionId,
+      description: formData.description || undefined,
+      status: formData.status ?? "OWNED",
+      price: formData.price ? parseFloat(formData.price) : undefined,
+      hasBox: formData.hasBox,
+      hasManual: formData.hasManual,
+      condition: formData.condition,
+      acceptsTrade: formData.acceptsTrade,
+      photoMain: mainPhotoUrl || undefined,
+      photos: additionalUrls,
+      variantSlug,
+    };
 
-      let userConsoleId: number | undefined;
-      if (mode === "create") {
-        const response = await createUserConsole(payload);
-        userConsoleId = response.userConsole.id || 0;
-      } else if (mode === "edit" && initialData?.id) {
-        await updateUserConsole({ id: initialData.id, data: payload });
-        userConsoleId = initialData.id;
-      } else {
-        throw new Error("Invalid mode or missing initialData.id");
+    let userConsoleId: number | undefined;
+
+    if (mode === "create") {
+      const response = await createUserConsole(payload);
+      userConsoleId = response.userConsole.id || 0;
+    } else if (mode === "edit" && initialData?.id) {
+      if (formData.status === "SELLING" && keepCopyInCollection && initialData.status === "OWNED") {
+        const copyPayload = {
+          ...payload,
+          status: "PREVIOUSLY_OWNED" as const,
+          price: undefined,
+          acceptsTrade: false,
+        };
+
+        await createUserConsole(copyPayload);
       }
 
-      if (userConsoleId) {
-        await addSelectedAccessories(userConsoleId);
-      }
-
-      onSuccess();
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
+      await updateUserConsole({ id: initialData.id, data: payload });
+      userConsoleId = initialData.id;
+    } else {
+      throw new Error("Invalid mode or missing initialData.id");
     }
+
+    if (userConsoleId) {
+      await addSelectedAccessories(userConsoleId);
+    }
+
+    onSuccess();
   };
 
   const conditionOptions = [
@@ -241,18 +254,33 @@ export const ConsoleForm = ({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {initialData?.status === "OWNED" && (
-        <Checkbox
-          label={t("putUpForSale", { item: t("console") })}
-          checked={formData.status === "SELLING"}
-          onChange={(e) => {
-            const checked = e.target.checked;
-            setFormData((prev) => ({
-              ...prev,
-              status: checked ? "SELLING" : "OWNED",
-            }));
-            setShowTrade(checked);
-          }}
-        />
+        <div className="space-y-3">
+          <Checkbox
+            label={t("putUpForSale", { item: t("console") })}
+            checked={formData.status === "SELLING"}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setFormData((prev) => ({
+                ...prev,
+                status: checked ? "SELLING" : "OWNED",
+              }));
+              setShowTrade(checked);
+            }}
+          />
+
+          {formData.status === "SELLING" && (
+            <div className="ml-6">
+              <Checkbox
+                label={t("keepCopyInCollection")}
+                checked={keepCopyInCollection}
+                onChange={(e) => setKeepCopyInCollection(e.target.checked)}
+              />
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {t("keepCopyInCollectionDescription")}
+              </p>
+            </div>
+          )}
+        </div>
       )}
       {initialData?.status === "LOOKING_FOR" && (
         <Checkbox
@@ -279,6 +307,40 @@ export const ConsoleForm = ({
             }));
           }}
         />
+      )}
+      {initialData?.status === "PREVIOUSLY_OWNED" && (
+        <Checkbox
+          label={t("moveToOwned", { item: t("console") })}
+          checked={formData.status === "OWNED"}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              status: checked ? "OWNED" : "PREVIOUSLY_OWNED",
+            }));
+          }}
+        />
+      )}
+
+      {mode === "create" && type === "collection" && (
+        <div className="space-y-4">
+          <div className="flex space-x-4">
+            <Radio
+              name="status"
+              value="OWNED"
+              checked={formData.status === "OWNED"}
+              onChange={() => handleRadioChange("status", "OWNED")}
+              label={t("statusOwned")}
+            />
+            <Radio
+              name="status"
+              value="PREVIOUSLY_OWNED"
+              checked={formData.status === "PREVIOUSLY_OWNED"}
+              onChange={() => handleRadioChange("status", "PREVIOUSLY_OWNED")}
+              label={t("statusPreviouslyOwned")}
+            />
+          </div>
+        </div>
       )}
 
       {mode === "create" && type === "trade" && (
@@ -324,7 +386,7 @@ export const ConsoleForm = ({
           }
           label={t("storageOption")}
           options={storageOptionOptions}
-          disabled={storageOptionsLoading || isSubmitting}
+          disabled={storageOptionsLoading}
         />
       )}
 
@@ -392,9 +454,8 @@ export const ConsoleForm = ({
         <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
         <Button
           type="submit"
-          loading={isSubmitting}
+          loading={isPending || uploadLoading}
           label={mode === "create" ? t("addToCollection") : t("saveChanges")}
-          disabled={isSubmitting}
         />
       </div>
     </form>

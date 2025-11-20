@@ -16,7 +16,6 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 
-// Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
 function hasAccessories(
   item: UserConsole,
@@ -107,7 +106,17 @@ export const PublicProfileConsoleCompact = ({
           </div>
         )}
 
-        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative">
+        <div
+          className={`
+            w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+            transition-all duration-300 ease-in-out
+            ${
+              consoleItem.status === "PREVIOUSLY_OWNED"
+                ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                : ""
+            }
+          `}
+        >
           {safeImageUrl ? (
             <Image
               src={safeImageUrl}
