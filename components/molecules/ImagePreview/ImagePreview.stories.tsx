@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { ImagePreview } from "./ImagePreview";
-import { fn } from "storybook/internal/test";
+import { fn } from "storybook/test";
 
 const meta: Meta<typeof ImagePreview> = {
   title: "Molecules/ImagePreview",
