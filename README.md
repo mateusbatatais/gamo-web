@@ -99,7 +99,7 @@ app/
     loading.tsx
     page.tsx
   favicon.ico
-  globals.scss
+  globals.css
   layout.tsx
   not-found.tsx
   page.tsx

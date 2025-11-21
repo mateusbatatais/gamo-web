@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import Header from "@/components/templates/Layout/Header/Header";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Button } from "@/components/atoms/Button/Button";
-import "../../../app/globals.scss";
+import "../../../app/globals.css";
 import { Gamepad, Joystick } from "lucide-react";
 
 export default function NotFound() {

@@ -3,7 +3,7 @@ import type { Preview } from "@storybook/nextjs-vite";
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "../messages/en.json";
 import ptMessages from "../messages/pt.json";
-import "../app/globals.scss";
+import "../app/globals.css";
 import { Quicksand } from "next/font/google";
 import { withThemeByDataAttribute } from "@storybook/addon-themes";
 

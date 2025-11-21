@@ -1,7 +1,7 @@
 import { Locale, NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import "../globals.scss";
+import "../globals.css";
 import { Quicksand } from "next/font/google";
 import LogRocketInit from "@/components/atoms/LogRocketInit/LogRocketInit";
 import { getTranslations } from "next-intl/server";
