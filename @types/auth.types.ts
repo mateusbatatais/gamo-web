@@ -37,6 +37,16 @@ export interface PublicUserProfile {
   gamesLookingFor: number;
   gamesSelling: number;
   gamesTotal: number;
+  gamesRated: number;
+  gamesReviewed: number;
+  memberSince: string;
+  gamesByGenre: {
+    actionAdventure: number;
+    sports: number;
+    racing: number;
+    fighting: number;
+    shooter: number;
+  };
 }
 
 export type AuthProvider = "Google" | "Microsoft";

@@ -450,7 +450,16 @@
     "txtLookForConsole": "Procurando console",
     "txtLookForGame": "Procurando jogo",
     "txtLookForAccessory": "Procurando acessório",
-    "errorLoading": "Erro ao carregar"
+    "errorLoading": "Erro ao carregar",
+    "accessories": "Acessórios",
+    "favoriteGames": "Jogos favoritos",
+    "reviews": "Analises",
+    "achievementActionBoy": "Mais de 50 jogos de ação/aventura",
+    "achievementSportsFan": "Mais de 50 jogos de esporte",
+    "achievementNeedSpeed": "Mais de 50 jogos de corrida",
+    "achievementReadyToFight": "Mais de 50 jogos de luta",
+    "achievementSharpShooter": "Mais de 50 jogos de tiro",
+    "memberSince": "Membro desde"
   },
   "TradeForm": {
     "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",
