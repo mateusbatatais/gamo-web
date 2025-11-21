@@ -4,7 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useAuth } from "@/contexts/AuthContext";
-import { Game, GameWithStats } from "@/@types/catalog.types";
+import { Game, GameWithStats, GameStats } from "@/@types/catalog.types";
 
 interface SeriesResponse {
   games: Game[];
@@ -30,6 +30,16 @@ export default function useGameDetails(slug: string) {
     },
   });
 
+  const statsQuery = useQuery({
+    queryKey: ["gameStats", slug],
+    queryFn: async () => {
+      if (!slug) throw new Error("Slug is required");
+      return apiFetch<GameStats>(`/games/${slug}/stats`);
+    },
+    enabled: !!slug && initialized && !!gameQuery.data,
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+
   const seriesQuery = useQuery({
     queryKey: ["gameSeries", gameQuery.data?.series?.slug],
     queryFn: async () => {
@@ -43,16 +53,18 @@ export default function useGameDetails(slug: string) {
 
   const combinedData = gameQuery.data && {
     ...gameQuery.data,
+    stats: statsQuery.data || undefined,
     series: seriesQuery.data || null,
   };
 
   return {
     data: combinedData,
-    isLoading: gameQuery.isLoading || seriesQuery.isLoading,
-    isError: gameQuery.isError || seriesQuery.isError,
-    error: gameQuery.error || seriesQuery.error,
+    isLoading: gameQuery.isLoading || (gameQuery.data && statsQuery.isLoading),
+    isError: gameQuery.isError || statsQuery.isError || seriesQuery.isError,
+    error: gameQuery.error || statsQuery.error || seriesQuery.error,
     refetch: () => {
       gameQuery.refetch();
+      statsQuery.refetch();
       seriesQuery.refetch();
     },
   };

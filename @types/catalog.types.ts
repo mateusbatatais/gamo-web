@@ -127,3 +127,14 @@ export interface AccessoryVariantDetail {
   finish?: string;
   type?: string;
 }
+
+export interface GameStats {
+  owned: number;
+  playing: number;
+  completed: number;
+  abandoned: number;
+}
+
+export interface GameWithStats extends Game {
+  stats?: GameStats;
+}
