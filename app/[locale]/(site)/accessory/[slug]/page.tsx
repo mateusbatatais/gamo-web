@@ -14,6 +14,7 @@ import { Gamepad } from "lucide-react";
 import AccessoryInfo from "@/components/organisms/_accessory/AccessoryInfo/AccessoryInfo";
 import AccessoryVariantCard from "@/components/molecules/_accessory/AccessoryVariantCard/AccessoryVariantCard";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
+import AccessoryMarket from "@/components/organisms/_accessory/AccessoryMarket/AccessoryMarket";
 
 export default function AccessoryDetailPage() {
   const params = useParams();
@@ -128,6 +129,8 @@ export default function AccessoryDetailPage() {
           </Card>
         )}
       </section>
+
+      <AccessoryMarket slug={data.slug} />
     </div>
   );
 }

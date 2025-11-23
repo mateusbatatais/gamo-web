@@ -353,7 +353,15 @@
     "funFactsAbout": "Fun Facts about the {console}",
     "viewAccessories": "View Accessories",
     "noAccessoriesAvailable": "No accessories available",
-    "failedToLoadAccessories": "Failed to load accessories"
+    "failedToLoadAccessories": "Failed to load accessories",
+    "priceNotInformated": "No price",
+    "acceptsTrade": "Accepts trade",
+    "selling": "Selling",
+    "looking": "Looking for",
+    "box": "With box",
+    "manual": "With manual",
+    "market": "Marketplace",
+    "noItems": "No items for this console"
   },
   "AccessoryDetails": {
     "catalog": "Accessory Catalog",
@@ -364,7 +372,9 @@
     "compatibleConsoles": "Compatible Consoles",
     "availableVariants": "Available Variants",
     "noVariantsAvailable": "No variants available",
-    "limitedEdition": "Limited Edition"
+    "limitedEdition": "Limited Edition",
+    "market": "Marketplace",
+    "noItems": "No items for this accessory"
   },
   "Collection": {},
   "PublicProfile": {
@@ -556,7 +566,9 @@
     "owned": "Owned",
     "playing": "Playing",
     "beaten": "Beaten",
-    "dropped": "Dropped"
+    "dropped": "Dropped",
+    "market": "Marketplace",
+    "noItems": "No items for this game"
   },
   "gameCard": {
     "noImage": "Image not available",

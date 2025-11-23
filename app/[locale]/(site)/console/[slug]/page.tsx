@@ -18,6 +18,7 @@ import { CardActionButtons } from "@/components/molecules/CardActionButtons/Card
 import { SkinDetail } from "@/@types/catalog.types";
 import ConsoleAccessories from "@/components/molecules/_console/ConsoleAccessories/ConsoleAccessories";
 import { ReportProblem } from "@/components/molecules/ReportProblem/ReportProblem";
+import ConsoleMarket from "@/components/organisms/_console/ConsoleMarket/ConsoleMarket";
 
 export default function ConsoleDetailPage() {
   const params = useParams();
@@ -138,12 +139,7 @@ export default function ConsoleDetailPage() {
 
       <ConsoleAccessories consoleId={data.consoleId} />
 
-      <Card className="bg-gray-50 dark:bg-gray-800">
-        <h2 className="text-2xl font-bold mb-4">Mercado</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Colocar itens desse modelo que estão a venda
-        </p>
-      </Card>
+      <ConsoleMarket variantSlug={data.slug} />
 
       <ReportProblem />
     </div>

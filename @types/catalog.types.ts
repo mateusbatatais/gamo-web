@@ -138,3 +138,19 @@ export interface GameStats {
 export interface GameWithStats extends Game {
   stats?: GameStats;
 }
+
+export interface MarketItem {
+  id: number;
+  userId: number;
+  userName: string;
+  userSlug: string;
+  price: number | null;
+  image: string | null;
+  sellerPhone: string | null;
+  createdAt: Date;
+  condition: string | null;
+  hasBox: boolean | null;
+  hasManual: boolean | null;
+  status: "SELLING" | "LOOKING_FOR";
+  acceptsTrade: boolean | null;
+}

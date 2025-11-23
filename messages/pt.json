@@ -353,7 +353,15 @@
     "funFactsAbout": "Curiosidades sobre  {console}",
     "viewAccessories": "Ver acessórios deste console",
     "noAccessoriesAvailable": "Nenhum acessório disponível",
-    "failedToLoadAccessories": "Falha ao carregar acessórios"
+    "failedToLoadAccessories": "Falha ao carregar acessórios",
+    "priceNotInformated": "Sem preço",
+    "acceptsTrade": "Aceita trocas",
+    "selling": "Vendendo",
+    "looking": "Procurando",
+    "box": "Com caixa",
+    "manual": "Com manual",
+    "market": "Compra e venda",
+    "noItems": "Nenhum item encontrado para este console"
   },
   "AccessoryDetails": {
     "catalog": "Catálogo",
@@ -364,7 +372,9 @@
     "compatibleConsoles": "Consoles compatíveis",
     "availableVariants": "Variantes disponíveis",
     "noVariantsAvailable": "Nenhuma variante disponível",
-    "limitedEdition": "Edição Limitada"
+    "limitedEdition": "Edição Limitada",
+    "market": "Compra e venda",
+    "noItems": "Nenhum item encontrado para este acessório"
   },
   "Collection": {},
   "PublicProfile": {
@@ -556,7 +566,9 @@
     "owned": "Possuem",
     "playing": "Jogando",
     "beaten": "Completaram",
-    "dropped": "Abandonaram"
+    "dropped": "Abandonaram",
+    "market": "Compra e venda",
+    "noItems": "Nenhum item encontrado para este jogo"
   },
   "gameCard": {
     "noImage": "Imagem não disponível",

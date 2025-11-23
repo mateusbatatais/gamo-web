@@ -16,6 +16,7 @@ import useGameDetails from "@/hooks/useGameDetails";
 import { Game } from "@/@types/catalog.types";
 import { AddGameToCollection } from "@/components/molecules/_game/AddGameToCollection/AddGameToCollection";
 import { GameStats } from "@/components/organisms/_game/GameStats/GameStats";
+import GameMarket from "@/components/organisms/_game/GameMarket/GameMarket";
 
 export default function GameDetailPage() {
   const params = useParams();
@@ -198,6 +199,8 @@ export default function GameDetailPage() {
       )}
 
       <GameStats stats={data.stats} />
+      <hr className="my-6 border-gray-300 dark:border-gray-700" />
+      <GameMarket slug={data.slug} />
     </div>
   );
 }
