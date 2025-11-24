@@ -308,7 +308,9 @@
       "selectPhoto": "Selecionar foto",
       "phone": "Whatsapp (para compra e venda)",
       "location": "Localização",
-      "getCurrentLocation": "Pegar localização atual"
+      "getCurrentLocation": "Pegar localização atual",
+      "locationSuccess": "Localização obtida com sucesso!",
+      "locationError": "Erro ao obter localização"
     },
     "changePasswordForm": {
       "currentPassword": "Senha Atual",
@@ -524,7 +526,10 @@
     "SELLING": "Vendendo",
     "LOOKING_FOR": "Procurando",
     "OWNED": "Coleção",
-    "statusPreviouslyOwned": "Já tive"
+    "statusPreviouslyOwned": "Já tive",
+    "location": "Localização",
+    "locationPlaceholder": "Digite sua cidade ou endereço...",
+    "locationSuccess": "Localização obtida com sucesso!"
   },
   "SimpleAccessoryForm": {
     "description": "Selecione os consoles da sua coleção que são compatíveis com este acessório:",

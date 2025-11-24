@@ -308,7 +308,9 @@
       "selectPhoto": "Select Photo",
       "phone": "Phone (for trade contact)",
       "location": "Location",
-      "getCurrentLocation": "Get current location"
+      "getCurrentLocation": "Get current location",
+      "locationSuccess": "Localização obtida com sucesso!",
+      "locationError": "Erro ao obter localização"
     },
     "changePasswordForm": {
       "currentPassword": "Current Password",
@@ -524,7 +526,10 @@
     "SELLING": "for sale",
     "LOOKING_FOR": "looking for",
     "OWNED": "in collection",
-    "statusPreviouslyOwned": "Previously Owned"
+    "statusPreviouslyOwned": "Previously Owned",
+    "location": "Location",
+    "locationPlaceholder": "Enter city or address...",
+    "locationSuccess": "Location obtained successfully!"
   },
   "SimpleAccessoryForm": {
     "description": "Select the consoles from your collection that are compatible with this accessory:",

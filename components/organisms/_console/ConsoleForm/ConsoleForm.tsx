@@ -1,7 +1,7 @@
 // src/components/organisms/ConsoleForm/ConsoleForm.tsx
 "use client";
 
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
@@ -12,6 +12,7 @@ import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesU
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
 import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
+import { useAccount } from "@/hooks/account/useUserAccount";
 import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { Select } from "@/components/atoms/Select/Select";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
@@ -20,6 +21,7 @@ import { AccessorySelector } from "@/components/molecules/AccessorySelector/Acce
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Radio } from "@/components/atoms/Radio/Radio";
 import { CollectionStatus, Condition } from "@/@types/collection.types";
+import { LocationData, LocationInput } from "@/components/molecules/LocationInput/LocationInput";
 
 interface ConsoleFormProps {
   mode: "create" | "edit";
@@ -40,6 +42,12 @@ interface ConsoleFormProps {
     photoMain?: string | null;
     photos?: string[] | null;
     storageOptionId?: number | null;
+    address?: string | null;
+    zipCode?: string | null;
+    city?: string | null;
+    state?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -64,8 +72,24 @@ export const ConsoleForm = ({
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
   const { createUserAccessory } = useUserAccessoryMutation();
+  const { profileQuery } = useAccount();
   const [showTrade, setShowTrade] = useState(false);
   const [keepCopyInCollection, setKeepCopyInCollection] = useState(false);
+
+  const [locationData, setLocationData] = useState<LocationData | null>(() => {
+    if (initialData?.address || initialData?.city) {
+      return {
+        formattedAddress: initialData.address || `${initialData.city}, ${initialData.state}`,
+        address: initialData.address || "",
+        zipCode: initialData.zipCode || "",
+        city: initialData.city || "",
+        state: initialData.state || "",
+        latitude: initialData.latitude || 0,
+        longitude: initialData.longitude || 0,
+      };
+    }
+    return null;
+  });
 
   const {
     photoMain,
@@ -82,6 +106,28 @@ export const ConsoleForm = ({
     setPhotoMain,
     setAdditionalPhotos,
   } = useCollectionForm(initialData?.photos || [], initialData?.photoMain || undefined);
+
+  const hasPrefilledLocation = useRef(false);
+
+  useEffect(() => {
+    if (hasPrefilledLocation.current) return;
+
+    if (profileQuery.data && !locationData) {
+      if (profileQuery.data.address || profileQuery.data.city) {
+        setLocationData({
+          formattedAddress:
+            profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
+          address: profileQuery.data.address || "",
+          zipCode: profileQuery.data.zipCode || "",
+          city: profileQuery.data.city || "",
+          state: profileQuery.data.state || "",
+          latitude: profileQuery.data.latitude || 0,
+          longitude: profileQuery.data.longitude || 0,
+        });
+        hasPrefilledLocation.current = true;
+      }
+    }
+  }, [profileQuery.data, locationData]);
 
   const [formData, setFormData] = useState(() => {
     const status =
@@ -196,6 +242,12 @@ export const ConsoleForm = ({
       photoMain: mainPhotoUrl || undefined,
       photos: additionalUrls,
       variantSlug,
+      address: locationData?.address || undefined,
+      zipCode: locationData?.zipCode || undefined,
+      city: locationData?.city || undefined,
+      state: locationData?.state || undefined,
+      latitude: locationData?.latitude || undefined,
+      longitude: locationData?.longitude || undefined,
     };
 
     let userConsoleId: number | undefined;
@@ -399,6 +451,17 @@ export const ConsoleForm = ({
             t={t}
             showPrice={true}
           />
+
+          {(formData.status === "SELLING" || formData.status === "LOOKING_FOR") && (
+            <LocationInput
+              label={t("location")}
+              placeholder={t("locationPlaceholder")}
+              value={locationData}
+              onChange={setLocationData}
+              data-testid="input-location"
+              successMessage={t("locationSuccess")}
+            />
+          )}
           <Textarea
             name="description"
             value={formData.description}
