@@ -93,6 +93,21 @@ jobs:
       - name: Install dependencies
         run: npm install -g pnpm && pnpm install
 
+      # Build and start the Next.js frontend (required for Playwright)
+      - name: Build Frontend
+        run: |
+          pnpm run build
+      - name: Start Frontend Server
+        run: |
+          pnpm start &
+          # Wait until the server is reachable
+          for i in {1..30}; do
+            if curl -s http://localhost:3000/health || curl -s http://localhost:3000/api/health; then
+              echo "Frontend is up!"; break;
+            fi
+            echo "Waiting for frontend..."; sleep 2;
+          done
+
       # Instala browsers do Playwright
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
