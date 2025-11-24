@@ -12,6 +12,11 @@ interface UserProfile {
   phone?: string | null;
   description?: string;
   profileImage?: string;
+  zipCode?: string | null;
+  city?: string | null;
+  state?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 interface UpdateProfilePayload {
@@ -21,6 +26,11 @@ interface UpdateProfilePayload {
   email: string;
   description: string;
   profileImage?: string;
+  zipCode?: string | null;
+  city?: string | null;
+  state?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export function useAccount() {

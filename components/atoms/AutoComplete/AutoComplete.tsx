@@ -38,6 +38,11 @@ export const AutoComplete = ({
   const [inputValue, setInputValue] = useState(value);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Sync internal state with external value prop
+  useEffect(() => {
+    setInputValue(value);
+  }, [value]);
+
   // Fechar dropdown quando clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

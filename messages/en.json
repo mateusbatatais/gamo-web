@@ -306,7 +306,9 @@
       "updateError": "Failed to update details.",
       "updateSuccess": "Details updated successfully!",
       "selectPhoto": "Select Photo",
-      "phone": "Phone (for trade contact)"
+      "phone": "Phone (for trade contact)",
+      "location": "Location",
+      "getCurrentLocation": "Get current location"
     },
     "changePasswordForm": {
       "currentPassword": "Current Password",

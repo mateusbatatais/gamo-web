@@ -306,7 +306,9 @@
       "updateError": "Falha ao atualizar dados.",
       "updateSuccess": "Dados atualizados com sucesso!",
       "selectPhoto": "Selecionar foto",
-      "phone": "Whatsapp (para compra e venda)"
+      "phone": "Whatsapp (para compra e venda)",
+      "location": "Localização",
+      "getCurrentLocation": "Pegar localização atual"
     },
     "changePasswordForm": {
       "currentPassword": "Senha Atual",
