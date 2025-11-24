@@ -83,6 +83,12 @@ export const AccessoryActionButtons = ({
               photoMain: accessoryDetails?.photoMain || accessory.photoMain,
               photos: accessoryDetails?.photos || accessory.photos,
               compatibleUserConsoleIds: accessoryDetails?.compatibleUserConsoleIds || [],
+              address: accessoryDetails?.address || accessory.address,
+              zipCode: accessoryDetails?.zipCode || accessory.zipCode,
+              city: accessoryDetails?.city || accessory.city,
+              state: accessoryDetails?.state || accessory.state,
+              latitude: accessoryDetails?.latitude || accessory.latitude,
+              longitude: accessoryDetails?.longitude || accessory.longitude,
             }}
             onSuccess={() => {
               setShowEditModal(false);

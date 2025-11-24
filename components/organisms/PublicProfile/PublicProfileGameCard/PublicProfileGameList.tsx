@@ -267,6 +267,12 @@ export const PublicProfileGameList = ({
             abandoned: game.abandoned || false,
             media: game.media,
             platformId: game.platformId,
+            address: game.address,
+            zipCode: game.zipCode,
+            city: game.city,
+            state: game.state,
+            latitude: game.latitude,
+            longitude: game.longitude,
           }}
           onSuccess={() => {
             setShowEditModal(false);

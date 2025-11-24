@@ -277,6 +277,12 @@ export const PublicProfileConsoleCard = ({
             photoMain: consoleItem.photoMain,
             photos: consoleItem.photos,
             storageOptionId: consoleItem.storageOption?.id,
+            address: consoleItem.address,
+            zipCode: consoleItem.zipCode,
+            city: consoleItem.city,
+            state: consoleItem.state,
+            latitude: consoleItem.latitude,
+            longitude: consoleItem.longitude,
           }}
           onSuccess={() => {
             setShowEditModal(false);

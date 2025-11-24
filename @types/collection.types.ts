@@ -15,6 +15,12 @@ interface BaseCollectionItem {
   photoMain?: string | null;
   photos?: string[] | null;
   createdAt?: Date;
+  address?: string | null;
+  zipCode?: string | null;
+  city?: string | null;
+  state?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 // Console na coleção do usuário
@@ -56,21 +62,10 @@ export interface UserGame extends BaseCollectionItem {
   isFavorite?: boolean;
 }
 
-export interface UserAccessory {
-  id?: number;
+export interface UserAccessory extends BaseCollectionItem {
   accessoryId: number;
   accessoryVariantId: number;
   accessorySlug: string;
-  description?: string | null;
-  status: CollectionStatus;
-  price?: number | null;
-  hasBox?: boolean | null;
-  hasManual?: boolean | null;
-  condition?: Condition;
-  acceptsTrade?: boolean | null;
-  photoMain?: string | null;
-  photos?: string[] | null;
-  createdAt?: Date;
   accessoryName?: string;
   variantName?: string;
   compatibleUserConsoleIds?: number[];
