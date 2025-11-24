@@ -29,6 +29,7 @@ export default function AccountDetailsForm() {
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
+  const [address, setAddress] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -56,14 +57,17 @@ export default function AccountDetailsForm() {
       setEmail(profileQuery.data.email);
       setPhone(profileQuery.data.phone || "");
       setDescription(profileQuery.data.description ?? "");
+      setAddress(profileQuery.data.address || "");
       setZipCode(profileQuery.data.zipCode || "");
       setCity(profileQuery.data.city || "");
       setState(profileQuery.data.state || "");
       setLatitude(profileQuery.data.latitude || null);
       setLongitude(profileQuery.data.longitude || null);
 
-      // Set location display text if we have city and state
-      if (profileQuery.data.city && profileQuery.data.state) {
+      // Set location display text - prefer saved address, fallback to city/state
+      if (profileQuery.data.address) {
+        setLocation(profileQuery.data.address);
+      } else if (profileQuery.data.city && profileQuery.data.state) {
         setLocation(`${profileQuery.data.city}, ${profileQuery.data.state}`);
       }
     }
@@ -86,6 +90,7 @@ export default function AccountDetailsForm() {
       const details = await getPlaceDetails(placeId);
       if (details) {
         setLocation(details.formattedAddress);
+        setAddress(details.formattedAddress);
         setZipCode(details.zipCode);
         setCity(details.city);
         setState(details.state);
@@ -102,6 +107,7 @@ export default function AccountDetailsForm() {
       const details = await getCurrentLocation();
       if (details) {
         setLocation(details.formattedAddress);
+        setAddress(details.formattedAddress);
         setZipCode(details.zipCode);
         setCity(details.city);
         setState(details.state);
@@ -134,6 +140,7 @@ export default function AccountDetailsForm() {
         description,
         email,
         phone,
+        address: address || null,
         zipCode: zipCode || null,
         city: city || null,
         state: state || null,

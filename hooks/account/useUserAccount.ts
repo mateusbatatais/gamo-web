@@ -12,6 +12,7 @@ interface UserProfile {
   phone?: string | null;
   description?: string;
   profileImage?: string;
+  address?: string | null;
   zipCode?: string | null;
   city?: string | null;
   state?: string | null;
@@ -26,6 +27,7 @@ interface UpdateProfilePayload {
   email: string;
   description: string;
   profileImage?: string;
+  address?: string | null;
   zipCode?: string | null;
   city?: string | null;
   state?: string | null;
