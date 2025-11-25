@@ -4,6 +4,7 @@
 import { SearchBar } from "@/components/molecules/SearchBar/SearchBar";
 import { SortSelect } from "@/components/molecules/SortSelect/SortSelect";
 import { ViewToggle } from "@/components/molecules/ViewToggle/ViewToggle";
+import { ToggleGroup } from "@/components/molecules/ToggleGroup/ToggleGroup";
 import { Button } from "@/components/atoms/Button/Button";
 import { Settings2 } from "lucide-react";
 import { CatalogHeaderProps } from "@/@types/catalog-state.types";
@@ -17,6 +18,9 @@ export const CatalogHeader = ({
   onViewModeChange,
   onFilterToggle,
   showFilterButton = true,
+  toggleItems,
+  toggleValue,
+  onToggleChange,
 }: CatalogHeaderProps) => {
   return (
     <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -33,6 +37,19 @@ export const CatalogHeader = ({
 
       {/* Resto do código igual... */}
       <div className="flex flex-col md:flex-row gap-4 w-full lg:w-auto">
+        {/* ToggleGroup opcional */}
+        {toggleItems && toggleValue && onToggleChange && (
+          <div className="w-full md:w-auto">
+            <ToggleGroup
+              items={toggleItems}
+              value={toggleValue}
+              onChange={onToggleChange}
+              size="sm"
+              variant="secondary"
+            />
+          </div>
+        )}
+
         <div className="w-full md:w-full lg:w-auto">
           <SortSelect
             options={sortOptions}

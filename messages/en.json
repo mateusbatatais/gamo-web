@@ -131,7 +131,11 @@
     "releaseDateAsc": "Release Date (Oldest)",
     "releaseDateDesc": "Release Date (Newest)",
     "popularityDesc": "Most Popular",
-    "scoreDesc": "Best Rated"
+    "scoreDesc": "Best Rated",
+    "newestFirst": "Newest first",
+    "priceAsc": "Price Asc",
+    "priceDesc": "Price Desc",
+    "proximity": "Proximity"
   },
   "Header": {
     "altLogo": "Gamo Logo",

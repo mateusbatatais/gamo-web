@@ -31,13 +31,33 @@ export const useCatalogState = ({
       setViewMode(savedView as ViewMode);
     }
 
-    // Sort do localStorage ou URL
+    // Sort do localStorage ou URL - com validação
     const savedSort = localStorage.getItem(`${storageKey}-sort`);
     const urlSort = searchParams.get("sort");
-    if (savedSort) {
-      setSort(savedSort);
-    } else if (urlSort) {
+
+    // Validar se o sort salvo é válido, caso contrário usar o padrão
+    const validSorts = [
+      "name-asc",
+      "name-desc",
+      "price-asc",
+      "price-desc",
+      "recent",
+      "proximity",
+      "score-desc",
+      "releaseDate-asc",
+      "releaseDate-desc",
+    ];
+
+    if (urlSort && validSorts.includes(urlSort)) {
       setSort(urlSort);
+    } else if (savedSort && validSorts.includes(savedSort)) {
+      setSort(savedSort);
+    } else {
+      // Se nenhum valor válido, usar o padrão e limpar localStorage inválido
+      setSort(defaultSort);
+      if (savedSort && !validSorts.includes(savedSort)) {
+        localStorage.removeItem(`${storageKey}-sort`);
+      }
     }
 
     // Page da URL
@@ -57,7 +77,7 @@ export const useCatalogState = ({
     // Search da URL - SEMPRE atualiza, mesmo quando é removido
     const urlSearch = searchParams.get("search");
     setSearchQuery(urlSearch || ""); // ← Esta linha é a correção
-  }, [storageKey, searchParams]);
+  }, [storageKey, searchParams, defaultSort]);
 
   // Persistir preferências no localStorage
   useEffect(() => {

@@ -131,7 +131,11 @@
     "releaseDateAsc": "Data de Lançamento (Mais antigos)",
     "releaseDateDesc": "Data de Lançamento (Mais recentes)",
     "popularityDesc": "Mais populares",
-    "scoreDesc": "Melhor avaliados"
+    "scoreDesc": "Melhor avaliados",
+    "newestFirst": "Mais recentes",
+    "priceAsc": "Mais caros",
+    "priceDesc": "Mais baratos",
+    "proximity": "Proximidade"
   },
   "Header": {
     "altLogo": "Logo Gamo",

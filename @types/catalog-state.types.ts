@@ -19,6 +19,9 @@ export interface CatalogLayoutProps {
   searchPlaceholder: string;
   searchPath: string;
   sortOptions: SortOption[];
+  toggleItems?: { value: string; label: string }[];
+  toggleValue?: string;
+  onToggleChange?: (value: string) => void;
 
   // Filtros
   filterSidebar: React.ReactNode;
@@ -57,4 +60,7 @@ export interface CatalogHeaderProps {
   onViewModeChange: (mode: ViewMode) => void;
   onFilterToggle: () => void;
   showFilterButton?: boolean;
+  toggleItems?: { value: string; label: string }[];
+  toggleValue?: string;
+  onToggleChange?: (value: string) => void;
 }

@@ -154,3 +154,35 @@ export interface MarketItem {
   status: "SELLING" | "LOOKING_FOR";
   acceptsTrade: boolean | null;
 }
+
+export interface MarketplaceItem {
+  id: number;
+  itemType: "GAME" | "CONSOLE" | "ACCESSORY";
+  status: "SELLING" | "LOOKING_FOR";
+  price: number | null;
+  condition: string | null;
+  hasBox: boolean;
+  hasManual: boolean;
+  acceptsTrade: boolean;
+  photoMain: string | null;
+  photos: string[];
+  description: string | null;
+  createdAt: string;
+  city: string;
+  state: string;
+  latitude: number;
+  longitude: number;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  accessoryInfo?: {
+    typeSlug: string;
+    subTypeSlug: string;
+  };
+  seller: {
+    id: number;
+    name: string;
+    slug: string;
+    phone: string;
+  };
+}
