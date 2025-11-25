@@ -18,6 +18,16 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Ignora a pasta api durante o build (usada em CI para clonar gamo-api)
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.watchOptions = {
+        ...config.watchOptions,
+        ignored: ["**/api/**", "**/node_modules/**"],
+      };
+    }
+    return config;
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();
