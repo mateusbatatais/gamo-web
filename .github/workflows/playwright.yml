@@ -66,10 +66,34 @@ jobs:
       - name: Run API container
         run: |
           docker run -d --name api \
-            --env-file <(env | grep -E 'DATABASE_URL|JWT_SECRET|FIREBASE_SERVICE_ACCOUNT|SMTP_HOST|SMTP_PORT|SMTP_USER|SMTP_PASS|SMTP_FROM|SENDINBLUE_API_KEY|CLOUDINARY_CLOUD_NAME|CLOUDINARY_API_KEY|CLOUDINARY_API_SECRET|ADMIN_EMAIL|ADMIN_PASSWORD|FRONTEND_URL|FIREBASE_API_KEY|FIREBASE_AUTH_DOMAIN|FIREBASE_PROJECT_ID|FIREBASE_STORAGE_BUCKET|FIREBASE_MESSAGING_SENDER_ID|FIREBASE_APP_ID|STRIPE_SECRET_KEY|RAWG_API_KEY') \
+            -e DATABASE_URL="${DATABASE_URL}" \
+            -e JWT_SECRET="${JWT_SECRET}" \
+            -e FIREBASE_SERVICE_ACCOUNT="${FIREBASE_SERVICE_ACCOUNT}" \
+            -e SMTP_HOST="${SMTP_HOST}" \
+            -e SMTP_PORT="${SMTP_PORT}" \
+            -e SMTP_USER="${SMTP_USER}" \
+            -e SMTP_PASS="${SMTP_PASS}" \
+            -e SMTP_FROM="${SMTP_FROM}" \
+            -e SENDINBLUE_API_KEY="${SENDINBLUE_API_KEY}" \
+            -e CLOUDINARY_CLOUD_NAME="${CLOUDINARY_CLOUD_NAME}" \
+            -e CLOUDINARY_API_KEY="${CLOUDINARY_API_KEY}" \
+            -e CLOUDINARY_API_SECRET="${CLOUDINARY_API_SECRET}" \
+            -e ADMIN_EMAIL="${ADMIN_EMAIL}" \
+            -e ADMIN_PASSWORD="${ADMIN_PASSWORD}" \
+            -e FRONTEND_URL="${FRONTEND_URL}" \
+            -e STRIPE_SECRET_KEY="${STRIPE_SECRET_KEY}" \
+            -e RAWG_API_KEY="${RAWG_API_KEY}" \
             -e PORT=8080 \
             --network host \
             -p 8080:8080 gamo-api
+
+      # Verifica status do container
+      - name: Check API container status
+        run: |
+          echo "Container status:"
+          docker ps -a | grep api || true
+          echo "\nContainer logs (last 50 lines):"
+          docker logs --tail 50 api || true
 
       # Espera a API subir
       - name: Wait for API
@@ -83,11 +107,17 @@ jobs:
             sleep 2;
           done
           echo "API did not start in time";
+          echo "\nFinal container status:"
+          docker ps -a | grep api || true
           exit 1
 
-      - name: Show API logs if failed
+      - name: Show full API logs if failed
         if: failure()
-        run: docker logs api || true
+        run: |
+          echo "Full API logs:"
+          docker logs api || true
+          echo "\nContainer inspect:"
+          docker inspect api || true
 
       # Instala dependências do frontend
       - name: Install dependencies
