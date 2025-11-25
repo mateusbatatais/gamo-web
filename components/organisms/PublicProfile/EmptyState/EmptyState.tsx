@@ -6,18 +6,18 @@ import { Card } from "@/components/atoms/Card/Card";
 import { EmptyCard } from "../EmptyCard/EmptyCard";
 import { useTranslations } from "next-intl";
 
+import { ViewMode } from "@/@types/catalog-state.types";
+
 interface EmptyStateProps {
   type: "games" | "consoles" | "accessories" | "global";
   marketType?: "selling" | "looking";
   isOwner: boolean | undefined;
-  viewMode?: "grid" | "list" | "table" | "compact";
+  viewMode?: ViewMode;
 }
 
 // 🆕 FUNÇÃO PARA MAPEAR viewMode
-const mapViewMode = (
-  viewMode: "grid" | "list" | "table" | "compact",
-): "card" | "list" | "table" | "compact" => {
-  if (viewMode === "grid") return "card";
+const mapViewMode = (viewMode: ViewMode): "card" | "list" | "table" | "compact" => {
+  if (viewMode === "grid" || viewMode === "map") return "card";
   return viewMode;
 };
 
