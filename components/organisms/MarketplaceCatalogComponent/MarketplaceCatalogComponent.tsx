@@ -9,10 +9,12 @@ import { useCatalogState } from "@/hooks/useCatalogState";
 import { useMarketplaceFilters } from "@/hooks/useMarketplaceFilters";
 import MarketplaceFilterContainer from "@/components/molecules/Filter/MarketplaceFilterContainer";
 import MarketplaceCard from "@/components/molecules/MarketplaceCard/MarketplaceCard";
+import MarketplaceMapView from "../MarketplaceMapView/MarketplaceMapView";
 import { useEffect } from "react";
 import { CatalogSkeleton } from "../Catalog/CatalogSkeleton";
 import { CatalogEmptyState } from "../Catalog/CatalogEmptyState";
 import { CatalogLayout } from "../Catalog/Layouts/CatalogLayout";
+import { Grid3X3, List, Map } from "lucide-react";
 
 interface MarketplaceCatalogComponentProps {
   perPage: number;
@@ -65,6 +67,13 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
     { value: "LOOKING_FOR", label: "Procurando" },
   ];
 
+  // Opções de visualização customizadas para marketplace
+  const VIEW_MODE_OPTIONS = [
+    { value: "grid" as const, label: "Grade", icon: <Grid3X3 size={16} /> },
+    { value: "list" as const, label: "Lista", icon: <List size={16} /> },
+    { value: "map" as const, label: "Mapa", icon: <Map size={16} /> },
+  ];
+
   // Breadcrumbs
   useEffect(() => {
     setItems([
@@ -105,6 +114,12 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
       );
     }
 
+    // Visualização em mapa
+    if (catalogState.viewMode === "map") {
+      return <MarketplaceMapView items={marketplace.items} />;
+    }
+
+    // Visualizações grid/list
     return (
       <div
         className={
@@ -129,6 +144,7 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
       toggleItems={TOGGLE_ITEMS}
       toggleValue={marketplaceFilters.selectedStatus}
       onToggleChange={marketplaceFilters.handleStatusChange}
+      viewModeOptions={VIEW_MODE_OPTIONS}
       // Filtros
       filterSidebar={
         <MarketplaceFilterContainer

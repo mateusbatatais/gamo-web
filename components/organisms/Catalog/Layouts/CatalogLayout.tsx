@@ -14,6 +14,7 @@ export const CatalogLayout = ({
   toggleItems,
   toggleValue,
   onToggleChange,
+  viewModeOptions,
 
   // Filtros
   filterSidebar,
@@ -59,6 +60,7 @@ export const CatalogLayout = ({
           toggleItems={toggleItems}
           toggleValue={toggleValue}
           onToggleChange={onToggleChange}
+          viewModeOptions={viewModeOptions}
         />
 
         {/* Drawer de Filtros para Mobile */}

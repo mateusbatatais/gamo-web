@@ -21,6 +21,7 @@ export const CatalogHeader = ({
   toggleItems,
   toggleValue,
   onToggleChange,
+  viewModeOptions,
 }: CatalogHeaderProps) => {
   return (
     <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -60,7 +61,11 @@ export const CatalogHeader = ({
         </div>
 
         <div className="flex items-center gap-4 flex-wrap md:flex-nowrap justify-between lg:justify-end">
-          <ViewToggle onViewChange={onViewModeChange} storageKey="catalog-view" />
+          <ViewToggle
+            onViewChange={onViewModeChange}
+            storageKey="catalog-view"
+            viewModeOptions={viewModeOptions}
+          />
 
           {showFilterButton && (
             <div className="lg:hidden">

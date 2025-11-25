@@ -1,6 +1,6 @@
 // types/catalog-state.types.ts
 
-export type ViewMode = "grid" | "list" | "table" | "compact";
+export type ViewMode = "grid" | "list" | "table" | "compact" | "map";
 
 export interface SortOption {
   value: string;
@@ -22,6 +22,7 @@ export interface CatalogLayoutProps {
   toggleItems?: { value: string; label: string }[];
   toggleValue?: string;
   onToggleChange?: (value: string) => void;
+  viewModeOptions?: { value: ViewMode; label: string; icon: React.ReactNode }[];
 
   // Filtros
   filterSidebar: React.ReactNode;
@@ -63,4 +64,5 @@ export interface CatalogHeaderProps {
   toggleItems?: { value: string; label: string }[];
   toggleValue?: string;
   onToggleChange?: (value: string) => void;
+  viewModeOptions?: { value: ViewMode; label: string; icon: React.ReactNode }[];
 }
