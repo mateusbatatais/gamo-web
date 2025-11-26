@@ -85,3 +85,35 @@ export const mockGenerationsAPI = async (page: Page) => {
     });
   });
 };
+
+export const mockModelsAPI = async (page: Page) => {
+  await page.route("**/api/models**", async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify([
+        { slug: "ps4-slim", name: "PS4 Slim" },
+        { slug: "ps4-pro", name: "PS4 Pro" },
+        { slug: "ps5-digital", name: "PS5 Digital Edition" },
+        { slug: "ps5-standard", name: "PS5 Standard" },
+        { slug: "xbox-one-s", name: "Xbox One S" },
+        { slug: "xbox-series-s", name: "Xbox Series S" },
+        { slug: "xbox-series-x", name: "Xbox Series X" },
+      ]),
+    });
+  });
+};
+
+export const mockMediaFormatsAPI = async (page: Page) => {
+  await page.route("**/api/media-formats**", async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify([
+        { slug: "disc", name: "Disc" },
+        { slug: "digital", name: "Digital" },
+        { slug: "cartridge", name: "Cartridge" },
+      ]),
+    });
+  });
+};

@@ -4,6 +4,8 @@ import {
   mockConsolesAPI,
   mockEmptyConsolesAPI,
   mockGenerationsAPI,
+  mockMediaFormatsAPI,
+  mockModelsAPI,
 } from "@/tests/mocks/console-catalog-mocks";
 import { test, expect, Route } from "@playwright/test";
 
@@ -16,6 +18,8 @@ test.describe("Catálogo de Consoles", () => {
     // Configurar todos os mocks antes de cada teste
     await mockBrandsAPI(page);
     await mockGenerationsAPI(page);
+    await mockModelsAPI(page);
+    await mockMediaFormatsAPI(page);
     await mockConsolesAPI(page);
 
     await page.goto(`/${DEFAULT_LOCALE}/console-catalog`);
