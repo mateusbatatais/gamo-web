@@ -7,6 +7,7 @@ import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActio
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { Heart } from "lucide-react";
 
 interface AccessoryCompactCardProps {
   accessory: UserAccessory;
@@ -23,13 +24,16 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
     <div
       className={`
         rounded-lg border overflow-hidden hover:shadow-md transition-shadow aspect-square relative group
-        ${
-          accessory.isFavorite
-            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
-            : "border-gray-200 dark:border-gray-700"
-        }
+        border-gray-200 dark:border-gray-700
       `}
     >
+      {!isOwner && accessory.isFavorite && (
+        <div className="absolute top-2 right-2 z-10">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1.5 rounded-full text-primary-500 shadow-sm">
+            <Heart size={12} fill="currentColor" />
+          </div>
+        </div>
+      )}
       {isOwner && (
         <div className="absolute top-2 right-2 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
           <AccessoryActionButtons accessory={accessory} isOwner={isOwner} type={type} compact />

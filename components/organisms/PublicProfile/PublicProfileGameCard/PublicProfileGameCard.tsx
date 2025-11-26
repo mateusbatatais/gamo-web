@@ -14,6 +14,7 @@ import {
   CloudDownload,
   ArrowLeftRight,
   Star,
+  Heart,
 } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
@@ -61,13 +62,16 @@ export const PublicProfileGameCard = ({
       <Card
         className={`
         overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group
-        ${
-          game.isFavorite
-            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
-            : "border border-gray-200 dark:border-gray-700"
-        }
+        border border-gray-200 dark:border-gray-700
       `}
       >
+        {!isOwner && game.isFavorite && (
+          <div className="absolute top-2 right-2 z-10">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1.5 rounded-full text-primary-500 shadow-sm">
+              <Heart size={16} fill="currentColor" />
+            </div>
+          </div>
+        )}
         {isOwner && (
           <div className="absolute top-2 right-2 flex z-10 gap-1">
             {/* Botão de favorito */}

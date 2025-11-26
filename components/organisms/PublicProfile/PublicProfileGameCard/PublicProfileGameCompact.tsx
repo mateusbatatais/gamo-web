@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/atoms/Card/Card";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil, Trash, Heart } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -51,13 +51,16 @@ export const PublicProfileGameCompact = ({
       <Card
         className={`
         overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group aspect-square
-        ${
-          game.isFavorite
-            ? "!border-primary-700 border-2 shadow-md shadow-primary-100 dark:shadow-primary-900/20"
-            : "border border-gray-200 dark:border-gray-700"
-        }
+        border border-gray-200 dark:border-gray-700
       `}
       >
+        {!isOwner && game.isFavorite && (
+          <div className="absolute top-2 right-2 z-10">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-1.5 rounded-full text-primary-500 shadow-sm">
+              <Heart size={12} fill="currentColor" />
+            </div>
+          </div>
+        )}
         {isOwner && (
           <div className="absolute top-2 right-2 flex z-10 opacity-0 group-hover:opacity-100 transition-opacity gap-1">
             <FavoriteToggle
