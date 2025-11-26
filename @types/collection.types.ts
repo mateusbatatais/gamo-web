@@ -59,6 +59,7 @@ export interface UserGame extends BaseCollectionItem {
   gameImageUrl?: string;
   platformId?: number;
   gameSlug?: string;
+  compatibleUserConsoleIds?: number[];
   isFavorite?: boolean;
 }
 

@@ -522,6 +522,7 @@
     "compatibleConsoles": "Consoles compatíveis",
     "noConsoles": "Nenhum console em sua coleção",
     "includeAccessories": "Adicionar acessorioss",
+    "includeGames": "Adicionar games",
     "putUpForSale": "Colocar {item} à venda?",
     "moveToOwned": "Comprei! Mover {item} para a coleção?",
     "backToCollection": "Voltar {item} para a coleção?",
@@ -548,6 +549,7 @@
     "storageOption": "Opção de armazenamento",
     "includeAccessories": "Deseja incluir acessórios?",
     "noAccessories": "Nenhum acessório disponível para este console",
+    "noGames": "Nenhum game disponível para este console",
     "cancel": "Cancelar",
     "add": "Adicionar à coleção"
   },

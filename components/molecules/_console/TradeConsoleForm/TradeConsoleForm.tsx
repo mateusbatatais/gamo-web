@@ -5,12 +5,15 @@ import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useUserConsoleMutation } from "@/hooks/useUserConsoleMutation";
 import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
+import { useGamesByConsole } from "@/hooks/useGamesByConsole";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
 import { Select } from "@/components/atoms/Select/Select";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import { AccessorySelector } from "../../AccessorySelector/AccessorySelector";
+import { GameSelector } from "../../GameSelector/GameSelector";
 
 interface TradeConsoleFormProps {
   consoleId: number;
@@ -45,6 +48,11 @@ interface SelectedAccessoryVariant {
   quantity: number;
 }
 
+interface SelectedGameVariant {
+  variantId: number;
+  quantity: number;
+}
+
 export const TradeConsoleForm = ({
   consoleId,
   consoleVariantId,
@@ -57,17 +65,23 @@ export const TradeConsoleForm = ({
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
   const { createUserAccessory } = useUserAccessoryMutation();
+  const { createUserGame } = useUserGameMutation();
   const { data: storageOptions, isLoading: storageOptionsLoading } =
     useStorageOptions(consoleVariantId);
   const { data: accessoryVariants, isLoading: accessoriesLoading } =
     useAccessoryVariantsByConsole(consoleId);
+  const { data: gameVariants, isLoading: gamesLoading } = useGamesByConsole(consoleId);
   const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number | undefined>(
     initialData?.storageOptionId ?? undefined,
   );
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
   >({});
+  const [selectedGameVariants, setSelectedGameVariants] = useState<
+    Record<number, SelectedGameVariant>
+  >({});
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
+  const [isGamesOpen, setIsGamesOpen] = useState(false);
 
   const addSelectedAccessories = async (
     userConsoleId: number,
@@ -83,6 +97,29 @@ export const TradeConsoleForm = ({
         await createUserAccessory({
           accessoryId: variant.accessoryId,
           accessoryVariantId: variant.id,
+          status,
+          condition,
+          compatibleUserConsoleIds: [userConsoleId],
+        });
+      }
+    }
+  };
+
+  const addSelectedGames = async (
+    userConsoleId: number,
+    status: "SELLING" | "LOOKING_FOR",
+    condition: "NEW" | "USED" | "REFURBISHED",
+  ) => {
+    if (!isGamesOpen || !userConsoleId) return;
+    for (const [variantId, selected] of Object.entries(selectedGameVariants)) {
+      if (selected.quantity <= 0) continue;
+      const variant = gameVariants?.find((v) => v.id === parseInt(variantId));
+      if (!variant) continue;
+      for (let i = 0; i < selected.quantity; i++) {
+        await createUserGame({
+          gameId: variant.id,
+          gameSlug: variant.slug,
+          media: "PHYSICAL",
           status,
           condition,
           compatibleUserConsoleIds: [userConsoleId],
@@ -108,6 +145,7 @@ export const TradeConsoleForm = ({
     const userConsoleId = userConsoleResponse?.userConsole?.id;
     if (userConsoleId) {
       await addSelectedAccessories(userConsoleId, data.status, data.condition);
+      await addSelectedGames(userConsoleId, data.status, data.condition);
     }
 
     onSuccess();
@@ -120,8 +158,19 @@ export const TradeConsoleForm = ({
     }));
   };
 
+  const handleGameQuantityChange = (variantId: number, newQuantity: number) => {
+    setSelectedGameVariants((prev) => ({
+      ...prev,
+      [variantId]: { variantId, quantity: Math.max(0, newQuantity) },
+    }));
+  };
+
   const handleAccessoriesToggle = (open: boolean) => {
     setIsAccessoriesOpen(open);
+  };
+
+  const handleGamesToggle = (open: boolean) => {
+    setIsGamesOpen(open);
   };
 
   const conditionOptions: { value: "NEW" | "USED" | "REFURBISHED"; label: string }[] = [
@@ -145,6 +194,22 @@ export const TradeConsoleForm = ({
       return acc;
     },
     {} as Record<string, typeof accessoryVariants>,
+  );
+
+  const variantsByGenre = gameVariants?.reduce(
+    (acc, variant) => {
+      const genres = variant.genreMap ? Object.values(variant.genreMap) : ["Outros"];
+      genres.forEach((genre) => {
+        if (!acc[genre]) {
+          acc[genre] = [];
+        }
+        if (!acc[genre].find((g) => g.id === variant.id)) {
+          acc[genre].push(variant);
+        }
+      });
+      return acc;
+    },
+    {} as Record<string, typeof gameVariants>,
   );
 
   const extraFields = (
@@ -172,6 +237,15 @@ export const TradeConsoleForm = ({
           selectedVariants={selectedVariants}
           onQuantityChange={handleQuantityChange}
           isLoading={accessoriesLoading}
+        />
+      </Collapse>
+
+      <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
+        <GameSelector
+          variantsByGenre={variantsByGenre || {}}
+          selectedVariants={selectedGameVariants}
+          onQuantityChange={handleGameQuantityChange}
+          isLoading={gamesLoading}
         />
       </Collapse>
     </>

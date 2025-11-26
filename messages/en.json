@@ -522,6 +522,7 @@
     "compatibleConsoles": "Compatible Consoles",
     "noConsoles": "No consoles in your collection",
     "includeAccessories": "Add accessories",
+    "includeGames": "Add games",
     "putUpForSale": "Put {item} for sale?",
     "backToCollection": "Back {item} to your collection?",
     "moveToOwned": "Move {item} to your collection?",
@@ -548,6 +549,7 @@
     "storageOption": "Storage option",
     "includeAccessories": "Include accessories?",
     "noAccessories": "No accessories available for this console",
+    "noGames": "No games available for this console",
     "cancel": "Cancel",
     "add": "Add to collection"
   },
