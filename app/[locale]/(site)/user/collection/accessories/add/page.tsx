@@ -261,7 +261,7 @@ export default function AddAccessoryPage() {
                   accessoryVariantId={selectedVariant.id}
                   accessorySlug={selectedAccessory!.slug}
                   onSuccess={() => {
-                    window.location.href = `/user/${user?.slug}`;
+                    window.location.href = `/user/${user?.slug}${type === "collection" ? "" : "/market"}`;
                   }}
                   onCancel={() => setCurrentStep("variant")}
                 />

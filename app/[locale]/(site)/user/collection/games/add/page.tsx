@@ -299,7 +299,7 @@ export default function AddGamePage() {
                   gameId={selectedGame.id}
                   platformOptions={platformOptions}
                   onSuccess={() => {
-                    window.location.href = `/user/${user?.slug}/games`;
+                    window.location.href = `/user/${user?.slug}${type === "collection" ? "/games" : "/market"}`;
                   }}
                   onCancel={() => setCurrentStep("game")}
                 />

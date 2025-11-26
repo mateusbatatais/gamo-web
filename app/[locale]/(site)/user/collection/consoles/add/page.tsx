@@ -318,7 +318,7 @@ export default function AddConsolePage() {
                       onClick={() => handleVariantSelect(variant)}
                       className="p-0 overflow-hidden"
                     >
-                      <Card className="h-full border-0 !p-0">
+                      <Card className="h-full border-0 p-0!">
                         <div className="h-20 relative">
                           <ImageWithFallback
                             src={variant.imageUrl}
@@ -369,7 +369,7 @@ export default function AddConsolePage() {
                           onClick={() => handleSkinSelect(skin)}
                           className="p-0 overflow-hidden"
                         >
-                          <Card className="border-0 h-full !p-0">
+                          <Card className="border-0 h-full p-0!">
                             <div className="h-24 relative">
                               <ImageWithFallback
                                 src={skin.imageUrl}
@@ -410,7 +410,7 @@ export default function AddConsolePage() {
                   variantSlug={selectedVariant.slug}
                   skinId={selectedSkin?.id || null}
                   onSuccess={() => {
-                    window.location.href = `/user/${user?.slug}`;
+                    window.location.href = `/user/${user?.slug}${type === "collection" ? "" : "/market"}`;
                   }}
                   onCancel={() => setCurrentStep("skin")}
                 />
