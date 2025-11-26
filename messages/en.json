@@ -615,20 +615,23 @@
     "formTitle": "Console Details",
     "selectBrand": "Select a brand",
     "selectVariant": "Select a model",
-    "selectSkin": "Select a skin"
+    "selectSkin": "Select a skin",
+    "titleMarket": "Put console up for sale"
   },
   "AddGame": {
     "title": "Add Game",
     "selectGame": "Select Game",
     "searchPlaceholder": "Search games...",
-    "popularGames": "Popular Games"
+    "popularGames": "Popular Games",
+    "titleMarket": "Put game up for sale"
   },
   "AddAccessory": {
     "title": "Add Accessory to Collection",
     "searchPlaceholder": "Search accessories...",
     "formTitle": "Accessory Details",
     "selectAccessory": "Select Accessory",
-    "selectVariant": "Select a model"
+    "selectVariant": "Select a model",
+    "titleMarket": "Put accessory up for sale"
   },
   "GameImport": {
     "title": "Import Games",

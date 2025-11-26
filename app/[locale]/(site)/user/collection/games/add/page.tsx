@@ -185,7 +185,9 @@ export default function AddGamePage() {
 
   return (
     <div className="container mx-auto max-w-6xl sm:px-4">
-      <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">{t("title")}</h1>
+      <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+        {type === "collection" ? t("title") : t("titleMarket")}
+      </h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">

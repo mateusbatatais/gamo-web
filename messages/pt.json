@@ -615,7 +615,8 @@
     "formTitle": "Detalhes do Console",
     "selectBrand": "Selecione uma marca",
     "selectVariant": "Selecione um modelo",
-    "selectSkin": "Selecione uma edição "
+    "selectSkin": "Selecione uma edição ",
+    "titleMarket": "Colocar console a venda"
   },
   "AddGame": {
     "title": "Adicionar Jogo",
@@ -628,7 +629,8 @@
     "searchPlaceholder": "Buscar acessórios...",
     "formTitle": "Detalhes do Acessório",
     "selectAccessory": "Selecionar Acessório",
-    "selectVariant": "Selecione um modelo"
+    "selectVariant": "Selecione um modelo",
+    "titleMarket": "Colocar acessório a venda"
   },
   "GameImport": {
     "title": "Importar Jogos",
