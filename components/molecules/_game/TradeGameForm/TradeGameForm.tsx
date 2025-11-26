@@ -24,6 +24,12 @@ interface TradeGameFormProps {
     photoMain?: string | null;
     photos?: string[] | null;
     platformId?: number;
+    address?: string | null;
+    zipCode?: string | null;
+    city?: string | null;
+    state?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -83,6 +89,7 @@ export const TradeGameForm = ({
           />
         )
       }
+      showLocation={true}
     />
   );
 };

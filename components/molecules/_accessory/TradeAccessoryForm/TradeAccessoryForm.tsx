@@ -27,6 +27,12 @@ interface TradeAccessoryFormProps {
     acceptsTrade?: boolean | null;
     photoMain?: string | null;
     photos?: string[] | null;
+    address?: string | null;
+    zipCode?: string | null;
+    city?: string | null;
+    state?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -105,6 +111,7 @@ export const TradeAccessoryForm = ({
       isSubmitting={isPending}
       conditionOptions={conditionOptions}
       extraFields={extraFields}
+      showLocation={true}
     />
   );
 };

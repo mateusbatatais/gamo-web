@@ -1,7 +1,7 @@
 // src/components/molecules/TradeFormBase/TradeFormBase.tsx
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useState, useRef, useEffect } from "react";
 import { Button } from "@/components/atoms/Button/Button";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Radio } from "@/components/atoms/Radio/Radio";
@@ -10,6 +10,8 @@ import { useCollectionForm } from "@/hooks/useCollectionForm";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
+import { useAccount } from "@/hooks/account/useUserAccount";
+import { LocationData, LocationInput } from "@/components/molecules/LocationInput/LocationInput";
 
 export type StatusType = "SELLING" | "LOOKING_FOR";
 
@@ -24,6 +26,12 @@ export interface TradeInitialData<C extends string = string> {
   acceptsTrade?: boolean | null;
   photoMain?: string | null;
   photos?: string[] | null;
+  address?: string | null;
+  zipCode?: string | null;
+  city?: string | null;
+  state?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export interface TradeSubmitData<C extends string = string> {
@@ -37,6 +45,12 @@ export interface TradeSubmitData<C extends string = string> {
   photoMain?: string;
   photos: string[];
   platformId?: number;
+  address?: string;
+  zipCode?: string;
+  city?: string;
+  state?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface TradeFormBaseProps<C extends string = string> {
@@ -48,6 +62,7 @@ export interface TradeFormBaseProps<C extends string = string> {
   isSubmitting?: boolean;
   conditionOptions?: { value: C; label: string }[];
   extraFields?: React.ReactNode;
+  showLocation?: boolean;
 }
 
 interface FormDataType<C extends string = string> {
@@ -77,7 +92,46 @@ export function TradeFormBase<C extends string = string>({
   isSubmitting,
   conditionOptions,
   extraFields,
+  showLocation = true,
 }: TradeFormBaseProps<C>) {
+  const { profileQuery } = useAccount();
+  const [locationData, setLocationData] = useState<LocationData | null>(() => {
+    if (initialData?.address || initialData?.city) {
+      return {
+        formattedAddress: initialData.address || `${initialData.city}, ${initialData.state}`,
+        address: initialData.address || "",
+        zipCode: initialData.zipCode || "",
+        city: initialData.city || "",
+        state: initialData.state || "",
+        latitude: initialData.latitude || 0,
+        longitude: initialData.longitude || 0,
+      };
+    }
+    return null;
+  });
+
+  const hasPrefilledLocation = useRef(false);
+
+  useEffect(() => {
+    if (hasPrefilledLocation.current) return;
+
+    if (profileQuery.data && !locationData) {
+      if (profileQuery.data.address || profileQuery.data.city) {
+        setLocationData({
+          formattedAddress:
+            profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
+          address: profileQuery.data.address || "",
+          zipCode: profileQuery.data.zipCode || "",
+          city: profileQuery.data.city || "",
+          state: profileQuery.data.state || "",
+          latitude: profileQuery.data.latitude || 0,
+          longitude: profileQuery.data.longitude || 0,
+        });
+        hasPrefilledLocation.current = true;
+      }
+    }
+  }, [profileQuery.data, locationData]);
+
   const {
     photoMain,
     additionalPhotos,
@@ -103,6 +157,16 @@ export function TradeFormBase<C extends string = string>({
     condition: (initialData?.condition ?? ("USED" as unknown as C)) as C,
     acceptsTrade: initialData?.acceptsTrade ?? false,
   });
+
+  const [errors, setErrors] = useState<{
+    price?: string;
+    location?: string;
+  }>({});
+
+  // Clear errors when form data changes
+  useEffect(() => {
+    setErrors({});
+  }, [formData.price, locationData]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -134,6 +198,32 @@ export function TradeFormBase<C extends string = string>({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validação condicional baseada no status
+    const validationErrors: { price?: string; location?: string } = {};
+
+    if (formData.status === "SELLING") {
+      if (!formData.price || parseFloat(formData.price) <= 0) {
+        validationErrors.price = translate("priceRequired");
+      }
+      if (showLocation && (!locationData || !locationData.city)) {
+        validationErrors.location = translate("locationRequired");
+      }
+    }
+
+    if (
+      formData.status === "LOOKING_FOR" &&
+      showLocation &&
+      (!locationData || !locationData.city)
+    ) {
+      validationErrors.location = translate("locationRequired");
+    }
+
+    // Se houver erros, atualiza o estado e não submete
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
     const payload: TradeSubmitData<C> = {
@@ -146,6 +236,12 @@ export function TradeFormBase<C extends string = string>({
       acceptsTrade: formData.acceptsTrade,
       photoMain: mainPhotoUrl || undefined,
       photos: additionalUrls,
+      address: locationData?.address || undefined,
+      zipCode: locationData?.zipCode || undefined,
+      city: locationData?.city || undefined,
+      state: locationData?.state || undefined,
+      latitude: locationData?.latitude || undefined,
+      longitude: locationData?.longitude || undefined,
     };
 
     await onSubmit(payload);
@@ -207,7 +303,20 @@ export function TradeFormBase<C extends string = string>({
           }
           t={translate}
           showPrice={true}
+          priceError={errors.price}
         />
+
+        {showLocation && (formData.status === "SELLING" || formData.status === "LOOKING_FOR") && (
+          <LocationInput
+            label={translate("location")}
+            placeholder={translate("locationPlaceholder")}
+            value={locationData}
+            onChange={setLocationData}
+            data-testid="input-location"
+            successMessage={translate("locationSuccess")}
+            errorMessage={errors.location}
+          />
+        )}
 
         <Textarea
           name="description"
