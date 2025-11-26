@@ -2,10 +2,10 @@
 
 import clsx from "clsx";
 import { Link } from "@/i18n/navigation";
-import { Button } from "@/components/atoms/Button/Button";
+
 import LocaleSwitcher from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
 import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
-import { ChevronRight, Gamepad, Gamepad2, Joystick, Bell, User } from "lucide-react";
+import { ChevronRight, Gamepad, Gamepad2, Joystick, User } from "lucide-react";
 import { useState } from "react";
 import { MenuItem } from "./menuData";
 import { renderIcon } from "./iconRenderer";
@@ -186,12 +186,7 @@ export default function HeaderMenuMobile({
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <LocaleSwitcher />
-                <Button
-                  size="sm"
-                  icon={<Bell size={18} />}
-                  variant="transparent"
-                  onClick={onClose}
-                />
+
                 <ThemeToggle />
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 
-export type IconType = "library" | "plus" | "tag" | "newspaper";
+export type IconType = "library" | "plus" | "tag" | "newspaper" | "shopping-bag";
 
 export type MenuItem = {
   id: string;
@@ -83,10 +83,10 @@ export function useHeaderMenuData(): {
 
   const directLinks: MenuItem[] = [
     {
-      id: "news",
-      label: t("news"),
-      iconType: "newspaper",
-      href: "/news",
+      id: "marketplace",
+      label: t("marketplace"),
+      iconType: "shopping-bag",
+      href: "/marketplace",
     },
   ];
 

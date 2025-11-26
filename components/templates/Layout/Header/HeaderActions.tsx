@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/atoms/ThemeToggle/ThemeToggle";
 import LocaleSwitcher from "@/components/molecules/LocaleSwitcher/LocaleSwitcher";
 import { Dropdown } from "@/components/molecules/Dropdown/Dropdown";
 import { Avatar } from "@/components/atoms/Avatar/Avatar";
-import { ChevronDown, Bell } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import clsx from "clsx";
@@ -36,7 +36,6 @@ export default function HeaderActions({ user, accountItems, isScrolled }: Props)
       )}
     >
       <div className="hidden lg:flex items-center space-x-2">
-        <Button size="sm" icon={<Bell size={18} />} variant="transparent" />
         <ThemeToggle />
         <LocaleSwitcher />
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { LibraryBig, CirclePlus, Tag, Newspaper } from "lucide-react";
+import { LibraryBig, CirclePlus, Tag, Newspaper, ShoppingBag } from "lucide-react";
 import { IconType } from "./menuData";
 
 export function renderIcon(iconType?: IconType) {
@@ -13,6 +13,8 @@ export function renderIcon(iconType?: IconType) {
       return <Tag size={18} />;
     case "newspaper":
       return <Newspaper size={18} />;
+    case "shopping-bag":
+      return <ShoppingBag size={18} />;
     default:
       return null;
   }
