@@ -151,7 +151,11 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
         }
       >
         {marketplace.items.map((item: MarketplaceItem) => (
-          <MarketplaceCard key={`${item.itemType}-${item.id}`} item={item} />
+          <MarketplaceCard
+            key={`${item.itemType}-${item.id}`}
+            item={item}
+            viewMode={catalogState.viewMode === "list" ? "list" : "grid"}
+          />
         ))}
       </div>
     );

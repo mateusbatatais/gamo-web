@@ -15,7 +15,7 @@ export interface ButtonProps {
   label?: string;
   title?: string;
   type?: "button" | "submit" | "reset";
-  onClick?: () => void;
+  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   loading?: boolean;
   size?: ButtonSize;
