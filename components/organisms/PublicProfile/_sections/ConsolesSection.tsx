@@ -258,6 +258,12 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       item={consoles.find((c) => c.id === collapseManager.openCompactId)}
                       isOwner={isOwner}
                       sale={true}
+                      columnIndex={
+                        (consoles.findIndex((c) => c.id === collapseManager.openCompactId) +
+                          (isOwner ? 1 : 0)) %
+                        compactCols
+                      }
+                      totalColumns={compactCols}
                     />
                   </div>
                 )}
@@ -333,6 +339,12 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       item={consoles.find((c) => c.id === collapseManager.openGridId)}
                       isOwner={isOwner}
                       sale={true}
+                      columnIndex={
+                        (consoles.findIndex((c) => c.id === collapseManager.openGridId) +
+                          (isOwner ? 1 : 0)) %
+                        gridCols
+                      }
+                      totalColumns={gridCols}
                     />
                   </div>
                 )}

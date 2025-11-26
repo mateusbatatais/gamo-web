@@ -153,10 +153,14 @@ export function ConsoleAccessories({
   item,
   isOwner = false,
   sale = false,
+  columnIndex,
+  totalColumns,
 }: {
   item?: UserConsole;
   isOwner?: boolean;
   sale?: boolean;
+  columnIndex?: number;
+  totalColumns?: number;
 }) {
   if (!item || !hasAccessories(item)) {
     return (
@@ -169,16 +173,27 @@ export function ConsoleAccessories({
   }
 
   return (
-    <Card className="border-2 border-secondary-500 dark:border-secondary-500 -mt-10">
-      <RenderAccessoriesTitle item={item} />
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-        {item.accessories.map((acc) => (
-          <div key={(acc as AccessoryLite).id} className="aspect-square">
-            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} sale={sale} />
-          </div>
-        ))}
-      </div>
-    </Card>
+    <div className="relative">
+      {/* Seta visual */}
+      {typeof columnIndex === "number" && typeof totalColumns === "number" && (
+        <div
+          className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-secondary-500 dark:border-secondary-500 transform rotate-45 z-10"
+          style={{
+            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) / 2 - 8px)`,
+          }}
+        />
+      )}
+      <Card className="border-2 border-secondary-500 dark:border-secondary-500 relative z-0">
+        <RenderAccessoriesTitle item={item} />
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          {item.accessories.map((acc) => (
+            <div key={(acc as AccessoryLite).id} className="aspect-square">
+              <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} sale={sale} />
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
   );
 }
 
@@ -186,10 +201,14 @@ export function ConsoleAccessoriesCompact({
   item,
   isOwner = false,
   sale = false,
+  columnIndex,
+  totalColumns,
 }: {
   item?: UserConsole;
   isOwner?: boolean;
   sale?: boolean;
+  columnIndex?: number;
+  totalColumns?: number;
 }) {
   if (!item || !hasAccessories(item)) {
     return (
@@ -202,16 +221,27 @@ export function ConsoleAccessoriesCompact({
   }
 
   return (
-    <Card className="border-2 border-secondary-500 dark:border-secondary-500">
-      <RenderAccessoriesTitle item={item} />
-      <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-        {item.accessories.map((acc) => (
-          <div key={(acc as AccessoryLite).id} className="aspect-square">
-            <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} sale={sale} />
-          </div>
-        ))}
-      </div>
-    </Card>
+    <div className="relative mt-3">
+      {/* Seta visual */}
+      {typeof columnIndex === "number" && typeof totalColumns === "number" && (
+        <div
+          className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-secondary-500 dark:border-secondary-500 transform rotate-45 z-10"
+          style={{
+            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) / 2 - 8px)`,
+          }}
+        />
+      )}
+      <Card className="border-2 border-secondary-500 dark:border-secondary-500 relative z-0">
+        <RenderAccessoriesTitle item={item} />
+        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+          {item.accessories.map((acc) => (
+            <div key={(acc as AccessoryLite).id} className="aspect-square">
+              <AccessoriesCard acc={acc as AccessoryLite} isOwner={isOwner} sale={sale} />
+            </div>
+          ))}
+        </div>
+      </Card>
+    </div>
   );
 }
 
@@ -235,58 +265,62 @@ export function ConsoleAccessoriesList({
   }
 
   return (
-    <Card className="border-2 border-secondary-500 dark:border-secondary-500 -mt-2">
-      <RenderAccessoriesTitle item={item} />
-      <div className="space-y-3">
-        {item.accessories.map((acc) => {
-          const a = acc as AccessoryLite;
-          return (
-            <Card key={a.id} className="!p-3">
-              <div className="flex items-center gap-3">
-                <div className="w-14 h-14 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative rounded-md overflow-hidden">
-                  <SafeAccessoryImage
-                    src={a.photoMain}
-                    alt={a.variantName || "Acessório"}
-                    className="w-full h-full"
+    <div className="relative mt-3">
+      {/* Seta visual para lista */}
+      <div className="absolute -top-2 left-8 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-secondary-500 dark:border-secondary-500 transform rotate-45 z-10" />
+      <Card className="border-2 border-secondary-500 dark:border-secondary-500 relative z-0">
+        <RenderAccessoriesTitle item={item} />
+        <div className="space-y-3">
+          {item.accessories.map((acc) => {
+            const a = acc as AccessoryLite;
+            return (
+              <Card key={a.id} className="p-3!">
+                <div className="flex items-center gap-3">
+                  <div className="w-14 h-14 shrink-0 bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative rounded-md overflow-hidden">
+                    <SafeAccessoryImage
+                      src={a.photoMain}
+                      alt={a.variantName || "Acessório"}
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium dark:text-white truncate">{a.variantName}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                      {a.accessorySlug}
+                    </p>
+                    {/* Informações de venda quando sale=true */}
+                    {sale && (
+                      <div className="flex gap-4 mt-1">
+                        {a.price && (
+                          <span className="text-sm font-semibold text-green-600 dark:text-green-400">
+                            R$ {a.price.toFixed(2)}
+                          </span>
+                        )}
+                        {a.condition && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+                            {a.condition}
+                          </span>
+                        )}
+                        {a.acceptsTrade && (
+                          <span className="text-xs text-blue-600 dark:text-blue-400">
+                            Aceita troca
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <AccessoryActionButtons
+                    accessory={a as unknown as UserAccessory}
+                    isOwner={isOwner}
+                    customClassName="flex-shrink-0"
                   />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium dark:text-white truncate">{a.variantName}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                    {a.accessorySlug}
-                  </p>
-                  {/* Informações de venda quando sale=true */}
-                  {sale && (
-                    <div className="flex gap-4 mt-1">
-                      {a.price && (
-                        <span className="text-sm font-semibold text-green-600 dark:text-green-400">
-                          R$ {a.price.toFixed(2)}
-                        </span>
-                      )}
-                      {a.condition && (
-                        <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                          {a.condition}
-                        </span>
-                      )}
-                      {a.acceptsTrade && (
-                        <span className="text-xs text-blue-600 dark:text-blue-400">
-                          Aceita troca
-                        </span>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <AccessoryActionButtons
-                  accessory={a as unknown as UserAccessory}
-                  isOwner={isOwner}
-                  customClassName="flex-shrink-0"
-                />
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-    </Card>
+              </Card>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
   );
 }
 

@@ -215,6 +215,12 @@ export const ConsoleGridSection: React.FC<ConsoleGridSectionProps> = ({
                     <ConsoleAccessoriesCompact
                       item={consoles.find((c) => c.id === collapseManager.openCompactId)}
                       isOwner={isOwner}
+                      columnIndex={
+                        (consoles.findIndex((c) => c.id === collapseManager.openCompactId) +
+                          (isOwner ? 1 : 0)) %
+                        compactCols
+                      }
+                      totalColumns={compactCols}
                     />
                   </div>
                 )}
@@ -272,6 +278,12 @@ export const ConsoleGridSection: React.FC<ConsoleGridSectionProps> = ({
                     <ConsoleAccessories
                       item={consoles.find((c) => c.id === collapseManager.openGridId)}
                       isOwner={isOwner}
+                      columnIndex={
+                        (consoles.findIndex((c) => c.id === collapseManager.openGridId) +
+                          (isOwner ? 1 : 0)) %
+                        gridCols
+                      }
+                      totalColumns={gridCols}
                     />
                   </div>
                 )}
