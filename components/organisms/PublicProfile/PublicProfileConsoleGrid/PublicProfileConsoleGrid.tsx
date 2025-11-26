@@ -194,7 +194,7 @@ const PublicProfileConsoleGridContent = ({
         title={t("collection")}
         emptyMessage={t("noConsoles")}
         addButtonText={t("txtAddConsole")}
-        addButtonLink="/user/collection/consoles/add/"
+        addButtonLink="/user/collection/consoles/add?type=collection"
       />
 
       {/* ✅ SEÇÃO DE ACESSÓRIOS AVULSOS */}
@@ -214,7 +214,7 @@ const PublicProfileConsoleGridContent = ({
         title="Acessórios Avulsos"
         emptyMessage="Nenhum acessório avulso encontrado"
         addButtonText={t("txtAddAccessory")}
-        addButtonLink="/user/collection/accessories/add/"
+        addButtonLink="/user/collection/accessories/add?type=collection"
       />
 
       {/* ✅ ESTADO VAZIO GLOBAL (fallback) */}

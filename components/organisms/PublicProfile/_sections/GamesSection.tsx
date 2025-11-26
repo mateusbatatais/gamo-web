@@ -69,7 +69,7 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
               <EmptyCard
                 text={t("txtGame")}
                 buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-                buttonLink="/user/collection/games/add/"
+                buttonLink="/user/collection/games/add?type=trade"
                 viewMode="list"
               />
             )}
@@ -96,7 +96,7 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
                     <EmptyCard
                       text={t("txtGame")}
                       buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-                      buttonLink="/user/collection/games/add/"
+                      buttonLink="/user/collection/games/add?type=trade"
                       viewMode="table"
                       space={false}
                     />
@@ -121,7 +121,7 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
             <EmptyCard
               text={t("txtGame")}
               buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-              buttonLink="/user/collection/games/add/"
+              buttonLink="/user/collection/games/add?type=trade"
               viewMode="list"
             />
           )}
@@ -141,7 +141,7 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
             <EmptyCard
               text={t("txtGame")}
               buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-              buttonLink="/user/collection/games/add/"
+              buttonLink="/user/collection/games/add?type=trade"
               viewMode={viewMode === "grid" ? "card" : "compact"}
             />
           )}

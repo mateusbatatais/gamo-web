@@ -101,7 +101,7 @@ export const AccessoriesSection: React.FC<AccessoriesSectionProps> = ({
               <EmptyCard
                 text={t("txtAccessory")}
                 buttonLabel={type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")}
-                buttonLink="/user/collection/accessories/add/"
+                buttonLink="/user/collection/accessories/add?type=trade"
                 viewMode="list"
               />
             )}
@@ -130,7 +130,7 @@ export const AccessoriesSection: React.FC<AccessoriesSectionProps> = ({
                       buttonLabel={
                         type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")
                       }
-                      buttonLink="/user/collection/accessories/add/"
+                      buttonLink="/user/collection/accessories/add?type=trade"
                       viewMode="table"
                       space={false}
                     />
@@ -154,7 +154,7 @@ export const AccessoriesSection: React.FC<AccessoriesSectionProps> = ({
             <EmptyCard
               text={t("txtAccessory")}
               buttonLabel={type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")}
-              buttonLink="/user/collection/accessories/add/"
+              buttonLink="/user/collection/accessories/add?type=trade"
               viewMode="list"
             />
           )}
@@ -179,7 +179,7 @@ export const AccessoriesSection: React.FC<AccessoriesSectionProps> = ({
             <EmptyCard
               text={t("txtAccessory")}
               buttonLabel={type === "selling" ? t("txtSellAccessory") : t("txtLookForAccessory")}
-              buttonLink="/user/collection/accessories/add/"
+              buttonLink="/user/collection/accessories/add?type=trade"
               viewMode={viewMode === "grid" ? "card" : "compact"}
             />
           )}

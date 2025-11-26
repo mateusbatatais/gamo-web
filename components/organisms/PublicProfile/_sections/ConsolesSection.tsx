@@ -87,7 +87,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               <EmptyCard
                 text={t("txtConsole")}
                 buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-                buttonLink="/user/collection/consoles/add/"
+                buttonLink="/user/collection/consoles/add?type=trade"
                 viewMode="list"
               />
             )}
@@ -116,7 +116,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       buttonLabel={
                         type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")
                       }
-                      buttonLink="/user/collection/consoles/add/"
+                      buttonLink="/user/collection/consoles/add?type=trade"
                       viewMode="table"
                       space={false}
                     />
@@ -164,7 +164,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
             <EmptyCard
               text={t("txtConsole")}
               buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-              buttonLink="/user/collection/consoles/add/"
+              buttonLink="/user/collection/consoles/add?type=trade"
               viewMode="list"
             />
           )}
@@ -205,7 +205,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               <EmptyCard
                 text={t("txtConsole")}
                 buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-                buttonLink="/user/collection/consoles/add/"
+                buttonLink="/user/collection/consoles/add?type=trade"
                 viewMode="compact"
               />
             </div>
@@ -280,7 +280,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               <EmptyCard
                 text={t("txtConsole")}
                 buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-                buttonLink="/user/collection/consoles/add/"
+                buttonLink="/user/collection/consoles/add?type=trade"
                 viewMode="card"
               />
             </div>

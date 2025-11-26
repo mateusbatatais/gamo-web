@@ -58,9 +58,9 @@ export const EmptyCard = ({
   // Versão List
   if (viewMode === "list") {
     return (
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow !p-4 border-2 border-dashed border-gray-300 dark:border-gray-600">
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow p-4! border-2 border-dashed border-gray-300 dark:border-gray-600">
         <div className="flex items-center gap-4">
-          <div className="w-20 h-20 flex-shrink-0 bg-gray-50 dark:bg-gray-800 relative flex items-center justify-center">
+          <div className="w-20 h-20 shrink-0 bg-gray-50 dark:bg-gray-800 relative flex items-center justify-center">
             <span className="text-2xl text-gray-400 dark:text-gray-500">📦</span>
           </div>
 
@@ -96,7 +96,7 @@ export const EmptyCard = ({
       <>
         {space && <div className=" w-10"></div>}
         <div className="flex items-center gap-3 ">
-          <div className="w-12 h-12 flex-shrink-0 bg-gray-50 dark:bg-gray-800 relative flex items-center justify-center">
+          <div className="w-12 h-12 shrink-0 bg-gray-50 dark:bg-gray-800 relative flex items-center justify-center">
             <span className="text-xl text-gray-400 dark:text-gray-500">📦</span>
           </div>
           <div>

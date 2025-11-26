@@ -149,7 +149,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         title={t("gamesCollection")}
         emptyMessage={t("noGames")}
         addButtonText={t("txtAddGame")}
-        addButtonLink="/user/collection/games/add/"
+        addButtonLink="/user/collection/games/add?type=collection"
       />
 
       {/* ✅ ESTADO VAZIO GLOBAL (fallback) */}
