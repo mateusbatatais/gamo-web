@@ -20,6 +20,7 @@ interface TradeSectionProps {
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   t: (key: string) => string;
   showPrice?: boolean;
+  priceError?: string;
 }
 
 export const TradeSection = ({
@@ -28,6 +29,7 @@ export const TradeSection = ({
   handleChange,
   t: translate,
   showPrice = true,
+  priceError,
 }: TradeSectionProps) => {
   return (
     <div className="space-y-4">
@@ -53,6 +55,7 @@ export const TradeSection = ({
               type="number"
               min="0"
               step="0.01"
+              error={priceError}
             />
           </div>
         )}

@@ -534,7 +534,9 @@
     "statusPreviouslyOwned": "Já tive",
     "location": "Localização",
     "locationPlaceholder": "Digite sua cidade ou endereço...",
-    "locationSuccess": "Localização obtida com sucesso!"
+    "locationSuccess": "Localização obtida com sucesso!",
+    "priceRequired": "O preço é obrigatório para itens à venda",
+    "locationRequired": "A localização é obrigatória"
   },
   "SimpleAccessoryForm": {
     "description": "Selecione os consoles da sua coleção que são compatíveis com este acessório:",

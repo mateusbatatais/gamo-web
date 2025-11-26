@@ -534,7 +534,9 @@
     "statusPreviouslyOwned": "Previously Owned",
     "location": "Location",
     "locationPlaceholder": "Enter city or address...",
-    "locationSuccess": "Location obtained successfully!"
+    "locationSuccess": "Location obtained successfully!",
+    "priceRequired": "Price is required for items for sale",
+    "locationRequired": "Location is required"
   },
   "SimpleAccessoryForm": {
     "description": "Select the consoles from your collection that are compatible with this accessory:",

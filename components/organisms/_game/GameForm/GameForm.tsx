@@ -149,11 +149,21 @@ export const GameForm = ({
     };
   });
 
+  const [errors, setErrors] = useState<{
+    price?: string;
+    location?: string;
+  }>({});
+
   useEffect(() => {
     if (formData.status !== "SELLING") {
       setKeepCopyInCollection(false);
     }
   }, [formData.status]);
+
+  // Clear errors when form data changes
+  useEffect(() => {
+    setErrors({});
+  }, [formData.price, locationData]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -169,6 +179,31 @@ export const GameForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validação condicional baseada no status
+    const validationErrors: { price?: string; location?: string } = {};
+
+    if (formData.status === "SELLING") {
+      if (!formData.price || parseFloat(formData.price) <= 0) {
+        validationErrors.price = t("priceRequired");
+      }
+      if (!locationData || !locationData.city) {
+        validationErrors.location = t("locationRequired");
+      }
+    }
+
+    if (formData.status === "LOOKING_FOR") {
+      if (!locationData || !locationData.city) {
+        validationErrors.location = t("locationRequired");
+      }
+    }
+
+    // Se houver erros, atualiza o estado e não submete
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
     const payload = {
@@ -383,6 +418,7 @@ export const GameForm = ({
             handleChange={handleChange}
             t={t}
             showPrice={true}
+            priceError={errors.price}
           />
 
           {(formData.status === "SELLING" || formData.status === "LOOKING_FOR") && (
@@ -393,6 +429,7 @@ export const GameForm = ({
               onChange={setLocationData}
               data-testid="input-location"
               successMessage={t("locationSuccess")}
+              errorMessage={errors.location}
             />
           )}
 
