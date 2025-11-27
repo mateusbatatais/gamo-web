@@ -55,6 +55,7 @@ export const TradeSection = ({
               type="number"
               min="0"
               step="0.01"
+              id="price-input"
               error={priceError}
             />
           </div>

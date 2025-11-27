@@ -22,6 +22,11 @@ import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Radio } from "@/components/atoms/Radio/Radio";
 import { CollectionStatus, Condition } from "@/@types/collection.types";
 import { LocationData, LocationInput } from "@/components/molecules/LocationInput/LocationInput";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import {
+  GameSelector,
+  SelectedGameVariant,
+} from "@/components/molecules/GameSelector/GameSelector";
 
 interface ConsoleFormProps {
   mode: "create" | "edit";
@@ -72,6 +77,7 @@ export const ConsoleForm = ({
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
   const { createUserAccessory } = useUserAccessoryMutation();
+  const { createUserGame } = useUserGameMutation();
   const { profileQuery } = useAccount();
   const [showTrade, setShowTrade] = useState(false);
   const [keepCopyInCollection, setKeepCopyInCollection] = useState(false);
@@ -164,6 +170,28 @@ export const ConsoleForm = ({
     setErrors({});
   }, [formData.price, locationData]);
 
+  // Scroll to first error
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const firstErrorKey = Object.keys(errors)[0];
+      let elementId = "";
+
+      if (firstErrorKey === "price") {
+        elementId = "price-input";
+      } else if (firstErrorKey === "location") {
+        elementId = "location-input";
+      }
+
+      if (elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+        }
+      }
+    }
+  }, [errors]);
+
   const { data: storageOptions, isLoading: storageOptionsLoading } =
     useStorageOptions(consoleVariantId);
   const { data: accessoryVariants, isLoading: accessoriesLoading } =
@@ -176,6 +204,11 @@ export const ConsoleForm = ({
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
+  >({});
+
+  const [isGamesOpen, setIsGamesOpen] = useState(false);
+  const [selectedGameVariants, setSelectedGameVariants] = useState<
+    Record<number, SelectedGameVariant>
   >({});
 
   const handleRadioChange = (name: keyof typeof formData, value: string) => {
@@ -196,6 +229,24 @@ export const ConsoleForm = ({
           accessoryId: variant.accessoryId,
           accessoryVariantId: variant.id,
           status: formData.status,
+          condition: formData.condition,
+          compatibleUserConsoleIds: [userConsoleId],
+        });
+      }
+    }
+  };
+
+  const addSelectedGames = async (userConsoleId: number) => {
+    if (!isGamesOpen || !userConsoleId) return;
+    for (const selected of Object.values(selectedGameVariants)) {
+      if (selected.quantity <= 0) continue;
+
+      for (let i = 0; i < selected.quantity; i++) {
+        await createUserGame({
+          gameId: selected.variantId,
+          gameSlug: selected.slug,
+          media: "PHYSICAL",
+          status: formData.status || "OWNED",
           condition: formData.condition,
           compatibleUserConsoleIds: [userConsoleId],
         });
@@ -230,6 +281,38 @@ export const ConsoleForm = ({
 
   const handleAccessoriesToggle = (open: boolean) => {
     setIsAccessoriesOpen(open);
+  };
+
+  const handleGameQuantityChange = (variantId: number, newQuantity: number) => {
+    setSelectedGameVariants((prev) => {
+      if (!prev[variantId]) return prev;
+      return {
+        ...prev,
+        [variantId]: { ...prev[variantId], quantity: Math.max(0, newQuantity) },
+      };
+    });
+  };
+
+  const handleAddGame = (game: SelectedGameVariant) => {
+    setSelectedGameVariants((prev) => {
+      if (prev[game.variantId]) return prev;
+      return {
+        ...prev,
+        [game.variantId]: game,
+      };
+    });
+  };
+
+  const handleRemoveGame = (variantId: number) => {
+    setSelectedGameVariants((prev) => {
+      const newState = { ...prev };
+      delete newState[variantId];
+      return newState;
+    });
+  };
+
+  const handleGamesToggle = (open: boolean) => {
+    setIsGamesOpen(open);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -309,6 +392,7 @@ export const ConsoleForm = ({
 
     if (userConsoleId) {
       await addSelectedAccessories(userConsoleId);
+      await addSelectedGames(userConsoleId);
     }
 
     onSuccess();
@@ -540,6 +624,16 @@ export const ConsoleForm = ({
           />
         </Collapse>
       )}
+
+      <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
+        <GameSelector
+          consoleId={consoleId}
+          selectedVariants={selectedGameVariants}
+          onQuantityChange={handleGameQuantityChange}
+          onRemoveGame={handleRemoveGame}
+          onAddGame={handleAddGame}
+        />
+      </Collapse>
 
       {currentCropImage && (
         <ImageCropper

@@ -115,20 +115,22 @@ export function TradeFormBase<C extends string = string>({
   useEffect(() => {
     if (hasPrefilledLocation.current) return;
 
-    if (profileQuery.data && !locationData) {
-      if (profileQuery.data.address || profileQuery.data.city) {
-        setLocationData({
-          formattedAddress:
-            profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
-          address: profileQuery.data.address || "",
-          zipCode: profileQuery.data.zipCode || "",
-          city: profileQuery.data.city || "",
-          state: profileQuery.data.state || "",
-          latitude: profileQuery.data.latitude || 0,
-          longitude: profileQuery.data.longitude || 0,
-        });
-        hasPrefilledLocation.current = true;
-      }
+    if (
+      profileQuery.data &&
+      !locationData &&
+      (profileQuery.data.address || profileQuery.data.city)
+    ) {
+      setLocationData({
+        formattedAddress:
+          profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
+        address: profileQuery.data.address || "",
+        zipCode: profileQuery.data.zipCode || "",
+        city: profileQuery.data.city || "",
+        state: profileQuery.data.state || "",
+        latitude: profileQuery.data.latitude || 0,
+        longitude: profileQuery.data.longitude || 0,
+      });
+      hasPrefilledLocation.current = true;
     }
   }, [profileQuery.data, locationData]);
 
@@ -167,6 +169,28 @@ export function TradeFormBase<C extends string = string>({
   useEffect(() => {
     setErrors({});
   }, [formData.price, locationData]);
+
+  // Scroll to first error
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const firstErrorKey = Object.keys(errors)[0];
+      let elementId = "";
+
+      if (firstErrorKey === "price") {
+        elementId = "price-input";
+      } else if (firstErrorKey === "location") {
+        elementId = "location-input";
+      }
+
+      if (elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+        }
+      }
+    }
+  }, [errors]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,

@@ -126,6 +126,7 @@ export const LocationInput: React.FC<LocationInputProps> = ({
         loading={placesLoading}
         disabled={disabled}
         required={required}
+        id="location-input"
         error={errorMessage}
         renderItem={(item) => (
           <div className="flex items-center gap-3 p-2">

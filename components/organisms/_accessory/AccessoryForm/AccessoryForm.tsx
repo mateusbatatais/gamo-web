@@ -155,6 +155,28 @@ export const AccessoryForm = ({
     setErrors({});
   }, [formData.price, locationData]);
 
+  // Scroll to first error
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      const firstErrorKey = Object.keys(errors)[0];
+      let elementId = "";
+
+      if (firstErrorKey === "price") {
+        elementId = "price-input";
+      } else if (firstErrorKey === "location") {
+        elementId = "location-input";
+      }
+
+      if (elementId) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          element.focus();
+        }
+      }
+    }
+  }, [errors]);
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
