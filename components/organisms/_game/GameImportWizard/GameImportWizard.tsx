@@ -1,30 +1,37 @@
-// src/components/organisms/_game/GameImportWizard/GameImportWizard.tsx - FLUXO CORRIGIDO
+// src/components/organisms/_game/GameImportWizard/GameImportWizard.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { UploadStep } from "./UploadStep";
-import { ReviewStep } from "./ReviewStep";
+import { ColumnMappingStep } from "./ColumnMappingStep";
 import { ConfirmationStep } from "./ConfirmationStep";
 import { useGameImport, ImportSession } from "@/hooks/useGameImport";
 import { useFileParser } from "@/hooks/useFileParser";
-import type { ParsedGame } from "@/hooks/useFileParser";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/contexts/ToastContext";
 
-type WizardStep = "upload" | "review" | "confirmation";
+type WizardStep = "upload" | "columnMapping" | "confirmation";
 
 export function GameImportWizard() {
   const t = useTranslations("GameImport");
   const [currentStep, setCurrentStep] = useState<WizardStep>("upload");
   const [importSession, setImportSession] = useState<ImportSession | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { user } = useAuth();
   const { showToast } = useToast();
-  const { parseFile, parsedData, isParsing, clearData } = useFileParser();
-  const { uploadFile, uploadLoading, useImportSession, executeImport, executeLoading } =
-    useGameImport();
+  const {
+    parseFile,
+    parsedData,
+    isParsing,
+    rawData,
+    detectedColumns,
+    applyColumnMapping,
+    clearData,
+  } = useFileParser();
+  const { uploadFile, useImportSession, executeImport, executeLoading } = useGameImport();
 
   const { data: sessionData } = useImportSession(importSession?.id || 0);
 
@@ -36,6 +43,7 @@ export function GameImportWizard() {
       // Controlar navegação baseado no status da sessão
       if (sessionData.status === "READY_FOR_REVIEW" && currentStep !== "confirmation") {
         setCurrentStep("confirmation");
+        setIsProcessing(false); // Liberar loading quando avançar para próxima etapa
         showToast("Processamento concluído! Revise os matches.", "success");
       }
 
@@ -48,88 +56,35 @@ export function GameImportWizard() {
       }
 
       if (sessionData.status === "FAILED") {
+        setIsProcessing(false);
         showToast("Erro no processamento da importação", "danger");
       }
     }
   }, [sessionData, currentStep, user, showToast]);
 
-  const readFileContent = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        try {
-          let content: string;
-
-          if (file.type.includes("sheet")) {
-            // Para Excel, converter para base64
-            const arrayBuffer = e.target?.result as ArrayBuffer;
-            const bytes = new Uint8Array(arrayBuffer);
-            let binary = "";
-            for (let i = 0; i < bytes.byteLength; i++) {
-              binary += String.fromCharCode(bytes[i]);
-            }
-            content = btoa(binary);
-          } else {
-            // Para CSV/JSON, usar texto diretamente
-            content = e.target?.result as string;
-          }
-
-          resolve(content);
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      reader.onerror = () => {
-        reject(new Error("Failed to read file"));
-      };
-
-      if (file.type.includes("sheet")) {
-        reader.readAsArrayBuffer(file);
-      } else {
-        reader.readAsText(file, "UTF-8");
-      }
-    });
-  };
-
   const handleFileSelect = async (file: File) => {
     setSelectedFile(file);
     try {
       await parseFile(file);
-      setCurrentStep("review");
+      setCurrentStep("columnMapping");
     } catch (error) {
       console.error("Error parsing file:", error);
       showToast("Erro ao processar arquivo", "danger");
     }
   };
 
-  const handleUpload = async (selected?: ParsedGame[]) => {
-    if (!selectedFile && (!selected || selected.length === 0)) {
-      showToast("Nenhum arquivo selecionado", "danger");
-      return;
-    }
-
+  const handleColumnMappingConfirm = async (columnMapping: Record<string, string>) => {
     try {
-      let fileContent: string;
-      let fileType: "CSV" | "XLSX" | "JSON";
-      let fileName: string;
+      setIsProcessing(true); // Iniciar loading
 
-      if (selected && selected.length > 0) {
-        fileContent = JSON.stringify(selected);
-        fileType = "JSON";
-        const baseName = selectedFile?.name.replace(/\.[^.]+$/, "") || "import";
-        fileName = `${baseName}-selected.json`;
-      } else {
-        const content = await readFileContent(selectedFile as File);
-        fileContent = content;
-        const ext = selectedFile!.name.split(".").pop()?.toUpperCase();
-        if (!ext || !["CSV", "XLSX", "JSON"].includes(ext)) {
-          throw new Error("Tipo de arquivo não suportado");
-        }
-        fileType = ext as "CSV" | "XLSX" | "JSON";
-        fileName = selectedFile!.name;
-      }
+      // Apply column mapping to get the final parsed data
+      const mappedGames = applyColumnMapping(columnMapping);
+
+      // Convert to JSON and upload
+      const fileContent = JSON.stringify(mappedGames);
+      const fileType = "JSON";
+      const baseName = selectedFile?.name.replace(/\.[^.]+$/, "") || "import";
+      const fileName = `${baseName}-mapped.json`;
 
       const session = await uploadFile({
         fileName,
@@ -140,9 +95,13 @@ export function GameImportWizard() {
       if (session?.id) {
         setImportSession(session);
         showToast("Arquivo enviado. Processando...", "success");
+        // Não definir isProcessing = false aqui, esperar o backend processar
+      } else {
+        setIsProcessing(false);
       }
     } catch (error) {
       console.error("Upload error:", error);
+      setIsProcessing(false);
       showToast(error instanceof Error ? error.message : "Erro no upload", "danger");
     }
   };
@@ -176,7 +135,7 @@ export function GameImportWizard() {
 
         {/* Progress Steps */}
         <div className="flex items-center gap-4 mb-6 justify-center flex-wrap">
-          {["upload", "review", "confirmation"].map((step, index) => (
+          {["upload", "columnMapping", "confirmation"].map((step, index) => (
             <div key={step} className="flex items-center">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
@@ -218,12 +177,14 @@ export function GameImportWizard() {
           />
         )}
 
-        {currentStep === "review" && (
-          <ReviewStep
-            parsedGames={parsedData}
-            onConfirm={handleUpload}
+        {currentStep === "columnMapping" && (
+          <ColumnMappingStep
+            detectedColumns={detectedColumns}
+            rawData={rawData}
+            onConfirm={handleColumnMappingConfirm}
             onBack={handleRestart}
-            isLoading={uploadLoading}
+            isLoading={isProcessing}
+            totalGames={rawData.length}
           />
         )}
 

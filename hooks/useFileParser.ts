@@ -28,6 +28,8 @@ type RawRow = Record<string, unknown>;
 export function useFileParser() {
   const [parsedData, setParsedData] = useState<ParsedGame[]>([]);
   const [isParsing, setIsParsing] = useState(false);
+  const [rawData, setRawData] = useState<Record<string, unknown>[]>([]);
+  const [detectedColumns, setDetectedColumns] = useState<string[]>([]);
 
   const parseFile = async (file: File): Promise<ParsedGame[]> => {
     setIsParsing(true);
@@ -42,13 +44,18 @@ export function useFileParser() {
           try {
             const result = e.target?.result;
             let output: ParsedGame[] = [];
+            let raw: Record<string, unknown>[] = [];
+            let columns: string[] = [];
 
             switch (fileType) {
               case "CSV": {
                 if (typeof result !== "string") {
                   throw new Error("Conteúdo inválido para CSV");
                 }
-                output = parseCSV(result);
+                const parsed = parseCSV(result);
+                output = parsed.normalized;
+                raw = parsed.raw;
+                columns = parsed.columns;
                 break;
               }
               case "XLSX":
@@ -57,14 +64,20 @@ export function useFileParser() {
                 if (!(result instanceof ArrayBuffer)) {
                   throw new Error("Conteúdo inválido para Excel");
                 }
-                output = parseExcel(result);
+                const parsed = parseExcel(result);
+                output = parsed.normalized;
+                raw = parsed.raw;
+                columns = parsed.columns;
                 break;
               }
               case "JSON": {
                 if (typeof result !== "string") {
                   throw new Error("Conteúdo inválido para JSON");
                 }
-                output = parseJSON(result);
+                const parsed = parseJSON(result);
+                output = parsed.normalized;
+                raw = parsed.raw;
+                columns = parsed.columns;
                 break;
               }
               default:
@@ -72,6 +85,8 @@ export function useFileParser() {
             }
 
             setParsedData(output);
+            setRawData(raw);
+            setDetectedColumns(columns);
             resolve(output);
           } catch (error) {
             reject(error);
@@ -97,37 +112,57 @@ export function useFileParser() {
     });
   };
 
-  const parseCSV = (content: string): ParsedGame[] => {
+  const parseCSV = (
+    content: string,
+  ): { normalized: ParsedGame[]; raw: Record<string, unknown>[]; columns: string[] } => {
     const results = Papa.parse<RawRow>(content, {
       header: true,
       skipEmptyLines: true,
       transformHeader: (header) => header.toLowerCase().trim(),
     });
 
-    return results.data.map((row, index) => normalizeRow(row, index));
+    const columns = results.meta.fields || [];
+    const raw = results.data;
+    const normalized = results.data.map((row, index) => normalizeRow(row, index));
+
+    return { normalized, raw, columns };
   };
 
-  const parseExcel = (content: ArrayBuffer): ParsedGame[] => {
+  const parseExcel = (
+    content: ArrayBuffer,
+  ): { normalized: ParsedGame[]; raw: Record<string, unknown>[]; columns: string[] } => {
     const workbook = XLSX.read(content, { type: "array" });
     const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
     const jsonData = XLSX.utils.sheet_to_json<RawRow>(firstSheet);
 
-    return jsonData.map((row, index) => normalizeRow(row, index));
+    const columns = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
+    const raw = jsonData;
+    const normalized = jsonData.map((row, index) => normalizeRow(row, index));
+
+    return { normalized, raw, columns };
   };
 
-  const parseJSON = (content: string): ParsedGame[] => {
+  const parseJSON = (
+    content: string,
+  ): { normalized: ParsedGame[]; raw: Record<string, unknown>[]; columns: string[] } => {
     const parsed: unknown = JSON.parse(content);
     if (!Array.isArray(parsed)) {
       throw new Error("JSON deve ser um array");
     }
 
-    return parsed.map((item, index) => {
+    const raw = parsed.filter(
+      (item): item is Record<string, unknown> =>
+        item !== null && typeof item === "object" && !Array.isArray(item),
+    );
+    const columns = raw.length > 0 ? Object.keys(raw[0]) : [];
+    const normalized = parsed.map((item, index) => {
       if (!item || typeof item !== "object" || Array.isArray(item)) {
-        // Mantém comportamento robusto: se item não for objeto, cria linha vazia para cair no fallback
         return normalizeRow({}, index);
       }
       return normalizeRow(item as RawRow, index);
     });
+
+    return { normalized, raw, columns };
   };
 
   // Helpers de normalização com tipos seguros
@@ -205,10 +240,29 @@ export function useFileParser() {
     };
   };
 
+  const applyColumnMapping = (mapping: Record<string, string>): ParsedGame[] => {
+    const mapped = rawData.map((row, index) => {
+      const mappedRow: Record<string, unknown> = {};
+      Object.entries(mapping).forEach(([fieldKey, columnName]) => {
+        mappedRow[fieldKey] = row[columnName];
+      });
+      return normalizeRow(mappedRow as RawRow, index);
+    });
+    setParsedData(mapped);
+    return mapped;
+  };
+
   return {
     parseFile,
     parsedData,
     isParsing,
-    clearData: () => setParsedData([]),
+    rawData,
+    detectedColumns,
+    applyColumnMapping,
+    clearData: () => {
+      setParsedData([]);
+      setRawData([]);
+      setDetectedColumns([]);
+    },
   };
 }

@@ -642,7 +642,7 @@
     "description": "Importe sua coleção de jogos através de uma planilha CSV, Excel ou JSON",
     "steps": {
       "upload": "Upload",
-      "review": "Revisão",
+      "columnMapping": "Mapeamento",
       "confirmation": "Confirmação"
     },
     "upload": {
@@ -675,6 +675,50 @@
         "condition": "Condição do item: NEW (novo), USED (usado), REFURBISHED (reformado)",
         "acceptsTrade": "Aceita troca? Valores: true, false, sim, não, 1, 0",
         "description": "Descrição, observações ou detalhes adicionais sobre o item"
+      }
+    },
+    "columnMapping": {
+      "title": "Mapeie as Colunas da sua Planilha",
+      "description": "Relacione as colunas da sua planilha com os campos esperados pelo sistema",
+      "expectedField": "Campo Esperado",
+      "spreadsheetColumn": "Coluna da Planilha",
+      "status": "Status",
+      "ignore": "Ignorar",
+      "required": "Obrigatório",
+      "optional": "Opcional",
+      "preview": "Prévia dos Dados",
+      "previewNote": "Mostrando prévia dos primeiros 3 registros de {count} total",
+      "autoMapped": "Mapeado automaticamente",
+      "manuallyMapped": "Mapeado manualmente",
+      "notMapped": "Não mapeado",
+      "actions": {
+        "back": "Voltar",
+        "confirm": "Confirmar e Importar"
+      },
+      "validation": {
+        "gameNameRequired": "O campo 'Nome do Jogo' é obrigatório e deve ser mapeado"
+      },
+      "tips": {
+        "title": "Dica Importante",
+        "description": "O sistema tentou mapear automaticamente as colunas baseado em similaridade de nomes. Você pode ajustar manualmente se necessário. Apenas o campo 'Nome do Jogo' é obrigatório."
+      },
+      "fields": {
+        "gameName": "Nome do Jogo",
+        "platform": "Plataforma",
+        "status": "Status",
+        "progress": "Progresso",
+        "rating": "Avaliação",
+        "media": "Mídia",
+        "price": "Preço",
+        "hasBox": "Tem Caixa",
+        "hasManual": "Tem Manual",
+        "condition": "Condição",
+        "acceptsTrade": "Aceita Troca",
+        "description": "Descrição"
+      },
+      "processing": {
+        "title": "Processando Importação",
+        "description": "Aguarde enquanto processamos seus jogos. Isso pode levar alguns instantes..."
       }
     },
     "review": {

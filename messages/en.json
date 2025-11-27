@@ -643,7 +643,7 @@
     "description": "Import your game collection through a CSV, Excel, or JSON file",
     "steps": {
       "upload": "Upload",
-      "review": "Review",
+      "columnMapping": "Mapping",
       "confirmation": "Confirmation"
     },
     "upload": {
@@ -676,6 +676,50 @@
         "condition": "Item condition: NEW, USED, REFURBISHED",
         "acceptsTrade": "Accepts trade? Values: true, false, yes, no, 1, 0",
         "description": "Description, notes, or additional details about the item"
+      }
+    },
+    "columnMapping": {
+      "title": "Map Your Spreadsheet Columns",
+      "description": "Match your spreadsheet columns with the expected fields",
+      "expectedField": "Expected Field",
+      "spreadsheetColumn": "Spreadsheet Column",
+      "status": "Status",
+      "ignore": "Ignore",
+      "required": "Required",
+      "optional": "Optional",
+      "preview": "Data Preview",
+      "previewNote": "Showing preview of first 3 records out of {count} total",
+      "autoMapped": "Auto-mapped",
+      "manuallyMapped": "Manually mapped",
+      "notMapped": "Not mapped",
+      "actions": {
+        "back": "Back",
+        "confirm": "Confirm and Import"
+      },
+      "validation": {
+        "gameNameRequired": "The 'Game Name' field is required and must be mapped"
+      },
+      "tips": {
+        "title": "Important Tip",
+        "description": "The system tried to automatically map columns based on name similarity. You can manually adjust if needed. Only the 'Game Name' field is required."
+      },
+      "fields": {
+        "gameName": "Game Name",
+        "platform": "Platform",
+        "status": "Status",
+        "progress": "Progress",
+        "rating": "Rating",
+        "media": "Media",
+        "price": "Price",
+        "hasBox": "Has Box",
+        "hasManual": "Has Manual",
+        "condition": "Condition",
+        "acceptsTrade": "Accepts Trade",
+        "description": "Description"
+      },
+      "processing": {
+        "title": "Processing Import",
+        "description": "Please wait while we process your games. This may take a few moments..."
       }
     },
     "review": {
