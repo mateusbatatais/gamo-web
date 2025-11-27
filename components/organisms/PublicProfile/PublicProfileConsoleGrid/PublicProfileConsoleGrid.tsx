@@ -172,6 +172,7 @@ const PublicProfileConsoleGridContent = ({
         perPageOptions={PER_PAGE_OPTIONS}
         perPageValue={catalogState.perPage.toString()}
         onPerPageChange={(value) => catalogState.setPerPage(Number(value))}
+        totalItems={consolesMeta?.total}
         viewModeOptions={VIEW_MODE_OPTIONS}
         viewModeValue={catalogState.viewMode}
         onViewModeChange={catalogState.setViewMode}

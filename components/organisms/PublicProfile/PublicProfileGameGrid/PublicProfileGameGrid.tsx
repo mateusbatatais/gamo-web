@@ -131,6 +131,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         perPageOptions={PER_PAGE_OPTIONS}
         perPageValue={catalogState.perPage.toString()}
         onPerPageChange={(value) => catalogState.setPerPage(Number(value))}
+        totalItems={gamesMeta?.total}
         viewModeOptions={VIEW_MODE_OPTIONS}
         viewModeValue={catalogState.viewMode}
         onViewModeChange={catalogState.setViewMode}

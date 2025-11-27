@@ -20,6 +20,7 @@ interface AccessoriesStandaloneSectionProps {
   accessories: UserAccessory[];
   accessoriesMeta?: {
     totalPages: number;
+    total?: number;
   };
   isOwner: boolean | undefined;
   viewMode: ViewMode;
@@ -75,13 +76,15 @@ export const AccessoriesStandaloneSection: React.FC<AccessoriesStandaloneSection
             className="w-40"
           />
 
-          <Select
-            options={perPageOptions}
-            value={accessoriesPerPage.toString()}
-            onChange={(e) => onAccessoriesPerPageChange(Number(e.target.value))}
-            className="w-20"
-            size="sm"
-          />
+          {accessoriesMeta?.total !== undefined && accessoriesMeta.total > 20 && (
+            <Select
+              options={perPageOptions}
+              value={accessoriesPerPage.toString()}
+              onChange={(e) => onAccessoriesPerPageChange(Number(e.target.value))}
+              className="w-20"
+              size="sm"
+            />
+          )}
         </div>
       </div>
 

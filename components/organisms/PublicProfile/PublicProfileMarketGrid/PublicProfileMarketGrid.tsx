@@ -210,6 +210,9 @@ const PublicProfileMarketGridContent = ({
         perPageOptions={PER_PAGE_OPTIONS}
         perPageValue={catalogState.perPage.toString()}
         onPerPageChange={(value) => catalogState.setPerPage(Number(value))}
+        totalItems={
+          (gamesMeta?.total || 0) + (consolesMeta?.total || 0) + (accessoriesMeta?.total || 0)
+        }
         viewModeOptions={VIEW_MODE_OPTIONS}
         viewModeValue={catalogState.viewMode}
         onViewModeChange={catalogState.setViewMode}

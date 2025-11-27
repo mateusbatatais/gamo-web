@@ -30,6 +30,7 @@ interface GridHeaderProps {
   perPageOptions: { value: string; label: string }[];
   perPageValue: string;
   onPerPageChange: (perPage: string) => void;
+  totalItems?: number; // Total de itens para condicionar a exibição do Select
 
   // View Mode
   viewModeOptions: { value: ViewMode; label: string; icon: React.ReactNode }[];
@@ -53,6 +54,7 @@ export const GridHeader: React.FC<GridHeaderProps> = ({
   perPageOptions,
   perPageValue,
   onPerPageChange,
+  totalItems,
   viewModeOptions,
   viewModeValue,
   onViewModeChange,
@@ -89,14 +91,16 @@ export const GridHeader: React.FC<GridHeaderProps> = ({
             className="w-full lg:w-auto min-w-50"
           />
 
-          {/* Per Page Select */}
-          <Select
-            options={perPageOptions}
-            value={perPageValue}
-            onChange={(e) => onPerPageChange(e.target.value)}
-            className="min-w-25"
-            size="sm"
-          />
+          {/* Per Page Select - só aparece se totalItems > 20 */}
+          {totalItems !== undefined && totalItems > 20 && (
+            <Select
+              options={perPageOptions}
+              value={perPageValue}
+              onChange={(e) => onPerPageChange(e.target.value)}
+              className="min-w-25"
+              size="sm"
+            />
+          )}
 
           {/* View Mode Dropdown */}
           <Dropdown

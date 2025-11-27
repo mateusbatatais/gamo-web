@@ -22,6 +22,7 @@ interface AccessoriesSectionProps {
   accessories: UserAccessory[];
   accessoriesMeta?: {
     totalPages: number;
+    total?: number;
   };
   isOwner: boolean | undefined;
   type: string;
@@ -82,13 +83,15 @@ export const AccessoriesSection: React.FC<AccessoriesSectionProps> = ({
           onChange={onAccessoriesSortChange}
           className="w-full sm:w-auto"
         />
-        <Select
-          options={perPageOptions}
-          value={accessoriesPerPage.toString()}
-          onChange={(e) => onAccessoriesPerPageChange(Number(e.target.value))}
-          className="w-20"
-          size="sm"
-        />
+        {accessoriesMeta?.total !== undefined && accessoriesMeta.total > 20 && (
+          <Select
+            options={perPageOptions}
+            value={accessoriesPerPage.toString()}
+            onChange={(e) => onAccessoriesPerPageChange(Number(e.target.value))}
+            className="w-20"
+            size="sm"
+          />
+        )}
       </div>
 
       {accessories.length === 0 ? (
