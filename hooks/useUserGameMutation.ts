@@ -21,6 +21,7 @@ export function useUserGameMutation() {
     onSuccess: () => {
       showToast("Jogo adicionado à coleção com sucesso", "success");
       queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao adicionar jogo", "danger");
@@ -36,7 +37,10 @@ export function useUserGameMutation() {
     },
     onSuccess: () => {
       showToast("Jogo atualizado com sucesso", "success");
+      // Invalidar queries de games
       queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
+      // Invalidar queries de consoles para atualizar a lista de games associados
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao atualizar jogo", "danger");

@@ -44,6 +44,7 @@ export interface UserConsole extends BaseCollectionItem {
     profileImage: string | null;
   };
   accessories?: UserAccessory[];
+  games?: UserGame[];
   isFavorite?: boolean;
 }
 

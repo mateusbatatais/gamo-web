@@ -28,14 +28,18 @@ export const PublicProfileConsoleCompact = ({
   consoleItem,
   isOwner,
   isExpanded,
+  expandedType,
   type,
   onToggleAccessories,
+  onToggleGames,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner?: boolean;
   isExpanded?: boolean;
+  expandedType?: "accessories" | "games" | null;
   type?: "trade" | "collection";
   onToggleAccessories?: () => void;
+  onToggleGames?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -49,7 +53,9 @@ export const PublicProfileConsoleCompact = ({
     deleteConsole(consoleItem.id || 0);
   };
 
-  const canExpand = hasAccessories(consoleItem);
+  const canExpandAccessories = hasAccessories(consoleItem);
+  const canExpandGames = Array.isArray(consoleItem.games) && consoleItem.games.length > 0;
+  const canExpand = canExpandAccessories || canExpandGames;
 
   return (
     <>
@@ -96,16 +102,40 @@ export const PublicProfileConsoleCompact = ({
           </div>
         )}
 
-        {canExpand && onToggleAccessories && (
-          <div className="absolute bottom-0 left-0 right-0 w-full z-20">
-            <Button
-              variant="secondary"
-              size="sm"
-              aria-expanded={!!isExpanded}
-              onClick={onToggleAccessories}
-              icon={isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              className="w-full opacity-70 hover:opacity-100 rounded-t-none"
-            ></Button>
+        {canExpand && (
+          <div className="absolute bottom-0 left-0 right-0 w-full z-20 flex gap-0.5">
+            {canExpandAccessories && onToggleAccessories && (
+              <Button
+                variant="secondary"
+                size="sm"
+                aria-expanded={isExpanded && expandedType === "accessories"}
+                onClick={onToggleAccessories}
+                icon={
+                  isExpanded && expandedType === "accessories" ? (
+                    <ChevronUp size={14} />
+                  ) : (
+                    <ChevronDown size={14} />
+                  )
+                }
+                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none"
+              ></Button>
+            )}
+            {canExpandGames && onToggleGames && (
+              <Button
+                variant="primary"
+                size="sm"
+                aria-expanded={isExpanded && expandedType === "games"}
+                onClick={onToggleGames}
+                icon={
+                  isExpanded && expandedType === "games" ? (
+                    <ChevronUp size={14} />
+                  ) : (
+                    <ChevronDown size={14} />
+                  )
+                }
+                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none"
+              ></Button>
+            )}
           </div>
         )}
 

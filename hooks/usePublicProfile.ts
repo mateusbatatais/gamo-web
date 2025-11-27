@@ -240,6 +240,8 @@ export function useDeleteUserGame() {
     onSettled: () => {
       // Invalida para garantir sincronização com o servidor
       queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
+      // Invalida queries de consoles para atualizar a lista de games associados
+      queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
     },
   });
 }

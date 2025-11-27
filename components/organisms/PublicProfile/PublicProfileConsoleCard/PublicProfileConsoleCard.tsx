@@ -11,6 +11,7 @@ import {
   Trash,
   ChevronDown,
   ChevronUp,
+  Disc3,
   Gamepad,
   Move3d,
   RectangleGoggles,
@@ -63,14 +64,18 @@ export const PublicProfileConsoleCard = ({
   consoleItem,
   isOwner,
   isExpanded,
+  expandedType,
   type,
   onToggleAccessories,
+  onToggleGames,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner?: boolean;
   isExpanded?: boolean;
+  expandedType?: "accessories" | "games" | null;
   type?: "trade" | "collection";
   onToggleAccessories?: () => void;
+  onToggleGames?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -100,7 +105,9 @@ export const PublicProfileConsoleCard = ({
     return { sortedTypes };
   }, [consoleItem.accessories]);
 
-  const canExpand = hasAccessories(consoleItem);
+  const canExpandAccessories = hasAccessories(consoleItem);
+  const canExpandGames = Array.isArray(consoleItem.games) && consoleItem.games.length > 0;
+  const canExpand = canExpandAccessories || canExpandGames;
 
   return (
     <>
@@ -233,30 +240,57 @@ export const PublicProfileConsoleCard = ({
             )}
           </div>
         </div>
-        {canExpand && onToggleAccessories && (
-          <div className="mt-2 flex justify-center">
-            <Button
-              variant="secondary"
-              size="sm"
-              aria-expanded={!!isExpanded}
-              onClick={onToggleAccessories}
-              className="flex gap-2 w-full"
-            >
-              <div className="flex flex-row gap-1 justify-space-between w-full">
-                <div className="flex  gap-1.5">
-                  {accessorySummary?.sortedTypes.slice(0, 3).map(([typeSlug, count]) => (
-                    <div key={typeSlug} className="flex items-center gap-0.5">
-                      <span className="text-xs">{count}x</span>
-                      {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
-                    </div>
-                  ))}
-                  {accessorySummary && accessorySummary.sortedTypes.length > 3 && (
-                    <span className="text-xs">...</span>
+        {canExpand && (
+          <div className="mt-2 flex gap-2 justify-center">
+            {canExpandAccessories && onToggleAccessories && (
+              <Button
+                variant="secondary"
+                size="sm"
+                aria-expanded={isExpanded && expandedType === "accessories"}
+                onClick={onToggleAccessories}
+                className="flex gap-2 flex-1"
+              >
+                <div className="flex flex-row gap-1 justify-space-between w-full">
+                  <div className="flex gap-1.5">
+                    {accessorySummary?.sortedTypes.slice(0, 2).map(([typeSlug, count]) => (
+                      <div key={typeSlug} className="flex items-center gap-0.5">
+                        <span className="text-xs">{count}x</span>
+                        {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
+                      </div>
+                    ))}
+                    {accessorySummary && accessorySummary.sortedTypes.length > 2 && (
+                      <span className="text-xs">...</span>
+                    )}
+                  </div>
+                  {isExpanded && expandedType === "accessories" ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
                   )}
                 </div>
-                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </div>
-            </Button>
+              </Button>
+            )}
+            {canExpandGames && onToggleGames && (
+              <Button
+                variant="primary"
+                size="sm"
+                aria-expanded={isExpanded && expandedType === "games"}
+                onClick={onToggleGames}
+                className="flex gap-2 flex-1"
+              >
+                <div className="flex flex-row gap-1 items-center justify-between w-full">
+                  <div className="flex items-center gap-1">
+                    <Disc3 size={14} />
+                    <span className="text-xs">{consoleItem.games?.length || 0}</span>
+                  </div>
+                  {isExpanded && expandedType === "games" ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
+                </div>
+              </Button>
+            )}
           </div>
         )}
       </Card>

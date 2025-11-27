@@ -12,6 +12,7 @@ import {
   Trash,
   ChevronDown,
   ChevronUp,
+  Disc3,
   Gamepad,
   Move3d,
   RectangleGoggles,
@@ -63,14 +64,18 @@ export const PublicProfileConsoleList = ({
   consoleItem,
   isOwner,
   isExpanded,
+  expandedType,
   type,
   onToggleAccessories,
+  onToggleGames,
 }: {
   consoleItem: UserConsole & { status: CollectionStatus };
   isOwner?: boolean;
   isExpanded?: boolean;
+  expandedType?: "accessories" | "games" | null;
   type?: "trade" | "collection";
   onToggleAccessories?: () => void;
+  onToggleGames?: () => void;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -99,7 +104,8 @@ export const PublicProfileConsoleList = ({
     return { sortedTypes };
   }, [consoleItem.accessories]);
 
-  const canExpand = hasAccessories(consoleItem);
+  const canExpandAccessories = hasAccessories(consoleItem);
+  const canExpandGames = Array.isArray(consoleItem.games) && consoleItem.games.length > 0;
 
   return (
     <>
@@ -167,27 +173,50 @@ export const PublicProfileConsoleList = ({
               </div>
 
               <div className="flex gap-2 items-center">
-                {canExpand && onToggleAccessories && (
+                {canExpandAccessories && onToggleAccessories && (
                   <Button
                     variant="secondary"
                     size="sm"
-                    aria-expanded={isExpanded}
+                    aria-expanded={isExpanded && expandedType === "accessories"}
                     onClick={onToggleAccessories}
                     className="flex items-center gap-2"
                   >
                     <div className="flex gap-1 flex-row">
                       <div className="flex items-center gap-1">
-                        {accessorySummary?.sortedTypes.slice(0, 4).map(([typeSlug, count]) => (
+                        {accessorySummary?.sortedTypes.slice(0, 3).map(([typeSlug, count]) => (
                           <div key={typeSlug} className="flex items-center gap-1">
                             <span className="text-xs">{count}x</span>
                             {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
                           </div>
                         ))}
-                        {accessorySummary && accessorySummary.sortedTypes.length > 4 && (
+                        {accessorySummary && accessorySummary.sortedTypes.length > 3 && (
                           <span className="text-xs">...</span>
                         )}
                       </div>
-                      {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      {isExpanded && expandedType === "accessories" ? (
+                        <ChevronUp size={16} />
+                      ) : (
+                        <ChevronDown size={16} />
+                      )}
+                    </div>
+                  </Button>
+                )}
+                {canExpandGames && onToggleGames && (
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    aria-expanded={isExpanded && expandedType === "games"}
+                    onClick={onToggleGames}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="flex items-center gap-1">
+                      <Disc3 size={14} />
+                      <span className="text-xs">{consoleItem.games?.length || 0}</span>
+                      {isExpanded && expandedType === "games" ? (
+                        <ChevronUp size={16} />
+                      ) : (
+                        <ChevronDown size={16} />
+                      )}
                     </div>
                   </Button>
                 )}

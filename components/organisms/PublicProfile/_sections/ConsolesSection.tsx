@@ -15,6 +15,12 @@ import {
   ConsoleAccessoriesList,
   ConsoleAccessoriesTable,
 } from "../PublicProfileConsoleGrid/ConsoleAccessories";
+import {
+  ConsoleGames,
+  ConsoleGamesCompact,
+  ConsoleGamesList,
+  ConsoleGamesTable,
+} from "../PublicProfileConsoleGrid/ConsoleGames";
 import { EmptyCard } from "../EmptyCard/EmptyCard";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { Button } from "@/components/atoms/Button/Button";
@@ -57,6 +63,8 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
 
   const consoleHasAccessories = (item: UserConsole) =>
     Array.isArray(item.accessories) && item.accessories.length > 0;
+
+  const consoleHasGames = (item: UserConsole) => Array.isArray(item.games) && item.games.length > 0;
 
   // Se não há consoles e não é o dono, não renderiza nada
   if (consoles.length === 0 && !isOwner) {
@@ -125,7 +133,8 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               )}
               {consoles.map((consoleItem: UserConsole) => {
                 const isExpanded = collapseManager.openTableId === consoleItem.id;
-                const canExpand = consoleHasAccessories(consoleItem);
+                const canExpand =
+                  consoleHasAccessories(consoleItem) || consoleHasGames(consoleItem);
                 return (
                   <React.Fragment key={consoleItem.id}>
                     <PublicProfileConsoleTable
@@ -134,13 +143,24 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       isOwner={isOwner}
                       isMarketGrid={true}
                       isExpanded={isExpanded}
+                      expandedType={collapseManager.openTableType}
                       onToggleAccessories={
                         canExpand
-                          ? () => collapseManager.handleToggleTable(consoleItem.id as number)
+                          ? () =>
+                              collapseManager.handleToggleTable(
+                                consoleItem.id as number,
+                                "accessories",
+                              )
+                          : undefined
+                      }
+                      onToggleGames={
+                        canExpand
+                          ? () =>
+                              collapseManager.handleToggleTable(consoleItem.id as number, "games")
                           : undefined
                       }
                     />
-                    {isExpanded && (
+                    {isExpanded && collapseManager.openTableType === "accessories" && (
                       <tr className="bg-gray-50 dark:bg-gray-800">
                         <td colSpan={6 + (isOwner ? 1 : 0)} className="p-4">
                           <ConsoleAccessoriesTable
@@ -149,6 +169,13 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                             sale={true}
                             locale={locale}
                           />
+                        </td>
+                      </tr>
+                    )}
+                    {isExpanded && collapseManager.openTableType === "games" && (
+                      <tr className="bg-gray-50 dark:bg-gray-800">
+                        <td colSpan={6 + (isOwner ? 1 : 0)} className="p-4">
+                          <ConsoleGamesTable item={consoleItem} sale={true} locale={locale} />
                         </td>
                       </tr>
                     )}
@@ -177,13 +204,22 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                   consoleItem={consoleItem}
                   isOwner={isOwner}
                   isExpanded={isOpen}
+                  expandedType={collapseManager.openListType}
                   onToggleAccessories={() =>
-                    collapseManager.handleToggleList(consoleItem.id as number)
+                    collapseManager.handleToggleList(consoleItem.id as number, "accessories")
+                  }
+                  onToggleGames={() =>
+                    collapseManager.handleToggleList(consoleItem.id as number, "games")
                   }
                 />
-                {isOpen && (
+                {isOpen && collapseManager.openListType === "accessories" && (
                   <div>
                     <ConsoleAccessoriesList item={consoleItem} isOwner={isOwner} sale={true} />
+                  </div>
+                )}
+                {isOpen && collapseManager.openListType === "games" && (
+                  <div>
+                    <ConsoleGamesList item={consoleItem} sale={true} />
                   </div>
                 )}
               </div>
@@ -220,7 +256,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               gridIndex === rowEndIndex ||
               gridIndex === (isOwner ? consoles.length : consoles.length - 1);
 
-            const shouldRenderAccessoriesRow =
+            const shouldRenderRow =
               collapseManager.openCompactRowStart !== null &&
               isRowEnd &&
               gridIndex >= collapseManager.openCompactRowStart &&
@@ -242,21 +278,45 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                     consoleItem={consoleItem}
                     isOwner={isOwner}
                     isExpanded={isOpen}
+                    expandedType={collapseManager.openCompactType}
                     onToggleAccessories={() =>
                       collapseManager.handleToggleCompact(
                         gridIndex,
                         consoleItem.id as number,
                         compactCols,
+                        "accessories",
+                      )
+                    }
+                    onToggleGames={() =>
+                      collapseManager.handleToggleCompact(
+                        gridIndex,
+                        consoleItem.id as number,
+                        compactCols,
+                        "games",
                       )
                     }
                   />
                 </div>
 
-                {shouldRenderAccessoriesRow && (
+                {shouldRenderRow && collapseManager.openCompactType === "accessories" && (
                   <div className="basis-full">
                     <ConsoleAccessoriesCompact
                       item={consoles.find((c) => c.id === collapseManager.openCompactId)}
                       isOwner={isOwner}
+                      sale={true}
+                      columnIndex={
+                        (consoles.findIndex((c) => c.id === collapseManager.openCompactId) +
+                          (isOwner ? 1 : 0)) %
+                        compactCols
+                      }
+                      totalColumns={compactCols}
+                    />
+                  </div>
+                )}
+                {shouldRenderRow && collapseManager.openCompactType === "games" && (
+                  <div className="basis-full">
+                    <ConsoleGamesCompact
+                      item={consoles.find((c) => c.id === collapseManager.openCompactId)}
                       sale={true}
                       columnIndex={
                         (consoles.findIndex((c) => c.id === collapseManager.openCompactId) +
@@ -301,7 +361,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               gridIndex === rowEndIndex ||
               gridIndex === (isOwner ? consoles.length : consoles.length - 1);
 
-            const shouldRenderAccessoriesRow =
+            const shouldRenderRow =
               collapseManager.openGridRowStart !== null &&
               isRowEnd &&
               gridIndex >= collapseManager.openGridRowStart &&
@@ -323,21 +383,45 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                     consoleItem={consoleItem}
                     isOwner={isOwner}
                     isExpanded={isOpen}
+                    expandedType={collapseManager.openGridType}
                     onToggleAccessories={() =>
                       collapseManager.handleToggleGrid(
                         gridIndex,
                         consoleItem.id as number,
                         gridCols,
+                        "accessories",
+                      )
+                    }
+                    onToggleGames={() =>
+                      collapseManager.handleToggleGrid(
+                        gridIndex,
+                        consoleItem.id as number,
+                        gridCols,
+                        "games",
                       )
                     }
                   />
                 </div>
 
-                {shouldRenderAccessoriesRow && (
+                {shouldRenderRow && collapseManager.openGridType === "accessories" && (
                   <div className="basis-full">
                     <ConsoleAccessories
                       item={consoles.find((c) => c.id === collapseManager.openGridId)}
                       isOwner={isOwner}
+                      sale={true}
+                      columnIndex={
+                        (consoles.findIndex((c) => c.id === collapseManager.openGridId) +
+                          (isOwner ? 1 : 0)) %
+                        gridCols
+                      }
+                      totalColumns={gridCols}
+                    />
+                  </div>
+                )}
+                {shouldRenderRow && collapseManager.openGridType === "games" && (
+                  <div className="basis-full">
+                    <ConsoleGames
+                      item={consoles.find((c) => c.id === collapseManager.openGridId)}
                       sale={true}
                       columnIndex={
                         (consoles.findIndex((c) => c.id === collapseManager.openGridId) +

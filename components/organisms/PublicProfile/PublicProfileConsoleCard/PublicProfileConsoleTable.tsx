@@ -30,7 +30,9 @@ interface PublicProfileConsoleTableProps {
   isMarketGrid?: boolean;
   type?: "trade" | "collection";
   isExpanded?: boolean;
+  expandedType?: "accessories" | "games" | null;
   onToggleAccessories?: () => void;
+  onToggleGames?: () => void;
 }
 
 export const PublicProfileConsoleTable = ({
@@ -38,8 +40,10 @@ export const PublicProfileConsoleTable = ({
   isOwner,
   isMarketGrid = false,
   isExpanded = false,
+  expandedType,
   type,
   onToggleAccessories,
+  onToggleGames,
 }: PublicProfileConsoleTableProps) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -53,7 +57,9 @@ export const PublicProfileConsoleTable = ({
     deleteConsole(consoleItem.id || 0);
   };
 
-  const canExpand = hasAccessories(consoleItem);
+  const canExpandAccessories = hasAccessories(consoleItem);
+  const canExpandGames = Array.isArray(consoleItem.games) && consoleItem.games.length > 0;
+  const canExpand = canExpandAccessories || canExpandGames;
 
   return (
     <>
@@ -64,15 +70,39 @@ export const PublicProfileConsoleTable = ({
       `}
       >
         <td className="p-2 w-10">
-          {onToggleAccessories && canExpand && (
-            <Button
-              variant="transparent"
-              size="sm"
-              aria-expanded={isExpanded}
-              onClick={onToggleAccessories}
-            >
-              {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            </Button>
+          {canExpand && (
+            <div className="flex gap-1">
+              {canExpandAccessories && onToggleAccessories && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  aria-expanded={isExpanded && expandedType === "accessories"}
+                  onClick={onToggleAccessories}
+                  title="Acessórios"
+                >
+                  {isExpanded && expandedType === "accessories" ? (
+                    <ChevronDown size={14} />
+                  ) : (
+                    <ChevronRight size={14} />
+                  )}
+                </Button>
+              )}
+              {canExpandGames && onToggleGames && (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  aria-expanded={isExpanded && expandedType === "games"}
+                  onClick={onToggleGames}
+                  title="Jogos"
+                >
+                  {isExpanded && expandedType === "games" ? (
+                    <ChevronDown size={14} />
+                  ) : (
+                    <ChevronRight size={14} />
+                  )}
+                </Button>
+              )}
+            </div>
           )}
         </td>
 
