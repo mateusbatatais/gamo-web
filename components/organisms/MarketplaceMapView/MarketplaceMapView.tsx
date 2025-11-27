@@ -40,7 +40,7 @@ export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
     libraries: GOOGLE_MAPS_LIBRARIES,
   });
 
-  const [selectedItem, setSelectedItem] = useState<MarketplaceItem | null>(null);
+  const [selectedItems, setSelectedItems] = useState<MarketplaceItem[]>([]);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const { getSafeImageUrl } = useSafeImageUrl();
@@ -68,6 +68,19 @@ export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
     () => items.filter((item) => item.latitude != null && item.longitude != null),
     [items],
   );
+
+  // Agrupar items por localização (lat,lng)
+  const groupedItems = useMemo(() => {
+    const groups = new Map<string, MarketplaceItem[]>();
+
+    itemsWithLocation.forEach((item) => {
+      const key = `${item.latitude},${item.longitude}`;
+      const existing = groups.get(key) || [];
+      groups.set(key, [...existing, item]);
+    });
+
+    return Array.from(groups.values());
+  }, [itemsWithLocation]);
 
   // Calcular centro padrão (prioriza localização do usuário)
   const defaultCenter = useMemo(() => {
@@ -125,77 +138,150 @@ export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
 
   // Criar ícone customizado
   const createMarkerIcon = useCallback(
-    (itemType: "GAME" | "CONSOLE" | "ACCESSORY") => {
+    (itemType: "GAME" | "CONSOLE" | "ACCESSORY", count?: number) => {
       if (!isLoaded) return undefined;
 
       const color = getMarkerColor(itemType);
+      const showBadge = count && count > 1;
+
       const svg = `
-      <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="16" cy="16" r="12" fill="${color}" stroke="white" stroke-width="3"/>
+      <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="12" fill="${color}" stroke="white" stroke-width="3"/>
+        ${
+          showBadge
+            ? `
+          <circle cx="30" cy="10" r="8" fill="#EF4444" stroke="white" stroke-width="2"/>
+          <text x="30" y="14" text-anchor="middle" fill="white" font-size="10" font-weight="bold">${count > 9 ? "9+" : count}</text>
+        `
+            : ""
+        }
       </svg>
     `;
       return {
         url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
-        scaledSize: new google.maps.Size(32, 32),
-        anchor: new google.maps.Point(16, 16),
+        scaledSize: new google.maps.Size(40, 40),
+        anchor: new google.maps.Point(20, 20),
       };
     },
     [isLoaded],
   );
 
   // Renderizar InfoWindow
-  const renderInfoWindow = (item: MarketplaceItem) => {
-    const safeImageUrl = getSafeImageUrl(item.photoMain || item.imageUrl);
-    const formattedPrice = item.price
-      ? new Intl.NumberFormat("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        }).format(item.price)
-      : null;
+  const renderInfoWindow = (items: MarketplaceItem[]) => {
+    if (items.length === 0) return null;
 
-    const tradeType = item.status === "SELLING" ? "selling" : "looking";
+    const firstItem = items[0];
+    const position = { lat: firstItem.latitude!, lng: firstItem.longitude! };
 
-    return (
-      <InfoWindow
-        position={{ lat: item.latitude!, lng: item.longitude! }}
-        onCloseClick={() => setSelectedItem(null)}
-      >
-        <div className="max-w-xs">
-          <div className="relative h-32 w-full mb-2 rounded overflow-hidden">
-            <SafeImage
-              src={safeImageUrl}
-              alt={item.name}
-              fill
-              sizes="300px"
-              className="object-cover"
-            />
-          </div>
+    // Se houver apenas um item, renderizar o card completo
+    if (items.length === 1) {
+      const item = items[0];
+      const safeImageUrl = getSafeImageUrl(item.photoMain || item.imageUrl);
+      const formattedPrice = item.price
+        ? new Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL",
+          }).format(item.price)
+        : null;
 
-          <h3 className="font-semibold text-sm mb-1 line-clamp-2">{item.name}</h3>
+      const tradeType = item.status === "SELLING" ? "selling" : "looking";
 
-          {formattedPrice && (
-            <p className="text-primary-600 font-bold text-lg mb-2">{formattedPrice}</p>
-          )}
-
-          <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
-            <User size={12} />
-            <span className="truncate">{item.seller.name}</span>
-          </div>
-
-          {(item.city || item.state) && (
-            <div className="flex items-center gap-1 text-xs text-gray-600 mb-3">
-              <MapPin size={12} />
-              <span className="truncate">
-                {item.city}
-                {item.city && item.state && ", "}
-                {item.state}
-              </span>
+      return (
+        <InfoWindow position={position} onCloseClick={() => setSelectedItems([])}>
+          <div className="max-w-xs">
+            <div className="relative h-32 w-full mb-2 rounded overflow-hidden">
+              <SafeImage
+                src={safeImageUrl}
+                alt={item.name}
+                fill
+                sizes="300px"
+                className="object-cover"
+              />
             </div>
-          )}
 
-          <Link href={`/user/${item.seller.slug}/market?tradetype=${tradeType}`}>
-            <Button variant="primary" size="sm" label="Ver detalhes" className="w-full" />
-          </Link>
+            <h3 className="font-semibold text-sm mb-1 line-clamp-2">{item.name}</h3>
+
+            {formattedPrice && (
+              <p className="text-primary-600 font-bold text-lg mb-2">{formattedPrice}</p>
+            )}
+
+            <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
+              <User size={12} />
+              <span className="truncate">{item.seller.name}</span>
+            </div>
+
+            {(item.city || item.state) && (
+              <div className="flex items-center gap-1 text-xs text-gray-600 mb-3">
+                <MapPin size={12} />
+                <span className="truncate">
+                  {item.city}
+                  {item.city && item.state && ", "}
+                  {item.state}
+                </span>
+              </div>
+            )}
+
+            <Link href={`/user/${item.seller.slug}/market?tradetype=${tradeType}`}>
+              <Button variant="primary" size="sm" label="Ver detalhes" className="w-full" />
+            </Link>
+          </div>
+        </InfoWindow>
+      );
+    }
+
+    // Se houver múltiplos items, renderizar lista
+    return (
+      <InfoWindow position={position} onCloseClick={() => setSelectedItems([])}>
+        <div className="w-80">
+          <h3 className="font-semibold text-sm mb-2">{items.length} itens neste local</h3>
+          <div className="max-h-96 overflow-y-auto space-y-2">
+            {items.map((item) => {
+              const safeImageUrl = getSafeImageUrl(item.photoMain || item.imageUrl);
+              const formattedPrice = item.price
+                ? new Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(item.price)
+                : null;
+
+              const tradeType = item.status === "SELLING" ? "selling" : "looking";
+
+              return (
+                <div
+                  key={`${item.itemType}-${item.id}`}
+                  className="flex gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+                >
+                  <div className="relative h-16 w-16 shrink-0 rounded overflow-hidden">
+                    <SafeImage
+                      src={safeImageUrl}
+                      alt={item.name}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-medium text-xs mb-1 line-clamp-1">{item.name}</h4>
+                    {formattedPrice && (
+                      <p className="text-primary-600 font-bold text-sm mb-1">{formattedPrice}</p>
+                    )}
+                    <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
+                      <User size={10} />
+                      <span className="truncate">{item.seller.name}</span>
+                    </div>
+                    <Link href={`/user/${item.seller.slug}/market?tradetype=${tradeType}`}>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        label="Ver"
+                        className="w-full text-xs py-1"
+                      />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </InfoWindow>
     );
@@ -269,18 +355,25 @@ export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
           />
         )}
 
-        {/* Marcadores dos items */}
-        {itemsWithLocation.map((item) => (
-          <Marker
-            key={`${item.itemType}-${item.id}`}
-            position={{ lat: item.latitude!, lng: item.longitude! }}
-            onClick={() => setSelectedItem(item)}
-            icon={createMarkerIcon(item.itemType)}
-            title={item.name}
-          />
-        ))}
+        {/* Marcadores dos items (agrupados por localização) */}
+        {groupedItems.map((group, index) => {
+          const firstItem = group[0];
+          // Se houver múltiplos tipos no grupo, usar o tipo do primeiro item
+          const itemType = firstItem.itemType;
+          const title = group.length === 1 ? firstItem.name : `${group.length} itens neste local`;
 
-        {selectedItem && renderInfoWindow(selectedItem)}
+          return (
+            <Marker
+              key={`group-${index}-${firstItem.latitude}-${firstItem.longitude}`}
+              position={{ lat: firstItem.latitude!, lng: firstItem.longitude! }}
+              onClick={() => setSelectedItems(group)}
+              icon={createMarkerIcon(itemType, group.length)}
+              title={title}
+            />
+          );
+        })}
+
+        {selectedItems.length > 0 && renderInfoWindow(selectedItems)}
       </GoogleMap>
     </div>
   );
