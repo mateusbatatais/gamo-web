@@ -47,7 +47,7 @@ export const GameSelector = ({
       setIsLoading(true);
       try {
         const results = await apiFetch<{ items: Game[] }>(
-          `/games?platforms=${consoleId}&search=${encodeURIComponent(query)}&perPage=10`,
+          `/games?search=${encodeURIComponent(query)}&perPage=10`,
         );
 
         setSearchResults(results.items);
@@ -106,7 +106,7 @@ export const GameSelector = ({
   );
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 min-h-70  ">
       <div className="space-y-2">
         <AutoComplete
           items={autocompleteItems}
@@ -132,7 +132,7 @@ export const GameSelector = ({
               <button
                 type="button"
                 onClick={() => onRemoveGame(game.variantId)}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors z-10"
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-md hover:bg-red-600 transition-colors z-5"
                 title={t("removeGame")}
               >
                 <X size={14} />
