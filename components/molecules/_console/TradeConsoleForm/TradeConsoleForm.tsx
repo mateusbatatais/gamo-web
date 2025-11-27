@@ -8,12 +8,11 @@ import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
-import { useGamesByConsole } from "@/hooks/useGamesByConsole";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
 import { Select } from "@/components/atoms/Select/Select";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
 import { AccessorySelector } from "../../AccessorySelector/AccessorySelector";
-import { GameSelector } from "../../GameSelector/GameSelector";
+import { GameSelector, SelectedGameVariant } from "../../GameSelector/GameSelector";
 
 interface TradeConsoleFormProps {
   consoleId: number;
@@ -48,11 +47,6 @@ interface SelectedAccessoryVariant {
   quantity: number;
 }
 
-interface SelectedGameVariant {
-  variantId: number;
-  quantity: number;
-}
-
 export const TradeConsoleForm = ({
   consoleId,
   consoleVariantId,
@@ -70,7 +64,7 @@ export const TradeConsoleForm = ({
     useStorageOptions(consoleVariantId);
   const { data: accessoryVariants, isLoading: accessoriesLoading } =
     useAccessoryVariantsByConsole(consoleId);
-  const { data: gameVariants, isLoading: gamesLoading } = useGamesByConsole(consoleId);
+
   const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number | undefined>(
     initialData?.storageOptionId ?? undefined,
   );
@@ -111,14 +105,13 @@ export const TradeConsoleForm = ({
     condition: "NEW" | "USED" | "REFURBISHED",
   ) => {
     if (!isGamesOpen || !userConsoleId) return;
-    for (const [variantId, selected] of Object.entries(selectedGameVariants)) {
+    for (const selected of Object.values(selectedGameVariants)) {
       if (selected.quantity <= 0) continue;
-      const variant = gameVariants?.find((v) => v.id === parseInt(variantId));
-      if (!variant) continue;
+
       for (let i = 0; i < selected.quantity; i++) {
         await createUserGame({
-          gameId: variant.id,
-          gameSlug: variant.slug,
+          gameId: selected.variantId,
+          gameSlug: selected.slug,
           media: "PHYSICAL",
           status,
           condition,
@@ -159,10 +152,31 @@ export const TradeConsoleForm = ({
   };
 
   const handleGameQuantityChange = (variantId: number, newQuantity: number) => {
-    setSelectedGameVariants((prev) => ({
-      ...prev,
-      [variantId]: { variantId, quantity: Math.max(0, newQuantity) },
-    }));
+    setSelectedGameVariants((prev) => {
+      if (!prev[variantId]) return prev;
+      return {
+        ...prev,
+        [variantId]: { ...prev[variantId], quantity: Math.max(0, newQuantity) },
+      };
+    });
+  };
+
+  const handleAddGame = (game: SelectedGameVariant) => {
+    setSelectedGameVariants((prev) => {
+      if (prev[game.variantId]) return prev;
+      return {
+        ...prev,
+        [game.variantId]: game,
+      };
+    });
+  };
+
+  const handleRemoveGame = (variantId: number) => {
+    setSelectedGameVariants((prev) => {
+      const newState = { ...prev };
+      delete newState[variantId];
+      return newState;
+    });
   };
 
   const handleAccessoriesToggle = (open: boolean) => {
@@ -196,22 +210,6 @@ export const TradeConsoleForm = ({
     {} as Record<string, typeof accessoryVariants>,
   );
 
-  const variantsByGenre = gameVariants?.reduce(
-    (acc, variant) => {
-      const genres = variant.genreMap ? Object.values(variant.genreMap) : ["Outros"];
-      genres.forEach((genre) => {
-        if (!acc[genre]) {
-          acc[genre] = [];
-        }
-        if (!acc[genre].find((g) => g.id === variant.id)) {
-          acc[genre].push(variant);
-        }
-      });
-      return acc;
-    },
-    {} as Record<string, typeof gameVariants>,
-  );
-
   const extraFields = (
     <>
       {storageOptionOptions.length > 0 && (
@@ -242,10 +240,11 @@ export const TradeConsoleForm = ({
 
       <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
         <GameSelector
-          variantsByGenre={variantsByGenre || {}}
+          consoleId={consoleId}
           selectedVariants={selectedGameVariants}
           onQuantityChange={handleGameQuantityChange}
-          isLoading={gamesLoading}
+          onRemoveGame={handleRemoveGame}
+          onAddGame={handleAddGame}
         />
       </Collapse>
     </>

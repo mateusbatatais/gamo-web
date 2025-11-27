@@ -550,6 +550,9 @@
     "includeAccessories": "Deseja incluir acessórios?",
     "noAccessories": "Nenhum acessório disponível para este console",
     "noGames": "Nenhum game disponível para este console",
+    "searchGames": "Buscar games...",
+    "noGamesSelected": "Nenhum game selecionado",
+    "removeGame": "Remover game",
     "cancel": "Cancelar",
     "add": "Adicionar à coleção"
   },
