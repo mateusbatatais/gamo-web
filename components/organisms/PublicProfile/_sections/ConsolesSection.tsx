@@ -175,7 +175,12 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                     {isExpanded && collapseManager.openTableType === "games" && (
                       <tr className="bg-gray-50 dark:bg-gray-800">
                         <td colSpan={6 + (isOwner ? 1 : 0)} className="p-4">
-                          <ConsoleGamesTable item={consoleItem} sale={true} locale={locale} />
+                          <ConsoleGamesTable
+                            item={consoleItem}
+                            isOwner={isOwner}
+                            sale={true}
+                            locale={locale}
+                          />
                         </td>
                       </tr>
                     )}
@@ -219,7 +224,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                 )}
                 {isOpen && collapseManager.openListType === "games" && (
                   <div>
-                    <ConsoleGamesList item={consoleItem} sale={true} />
+                    <ConsoleGamesList item={consoleItem} isOwner={isOwner} sale={true} />
                   </div>
                 )}
               </div>
@@ -317,6 +322,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                   <div className="basis-full">
                     <ConsoleGamesCompact
                       item={consoles.find((c) => c.id === collapseManager.openCompactId)}
+                      isOwner={isOwner}
                       sale={true}
                       columnIndex={
                         (consoles.findIndex((c) => c.id === collapseManager.openCompactId) +
@@ -422,6 +428,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                   <div className="basis-full">
                     <ConsoleGames
                       item={consoles.find((c) => c.id === collapseManager.openGridId)}
+                      isOwner={isOwner}
                       sale={true}
                       columnIndex={
                         (consoles.findIndex((c) => c.id === collapseManager.openGridId) +
