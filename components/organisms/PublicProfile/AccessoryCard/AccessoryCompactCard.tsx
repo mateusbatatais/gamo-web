@@ -83,7 +83,7 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
         )}
       </div>
 
-      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
+      <div className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
         <span className="text-white text-xs font-medium text-center px-2 line-clamp-2">
           {accessory.variantName || "Acessório"}
         </span>

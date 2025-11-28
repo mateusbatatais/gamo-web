@@ -253,6 +253,7 @@ export const PublicProfileGameList = ({
           mode="edit"
           type={type}
           gameId={game.gameId}
+          gameSlug={game.gameSlug || ""}
           platformOptions={platformOptions}
           initialData={{
             id: game.id,

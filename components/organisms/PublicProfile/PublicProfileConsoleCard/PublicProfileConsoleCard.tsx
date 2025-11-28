@@ -281,7 +281,9 @@ export const PublicProfileConsoleCard = ({
                 <div className="flex flex-row gap-1 items-center justify-between w-full">
                   <div className="flex items-center gap-1">
                     <Disc3 size={14} />
-                    <span className="text-xs">{consoleItem.games?.length || 0}</span>
+                    <span className="text-xs">
+                      {consoleItem.totalGames || consoleItem.games?.length || 0}
+                    </span>
                   </div>
                   {isExpanded && expandedType === "games" ? (
                     <ChevronUp size={16} />

@@ -121,13 +121,15 @@ export const GameGridSection: React.FC<GameGridSectionProps> = ({
           } gap-6`}
         >
           {isOwner && (
-            <EmptyCard
-              text={t("txtGame")}
-              buttonLabel={addButtonText}
-              buttonLink={addButtonLink}
-              viewMode={viewMode === "grid" ? "card" : "compact"}
-              isGame={true}
-            />
+            <div className="min-w-0">
+              <EmptyCard
+                text={t("txtGame")}
+                buttonLabel={addButtonText}
+                buttonLink={addButtonLink}
+                viewMode={viewMode === "grid" ? "card" : "compact"}
+                isGame={true}
+              />
+            </div>
           )}
           {games.map((game: UserGame) =>
             viewMode === "compact" ? (

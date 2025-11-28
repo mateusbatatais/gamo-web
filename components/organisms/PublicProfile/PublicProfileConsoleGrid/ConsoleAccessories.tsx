@@ -172,6 +172,12 @@ export function ConsoleAccessories({
     );
   }
 
+  // Determina se há jogos também para calcular a posição do botão
+  const hasGames = Array.isArray(item.games) && item.games.length > 0;
+  // Se há jogos e acessórios, o botão de acessórios está à esquerda (25%)
+  // Se há apenas acessórios, o botão está centralizado (50%)
+  const buttonPosition = hasGames ? 0.25 : 0.5;
+
   return (
     <div className="relative">
       {/* Seta visual */}
@@ -179,7 +185,7 @@ export function ConsoleAccessories({
         <div
           className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-secondary-500 dark:border-secondary-500 transform rotate-45 z-10"
           style={{
-            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) / 2 - 8px)`,
+            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) * ${buttonPosition} - 8px)`,
           }}
         />
       )}
@@ -220,6 +226,12 @@ export function ConsoleAccessoriesCompact({
     );
   }
 
+  // Determina se há jogos também para calcular a posição do botão
+  const hasGames = Array.isArray(item.games) && item.games.length > 0;
+  // Se há jogos e acessórios, o botão de acessórios está à esquerda (25%)
+  // Se há apenas acessórios, o botão está centralizado (50%)
+  const buttonPosition = hasGames ? 0.25 : 0.5;
+
   return (
     <div className="relative mt-3">
       {/* Seta visual */}
@@ -227,7 +239,7 @@ export function ConsoleAccessoriesCompact({
         <div
           className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-secondary-500 dark:border-secondary-500 transform rotate-45 z-10"
           style={{
-            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) / 2 - 8px)`,
+            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) * ${buttonPosition} - 8px)`,
           }}
         />
       )}

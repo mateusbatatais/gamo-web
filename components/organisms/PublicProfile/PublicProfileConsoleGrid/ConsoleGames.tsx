@@ -52,6 +52,12 @@ export function ConsoleGames({
     );
   }
 
+  // Determina se há acessórios também para calcular a posição do botão
+  const hasAccessories = Array.isArray(item.accessories) && item.accessories.length > 0;
+  // Se há jogos e acessórios, o botão de jogos está à direita (75%)
+  // Se há apenas jogos, o botão está centralizado (50%)
+  const buttonPosition = hasAccessories ? 0.75 : 0.5;
+
   return (
     <div className="relative">
       {/* Seta visual */}
@@ -59,7 +65,7 @@ export function ConsoleGames({
         <div
           className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-primary-500 dark:border-primary-500 transform rotate-45 z-10"
           style={{
-            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) / 2 - 8px)`,
+            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) * ${buttonPosition} - 8px)`,
           }}
         />
       )}
@@ -104,14 +110,20 @@ export function ConsoleGamesCompact({
     return null;
   }
 
+  // Determina se há acessórios também para calcular a posição do botão
+  const hasAccessories = Array.isArray(item.accessories) && item.accessories.length > 0;
+  // Se há jogos e acessórios, o botão de jogos está à direita (75%)
+  // Se há apenas jogos, o botão está centralizado (50%)
+  const buttonPosition = hasAccessories ? 0.75 : 0.5;
+
   return (
-    <div className="relative">
+    <div className="relative mt-3">
       {/* Seta visual */}
       {typeof columnIndex === "number" && typeof totalColumns === "number" && (
         <div
           className="absolute -top-2 w-4 h-4 bg-white dark:bg-gray-800 border-t-2 border-l-2 border-primary-500 dark:border-primary-500 transform rotate-45 z-10"
           style={{
-            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) / 2 - 8px)`,
+            left: `calc((100% / ${totalColumns}) * ${columnIndex} + (100% / ${totalColumns}) * ${buttonPosition} - 8px)`,
           }}
         />
       )}

@@ -149,12 +149,14 @@ export const AccessoriesStandaloneSection: React.FC<AccessoriesStandaloneSection
       ) : viewMode === "compact" ? (
         <div className="flex flex-wrap gap-3">
           {isOwner && (
-            <EmptyCard
-              text={t("txtAccessory")}
-              buttonLabel={addButtonText}
-              buttonLink={addButtonLink}
-              viewMode="compact"
-            />
+            <div className="box-border min-w-0 flex flex-col flex-[0_0_calc(33.333%_-_.5rem)] md:flex-[0_0_calc(25%_-_.5625rem)] lg:flex-[0_0_calc(16.666%_-_.625rem)] xl:flex-[0_0_calc(12.5%_-_.65625rem)]">
+              <EmptyCard
+                text={t("txtAccessory")}
+                buttonLabel={addButtonText}
+                buttonLink={addButtonLink}
+                viewMode="compact"
+              />
+            </div>
           )}
           {accessories.map((accessory) => (
             <div

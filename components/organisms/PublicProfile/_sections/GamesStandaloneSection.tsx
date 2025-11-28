@@ -150,12 +150,14 @@ export const GamesStandaloneSection: React.FC<GamesStandaloneSectionProps> = ({
       ) : viewMode === "compact" ? (
         <div className="flex flex-wrap gap-3">
           {isOwner && (
-            <EmptyCard
-              text={t("txtGame")}
-              buttonLabel={addButtonText}
-              buttonLink={addButtonLink}
-              viewMode="compact"
-            />
+            <div className="box-border min-w-0 flex-[0_0_calc(33.333%-.5rem)] md:flex-[0_0_calc(25%-.5625rem)] lg:flex-[0_0_calc(16.666%-.625rem)] xl:flex-[0_0_calc(12.5%-.65625rem)]">
+              <EmptyCard
+                text={t("txtGame")}
+                buttonLabel={addButtonText}
+                buttonLink={addButtonLink}
+                viewMode="compact"
+              />
+            </div>
           )}
           {games.map((game) => (
             <div

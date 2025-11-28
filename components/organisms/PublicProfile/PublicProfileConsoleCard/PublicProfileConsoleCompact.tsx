@@ -4,7 +4,15 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/atoms/Card/Card";
-import { Pencil, Trash, ChevronDown, ChevronUp, Heart } from "lucide-react";
+import {
+  Pencil,
+  Trash,
+  ChevronDown,
+  ChevronUp,
+  Heart,
+  Gamepad as GamepadIcon,
+  Disc3,
+} from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -110,15 +118,15 @@ export const PublicProfileConsoleCompact = ({
                 size="sm"
                 aria-expanded={isExpanded && expandedType === "accessories"}
                 onClick={onToggleAccessories}
-                icon={
-                  isExpanded && expandedType === "accessories" ? (
-                    <ChevronUp size={14} />
-                  ) : (
-                    <ChevronDown size={14} />
-                  )
-                }
-                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none"
-              ></Button>
+                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none flex items-center justify-center gap-1"
+              >
+                <GamepadIcon size={14} />
+                {isExpanded && expandedType === "accessories" ? (
+                  <ChevronUp size={14} />
+                ) : (
+                  <ChevronDown size={14} />
+                )}
+              </Button>
             )}
             {canExpandGames && onToggleGames && (
               <Button
@@ -126,15 +134,15 @@ export const PublicProfileConsoleCompact = ({
                 size="sm"
                 aria-expanded={isExpanded && expandedType === "games"}
                 onClick={onToggleGames}
-                icon={
-                  isExpanded && expandedType === "games" ? (
-                    <ChevronUp size={14} />
-                  ) : (
-                    <ChevronDown size={14} />
-                  )
-                }
-                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none"
-              ></Button>
+                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none flex items-center justify-center gap-1"
+              >
+                <Disc3 size={14} />
+                {isExpanded && expandedType === "games" ? (
+                  <ChevronUp size={14} />
+                ) : (
+                  <ChevronDown size={14} />
+                )}
+              </Button>
             )}
           </div>
         )}
@@ -169,7 +177,7 @@ export const PublicProfileConsoleCompact = ({
           )}
         </div>
 
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-opacity flex items-center justify-center opacity-0 group-hover:opacity-100 z-10">
+        <div className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
           <span className="text-white text-xs font-medium text-center px-2 line-clamp-2">
             {consoleItem.consoleName}
             {consoleItem.variantName && ` (${consoleItem.variantName})`}
