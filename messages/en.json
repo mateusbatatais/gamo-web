@@ -754,9 +754,42 @@
         "pending": "Pending"
       },
       "confidence": "confidence",
-      "fields": {},
-      "statusValues": {},
-      "mediaValues": {},
+      "fields": {
+        "editFields": "Edit Fields",
+        "showDetails": "Show Details",
+        "hideDetails": "Hide Details",
+        "status": "Status",
+        "media": "Media",
+        "condition": "Condition",
+        "progress": "Progress",
+        "rating": "Rating",
+        "price": "Price",
+        "hasBox": "Has Box",
+        "hasManual": "Has Manual",
+        "acceptsTrade": "Accepts Trade",
+        "description": "Description",
+        "selectOption": "Select an option",
+        "saveSuccess": "Fields updated successfully!",
+        "saveError": "Error saving changes",
+        "priceRequired": "Price is required when status is 'Selling'",
+        "saveChanges": "Save Changes",
+        "saving": "Saving..."
+      },
+      "statusValues": {
+        "owned": "Owned",
+        "selling": "Selling",
+        "looking_for": "Looking For",
+        "previously_owned": "Previously Owned"
+      },
+      "mediaValues": {
+        "physical": "Physical",
+        "digital": "Digital"
+      },
+      "conditionValues": {
+        "new": "New",
+        "used": "Used",
+        "refurbished": "Refurbished"
+      },
       "instructions": {
         "title": "How to import",
         "step1": "Review each game in your spreadsheet",

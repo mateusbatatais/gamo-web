@@ -753,9 +753,42 @@
         "pending": "Pendente"
       },
       "confidence": "de confiança",
-      "fields": {},
-      "statusValues": {},
-      "mediaValues": {},
+      "fields": {
+        "editFields": "Editar Campos",
+        "showDetails": "Mostrar Detalhes",
+        "hideDetails": "Ocultar Detalhes",
+        "saveChanges": "Salvar Alterações",
+        "saving": "Salvando...",
+        "status": "Status",
+        "media": "Mídia",
+        "condition": "Condição",
+        "progress": "Progresso (0-10)",
+        "rating": "Avaliação (0-10)",
+        "price": "Preço",
+        "hasBox": "Tem Caixa",
+        "hasManual": "Tem Manual",
+        "acceptsTrade": "Aceita Troca",
+        "description": "Descrição",
+        "selectOption": "Selecione uma opção",
+        "saveSuccess": "Campos atualizados com sucesso!",
+        "saveError": "Erro ao salvar alterações",
+        "priceRequired": "Preço é obrigatório quando o status é 'Vendendo'"
+      },
+      "statusValues": {
+        "owned": "Tenho",
+        "selling": "Vendendo",
+        "looking_for": "Procurando",
+        "previously_owned": "Já tive"
+      },
+      "mediaValues": {
+        "physical": "Físico",
+        "digital": "Digital"
+      },
+      "conditionValues": {
+        "new": "Novo",
+        "used": "Usado",
+        "refurbished": "Recondicionado"
+      },
       "instructions": {
         "title": "Como importar",
         "step1": "Revise cada jogo da sua planilha",
@@ -780,10 +813,10 @@
       "feedback": {},
       "messages": {
         "processing": "Processando matches...",
-        "noMatches": "Nenhum match encontrado para revisão",
+        "noMatches": "Nenhuma correspondência encontrada para revisão",
         "noGamesConfirmed": "Nenhum jogo confirmado ainda",
         "gamesConfirmed": "{confirmed} de {total} jogos confirmados",
-        "gamesSkipped": " • {skipped} ignorados",
+        "gamesSkipped": "{skipped} ignorados",
         "pendingGames": "{pending} pendentes"
       },
       "results": {

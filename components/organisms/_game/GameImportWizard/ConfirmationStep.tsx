@@ -148,48 +148,6 @@ export function ConfirmationStep({
     ));
   };
 
-  const renderSummaryCard = () => {
-    const { confirmedMatchesCount, totalMatches, skippedMatchesCount } = matchStats;
-
-    if (!session.matches || session.matches.length === 0) return null;
-
-    return (
-      <Card className="p-4 bg-gray-50 dark:bg-gray-800">
-        <div className="flex justify-between items-center">
-          <div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {confirmedMatchesCount === 0
-                ? t("messages.noGamesConfirmed")
-                : t("messages.gamesConfirmed", {
-                    confirmed: confirmedMatchesCount,
-                    total: totalMatches,
-                  })}
-              {skippedMatchesCount > 0 &&
-                t("messages.gamesSkipped", { skipped: skippedMatchesCount })}
-            </p>
-            {confirmedMatchesCount > 0 && confirmedMatchesCount < totalMatches && (
-              <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                {t("messages.pendingGames", {
-                  pending: totalMatches - confirmedMatchesCount - skippedMatchesCount,
-                })}
-              </p>
-            )}
-          </div>
-
-          <div className="flex space-x-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onRestart}
-              label={t("actions.cancelImport")}
-            />
-            {renderImportButton("primary")}
-          </div>
-        </div>
-      </Card>
-    );
-  };
-
   const renderSuccessCard = () => {
     if (session.status !== "COMPLETED") return null;
 
@@ -221,43 +179,65 @@ export function ConfirmationStep({
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t("title")}</h2>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              {t("matchesCount", {
-                confirmed: matchStats.confirmedMatchesCount,
-                total: matchStats.totalMatches,
-              })}
-            </p>
+    <>
+      <div className="space-y-6 pb-32">
+        <Card className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t("title")}</h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                {t("matchesCount", {
+                  confirmed: matchStats.confirmedMatchesCount,
+                  total: matchStats.totalMatches,
+                })}
+              </p>
 
-            <div className="mt-2">
-              <span className={getStatusBadgeClass(session.status)}>
-                {t("status.label")}: {getStatusText(session.status)}
-              </span>
+              <div className="mt-2">
+                <span className={getStatusBadgeClass(session.status)}>
+                  {t("status.label")}: {getStatusText(session.status)}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex space-x-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onRestart}
+                label={t("actions.restart")}
+              />
             </div>
           </div>
+        </Card>
 
-          <div className="flex space-x-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onRestart}
-              label={t("actions.restart")}
-            />
+        {renderInstructionsCard()}
+
+        <div className="space-y-4">{renderMatchesList()}</div>
+
+        {renderSuccessCard()}
+      </div>
+
+      {/* Card de ações fixo na parte inferior */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                {t("matchesCount", {
+                  confirmed: matchStats.confirmedMatchesCount,
+                  total: matchStats.totalMatches,
+                })}
+              </p>
+              {matchStats.skippedMatchesCount > 0 && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {t("messages.gamesSkipped", { skipped: matchStats.skippedMatchesCount })}
+                </p>
+              )}
+            </div>
             {renderImportButton("primary")}
           </div>
         </div>
-      </Card>
-
-      {renderInstructionsCard()}
-
-      <div className="space-y-4">{renderMatchesList()}</div>
-
-      {renderSummaryCard()}
-      {renderSuccessCard()}
-    </div>
+      </div>
+    </>
   );
 }

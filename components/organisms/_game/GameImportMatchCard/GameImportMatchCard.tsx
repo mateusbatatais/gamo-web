@@ -12,6 +12,7 @@ import { Game } from "@/@types/catalog.types";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
 import { useApiClient } from "@/lib/api-client";
 import { usePlatformMatching } from "@/hooks/usePlatformMatching";
+import { MatchFieldEditor } from "../MatchFieldEditor/MatchFieldEditor";
 
 interface GameImportMatchCardProps {
   match: ImportMatch;
@@ -324,6 +325,14 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
             </>
           )}
         </div>
+
+        {/* Editor de Campos */}
+        {currentStatus !== "SKIPPED" && (
+          <MatchFieldEditor
+            match={match}
+            onUpdate={() => onConfirm(match.id, currentGame?.id || null)}
+          />
+        )}
       </Card>
 
       {/* Modal de Busca */}

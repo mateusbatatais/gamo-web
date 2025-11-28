@@ -104,6 +104,52 @@ export function useGameImport() {
     },
   });
 
+  // Tipos para a resposta do backend (antes da transformação)
+  interface BackendImportMatch {
+    id: number;
+    userProgress?: number | null;
+    userRating?: number | null;
+    userStatus?: CollectionStatus | null;
+    userMedia?: MediaType | null;
+    userPrice?: number | null;
+    userHasBox?: boolean | null;
+    userHasManual?: boolean | null;
+    userCondition?: Condition | null;
+    userAcceptsTrade?: boolean | null;
+    userDescription?: string | null;
+    userAbandoned?: boolean | null;
+    userReview?: string | null;
+    [key: string]: unknown; // Para outros campos que não precisamos transformar
+  }
+
+  interface BackendImportSession extends Omit<ImportSession, "matches"> {
+    matches?: BackendImportMatch[];
+  }
+
+  // Função para transformar dados do backend para o formato esperado pelo frontend
+  const transformImportSession = (session: BackendImportSession): ImportSession => {
+    return {
+      ...session,
+      matches: session.matches?.map((match) => ({
+        ...match,
+        userData: {
+          progress: match.userProgress ?? undefined,
+          rating: match.userRating ?? undefined,
+          status: match.userStatus ?? undefined,
+          media: match.userMedia ?? undefined,
+          price: match.userPrice ?? undefined,
+          hasBox: match.userHasBox ?? undefined,
+          hasManual: match.userHasManual ?? undefined,
+          condition: match.userCondition ?? undefined,
+          acceptsTrade: match.userAcceptsTrade ?? undefined,
+          description: match.userDescription ?? undefined,
+          abandoned: match.userAbandoned ?? undefined,
+          review: match.userReview ?? undefined,
+        },
+      })) as ImportMatch[],
+    };
+  };
+
   // Buscar sessão de importação - CORRIGIDO
   const useImportSession = (sessionId: number) => {
     return useQuery({
@@ -111,7 +157,10 @@ export function useGameImport() {
       queryFn: async () => {
         if (!sessionId) throw new Error("Session ID is required");
 
-        return await apiFetch<ImportSession>(`/user-games-import/session/${sessionId}`);
+        const rawSession = await apiFetch<BackendImportSession>(
+          `/user-games-import/session/${sessionId}`,
+        );
+        return transformImportSession(rawSession);
       },
       enabled: !!sessionId && !!user,
       refetchInterval: (query) => {

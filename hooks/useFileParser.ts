@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
+import { useValueNormalization } from "./useValueNormalization";
 
 export interface ParsedGame {
   gameName: string;
@@ -30,6 +31,7 @@ export function useFileParser() {
   const [isParsing, setIsParsing] = useState(false);
   const [rawData, setRawData] = useState<Record<string, unknown>[]>([]);
   const [detectedColumns, setDetectedColumns] = useState<string[]>([]);
+  const { normalizeValues } = useValueNormalization();
 
   const parseFile = async (file: File): Promise<ParsedGame[]> => {
     setIsParsing(true);
@@ -227,13 +229,21 @@ export function useFileParser() {
         (row as RawRow).price ?? (row as RawRow).preco ?? (row as RawRow).valor,
       ),
       hasBox: normalizeBoolean(
-        (row as RawRow).hasbox ?? (row as RawRow).caixa ?? (row as RawRow).temcaixa,
+        (row as RawRow).hasBox ??
+          (row as RawRow).hasbox ??
+          (row as RawRow).caixa ??
+          (row as RawRow).temcaixa,
       ),
       hasManual: normalizeBoolean(
-        (row as RawRow).hasmanual ?? (row as RawRow).manual ?? (row as RawRow).temmanual,
+        (row as RawRow).hasManual ??
+          (row as RawRow).hasmanual ??
+          (row as RawRow).manual ??
+          (row as RawRow).temmanual,
       ),
       condition: normalizeString((row as RawRow).condition ?? (row as RawRow).condicao),
-      acceptsTrade: normalizeBoolean((row as RawRow).acceptstrade ?? (row as RawRow).troca),
+      acceptsTrade: normalizeBoolean(
+        (row as RawRow).acceptsTrade ?? (row as RawRow).acceptstrade ?? (row as RawRow).troca,
+      ),
       description: normalizeString((row as RawRow).description ?? (row as RawRow).descricao),
       abandoned: normalizeBoolean((row as RawRow).abandoned ?? (row as RawRow).abandonado),
       review: normalizeString((row as RawRow).review ?? (row as RawRow).avaliacao),
@@ -246,7 +256,17 @@ export function useFileParser() {
       Object.entries(mapping).forEach(([fieldKey, columnName]) => {
         mappedRow[fieldKey] = row[columnName];
       });
-      return normalizeRow(mappedRow as RawRow, index);
+
+      // Aplicar normalização de valores
+      const normalized = normalizeValues(mappedRow);
+
+      // Mesclar valores normalizados com o row mapeado
+      const finalRow = {
+        ...mappedRow,
+        ...normalized,
+      };
+
+      return normalizeRow(finalRow as RawRow, index);
     });
     setParsedData(mapped);
     return mapped;
