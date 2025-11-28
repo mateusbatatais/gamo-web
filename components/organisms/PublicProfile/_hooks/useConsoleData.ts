@@ -1,8 +1,12 @@
 // hooks/useConsoleData.ts
 "use client";
 
-import { useUserConsolesPublic, useUserAccessoriesPublic } from "@/hooks/usePublicProfile";
-import { UserConsole, UserAccessory } from "@/@types/collection.types";
+import {
+  useUserConsolesPublic,
+  useUserAccessoriesPublic,
+  useUserGamesPublic,
+} from "@/hooks/usePublicProfile";
+import { UserConsole, UserAccessory, UserGame } from "@/@types/collection.types";
 import { PaginationMeta } from "@/@types/catalog.types";
 
 interface UseConsoleDataProps {
@@ -27,19 +31,26 @@ interface UseConsoleDataProps {
   accessoriesPage: number;
   accessoriesPerPage: number;
   accessoriesSort: string;
+  gamesPage: number;
+  gamesPerPage: number;
+  gamesSort: string;
 }
 
 interface UseConsoleDataReturn {
   consoles: UserConsole[];
   accessories: UserAccessory[];
+  games: UserGame[];
   consolesMeta: PaginationMeta | undefined;
   accessoriesMeta: PaginationMeta | undefined;
+  gamesMeta: PaginationMeta | undefined;
   isLoading: boolean;
   consolesLoading: boolean;
   accessoriesLoading: boolean;
+  gamesLoading: boolean;
   error: Error | null;
   consolesError: Error | null;
   accessoriesError: Error | null;
+  gamesError: Error | null;
 }
 
 export function useConsoleData({
@@ -54,6 +65,9 @@ export function useConsoleData({
   accessoriesPage,
   accessoriesPerPage,
   accessoriesSort,
+  gamesPage,
+  gamesPerPage,
+  gamesSort,
 }: UseConsoleDataProps): UseConsoleDataReturn {
   const {
     data: consolesData,
@@ -85,16 +99,38 @@ export function useConsoleData({
     error: accessoriesError,
   } = useUserAccessoriesPublic(slug, accessoriesPage, accessoriesPerPage, accessoriesSort, status);
 
+  const {
+    data: gamesData,
+    isLoading: gamesLoading,
+    error: gamesError,
+  } = useUserGamesPublic(
+    slug,
+    locale,
+    status,
+    gamesPage,
+    gamesPerPage,
+    gamesSort,
+    "",
+    [],
+    [],
+    false,
+    true, // standalone = true
+  );
+
   return {
     consoles: consolesData?.items || [],
     accessories: accessoriesData?.items || [],
+    games: gamesData?.items || [],
     consolesMeta: consolesData?.meta,
     accessoriesMeta: accessoriesData?.meta,
-    isLoading: consolesLoading || accessoriesLoading,
+    gamesMeta: gamesData?.meta,
+    isLoading: consolesLoading || accessoriesLoading || gamesLoading,
     consolesLoading,
     accessoriesLoading,
-    error: consolesError || accessoriesError || null,
+    gamesLoading,
+    error: consolesError || accessoriesError || gamesError || null,
     consolesError: consolesError || null,
     accessoriesError: accessoriesError || null,
+    gamesError: gamesError || null,
   };
 }

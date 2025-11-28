@@ -16,6 +16,7 @@ import { useGridColumns } from "../_hooks/useGridColumns";
 import { useCollapseManager } from "../_hooks/useCollapseManager";
 import { ConsoleGridSection } from "../_sections/ConsoleGridSection";
 import { AccessoriesStandaloneSection } from "../_sections/AccessoriesStandaloneSection";
+import { GamesStandaloneSection } from "../_sections/GamesStandaloneSection";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { Grid3X3, List, Table, ListChecks } from "lucide-react";
 
@@ -60,6 +61,11 @@ const PublicProfileConsoleGridContent = ({
   const [accessoriesPerPage, setAccessoriesPerPage] = useState(20);
   const [accessoriesSort, setAccessoriesSort] = useState("createdAt-desc");
 
+  // Estados para jogos avulsos
+  const [gamesPage, setGamesPage] = useState(1);
+  const [gamesPerPage, setGamesPerPage] = useState(20);
+  const [gamesSort, setGamesSort] = useState("title-asc");
+
   // Filtros de consoles
   const consoleFilters = useConsoleFilters();
 
@@ -68,7 +74,7 @@ const PublicProfileConsoleGridContent = ({
   const compactCols = useGridColumns("compact");
   const collapseManager = useCollapseManager();
 
-  // Dados dos consoles e acessórios
+  // Dados dos consoles, acessórios e jogos
   const consoleData = useConsoleData({
     slug,
     locale,
@@ -91,9 +97,21 @@ const PublicProfileConsoleGridContent = ({
     accessoriesPage,
     accessoriesPerPage,
     accessoriesSort,
+    gamesPage,
+    gamesPerPage,
+    gamesSort,
   });
 
-  const { consoles, accessories, consolesMeta, accessoriesMeta, isLoading, error } = consoleData;
+  const {
+    consoles,
+    accessories,
+    games,
+    consolesMeta,
+    accessoriesMeta,
+    gamesMeta,
+    isLoading,
+    error,
+  } = consoleData;
 
   // Configurações reutilizáveis
   const SORT_OPTIONS = [
@@ -131,6 +149,21 @@ const PublicProfileConsoleGridContent = ({
   const handleAccessoriesPerPageChange = (newPerPage: number) => {
     setAccessoriesPerPage(newPerPage);
     setAccessoriesPage(1);
+  };
+
+  // Handlers para jogos avulsos
+  const handleGamesPageChange = (newPage: number) => {
+    setGamesPage(newPage);
+  };
+
+  const handleGamesSortChange = (newSort: string) => {
+    setGamesSort(newSort);
+    setGamesPage(1);
+  };
+
+  const handleGamesPerPageChange = (newPerPage: number) => {
+    setGamesPerPage(newPerPage);
+    setGamesPage(1);
   };
 
   // Loading state
@@ -192,7 +225,8 @@ const PublicProfileConsoleGridContent = ({
         gridCols={gridCols}
         compactCols={compactCols}
         locale={locale}
-        title={t("collection")}
+        userSlug={slug}
+        title={t("txtConsoles")}
         emptyMessage={t("noConsoles")}
         addButtonText={t("txtAddConsole")}
         addButtonLink="/user/collection/consoles/add?type=collection"
@@ -218,8 +252,28 @@ const PublicProfileConsoleGridContent = ({
         addButtonLink="/user/collection/accessories/add?type=collection"
       />
 
+      {/* ✅ SEÇÃO DE JOGOS AVULSOS */}
+      <GamesStandaloneSection
+        games={games}
+        gamesMeta={gamesMeta}
+        isOwner={isOwner}
+        viewMode={catalogState.viewMode}
+        gamesPage={gamesPage}
+        gamesPerPage={gamesPerPage}
+        gamesSort={gamesSort}
+        onGamesPageChange={handleGamesPageChange}
+        onGamesPerPageChange={handleGamesPerPageChange}
+        onGamesSortChange={handleGamesSortChange}
+        sortOptions={SORT_OPTIONS}
+        perPageOptions={PER_PAGE_OPTIONS}
+        title="Jogos Avulsos"
+        emptyMessage="Nenhum jogo avulso encontrado"
+        addButtonText={t("txtAddGame")}
+        addButtonLink="/user/collection/games/add?type=collection"
+      />
+
       {/* ✅ ESTADO VAZIO GLOBAL (fallback) */}
-      {consoles.length === 0 && accessories.length === 0 && !isOwner && (
+      {consoles.length === 0 && accessories.length === 0 && games.length === 0 && !isOwner && (
         <EmptyState type="consoles" isOwner={isOwner} viewMode={catalogState.viewMode} />
       )}
 

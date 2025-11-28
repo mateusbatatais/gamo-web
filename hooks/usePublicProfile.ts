@@ -137,6 +137,7 @@ export function useUserGamesPublic(
   genres?: number[],
   platforms?: number[],
   showOnlyFavorites?: boolean,
+  standalone?: boolean,
 ) {
   const { apiFetch } = useApiClient();
 
@@ -150,6 +151,7 @@ export function useUserGamesPublic(
   if (genres && genres.length > 0) queryParams.append("genres", genres.join(","));
   if (platforms && platforms.length > 0) queryParams.append("platforms", platforms.join(","));
   if (showOnlyFavorites) queryParams.append("isFavorite", "true");
+  if (standalone) queryParams.append("standalone", "true");
 
   return useQuery<PaginatedResponse<UserGame>>({
     queryKey: [
@@ -164,6 +166,7 @@ export function useUserGamesPublic(
       genres,
       platforms,
       showOnlyFavorites,
+      standalone,
     ],
     queryFn: () => apiFetch(`/public/profile/${slug}/games?${queryParams.toString()}`),
     staleTime: 5 * 60 * 1000,

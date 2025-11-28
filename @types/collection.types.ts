@@ -45,6 +45,7 @@ export interface UserConsole extends BaseCollectionItem {
   };
   accessories?: UserAccessory[];
   games?: UserGame[];
+  totalGames?: number;
   isFavorite?: boolean;
 }
 
