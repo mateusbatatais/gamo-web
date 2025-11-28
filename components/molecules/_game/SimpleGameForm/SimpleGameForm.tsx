@@ -11,9 +11,11 @@ import { Range } from "@/components/atoms/Range/Range";
 import { Rating } from "@/components/atoms/Rating/Rating";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { MediaType, UserGame } from "@/@types/collection.types";
+import { ConsoleSelector } from "@/components/molecules/ConsoleSelector/ConsoleSelector";
 
 interface SimpleGameFormProps {
   gameId: number;
+  gameSlug: string;
   platformOptions: SelectOption[];
   onSuccess: () => void;
   onCancel: () => void;
@@ -30,6 +32,7 @@ interface SimpleFormState {
 
 export const SimpleGameForm = ({
   gameId,
+  gameSlug,
   platformOptions,
   onSuccess,
   onCancel,
@@ -45,6 +48,8 @@ export const SimpleGameForm = ({
     abandoned: false,
     platformId: Number(platformOptions[0]?.value) || 0,
   });
+
+  const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -77,6 +82,7 @@ export const SimpleGameForm = ({
       ...(formData.progress ? { progress: parseFloat(formData.progress) } : {}),
       ...(formData.rating ? { rating: formData.rating } : {}),
       ...(formData.review ? { review: formData.review } : {}),
+      compatibleUserConsoleIds: selectedConsoleIds.length > 0 ? selectedConsoleIds : undefined,
     };
 
     await createUserGame(payload);
@@ -106,6 +112,14 @@ export const SimpleGameForm = ({
           options={mediaOptions}
         />
       </div>
+
+      <ConsoleSelector
+        gameSlug={gameSlug}
+        platformId={formData.platformId}
+        selectedConsoleIds={selectedConsoleIds}
+        onChange={setSelectedConsoleIds}
+      />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Range
           label={t("progress")}

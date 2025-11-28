@@ -12,6 +12,7 @@ interface BaseCatalogItem {
 export interface ConsoleVariant extends BaseCatalogItem {
   consoleId: number;
   brand: { id: number; slug: string };
+  platformIds: number[];
   consoleName: string;
   consoleDescription: string;
   storage?: string | null;

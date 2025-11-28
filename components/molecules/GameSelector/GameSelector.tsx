@@ -17,6 +17,7 @@ export interface SelectedGameVariant {
 
 interface GameSelectorProps {
   consoleId: number;
+  platformIds?: number[];
   selectedVariants: Record<number, SelectedGameVariant>;
   onQuantityChange: (variantId: number, newQuantity: number) => void;
   onRemoveGame: (variantId: number) => void;
@@ -25,6 +26,7 @@ interface GameSelectorProps {
 
 export const GameSelector = ({
   consoleId,
+  platformIds,
   selectedVariants,
   onQuantityChange,
   onRemoveGame,
@@ -46,8 +48,10 @@ export const GameSelector = ({
 
       setIsLoading(true);
       try {
+        const platformFilter =
+          platformIds && platformIds.length > 0 ? `&platforms=${platformIds.join(",")}` : "";
         const results = await apiFetch<{ items: Game[] }>(
-          `/games?search=${encodeURIComponent(query)}&perPage=10`,
+          `/games?search=${encodeURIComponent(query)}&perPage=10${platformFilter}`,
         );
 
         setSearchResults(results.items);

@@ -27,6 +27,7 @@ import {
   GameSelector,
   SelectedGameVariant,
 } from "@/components/molecules/GameSelector/GameSelector";
+import useConsoleDetails from "@/hooks/useConsoleDetails";
 
 interface ConsoleFormProps {
   mode: "create" | "edit";
@@ -196,6 +197,7 @@ export const ConsoleForm = ({
     useStorageOptions(consoleVariantId);
   const { data: accessoryVariants, isLoading: accessoriesLoading } =
     useAccessoryVariantsByConsole(consoleId);
+  const { data: consoleDetails } = useConsoleDetails(variantSlug, "pt");
 
   const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number | undefined>(
     initialData?.storageOptionId ?? undefined,
@@ -628,6 +630,7 @@ export const ConsoleForm = ({
       <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
         <GameSelector
           consoleId={consoleId}
+          platformIds={consoleDetails?.platformIds}
           selectedVariants={selectedGameVariants}
           onQuantityChange={handleGameQuantityChange}
           onRemoveGame={handleRemoveGame}

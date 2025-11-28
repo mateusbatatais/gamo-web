@@ -97,6 +97,7 @@ export default function GameDetailPage() {
         <div className="absolute top-4 right-4 z-10">
           <AddGameToCollection
             gameId={data.id}
+            gameSlug={data.slug}
             platforms={data.platforms}
             isFavorite={isFavorite}
             onFavoriteToggle={handleFavoriteToggle}

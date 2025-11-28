@@ -174,6 +174,7 @@ const GameCard = ({
             <div className="flex justify-end">
               <AddGameToCollection
                 gameId={id}
+                gameSlug={slug}
                 platforms={platforms}
                 isFavorite={isFavorite}
                 onFavoriteToggle={handleFavoriteToggle}

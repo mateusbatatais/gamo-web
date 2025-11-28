@@ -8,6 +8,7 @@ import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { useStorageOptions } from "@/hooks/useStorageOptions";
 import { useAccessoryVariantsByConsole } from "@/hooks/useAccessoriesByConsole";
+import useConsoleDetails from "@/hooks/useConsoleDetails";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
 import { Select } from "@/components/atoms/Select/Select";
 import { Collapse } from "@/components/atoms/Collapse/Collapse";
@@ -64,6 +65,7 @@ export const TradeConsoleForm = ({
     useStorageOptions(consoleVariantId);
   const { data: accessoryVariants, isLoading: accessoriesLoading } =
     useAccessoryVariantsByConsole(consoleId);
+  const { data: consoleDetails } = useConsoleDetails(variantSlug, "pt");
 
   const [selectedStorageOptionId, setSelectedStorageOptionId] = useState<number | undefined>(
     initialData?.storageOptionId ?? undefined,
@@ -241,6 +243,7 @@ export const TradeConsoleForm = ({
       <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
         <GameSelector
           consoleId={consoleId}
+          platformIds={consoleDetails?.platformIds}
           selectedVariants={selectedGameVariants}
           onQuantityChange={handleGameQuantityChange}
           onRemoveGame={handleRemoveGame}

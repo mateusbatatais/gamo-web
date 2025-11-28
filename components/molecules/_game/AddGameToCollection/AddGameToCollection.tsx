@@ -15,6 +15,7 @@ import { TradeGameForm } from "../TradeGameForm/TradeGameForm";
 
 interface Props {
   gameId: number;
+  gameSlug: string;
   platforms: number[];
   onAddSuccess?: () => void;
   isFavorite?: boolean;
@@ -23,6 +24,7 @@ interface Props {
 
 export function AddGameToCollection({
   gameId,
+  gameSlug,
   platforms,
   onAddSuccess,
   isFavorite = false,
@@ -104,6 +106,7 @@ export function AddGameToCollection({
         <TradeGameForm
           platformOptions={platformOptions}
           gameId={gameId}
+          gameSlug={gameSlug}
           onSuccess={() => {
             closeTradeModal();
             onAddSuccess?.();
@@ -122,6 +125,7 @@ export function AddGameToCollection({
         ) : (
           <SimpleGameForm
             gameId={gameId}
+            gameSlug={gameSlug}
             platformOptions={platformOptions}
             onSuccess={() => {
               closeSimpleModal();

@@ -7,9 +7,11 @@ import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { Condition, MediaType } from "@/@types/collection.types";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
 import { Select, SelectOption } from "@/components/atoms/Select/Select";
+import { ConsoleSelector } from "@/components/molecules/ConsoleSelector/ConsoleSelector";
 
 interface TradeGameFormProps {
   gameId: number;
+  gameSlug: string;
   platformOptions?: SelectOption[];
   initialData?: {
     id?: number;
@@ -30,6 +32,7 @@ interface TradeGameFormProps {
     state?: string | null;
     latitude?: number | null;
     longitude?: number | null;
+    compatibleUserConsoleIds?: number[];
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -37,6 +40,7 @@ interface TradeGameFormProps {
 
 export const TradeGameForm = ({
   gameId,
+  gameSlug,
   platformOptions = [],
   initialData,
   onSuccess,
@@ -45,6 +49,10 @@ export const TradeGameForm = ({
   const [selectedPlatformId, setSelectedPlatformId] = useState<number>(
     initialData?.platformId || (platformOptions[0] ? Number(platformOptions[0].value) : 0),
   );
+  const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>(
+    initialData?.compatibleUserConsoleIds || [],
+  );
+
   const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
@@ -53,6 +61,7 @@ export const TradeGameForm = ({
       gameId,
       platformId: selectedPlatformId,
       media: (initialData?.media || "PHYSICAL") as MediaType,
+      compatibleUserConsoleIds: selectedConsoleIds.length > 0 ? selectedConsoleIds : undefined,
       ...data,
     };
 
@@ -79,15 +88,23 @@ export const TradeGameForm = ({
       isSubmitting={isPending}
       conditionOptions={conditionOptions}
       extraFields={
-        platformOptions.length > 0 && (
-          <Select
-            name="platformId"
-            value={selectedPlatformId.toString()}
-            onChange={(e) => setSelectedPlatformId(Number(e.target.value))}
-            label={t("platform")}
-            options={platformOptions}
+        <div className="space-y-4">
+          {platformOptions.length > 0 && (
+            <Select
+              name="platformId"
+              value={selectedPlatformId.toString()}
+              onChange={(e) => setSelectedPlatformId(Number(e.target.value))}
+              label={t("platform")}
+              options={platformOptions}
+            />
+          )}
+          <ConsoleSelector
+            gameSlug={gameSlug}
+            platformId={selectedPlatformId}
+            selectedConsoleIds={selectedConsoleIds}
+            onChange={setSelectedConsoleIds}
           />
-        )
+        </div>
       }
       showLocation={true}
     />

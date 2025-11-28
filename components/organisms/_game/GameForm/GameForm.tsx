@@ -20,11 +20,13 @@ import { Radio } from "@/components/atoms/Radio/Radio";
 import { SimpleCollapse } from "@/components/atoms/SimpleCollapse/SimpleCollapse";
 import { CollectionStatus, Condition, MediaType } from "@/@types/collection.types";
 import { LocationData, LocationInput } from "@/components/molecules/LocationInput/LocationInput";
+import { ConsoleSelector } from "@/components/molecules/ConsoleSelector/ConsoleSelector";
 
 interface GameFormProps {
   mode: "create" | "edit";
   type?: "collection" | "trade";
   gameId: number;
+  gameSlug: string; // Adicionado
   platformOptions: SelectOption[];
   initialData?: {
     id?: number;
@@ -49,6 +51,7 @@ interface GameFormProps {
     state?: string | null;
     latitude?: number | null;
     longitude?: number | null;
+    compatibleUserConsoleIds?: number[]; // Adicionado
   };
   onSuccess: () => void;
   onCancel?: () => void;
@@ -57,8 +60,8 @@ interface GameFormProps {
 export const GameForm = ({
   mode,
   type = "collection",
-
   gameId,
+  gameSlug,
   platformOptions,
   initialData,
   onSuccess,
@@ -149,6 +152,10 @@ export const GameForm = ({
     };
   });
 
+  const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>(
+    initialData?.compatibleUserConsoleIds || [],
+  );
+
   const [errors, setErrors] = useState<{
     price?: string;
     location?: string;
@@ -231,7 +238,7 @@ export const GameForm = ({
     const payload = {
       gameId,
       media: formData.media,
-      platformId: formData.platformId ? parseInt(formData.platformId) : undefined, // Adicione esta linha
+      platformId: formData.platformId ? parseInt(formData.platformId) : undefined,
       description: formData.description || undefined,
       status: formData.status || "OWNED",
       price: formData.price ? parseFloat(formData.price) : undefined,
@@ -251,6 +258,7 @@ export const GameForm = ({
       state: locationData?.state || undefined,
       latitude: locationData?.latitude || undefined,
       longitude: locationData?.longitude || undefined,
+      compatibleUserConsoleIds: selectedConsoleIds.length > 0 ? selectedConsoleIds : undefined,
     };
 
     if (mode === "create") {
@@ -431,6 +439,13 @@ export const GameForm = ({
             options={mediaOptions}
           />
         </div>
+
+        <ConsoleSelector
+          gameSlug={gameSlug}
+          platformId={formData.platformId ? Number(formData.platformId) : undefined}
+          selectedConsoleIds={selectedConsoleIds}
+          onChange={setSelectedConsoleIds}
+        />
       </div>
       {(type === "trade" || showTrade) && (
         <>

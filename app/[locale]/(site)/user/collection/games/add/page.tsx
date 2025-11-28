@@ -299,6 +299,7 @@ export default function AddGamePage() {
                   mode="create"
                   type={type as "collection" | "trade" | undefined}
                   gameId={selectedGame.id}
+                  gameSlug={selectedGame.slug}
                   platformOptions={platformOptions}
                   onSuccess={() => {
                     window.location.href = `/user/${user?.slug}${type === "collection" ? "/games" : "/market"}`;

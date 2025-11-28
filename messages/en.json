@@ -520,6 +520,7 @@
     "mediaDigital": "Digital",
     "platform": "Platform",
     "compatibleConsoles": "Compatible Consoles",
+    "compatibleConsolesHelp": "Select the consoles from your collection that are compatible with this game.",
     "noConsoles": "No consoles in your collection",
     "includeAccessories": "Add accessories",
     "includeGames": "Add games",

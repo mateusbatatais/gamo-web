@@ -256,6 +256,7 @@ export const PublicProfileGameCard = ({
           mode="edit"
           type={type}
           gameId={game.gameId}
+          gameSlug={game.gameSlug || ""}
           platformOptions={platformOptions}
           initialData={{
             id: game.id,
@@ -280,6 +281,7 @@ export const PublicProfileGameCard = ({
             state: game.state,
             latitude: game.latitude,
             longitude: game.longitude,
+            compatibleUserConsoleIds: game.compatibleUserConsoleIds,
           }}
           onSuccess={() => {
             setShowEditModal(false);
