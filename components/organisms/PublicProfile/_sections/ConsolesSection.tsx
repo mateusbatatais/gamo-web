@@ -175,12 +175,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                     {isExpanded && collapseManager.openTableType === "games" && (
                       <tr className="bg-gray-50 dark:bg-gray-800">
                         <td colSpan={6 + (isOwner ? 1 : 0)} className="p-4">
-                          <ConsoleGamesTable
-                            item={consoleItem}
-                            isOwner={isOwner}
-                            sale={true}
-                            locale={locale}
-                          />
+                          <ConsoleGamesTable item={consoleItem} isOwner={isOwner} sale={true} />
                         </td>
                       </tr>
                     )}
