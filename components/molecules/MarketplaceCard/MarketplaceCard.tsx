@@ -32,6 +32,15 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
 
   const tradeType = item.status === "SELLING" ? "selling" : "looking";
 
+  let itemLink = `/user/${item.seller.slug}/market?tradetype=${tradeType}`;
+  if (item.itemType === "CONSOLE") {
+    itemLink += `&console=${item.id}`;
+  } else if (item.itemType === "GAME") {
+    itemLink += `&game=${item.id}`;
+  } else if (item.itemType === "ACCESSORY") {
+    itemLink += `&accessory=${item.id}`;
+  }
+
   const isList = viewMode === "list";
 
   return (
@@ -42,11 +51,12 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
       )}
     >
       <Link
-        href={`/user/${item.seller.slug}/market?tradetype=${tradeType}`}
+        href={itemLink}
         className={clsx(
           "block relative bg-gray-100 dark:bg-gray-800 cursor-pointer overflow-hidden",
           isList ? "w-48 shrink-0" : "h-48 w-full",
         )}
+        target="_blank"
       >
         <div className="absolute top-2 left-2 z-10 flex flex-col gap-2 items-start">
           {item.acceptsTrade && (

@@ -8,6 +8,8 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface AccessoryTableRowProps {
   accessory: UserAccessory;
@@ -20,6 +22,14 @@ export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRo
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
   const { getAccessoriesQueryKey } = useCatalogQueryKeys();
   const t = useTranslations("PublicProfile");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentParams = new URLSearchParams(searchParams.toString());
+  if (accessory.id) {
+    currentParams.set("accessory", accessory.id.toString());
+  }
+  const modalUrl = `${pathname}?${currentParams.toString()}`;
 
   return (
     <tr
@@ -30,10 +40,12 @@ export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRo
     >
       <td className="py-2">
         <div className="flex items-center gap-3">
-          <div
+          <Link
+            href={modalUrl}
+            scroll={false}
             className={`
-              w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
-              transition-all duration-300 ease-in-out
+              block w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+              transition-all duration-300 ease-in-out cursor-pointer group
               ${
                 accessory.status === "PREVIOUSLY_OWNED"
                   ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
@@ -47,7 +59,7 @@ export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRo
                 alt={accessory.variantName || "Acessório"}
                 fill
                 sizes="48px"
-                className="object-cover"
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.style.display = "none";
@@ -58,14 +70,19 @@ export const AccessoryTableRow = ({ accessory, isOwner, type }: AccessoryTableRo
                 <span className="text-xl">🎮</span>
               </div>
             )}
-          </div>
+          </Link>
           <div>
-            <h3 className="font-medium dark:text-white">
-              {accessory.variantName || "Acessório"}
-              {accessory.status === "PREVIOUSLY_OWNED" && (
-                <span className="text-sm text-gray-700 font-normal"> ({t("previouslyOwned")})</span>
-              )}
-            </h3>
+            <Link href={modalUrl} scroll={false} className="hover:underline decoration-primary-500">
+              <h3 className="font-medium dark:text-white hover:text-primary-500 transition-colors">
+                {accessory.variantName || "Acessório"}
+                {accessory.status === "PREVIOUSLY_OWNED" && (
+                  <span className="text-sm text-gray-700 font-normal">
+                    {" "}
+                    ({t("previouslyOwned")})
+                  </span>
+                )}
+              </h3>
+            </Link>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {accessory.type &&
                 `${accessory.type}${accessory.subType ? ` • ${accessory.subType}` : ""}`}

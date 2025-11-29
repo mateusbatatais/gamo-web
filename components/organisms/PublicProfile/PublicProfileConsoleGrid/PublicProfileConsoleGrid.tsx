@@ -21,6 +21,8 @@ import { GamesStandaloneSection } from "../_sections/GamesStandaloneSection";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { PublicConsoleDetailModal } from "../PublicConsoleDetailModal/PublicConsoleDetailModal";
+import { PublicGameDetailModal } from "../PublicGameDetailModal/PublicGameDetailModal";
+import { PublicAccessoryDetailModal } from "../PublicAccessoryDetailModal/PublicAccessoryDetailModal";
 
 interface PublicProfileConsoleGridProps {
   slug: string;
@@ -124,10 +126,22 @@ const PublicProfileConsoleGridContent = ({
     ? consoles.find((c) => c.id === parseInt(consoleIdParam))
     : null;
 
+  // Find game for modal from existing data
+  const gameIdParam = searchParams.get("game");
+  const selectedGame = gameIdParam ? games.find((g) => g.id === parseInt(gameIdParam)) : null;
+
+  // Find accessory for modal from existing data
+  const accessoryIdParam = searchParams.get("accessory");
+  const selectedAccessory = accessoryIdParam
+    ? accessories.find((a) => a.id === parseInt(accessoryIdParam))
+    : null;
+
   // Handle modal close
   const handleCloseModal = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("console");
+    params.delete("game");
+    params.delete("accessory");
     router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
@@ -307,6 +321,24 @@ const PublicProfileConsoleGridContent = ({
         <PublicConsoleDetailModal
           consoleItem={selectedConsole}
           isOpen={!!consoleIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {/* Game Detail Modal */}
+      {selectedGame && (
+        <PublicGameDetailModal
+          gameItem={selectedGame}
+          isOpen={!!gameIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {/* Accessory Detail Modal */}
+      {selectedAccessory && (
+        <PublicAccessoryDetailModal
+          accessoryItem={selectedAccessory}
+          isOpen={!!accessoryIdParam}
           onClose={handleCloseModal}
         />
       )}

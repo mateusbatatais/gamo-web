@@ -7,6 +7,8 @@ import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActio
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Heart } from "lucide-react";
 
 interface AccessoryCompactCardProps {
@@ -19,6 +21,14 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
   const { getAccessoriesQueryKey } = useCatalogQueryKeys();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentParams = new URLSearchParams(searchParams.toString());
+  if (accessory.id) {
+    currentParams.set("accessory", accessory.id.toString());
+  }
+  const modalUrl = `${pathname}?${currentParams.toString()}`;
 
   return (
     <div
@@ -53,10 +63,12 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
         </div>
       )}
 
-      <div
+      <Link
+        href={modalUrl}
+        scroll={false}
         className={`
-            w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
-            transition-all duration-300 ease-in-out
+            block w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+            transition-all duration-300 ease-in-out cursor-pointer
             ${
               accessory.status === "PREVIOUSLY_OWNED"
                 ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
@@ -81,13 +93,17 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
             <span className="text-xl">🎮</span>
           </div>
         )}
-      </div>
+      </Link>
 
-      <div className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+      <Link
+        href={modalUrl}
+        scroll={false}
+        className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
+      >
         <span className="text-white text-xs font-medium text-center px-2 line-clamp-2">
           {accessory.variantName || "Acessório"}
         </span>
-      </div>
+      </Link>
     </div>
   );
 };

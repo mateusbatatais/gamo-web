@@ -9,6 +9,8 @@ import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Heart } from "lucide-react";
 
 interface AccessoryCardProps {
@@ -22,6 +24,14 @@ export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) 
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
   const { getAccessoriesQueryKey } = useCatalogQueryKeys();
   const t = useTranslations("PublicProfile");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const currentParams = new URLSearchParams(searchParams.toString());
+  if (accessory.id) {
+    currentParams.set("accessory", accessory.id.toString());
+  }
+  const modalUrl = `${pathname}?${currentParams.toString()}`;
 
   return (
     <div
@@ -37,10 +47,12 @@ export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) 
           </div>
         </div>
       )}
-      <div
+      <Link
+        href={modalUrl}
+        scroll={false}
         className={`
-            h-48 bg-gray-100 dark:bg-gray-700 relative 
-            transition-all duration-300 ease-in-out
+            block h-48 bg-gray-100 dark:bg-gray-700 relative 
+            transition-all duration-300 ease-in-out cursor-pointer group
             ${
               accessory.status === "PREVIOUSLY_OWNED"
                 ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
@@ -52,7 +64,7 @@ export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) 
           src={safeImageUrl}
           alt={accessory.variantName || "Acessório"}
           sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-          className="object-cover"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
           priority={true}
         />
 
@@ -63,7 +75,7 @@ export const AccessoryCard = ({ accessory, isOwner, type }: AccessoryCardProps) 
             </div>
           </div>
         )}
-      </div>
+      </Link>
 
       {/* Botão de favorito - posicionado separadamente dos outros botões */}
       {isOwner && accessory.accessoryId && (
