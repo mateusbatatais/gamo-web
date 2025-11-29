@@ -23,6 +23,8 @@ import { useTranslations } from "next-intl";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
 function hasAccessories(
@@ -56,10 +58,17 @@ export const PublicProfileConsoleCompact = ({
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
   const { getConsolesQueryKey } = useCatalogQueryKeys();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  // Build modal URL
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("console", String(consoleItem.id));
+  const modalUrl = `${pathname}?${params.toString()}`;
 
   const canExpandAccessories = hasAccessories(consoleItem);
   const canExpandGames = Array.isArray(consoleItem.games) && consoleItem.games.length > 0;
@@ -158,30 +167,36 @@ export const PublicProfileConsoleCompact = ({
             }
           `}
         >
-          {safeImageUrl ? (
-            <Image
-              src={safeImageUrl}
-              alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
-              fill
-              sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
-              className="object-cover"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.style.display = "none";
-              }}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <span className="text-2xl">🖥️</span>
-            </div>
-          )}
+          <Link href={modalUrl} scroll={false} className="block w-full h-full">
+            {safeImageUrl ? (
+              <Image
+                src={safeImageUrl}
+                alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
+                fill
+                sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
+                className="object-cover cursor-pointer hover:scale-105 transition-transform"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                }}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <span className="text-2xl">🖥️</span>
+              </div>
+            )}
+          </Link>
         </div>
 
         <div className="absolute inset-0 bg-black/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-          <span className="text-white text-xs font-medium text-center px-2 line-clamp-2">
+          <Link
+            href={modalUrl}
+            scroll={false}
+            className="text-white text-xs font-medium text-center px-2 line-clamp-2"
+          >
             {consoleItem.consoleName}
             {consoleItem.variantName && ` (${consoleItem.variantName})`}
-          </span>
+          </Link>
         </div>
       </Card>
 

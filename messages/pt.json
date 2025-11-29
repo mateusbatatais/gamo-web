@@ -480,7 +480,14 @@
     "achievementNeedSpeed": "Mais de 50 jogos de corrida",
     "achievementReadyToFight": "Mais de 50 jogos de luta",
     "achievementSharpShooter": "Mais de 50 jogos de tiro",
-    "memberSince": "Membro desde"
+    "memberSince": "Membro desde",
+    "consoleDetails": "Detalhes do Console",
+    "specifications": "Especificações",
+    "saleInfo": "Informações de Venda",
+    "associatedGames": "Jogos Associados",
+    "associatedAccessories": "Acessórios Associados",
+    "noGames": "Nenhum jogo associado",
+    "noAccessories": "Nenhum acessório associado"
   },
   "TradeForm": {
     "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",

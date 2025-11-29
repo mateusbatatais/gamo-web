@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Pencil, Trash, ChevronDown, ChevronRight } from "lucide-react";
+import { Pencil, Trash, ChevronDown, ChevronRight, Eye } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
@@ -14,6 +14,8 @@ import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -52,10 +54,18 @@ export const PublicProfileConsoleTable = ({
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
   const { getConsolesQueryKey } = useCatalogQueryKeys();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  // Build modal URL
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("console", String(consoleItem.id));
+  const modalUrl = `${pathname}?${params.toString()}`;
 
   const canExpandAccessories = hasAccessories(consoleItem);
   const canExpandGames = Array.isArray(consoleItem.games) && consoleItem.games.length > 0;
@@ -108,35 +118,37 @@ export const PublicProfileConsoleTable = ({
 
         <td className="py-1">
           <div className="flex items-center gap-3">
-            <div
-              className={`
-              w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
-              transition-all duration-300 ease-in-out
-              ${
-                consoleItem.status === "PREVIOUSLY_OWNED"
-                  ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
-                  : ""
-              }
-            `}
-            >
-              {safeImageUrl ? (
-                <Image
-                  src={safeImageUrl}
-                  alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
-                  fill
-                  sizes="48px"
-                  className="object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = "none";
-                  }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  <span className="text-xl">🖥️</span>
-                </div>
-              )}
-            </div>
+            <Link href={modalUrl} scroll={false}>
+              <div
+                className={`
+                  w-12 h-12 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+                  transition-all duration-300 ease-in-out cursor-pointer hover:scale-105
+                  ${
+                    consoleItem.status === "PREVIOUSLY_OWNED"
+                      ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                      : ""
+                  }
+                `}
+              >
+                {safeImageUrl ? (
+                  <Image
+                    src={safeImageUrl}
+                    alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
+                    fill
+                    sizes="48px"
+                    className="object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-gray-400">
+                    <span className="text-xl">🖥️</span>
+                  </div>
+                )}
+              </div>
+            </Link>
             <div>
               <h3 className="font-medium dark:text-white">
                 {consoleItem.consoleName}
@@ -187,33 +199,46 @@ export const PublicProfileConsoleTable = ({
           </>
         )}
 
-        {isOwner && (
-          <td className="p-2">
-            <div className="flex gap-2">
-              <FavoriteToggle
-                itemId={consoleItem.consoleId}
-                itemType="CONSOLE"
-                isFavorite={consoleItem.isFavorite}
-                queryKey={getConsolesQueryKey()}
-                size="sm"
-              />
-              <Button
-                onClick={() => setShowEditModal(true)}
-                aria-label={t("editItem")}
-                icon={<Pencil size={16} />}
-                variant="transparent"
-                size="sm"
-              />
-              <Button
-                onClick={() => setShowDeleteModal(true)}
-                variant="transparent"
-                aria-label={t("deleteItem")}
-                icon={<Trash size={16} />}
-                size="sm"
-              />
-            </div>
-          </td>
-        )}
+        <td className="p-2">
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                params.set("console", String(consoleItem.id));
+                router.push(`${pathname}?${params.toString()}`);
+              }}
+              aria-label="Ver detalhes"
+              icon={<Eye size={16} />}
+              variant="secondary"
+              size="sm"
+            />
+            {isOwner && (
+              <>
+                <FavoriteToggle
+                  itemId={consoleItem.consoleId}
+                  itemType="CONSOLE"
+                  isFavorite={consoleItem.isFavorite}
+                  queryKey={getConsolesQueryKey()}
+                  size="sm"
+                />
+                <Button
+                  onClick={() => setShowEditModal(true)}
+                  aria-label={t("editItem")}
+                  icon={<Pencil size={16} />}
+                  variant="transparent"
+                  size="sm"
+                />
+                <Button
+                  onClick={() => setShowDeleteModal(true)}
+                  variant="transparent"
+                  aria-label={t("deleteItem")}
+                  icon={<Trash size={16} />}
+                  size="sm"
+                />
+              </>
+            )}
+          </div>
+        </td>
       </tr>
 
       <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>

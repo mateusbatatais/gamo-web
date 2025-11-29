@@ -481,7 +481,14 @@
     "achievementNeedSpeed": "More then 50 racing games",
     "achievementReadyToFight": "More then 50 fight games",
     "achievementSharpShooter": "More then 50 shot games",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "consoleDetails": "Console Details",
+    "specifications": "Specifications",
+    "saleInfo": "Sale Information",
+    "associatedGames": "Associated Games",
+    "associatedAccessories": "Associated Accessories",
+    "noGames": "No associated games",
+    "noAccessories": "No associated accessories"
   },
   "TradeForm": {
     "keepCopyInCollection": "Keep a copy in my collection (previously owned)",

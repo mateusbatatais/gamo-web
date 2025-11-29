@@ -3,6 +3,7 @@
 
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Card } from "@/components/atoms/Card/Card";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
@@ -19,6 +20,7 @@ import { AccessoriesStandaloneSection } from "../_sections/AccessoriesStandalone
 import { GamesStandaloneSection } from "../_sections/GamesStandaloneSection";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { Grid3X3, List, Table, ListChecks } from "lucide-react";
+import { PublicConsoleDetailModal } from "../PublicConsoleDetailModal/PublicConsoleDetailModal";
 
 interface PublicProfileConsoleGridProps {
   slug: string;
@@ -47,6 +49,9 @@ const PublicProfileConsoleGridContent = ({
 }: PublicProfileConsoleGridProps) => {
   const t = useTranslations("PublicProfile");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Estado do catálogo principal
   const catalogState = usePublicProfileCatalog({
@@ -112,6 +117,19 @@ const PublicProfileConsoleGridContent = ({
     isLoading,
     error,
   } = consoleData;
+
+  // Find console for modal from existing data
+  const consoleIdParam = searchParams.get("console");
+  const selectedConsole = consoleIdParam
+    ? consoles.find((c) => c.id === parseInt(consoleIdParam))
+    : null;
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("console");
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   // Configurações reutilizáveis
   const SORT_OPTIONS = [
@@ -283,6 +301,15 @@ const PublicProfileConsoleGridContent = ({
         onFilterClose={() => setIsFilterOpen(false)}
         consoleFilters={consoleFilters}
       />
+
+      {/* Console Detail Modal */}
+      {selectedConsole && (
+        <PublicConsoleDetailModal
+          consoleItem={selectedConsole}
+          isOpen={!!consoleIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

@@ -15,6 +15,8 @@ import { useGameData } from "../_hooks/useGameData";
 import { GameGridSection } from "../_sections/GameGridSection";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { Grid3X3, List, Table, ListChecks } from "lucide-react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { PublicGameDetailModal } from "../PublicGameDetailModal/PublicGameDetailModal";
 
 interface PublicProfileGameGridProps {
   slug: string;
@@ -39,6 +41,9 @@ export const PublicProfileGameGrid = ({
 const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGameGridProps) => {
   const t = useTranslations("PublicProfile");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Estado do catálogo
   const catalogState = usePublicProfileCatalog({
@@ -66,6 +71,17 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
       showOnlyFavorites: gameFilters.showOnlyFavorites,
     },
   });
+
+  // Find game for modal from existing data
+  const gameIdParam = searchParams.get("game");
+  const selectedGame = gameIdParam ? games.find((g) => g.id === parseInt(gameIdParam)) : null;
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("game");
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   // Configurações reutilizáveis
   const SORT_OPTIONS = [
@@ -164,6 +180,15 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
         onFilterClose={() => setIsFilterOpen(false)}
         gameFilters={gameFilters}
       />
+
+      {/* Game Detail Modal */}
+      {selectedGame && (
+        <PublicGameDetailModal
+          gameItem={selectedGame}
+          isOpen={!!gameIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

@@ -28,6 +28,7 @@ import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const PublicProfileGameCard = ({
   game,
@@ -44,6 +45,8 @@ export const PublicProfileGameCard = ({
   const { mutate: deleteGame, isPending } = useDeleteUserGame();
   const { platformsMap } = usePlatformsCache();
   const { getGamesQueryKey } = useCatalogQueryKeys();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
@@ -56,6 +59,11 @@ export const PublicProfileGameCard = ({
   const handleDelete = () => {
     deleteGame(game.id || 0);
   };
+
+  // Build modal URL
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("game", String(game.id));
+  const modalUrl = `${pathname}?${params.toString()}`;
 
   return (
     <>
@@ -155,29 +163,31 @@ export const PublicProfileGameCard = ({
             }
           `}
         >
-          {game.photoMain ? (
-            <Image
-              src={game.photoMain}
-              alt={game.gameTitle || ""}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-              className="object-cover"
-              priority={true}
-            />
-          ) : game.gameImageUrl ? (
-            <Image
-              src={game.gameImageUrl}
-              alt={game.gameTitle || ""}
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-              className="object-cover"
-              priority={true}
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <span className="text-4xl">👾</span>
-            </div>
-          )}
+          <Link href={modalUrl} scroll={false}>
+            {game.photoMain ? (
+              <Image
+                src={game.photoMain}
+                alt={game.gameTitle || ""}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+                className="object-cover cursor-pointer hover:scale-105 transition-transform"
+                priority={true}
+              />
+            ) : game.gameImageUrl ? (
+              <Image
+                src={game.gameImageUrl}
+                alt={game.gameTitle || ""}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+                className="object-cover cursor-pointer hover:scale-105 transition-transform"
+                priority={true}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                <span className="text-4xl">👾</span>
+              </div>
+            )}
+          </Link>
           {game.status === "PREVIOUSLY_OWNED" && (
             <div className="absolute bottom-2 left-2 z-10">
               <div className="bg-gray-600/90 text-white text-xs px-2 py-1 rounded-md backdrop-blur-sm">

@@ -21,6 +21,9 @@ import { GamesSection } from "../_sections/GamesSection";
 import { AccessoriesSection } from "../_sections/AccessoriesSection";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { Grid3X3, List, Table, ListChecks } from "lucide-react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { PublicConsoleDetailModal } from "../PublicConsoleDetailModal/PublicConsoleDetailModal";
+import { PublicGameDetailModal } from "../PublicGameDetailModal/PublicGameDetailModal";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -51,6 +54,9 @@ const PublicProfileMarketGridContent = ({
   const [isGameFilterOpen, setIsGameFilterOpen] = useState(false);
   const [isConsoleFilterOpen, setIsConsoleFilterOpen] = useState(false);
   const [isAccessoryFilterOpen, setIsAccessoryFilterOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Estado do catálogo principal
   const catalogState = usePublicProfileCatalog({
@@ -122,6 +128,24 @@ const PublicProfileMarketGridContent = ({
     isLoading,
     error,
   } = marketData;
+
+  // Find items for modals from existing data
+  const consoleIdParam = searchParams.get("console");
+  const gameIdParam = searchParams.get("game");
+
+  const selectedConsole = consoleIdParam
+    ? consoles.find((c) => c.id === parseInt(consoleIdParam))
+    : null;
+
+  const selectedGame = gameIdParam ? games.find((g) => g.id === parseInt(gameIdParam)) : null;
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("console");
+    params.delete("game");
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   // Configurações reutilizáveis
   const toggleItems = [
@@ -281,6 +305,24 @@ const PublicProfileMarketGridContent = ({
         accessoryFilters={accessoryFilters}
         locale={locale}
       />
+
+      {/* Console Detail Modal */}
+      {selectedConsole && (
+        <PublicConsoleDetailModal
+          consoleItem={selectedConsole}
+          isOpen={!!consoleIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
+
+      {/* Game Detail Modal */}
+      {selectedGame && (
+        <PublicGameDetailModal
+          gameItem={selectedGame}
+          isOpen={!!gameIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

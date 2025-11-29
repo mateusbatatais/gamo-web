@@ -37,6 +37,7 @@ import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
 function hasAccessories(
@@ -85,10 +86,17 @@ export const PublicProfileConsoleCard = ({
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
   const { getConsolesQueryKey } = useCatalogQueryKeys();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  // Build modal URL
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("console", String(consoleItem.id));
+  const modalUrl = `${pathname}?${params.toString()}`;
 
   const accessorySummary = useMemo(() => {
     if (!hasAccessories(consoleItem)) return null;
@@ -175,13 +183,15 @@ export const PublicProfileConsoleCard = ({
             }
           `}
         >
-          <SafeImage
-            src={safeImageUrl}
-            alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
-            sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
-            className="object-cover"
-            priority={true}
-          />
+          <Link href={modalUrl} scroll={false}>
+            <SafeImage
+              src={safeImageUrl}
+              alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
+              sizes="(max-width: 768px) 100vw, 33vw (max-width: 1200px) 50vw"
+              className="object-cover cursor-pointer hover:scale-105 transition-transform"
+              priority={true}
+            />
+          </Link>
 
           {consoleItem.status === "PREVIOUSLY_OWNED" && (
             <div className="absolute bottom-2 left-2 z-10">

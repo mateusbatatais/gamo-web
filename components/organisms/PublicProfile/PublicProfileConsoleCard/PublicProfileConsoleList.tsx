@@ -25,6 +25,7 @@ import {
   Cog,
   Package,
   Heart,
+  Eye,
 } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
@@ -36,6 +37,7 @@ import Link from "next/link";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 
 // Tipos/guard locais (sem any)
 type Accessory = { id: number; name: string; slug: string; photoMain?: string };
@@ -84,10 +86,18 @@ export const PublicProfileConsoleList = ({
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
   const { getConsolesQueryKey } = useCatalogQueryKeys();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const handleDelete = () => {
     deleteConsole(consoleItem.id || 0);
   };
+
+  // Build modal URL
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("console", String(consoleItem.id));
+  const modalUrl = `${pathname}?${params.toString()}`;
 
   const accessorySummary = useMemo(() => {
     if (!hasAccessories(consoleItem)) return null;
@@ -123,35 +133,37 @@ export const PublicProfileConsoleList = ({
           </div>
         )}
         <div className="flex items-center gap-4">
-          <div
-            className={`
-              w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
-              transition-all duration-300 ease-in-out
-              ${
-                consoleItem.status === "PREVIOUSLY_OWNED"
-                  ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
-                  : ""
-              }
-            `}
-          >
-            {safeImageUrl ? (
-              <Image
-                src={safeImageUrl}
-                alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
-                fill
-                sizes="80px"
-                className="object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = "none";
-                }}
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400">
-                <span className="text-2xl">🖥️</span>
-              </div>
-            )}
-          </div>
+          <Link href={modalUrl} scroll={false}>
+            <div
+              className={`
+                w-20 h-20 flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 relative
+                transition-all duration-300 ease-in-out cursor-pointer hover:scale-105
+                ${
+                  consoleItem.status === "PREVIOUSLY_OWNED"
+                    ? "opacity-70 grayscale hover:opacity-100 hover:grayscale-0"
+                    : ""
+                }
+              `}
+            >
+              {safeImageUrl ? (
+                <Image
+                  src={safeImageUrl}
+                  alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
+                  fill
+                  sizes="80px"
+                  className="object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = "none";
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <span className="text-2xl">🖥️</span>
+                </div>
+              )}
+            </div>
+          </Link>
 
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start mb-2">
@@ -220,6 +232,18 @@ export const PublicProfileConsoleList = ({
                     </div>
                   </Button>
                 )}
+
+                <Button
+                  onClick={() => {
+                    const params = new URLSearchParams(searchParams.toString());
+                    params.set("console", String(consoleItem.id));
+                    router.push(`${pathname}?${params.toString()}`);
+                  }}
+                  aria-label="Ver detalhes"
+                  icon={<Eye size={16} />}
+                  variant="secondary"
+                  size="sm"
+                />
 
                 {isOwner && (
                   <>

@@ -36,7 +36,18 @@ export interface UserConsole extends BaseCollectionItem {
   storageOptionId?: number;
   storageOption?: {
     id: number;
+    value?: number;
+    unit?: string;
+    note?: string | null;
   };
+  // Console variant properties
+  brand?: string;
+  generation?: number;
+  model?: string | null;
+  type?: string;
+  allDigital?: boolean;
+  mediaFormats?: string[];
+  retroCompatible?: boolean;
   user?: {
     id: number;
     name: string;
