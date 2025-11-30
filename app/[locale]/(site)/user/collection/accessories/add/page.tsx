@@ -14,6 +14,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWithFallback";
 import { AutoComplete, AutoCompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
+import { CreateAccessoryModal } from "@/components/organisms/Modals/CreateAccessoryModal";
+import { CreateAccessoryVariantModal } from "@/components/organisms/Modals/CreateAccessoryVariantModal";
 
 type Step = "accessory" | "variant" | "form";
 
@@ -79,6 +81,8 @@ export default function AddAccessoryPage() {
   const [currentStep, setCurrentStep] = useState<Step>("accessory");
   const [searchQuery, setSearchQuery] = useState("");
   const searchParams = useSearchParams();
+  const [isCreateAccessoryModalOpen, setIsCreateAccessoryModalOpen] = useState(false);
+  const [isCreateVariantModalOpen, setIsCreateVariantModalOpen] = useState(false);
 
   // Refs para cada seção
   const accessorySectionRef = useRef<HTMLDivElement>(null);
@@ -164,6 +168,19 @@ export default function AddAccessoryPage() {
     }
   };
 
+  const handleCreateAccessorySuccess = (accessory: Accessory) => {
+    // Set the newly created accessory and go to variant selection
+    setSelectedAccessory(accessory);
+    setSelectedVariant(null);
+    setCurrentStep("variant");
+  };
+
+  const handleCreateVariantSuccess = (variant: AccessoryVariantDetail) => {
+    // Set the newly created variant and go to form
+    setSelectedVariant(variant);
+    setCurrentStep("form");
+  };
+
   const handleVariantSelect = (variant: AccessoryVariantDetail) => {
     setSelectedVariant(variant);
     setCurrentStep("form");
@@ -197,6 +214,20 @@ export default function AddAccessoryPage() {
               loading={accessoriesLoading}
               placeholder={t("searchPlaceholder")}
             />
+            {!accessoriesLoading && accessories?.items.length === 0 && searchQuery && (
+              <div className="mt-4 text-center">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  {t("noResultsFound")}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsCreateAccessoryModalOpen(true)}
+                  className="text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                >
+                  {t("includeManually")}
+                </button>
+              </div>
+            )}
           </SelectionSection>
 
           {selectedAccessory && (
@@ -243,6 +274,23 @@ export default function AddAccessoryPage() {
                       </Card>
                     </SelectableItem>
                   ))}
+                  {/* Add variant button */}
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateVariantModalOpen(true)}
+                    className="p-0 overflow-hidden w-full text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all"
+                  >
+                    <Card className="h-full border-2 border-dashed border-gray-300 dark:border-gray-600 p-0!">
+                      <div className="h-20 flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+                        <span className="text-2xl text-gray-400">+</span>
+                      </div>
+                      <div className="p-2">
+                        <p className="text-[0.5rem] text-gray-600 dark:text-gray-400 text-center">
+                          {t("includeVariation")}
+                        </p>
+                      </div>
+                    </Card>
+                  </button>
                 </div>
               )}
             </SelectionSection>
@@ -272,6 +320,21 @@ export default function AddAccessoryPage() {
           )}
         </div>
       </div>
+
+      <CreateAccessoryModal
+        isOpen={isCreateAccessoryModalOpen}
+        onClose={() => setIsCreateAccessoryModalOpen(false)}
+        onSuccess={handleCreateAccessorySuccess}
+        initialName={searchQuery}
+      />
+
+      <CreateAccessoryVariantModal
+        isOpen={isCreateVariantModalOpen}
+        onClose={() => setIsCreateVariantModalOpen(false)}
+        onSuccess={handleCreateVariantSuccess}
+        accessoryId={selectedAccessory?.id || 0}
+        accessoryName={selectedAccessory?.name || ""}
+      />
     </div>
   );
 }

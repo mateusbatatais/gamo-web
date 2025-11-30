@@ -16,6 +16,7 @@ interface MultiSelectProps {
   placeholder?: string;
   searchPlaceholder?: string;
   maxHeight?: string;
+  disabled?: boolean;
 }
 
 export const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -26,6 +27,7 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
   placeholder = "Select items...",
   searchPlaceholder = "Search...",
   maxHeight = "max-h-60",
+  disabled = false,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -47,7 +49,11 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
-  const toggleOpen = () => setIsOpen(!isOpen);
+  const toggleOpen = () => {
+    if (!disabled) {
+      setIsOpen(!isOpen);
+    }
+  };
 
   // Calculate position when opening
   useEffect(() => {
@@ -75,12 +81,14 @@ export const MultiSelect: React.FC<MultiSelectProps> = ({
 
       <div className="relative" ref={containerRef}>
         <div
-          className="min-h-[42px] p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 cursor-pointer flex flex-wrap gap-2"
+          className={`min-h-[42px] p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 flex flex-wrap gap-2 ${
+            disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+          }`}
           onClick={toggleOpen}
           role="button"
-          tabIndex={0}
+          tabIndex={disabled ? -1 : 0}
           onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
+            if (!disabled && (e.key === "Enter" || e.key === " ")) {
               toggleOpen();
               e.preventDefault();
             }
