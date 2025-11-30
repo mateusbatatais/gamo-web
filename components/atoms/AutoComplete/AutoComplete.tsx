@@ -22,6 +22,7 @@ export interface AutoCompleteProps extends Omit<InputProps, "onChange" | "value"
   loading?: boolean;
   value?: string;
   renderItem?: (item: AutoCompleteItem) => React.ReactNode;
+  noResultsContent?: React.ReactNode;
 }
 
 export const AutoComplete = ({
@@ -32,6 +33,7 @@ export const AutoComplete = ({
   value = "",
   renderItem,
   placeholder = "Buscar...",
+  noResultsContent,
   ...inputProps
 }: AutoCompleteProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,7 +91,7 @@ export const AutoComplete = ({
 
   const defaultRenderItem = (item: AutoCompleteItem) => (
     <div className="flex items-center gap-3 p-2">
-      <div className="flex-shrink-0 w-8 h-8 relative">
+      <div className="shrink-0 w-8 h-8 relative">
         <ImageWithFallback
           src={item.imageUrl}
           alt={item.label}
@@ -146,7 +148,7 @@ export const AutoComplete = ({
             ))
           ) : (
             <div className="p-3 text-sm text-gray-500 dark:text-gray-400 text-center">
-              Nenhum resultado encontrado
+              {noResultsContent || "Nenhum resultado encontrado"}
             </div>
           )}
         </div>

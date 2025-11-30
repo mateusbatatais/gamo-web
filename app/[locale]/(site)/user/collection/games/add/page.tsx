@@ -16,6 +16,8 @@ import { ImageWithFallback } from "@/components/atoms/ImageWithFallback/ImageWit
 import { SelectOption } from "@/components/atoms/Select/Select";
 import { AutoComplete, AutoCompleteItem } from "@/components/atoms/AutoComplete/AutoComplete";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
+import { CreateGameModal } from "@/components/organisms/Modals/CreateGameModal";
+import { Button } from "@/components/atoms/Button/Button";
 
 type Step = "game" | "form";
 
@@ -61,7 +63,7 @@ function GameCard({
           : "hover:bg-gray-100 dark:hover:bg-gray-800"
       }`}
     >
-      <Card className="h-full border-0 !p-0">
+      <Card className="h-full border-0 p-0!">
         <div className="aspect-video relative">
           <ImageWithFallback
             src={game.imageUrl}
@@ -97,6 +99,7 @@ export default function AddGamePage() {
   const [currentStep, setCurrentStep] = useState<Step>("game");
   const [searchQuery, setSearchQuery] = useState("");
   const { platformsMap } = usePlatformsCache();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Refs para cada seção
   const gameSectionRef = useRef<HTMLDivElement>(null);
@@ -204,7 +207,7 @@ export default function AddGamePage() {
               placeholder={t("searchPlaceholder")}
               renderItem={(item) => (
                 <div className="flex items-center gap-3 p-2">
-                  <div className="flex-shrink-0 w-12 h-12 relative">
+                  <div className="shrink-0 w-12 h-12 relative">
                     <ImageWithFallback
                       src={item.imageUrl}
                       alt={item.label}
@@ -223,6 +226,27 @@ export default function AddGamePage() {
                   </div>
                 </div>
               )}
+              noResultsContent={
+                <div className="flex flex-col items-center gap-2 p-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t("noResultsFound")}</p>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setIsCreateModalOpen(true)}
+                    label={t("includeManually")}
+                  />
+                </div>
+              }
+            />
+
+            <CreateGameModal
+              isOpen={isCreateModalOpen}
+              onClose={() => setIsCreateModalOpen(false)}
+              onSuccess={(newGame) => {
+                setSelectedGame(newGame);
+                setCurrentStep("form");
+              }}
+              initialName={searchQuery}
             />
 
             {/* Grid de jogos sugeridos quando não há busca */}
@@ -274,7 +298,7 @@ export default function AddGamePage() {
             <div className="sticky top-4" ref={formSectionRef}>
               <Card className="p-6">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-16 h-16 relative flex-shrink-0">
+                  <div className="w-16 h-16 relative shrink-0">
                     <ImageWithFallback
                       src={selectedGame.imageUrl}
                       alt={selectedGame.name}

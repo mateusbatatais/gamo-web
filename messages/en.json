@@ -609,7 +609,30 @@
     "selectGame": "Select Game",
     "searchPlaceholder": "Search games...",
     "popularGames": "Popular Games",
-    "titleMarket": "Put game up for sale"
+    "titleMarket": "Put game up for sale",
+    "noResultsFound": "Didn't find the game?",
+    "includeManually": "Include manually"
+  },
+  "CreateGameModal": {
+    "title": "Include Game Manually",
+    "description": "The game will be created and added to your collection. It will be pending approval for other users.",
+    "nameLabel": "Game Name",
+    "namePlaceholder": "Enter game name",
+    "create": "Create Game",
+    "cancel": "Cancel",
+    "errorCreating": "Error creating game. Please try again.",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter game description",
+    "metacriticLabel": "Metacritic Score",
+    "genresLabel": "Genres",
+    "selectGenres": "Select genres",
+    "parentPlatformsLabel": "Plataform (xbox, playstation, nintendo)",
+    "selectParentPlatforms": "With which console it was released (Playstation 3, Xbox 360, Nintendo Wii...)",
+    "platformsLabel": "Platforms",
+    "selectPlatforms": "Select platforms",
+    "seriesLabel": "Series",
+    "searchSeriesPlaceholder": "Search for a game series...",
+    "genresRequired": "Please select at least one genre"
   },
   "AddAccessory": {
     "title": "Add Accessory to Collection",

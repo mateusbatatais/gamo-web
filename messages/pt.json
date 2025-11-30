@@ -609,7 +609,30 @@
     "title": "Adicionar Jogo",
     "selectGame": "Selecionar Jogo",
     "searchPlaceholder": "Buscar jogos...",
-    "popularGames": "Jogos Populares"
+    "popularGames": "Jogos Populares",
+    "noResultsFound": "Não encontrou o jogo?",
+    "includeManually": "Incluir manualmente"
+  },
+  "CreateGameModal": {
+    "title": "Incluir Jogo Manualmente",
+    "description": "O jogo será criado e adicionado à sua coleção. Ele ficará pendente de aprovação para outros usuários.",
+    "nameLabel": "Nome do Jogo",
+    "namePlaceholder": "Digite o nome do jogo",
+    "create": "Criar Jogo",
+    "cancel": "Cancelar",
+    "errorCreating": "Erro ao criar jogo. Tente novamente.",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Digite a descrição do jogo",
+    "metacriticLabel": "Nota Metacritic",
+    "genresLabel": "Gêneros",
+    "selectGenres": "Selecione os gêneros",
+    "parentPlatformsLabel": "Plataforma (xbox, playstation, nintendo)",
+    "selectParentPlatforms": "Para quais consoles ele foi lançado (Playstation 3, Xbox 360, Nintendo Wii...)",
+    "platformsLabel": "Plataformas",
+    "selectPlatforms": "Selecione as plataformas",
+    "seriesLabel": "Série",
+    "searchSeriesPlaceholder": "Busque por uma série de jogos...",
+    "genresRequired": "Por favor, selecione pelo menos um gênero"
   },
   "AddAccessory": {
     "title": "Adicionar Acessório à Coleção",
