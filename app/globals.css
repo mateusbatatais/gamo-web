@@ -133,14 +133,27 @@ button {
   --hover-opacity: 0.9;
   --active-opacity: 0.8;
   --disabled-opacity: 0.5;
+
+  /* Default Border */
+  --border-color-DEFAULT: var(--border-default);
 }
 
 @layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border-default, currentColor);
+  }
+
   [data-theme="light"] {
     color-scheme: light;
+    --border-default: theme("colors.gray.300");
   }
 
   [data-theme="dark"] {
     color-scheme: dark;
+    --border-default: theme("colors.gray.700");
   }
 }

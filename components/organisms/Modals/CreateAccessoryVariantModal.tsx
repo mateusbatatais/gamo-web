@@ -82,7 +82,7 @@ export const CreateAccessoryVariantModal: React.FC<CreateAccessoryVariantModalPr
         <p className="text-sm text-gray-600 dark:text-gray-400">{t("description")}</p>
 
         {/* Show selected accessory */}
-        <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+        <div className="p-3 bg-gray-100 dark:bg-gray-900 rounded-md">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             {t("accessoryLabel")}:{" "}
             <span className="font-medium text-gray-900 dark:text-white">{accessoryName}</span>

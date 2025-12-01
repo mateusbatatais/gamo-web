@@ -534,7 +534,17 @@
     "searchGames": "Buscar games...",
     "noGamesSelected": "Nenhum game selecionado",
     "removeGame": "Remover game",
-    "add": "Adicionar à coleção"
+    "add": "Adicionar à coleção",
+    "review": "Análise",
+    "reviewPlaceholder": "Escreva uma análise...",
+    "abandoned": "Abandonado",
+    "compatibleConsolesHelp": "Selecione os consoles compatíveis com este acessório",
+    "platform": "Plataforma",
+    "compatibleConsoles": "Consoles Compatíveis",
+    "rating": "Avaliação",
+    "statusPreviouslyOwned": "Já tive",
+    "mediaPhysical": "Física",
+    "mediaDigital": "Digital"
   },
   "HomePage": {
     "construction": "Em construção"
@@ -609,6 +619,7 @@
     "selectGame": "Selecionar Jogo",
     "searchPlaceholder": "Buscar jogos...",
     "popularGames": "Jogos Populares",
+    "titleMarket": "Colocar jogo à venda",
     "noResultsFound": "Não encontrou o jogo?",
     "includeManually": "Incluir manualmente"
   },
@@ -651,6 +662,14 @@
     "modeAccessory": "Novo Acessório + Variante",
     "modeVariant": "Apenas Nova Variante",
     "nameLabel": "Nome do Acessório",
+    "namePlaceholder": "Digite o nome do acessório",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Digite a descrição do acessório",
+    "typeLabel": "Tipo",
+    "consolesLabel": "Consoles Compatíveis",
+    "consolesPlaceholder": "Selecione os consoles compatíveis",
+    "releaseDateLabel": "Data de Lançamento",
+    "variantSection": "Detalhes da Primeira Variante",
     "variantNameLabel": "Nome da Variante",
     "variantNamePlaceholder": "Digite o nome da variante",
     "variantDescriptionLabel": "Descrição da Variante",
