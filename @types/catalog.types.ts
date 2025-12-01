@@ -168,6 +168,7 @@ export interface MarketplaceItem {
   photoMain: string | null;
   photos: string[];
   description: string | null;
+  subtitle?: string;
   createdAt: string;
   city: string;
   state: string;
@@ -186,4 +187,6 @@ export interface MarketplaceItem {
     slug: string;
     phone: string;
   };
+  gamesCount?: number;
+  accessoriesCount?: number;
 }

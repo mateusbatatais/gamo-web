@@ -373,7 +373,11 @@
     "box": "Com caixa",
     "manual": "Com manual",
     "market": "Compra e venda",
-    "noItems": "Nenhum item encontrado para este console"
+    "noItems": "Nenhum item encontrado para este console",
+    "games": "jogos",
+    "accessories": "acessórios",
+    "showMore": "Ver mais",
+    "showLess": "Ver menos"
   },
   "AccessoryDetails": {
     "catalog": "Catálogo",

@@ -1,38 +1,27 @@
 import React from "react";
 import { Badge } from "@/components/atoms/Badge/Badge";
-import { Box, FileText } from "lucide-react";
+import { Box, FileText, Gamepad2, Disc3 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 interface ItemBadgesProps {
-  condition?: string | null;
   hasBox?: boolean;
   hasManual?: boolean;
   className?: string;
+  gamesCount?: number;
+  accessoriesCount?: number;
 }
 
-export const ItemBadges = ({ condition, hasBox, hasManual, className }: ItemBadgesProps) => {
+export const ItemBadges = ({
+  hasBox,
+  hasManual,
+  className,
+  gamesCount,
+  accessoriesCount,
+}: ItemBadgesProps) => {
   const t = useTranslations("ConsoleDetails");
 
-  const getConditionLabel = (condition: string) => {
-    switch (condition) {
-      case "NEW":
-        return "Novo";
-      case "USED":
-        return "Usado";
-      case "REFURBISHED":
-        return "Recondicionado";
-      default:
-        return condition;
-    }
-  };
-
   return (
-    <div className={`flex flex-wrap gap-2 ${className || ""}`}>
-      {condition && (
-        <Badge variant="soft" status="info">
-          {getConditionLabel(condition)}
-        </Badge>
-      )}
+    <div className={`flex flex-wrap gap-2 -ms-2 ${className || ""}`}>
       {hasBox && (
         <Badge variant="soft" className="flex items-center gap-1">
           <Box size={12} /> {t("box")}
@@ -41,6 +30,16 @@ export const ItemBadges = ({ condition, hasBox, hasManual, className }: ItemBadg
       {hasManual && (
         <Badge variant="soft" className="flex items-center gap-1">
           <FileText size={12} /> {t("manual")}
+        </Badge>
+      )}
+      {gamesCount !== undefined && gamesCount > 0 && (
+        <Badge variant="soft" className="flex items-center gap-1">
+          <Disc3 size={12} /> {gamesCount}x {t("games")}
+        </Badge>
+      )}
+      {accessoriesCount !== undefined && accessoriesCount > 0 && (
+        <Badge variant="soft" className="flex items-center gap-1">
+          <Gamepad2 size={12} /> {accessoriesCount}x {t("accessories")}
         </Badge>
       )}
     </div>

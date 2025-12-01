@@ -374,7 +374,11 @@
     "box": "With box",
     "manual": "With manual",
     "market": "Marketplace",
-    "noItems": "No items for this console"
+    "noItems": "No items for this console",
+    "games": "games",
+    "accessories": "accessories",
+    "showMore": "Show more",
+    "showLess": "Show less"
   },
   "AccessoryDetails": {
     "catalog": "Accessory Catalog",

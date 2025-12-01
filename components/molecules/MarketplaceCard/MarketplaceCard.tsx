@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { MarketplaceItem } from "@/@types/catalog.types";
 import { Card } from "@/components/atoms/Card/Card";
@@ -10,6 +10,8 @@ import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import clsx from "clsx";
 import { ItemBadges } from "../ItemBadges/ItemBadges";
 import { WhatsAppButton } from "@/components/atoms/WhatsAppButton/WhatsAppButton";
+import { Badge } from "@/components/atoms/Badge/Badge";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface MarketplaceCardProps {
   item: MarketplaceItem;
@@ -19,7 +21,16 @@ interface MarketplaceCardProps {
 export default function MarketplaceCard({ item, viewMode = "grid" }: MarketplaceCardProps) {
   const t = useTranslations("ConsoleDetails");
   const { getSafeImageUrl } = useSafeImageUrl();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showToggle, setShowToggle] = useState(false);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
   const safeImageUrl = getSafeImageUrl(item.photoMain || item.imageUrl);
+
+  useEffect(() => {
+    if (descriptionRef.current && !isExpanded) {
+      setShowToggle(descriptionRef.current.scrollHeight > descriptionRef.current.clientHeight);
+    }
+  }, [item.description, isExpanded]);
 
   const formattedPrice = item.price
     ? new Intl.NumberFormat("pt-BR", {
@@ -31,6 +42,19 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
   const formattedDate = new Date(item.createdAt).toLocaleDateString("pt-BR");
 
   const tradeType = item.status === "SELLING" ? "selling" : "looking";
+
+  const getConditionLabel = (condition: string) => {
+    switch (condition) {
+      case "NEW":
+        return "Novo";
+      case "USED":
+        return "Usado";
+      case "REFURBISHED":
+        return "Recondicionado";
+      default:
+        return condition;
+    }
+  };
 
   let itemLink = `/user/${item.seller.slug}/market?tradetype=${tradeType}`;
   if (item.itemType === "CONSOLE") {
@@ -85,7 +109,12 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
       </Link>
 
       <div className={clsx("flex-1 flex flex-col", isList ? "p-3 sm:p-4" : "p-4")}>
-        <h3 className="font-semibold text-base sm:text-lg mb-2 line-clamp-2">{item.name}</h3>
+        <Link href={itemLink} className="group-hover:text-primary-600 transition-colors">
+          <h3 className="font-semibold text-base sm:text-lg mb-1 line-clamp-2">{item.name}</h3>
+        </Link>
+        {item.subtitle && (
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{item.subtitle}</p>
+        )}
 
         {formattedPrice && (
           <div className="flex items-center justify-between mb-2">
@@ -107,11 +136,53 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
         )}
 
         <ItemBadges
-          condition={item.condition}
           hasBox={item.hasBox}
           hasManual={item.hasManual}
-          className="mb-4"
+          gamesCount={item.gamesCount}
+          accessoriesCount={item.accessoriesCount}
+          className="mb-3"
         />
+
+        {item.description && (
+          <div className="mb-3">
+            <p
+              ref={descriptionRef}
+              className={clsx(
+                "text-sm text-gray-600 dark:text-gray-400 transition-all duration-300",
+                isExpanded ? "" : "line-clamp-2",
+              )}
+            >
+              {item.description}
+            </p>
+            {showToggle && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsExpanded(!isExpanded);
+                }}
+                className="text-xs text-primary-600 dark:text-primary-400 mt-1 flex items-center gap-1 hover:underline focus:outline-none"
+              >
+                {isExpanded ? (
+                  <>
+                    {t("showLess")} <ChevronUp size={12} />
+                  </>
+                ) : (
+                  <>
+                    {t("showMore")} <ChevronDown size={12} />
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        )}
+
+        {item.condition && (
+          <div className="mb-4">
+            <Badge variant="soft" status="info" className="text-xs">
+              {getConditionLabel(item.condition)}
+            </Badge>
+          </div>
+        )}
 
         <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex flex-wrap gap-2 items-center justify-between text-xs text-gray-500">
           <Link
@@ -122,7 +193,7 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
             <span className="truncate font-medium">{item.seller.name}</span>
           </Link>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <span className="text-[10px] text-gray-400" title={`Criado em ${formattedDate}`}>
               {formattedDate}
             </span>
