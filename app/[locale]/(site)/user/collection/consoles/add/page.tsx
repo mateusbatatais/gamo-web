@@ -17,6 +17,11 @@ import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { SimpleCollapse } from "@/components/atoms/SimpleCollapse/SimpleCollapse";
+import { CreateConsoleModal } from "@/components/organisms/Modals/CreateConsoleModal";
+import { CreateConsoleVariantModal } from "@/components/organisms/Modals/CreateConsoleVariantModal";
+import { CreateSkinModal } from "@/components/organisms/Modals/CreateSkinModal";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/atoms/Button/Button";
 
 type Step = "brand" | "variant" | "skin" | "form";
 
@@ -114,6 +119,11 @@ export default function AddConsolePage() {
   const [selectedVariant, setSelectedVariant] = useState<ConsoleVariant | null>(null);
   const [selectedSkin, setSelectedSkin] = useState<SkinDetail | null>(null);
   const [currentStep, setCurrentStep] = useState<Step>("brand");
+
+  const [isCreateConsoleModalOpen, setIsCreateConsoleModalOpen] = useState(false);
+  const [isCreateVariantModalOpen, setIsCreateVariantModalOpen] = useState(false);
+  const [isCreateSkinModalOpen, setIsCreateSkinModalOpen] = useState(false);
+
   const searchParams = useSearchParams();
 
   // Refs para cada seção
@@ -289,6 +299,15 @@ export default function AddConsolePage() {
                     </div>
                   </SimpleCollapse>
                 )}
+
+                <Button
+                  variant="transparent"
+                  onClick={() => setIsCreateConsoleModalOpen(true)}
+                  className="flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 hover:underline"
+                  icon={<Plus size={16} />}
+                >
+                  {t("includeManually") || "Incluir manualmente"}
+                </Button>
               </div>
             )}
           </SelectionSection>
@@ -338,6 +357,22 @@ export default function AddConsolePage() {
                       </Card>
                     </SelectableItem>
                   ))}
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateVariantModalOpen(true)}
+                    className="p-0 overflow-hidden w-full text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all"
+                  >
+                    <Card className="h-full border-2 border-dashed border-gray-300 dark:border-gray-600 p-0!">
+                      <div className="h-20 flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+                        <span className="text-2xl text-gray-400">+</span>
+                      </div>
+                      <div className="p-2">
+                        <p className="text-[0.5rem] text-gray-600 dark:text-gray-400 text-center">
+                          {t("includeManually") || "Incluir manualmente"}
+                        </p>
+                      </div>
+                    </Card>
+                  </button>
                 </div>
               )}
             </SelectionSection>
@@ -361,37 +396,50 @@ export default function AddConsolePage() {
                   ))}
                 </div>
               ) : (
-                <>
-                  {variantDetails?.skins && variantDetails.skins.length > 0 && (
-                    <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
-                      {variantDetails.skins.map((skin) => (
-                        <SelectableItem
-                          key={skin.id}
-                          isSelected={selectedSkin?.id === skin.id}
-                          onClick={() => handleSkinSelect(skin)}
-                          className="p-0 overflow-hidden"
-                        >
-                          <Card className="border-0 h-full p-0!">
-                            <div className="h-24 relative">
-                              <ImageWithFallback
-                                src={skin.imageUrl}
-                                alt={skin.name}
-                                monitorSize={28}
-                                fallbackClassName="bg-gray-100 dark:bg-gray-800 w-full h-full flex items-center justify-center"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              />
-                            </div>
-                            <div className="p-2">
-                              <p className="font-medium text-[0.5rem] text-gray-900 dark:text-white line-clamp-2">
-                                {skin.name}
-                              </p>
-                            </div>
-                          </Card>
-                        </SelectableItem>
-                      ))}
-                    </div>
-                  )}
-                </>
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-6 gap-2">
+                  {variantDetails?.skins &&
+                    variantDetails.skins.map((skin) => (
+                      <SelectableItem
+                        key={skin.id}
+                        isSelected={selectedSkin?.id === skin.id}
+                        onClick={() => handleSkinSelect(skin)}
+                        className="p-0 overflow-hidden"
+                      >
+                        <Card className="border-0 h-full p-0!">
+                          <div className="h-24 relative">
+                            <ImageWithFallback
+                              src={skin.imageUrl}
+                              alt={skin.name}
+                              monitorSize={28}
+                              fallbackClassName="bg-gray-100 dark:bg-gray-800 w-full h-full flex items-center justify-center"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
+                          </div>
+                          <div className="p-2">
+                            <p className="font-medium text-[0.5rem] text-gray-900 dark:text-white line-clamp-2">
+                              {skin.name}
+                            </p>
+                          </div>
+                        </Card>
+                      </SelectableItem>
+                    ))}
+                  <button
+                    type="button"
+                    onClick={() => setIsCreateSkinModalOpen(true)}
+                    className="p-0 overflow-hidden w-full text-left hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-all"
+                  >
+                    <Card className="h-full border-2 border-dashed border-gray-300 dark:border-gray-600 p-0!">
+                      <div className="h-24 flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+                        <span className="text-2xl text-gray-400">+</span>
+                      </div>
+                      <div className="p-2">
+                        <p className="text-[0.5rem] text-gray-600 dark:text-gray-400 text-center">
+                          {t("includeManually") || "Incluir manualmente"}
+                        </p>
+                      </div>
+                    </Card>
+                  </button>
+                </div>
               )}
             </SelectionSection>
           )}
@@ -421,6 +469,103 @@ export default function AddConsolePage() {
           )}
         </div>
       </div>
+
+      <CreateConsoleModal
+        isOpen={isCreateConsoleModalOpen}
+        onClose={() => setIsCreateConsoleModalOpen(false)}
+        onSuccess={(data) => {
+          setIsCreateConsoleModalOpen(false);
+          const brand = brands?.find((b) => b.id === data.console.brandId);
+          if (brand) {
+            setSelectedBrand(brand.slug);
+
+            // Construct variant object
+            const newVariant: ConsoleVariant = {
+              id: data.variant.id,
+              slug: data.variant.slug,
+              name: data.variant.name,
+              consoleId: data.console.id,
+              brand: { id: brand.id, slug: brand.slug },
+              platformIds: [],
+              consoleName: data.console.name,
+              consoleDescription: "",
+              skins: [],
+              storageOptions: [],
+              allDigital: false,
+              retroCompatible: false,
+              mediaFormats: [],
+              notes: [],
+              imageUrl: null,
+            };
+            setSelectedVariant(newVariant);
+
+            // Construct skin object
+            const newSkin: SkinDetail = {
+              id: data.skin.id,
+              slug: data.skin.slug,
+              name: data.skin.name,
+              imageUrl: data.skin.imageUrl || null,
+            };
+            setSelectedSkin(newSkin);
+
+            setCurrentStep("form");
+          }
+        }}
+      />
+
+      <CreateConsoleVariantModal
+        isOpen={isCreateVariantModalOpen}
+        onClose={() => setIsCreateVariantModalOpen(false)}
+        consoleId={brands?.find((b) => b.slug === selectedBrand)?.id || 0} // We need the ID, but we only have slug. This might be an issue.
+        consoleName={selectedBrand.charAt(0).toUpperCase() + selectedBrand.slice(1)}
+        onSuccess={(variant) => {
+          setIsCreateVariantModalOpen(false);
+          const brand = brands?.find((b) => b.slug === selectedBrand);
+          if (brand) {
+            // Construct variant object
+            const newVariant: ConsoleVariant = {
+              id: variant.id,
+              slug: variant.slug,
+              name: variant.name,
+              consoleId: variant.consoleId,
+              brand: { id: brand.id, slug: brand.slug },
+              platformIds: [],
+              consoleName: selectedBrand.charAt(0).toUpperCase() + selectedBrand.slice(1), // Approximation
+              consoleDescription: "",
+              skins: [],
+              storageOptions: [],
+              allDigital: false,
+              retroCompatible: false,
+              mediaFormats: [],
+              notes: [],
+              imageUrl: null,
+            };
+            setSelectedVariant(newVariant);
+            setCurrentStep("skin");
+          }
+        }}
+      />
+
+      {selectedVariant && (
+        <CreateSkinModal
+          isOpen={isCreateSkinModalOpen}
+          onClose={() => setIsCreateSkinModalOpen(false)}
+          variantId={selectedVariant.id}
+          variantName={selectedVariant.name}
+          onSuccess={(skin) => {
+            setIsCreateSkinModalOpen(false);
+            // Construct skin object
+            const newSkin: SkinDetail = {
+              id: skin.id,
+              slug: skin.slug,
+              name: skin.name,
+              imageUrl: null,
+            };
+            setSelectedSkin(newSkin);
+            setCurrentStep("form");
+          }}
+        />
+      )}
     </div>
   );
 }

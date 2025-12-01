@@ -53,6 +53,11 @@
     "paymentFailed": "Pagamento falhou",
     "paymentError": "Erro no pagamento"
   },
+  "Breadcrumbs": {
+    "game-catalog": "Catálogo de Jogos",
+    "console-catalog": "Catálogo de Consoles",
+    "accessory-catalog": "Catálogo de Acessórios"
+  },
   "common": {
     "loading": "Carregando...",
     "error": "Ocorreu um erro",
@@ -62,11 +67,6 @@
     "siteKeywords": "jogos,coleções, gamer",
     "showLess": "Mostrar menos",
     "showMore": "Mostrar mais"
-  },
-  "Breadcrumbs": {
-    "game-catalog": "Catálogo de Jogos",
-    "console-catalog": "Catálogo de Consoles",
-    "accessory-catalog": "Catálogo de Acessórios"
   },
   "filters": {
     "label": "Filtros",
@@ -486,7 +486,6 @@
     "saleInfo": "Informações de Venda",
     "associatedGames": "Jogos Associados",
     "associatedAccessories": "Acessórios Associados",
-    "noGames": "Nenhum jogo associado",
     "noAccessories": "Nenhum acessório associado"
   },
   "TradeForm": {
@@ -535,7 +534,6 @@
     "searchGames": "Buscar games...",
     "noGamesSelected": "Nenhum game selecionado",
     "removeGame": "Remover game",
-    "cancel": "Cancelar",
     "add": "Adicionar à coleção"
   },
   "HomePage": {
@@ -603,7 +601,8 @@
     "selectBrand": "Selecione uma marca",
     "selectVariant": "Selecione um modelo",
     "selectSkin": "Selecione uma edição ",
-    "titleMarket": "Colocar console a venda"
+    "titleMarket": "Colocar console a venda",
+    "includeManually": "Incluir manualmente"
   },
   "AddGame": {
     "title": "Adicionar Jogo",
@@ -687,6 +686,91 @@
     "editionNamePlaceholder": "ex: Edição Especial",
     "requiredFields": "Por favor, preencha todos os campos obrigatórios",
     "errorCreating": "Erro ao criar variante. Tente novamente.",
+    "create": "Criar",
+    "cancel": "Cancelar"
+  },
+  "CreateConsoleModal": {
+    "title": "Criar Console",
+    "descriptionConsole": "Crie uma nova plataforma de console (ex: PlayStation 6, Novo Console Retrô)",
+    "consoleSection": "Detalhes do Console",
+    "variantSection": "Detalhes da Primeira Variante",
+    "skinSection": "Detalhes da Primeira Skin",
+    "brandLabel": "Marca",
+    "nameLabel": "Nome do Console",
+    "namePlaceholder": "ex: Super Game System",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Digite a descrição do console",
+    "releaseDateLabel": "Data de Lançamento",
+    "generationLabel": "Geração",
+    "generationPlaceholder": "ex: 9",
+    "variantNameLabel": "Nome da Variante",
+    "variantNamePlaceholder": "ex: Edição Padrão, Slim, Pro",
+    "variantDescriptionLabel": "Descrição da Variante",
+    "variantDescriptionPlaceholder": "Digite a descrição da variante",
+    "variantReleaseDateLabel": "Data de Lançamento da Variante",
+    "variantAllDigitalLabel": "Totalmente Digital (Sem leitor de disco)",
+    "skinNameLabel": "Nome da Skin",
+    "skinNamePlaceholder": "ex: Preto Padrão, Branco, Edição Limitada",
+    "skinDescriptionLabel": "Descrição da Skin",
+    "skinDescriptionPlaceholder": "Digite a descrição da skin",
+    "skinReleaseDateLabel": "Data de Lançamento da Skin",
+    "skinLimitedEditionLabel": "Edição Limitada",
+    "skinEditionNameLabel": "Nome da Edição",
+    "skinEditionNamePlaceholder": "ex: Aniversário de 20 anos",
+    "skinMaterialLabel": "Material",
+    "skinMaterialPlaceholder": "ex: Plástico",
+    "skinFinishLabel": "Acabamento",
+    "skinFinishPlaceholder": "ex: Fosco",
+    "requiredFields": "Por favor, preencha todos os campos obrigatórios",
+    "errorCreating": "Erro ao criar console. Tente novamente.",
+    "create": "Criar",
+    "cancel": "Cancelar"
+  },
+  "CreateConsoleVariantModal": {
+    "title": "Criar Variante de Console",
+    "description": "Crie uma nova variante para este console (ex: Slim, Pro, Lite)",
+    "consoleLabel": "Console",
+    "variantSection": "Detalhes da Variante",
+    "skinSection": "Detalhes da Primeira Skin",
+    "nameLabel": "Nome da Variante",
+    "namePlaceholder": "ex: Slim, Pro",
+    "descriptionLabel": "Descrição",
+    "descriptionPlaceholder": "Digite a descrição da variante",
+    "releaseDateLabel": "Data de Lançamento",
+    "allDigitalLabel": "Totalmente Digital (Sem leitor de disco)",
+    "skinNameLabel": "Nome da Skin",
+    "skinNamePlaceholder": "ex: Preto Padrão",
+    "skinDescriptionLabel": "Descrição da Skin",
+    "skinDescriptionPlaceholder": "Digite a descrição da skin",
+    "skinReleaseDateLabel": "Data de Lançamento da Skin",
+    "skinLimitedEditionLabel": "Edição Limitada",
+    "skinEditionNameLabel": "Nome da Edição",
+    "skinEditionNamePlaceholder": "ex: Edição Day One",
+    "skinMaterialLabel": "Material",
+    "skinMaterialPlaceholder": "ex: Plástico",
+    "skinFinishLabel": "Acabamento",
+    "skinFinishPlaceholder": "ex: Fosco",
+    "requiredFields": "Por favor, preencha todos os campos obrigatórios",
+    "errorCreating": "Erro ao criar variante. Tente novamente.",
+    "create": "Criar",
+    "cancel": "Cancelar"
+  },
+  "CreateSkinModal": {
+    "title": "Criar Skin",
+    "description": "Crie uma nova skin/cor para esta variante de console",
+    "variantLabel": "Variante",
+    "nameLabel": "Nome da Skin",
+    "namePlaceholder": "ex: Vermelho Cósmico, Camuflado",
+    "releaseDateLabel": "Data de Lançamento",
+    "limitedEditionLabel": "Edição Limitada",
+    "editionNameLabel": "Nome da Edição",
+    "editionNamePlaceholder": "ex: Edição Homem-Aranha",
+    "materialLabel": "Material",
+    "materialPlaceholder": "ex: Plástico",
+    "finishLabel": "Acabamento",
+    "finishPlaceholder": "ex: Fosco",
+    "requiredFields": "Por favor, preencha todos os campos obrigatórios",
+    "errorCreating": "Erro ao criar skin. Tente novamente.",
     "create": "Criar",
     "cancel": "Cancelar"
   },

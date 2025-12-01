@@ -35,9 +35,9 @@
     "pixKeyCopyError": "Error copying PIX key",
     "pixConfirmedButton": "I have already made the payment",
     "pixImportantNote": "Important: You can choose any amount when making the payment. After completing the transfer, click the confirmation button below.",
-    "paymentConfirmationError": "Error confirming payment",
     "invalidCpf": "Invalid CPF",
-    "cpfPlaceholder": "000.000.000-00"
+    "cpfPlaceholder": "000.000.000-00",
+    "paymentConfirmationError": "Error confirming payment"
   },
   "PaymentSuccess": {
     "title": "Thank you for your donation!",
@@ -69,11 +69,12 @@
     "showMore": "Show more"
   },
   "filters": {
+    "label": "Filters",
+    "clear": "Clear",
+
     "favorites": {
       "onlyFavorites": "Only favorites"
     },
-    "label": "Filters",
-    "clear": "Clear",
     "brand": {
       "label": "Filter by Brand"
     },
@@ -314,8 +315,8 @@
       "phone": "Phone (for trade contact)",
       "location": "Location",
       "getCurrentLocation": "Get current location",
-      "locationSuccess": "Localização obtida com sucesso!",
-      "locationError": "Erro ao obter localização"
+      "locationSuccess": "Location obtained successfully!",
+      "locationError": "Error getting location"
     },
     "changePasswordForm": {
       "currentPassword": "Current Password",
@@ -487,7 +488,6 @@
     "saleInfo": "Sale Information",
     "associatedGames": "Associated Games",
     "associatedAccessories": "Associated Accessories",
-    "noGames": "No associated games",
     "noAccessories": "No associated accessories"
   },
   "TradeForm": {
@@ -534,7 +534,6 @@
     "searchGames": "Search games...",
     "noGamesSelected": "No games selected",
     "removeGame": "Remove game",
-    "cancel": "Cancel",
     "add": "Add to collection"
   },
   "HomePage": {
@@ -602,7 +601,8 @@
     "selectBrand": "Select a brand",
     "selectVariant": "Select a model",
     "selectSkin": "Select a skin",
-    "titleMarket": "Put console up for sale"
+    "titleMarket": "Put console up for sale",
+    "includeManually": "Include manually"
   },
   "AddGame": {
     "title": "Add Game",
@@ -687,6 +687,91 @@
     "editionNamePlaceholder": "e.g., Special Edition",
     "requiredFields": "Please fill in all required fields",
     "errorCreating": "Error creating variant. Please try again.",
+    "create": "Create",
+    "cancel": "Cancel"
+  },
+  "CreateConsoleModal": {
+    "title": "Create Console",
+    "descriptionConsole": "Create a new console platform (e.g. PlayStation 6, New Retro Console)",
+    "consoleSection": "Console Details",
+    "variantSection": "First Variant Details",
+    "skinSection": "First Skin Details",
+    "brandLabel": "Brand",
+    "nameLabel": "Console Name",
+    "namePlaceholder": "e.g. Super Game System",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter console description",
+    "releaseDateLabel": "Release Date",
+    "generationLabel": "Generation",
+    "generationPlaceholder": "e.g. 9",
+    "variantNameLabel": "Variant Name",
+    "variantNamePlaceholder": "e.g. Standard Edition, Slim, Pro",
+    "variantDescriptionLabel": "Variant Description",
+    "variantDescriptionPlaceholder": "Enter variant description",
+    "variantReleaseDateLabel": "Variant Release Date",
+    "variantAllDigitalLabel": "All Digital (No Disc Drive)",
+    "skinNameLabel": "Skin Name",
+    "skinNamePlaceholder": "e.g. Standard Black, White, Limited Edition",
+    "skinDescriptionLabel": "Skin Description",
+    "skinDescriptionPlaceholder": "Enter skin description",
+    "skinReleaseDateLabel": "Skin Release Date",
+    "skinLimitedEditionLabel": "Limited Edition",
+    "skinEditionNameLabel": "Edition Name",
+    "skinEditionNamePlaceholder": "e.g. 20th Anniversary",
+    "skinMaterialLabel": "Material",
+    "skinMaterialPlaceholder": "e.g. Plastic",
+    "skinFinishLabel": "Finish",
+    "skinFinishPlaceholder": "e.g. Matte",
+    "requiredFields": "Please fill in all required fields",
+    "errorCreating": "Error creating console. Please try again.",
+    "create": "Create",
+    "cancel": "Cancel"
+  },
+  "CreateConsoleVariantModal": {
+    "title": "Create Console Variant",
+    "description": "Create a new variant for this console (e.g. Slim, Pro, Lite)",
+    "consoleLabel": "Console",
+    "variantSection": "Variant Details",
+    "skinSection": "First Skin Details",
+    "nameLabel": "Variant Name",
+    "namePlaceholder": "e.g. Slim, Pro",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter variant description",
+    "releaseDateLabel": "Release Date",
+    "allDigitalLabel": "All Digital (No Disc Drive)",
+    "skinNameLabel": "Skin Name",
+    "skinNamePlaceholder": "e.g. Standard Black",
+    "skinDescriptionLabel": "Skin Description",
+    "skinDescriptionPlaceholder": "Enter skin description",
+    "skinReleaseDateLabel": "Skin Release Date",
+    "skinLimitedEditionLabel": "Limited Edition",
+    "skinEditionNameLabel": "Edition Name",
+    "skinEditionNamePlaceholder": "e.g. Day One Edition",
+    "skinMaterialLabel": "Material",
+    "skinMaterialPlaceholder": "e.g. Plastic",
+    "skinFinishLabel": "Finish",
+    "skinFinishPlaceholder": "e.g. Matte",
+    "requiredFields": "Please fill in all required fields",
+    "errorCreating": "Error creating variant. Please try again.",
+    "create": "Create",
+    "cancel": "Cancel"
+  },
+  "CreateSkinModal": {
+    "title": "Create Skin",
+    "description": "Create a new skin/color for this console variant",
+    "variantLabel": "Variant",
+    "nameLabel": "Skin Name",
+    "namePlaceholder": "e.g. Cosmic Red, Camo",
+    "releaseDateLabel": "Release Date",
+    "limitedEditionLabel": "Limited Edition",
+    "editionNameLabel": "Edition Name",
+    "editionNamePlaceholder": "e.g. Spider-Man Edition",
+    "materialLabel": "Material",
+    "materialPlaceholder": "e.g. Plastic",
+    "finishLabel": "Finish",
+    "finishPlaceholder": "e.g. Matte",
+    "requiredFields": "Please fill in all required fields",
+    "errorCreating": "Error creating skin. Please try again.",
     "create": "Create",
     "cancel": "Cancel"
   },
@@ -810,6 +895,8 @@
         "editFields": "Edit Fields",
         "showDetails": "Show Details",
         "hideDetails": "Hide Details",
+        "saveChanges": "Save Changes",
+        "saving": "Saving...",
         "status": "Status",
         "media": "Media",
         "condition": "Condition",
@@ -823,9 +910,7 @@
         "selectOption": "Select an option",
         "saveSuccess": "Fields updated successfully!",
         "saveError": "Error saving changes",
-        "priceRequired": "Price is required when status is 'Selling'",
-        "saveChanges": "Save Changes",
-        "saving": "Saving..."
+        "priceRequired": "Price is required when status is 'Selling'"
       },
       "statusValues": {
         "owned": "Owned",
@@ -907,6 +992,7 @@
       "confirmButton": "Select"
     }
   },
+
   "About": {
     "construction": "About"
   },
