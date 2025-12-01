@@ -378,7 +378,8 @@
     "games": "games",
     "accessories": "accessories",
     "showMore": "Show more",
-    "showLess": "Show less"
+    "showLess": "Show less",
+    "additionalPhotos": "Additional photos"
   },
   "AccessoryDetails": {
     "catalog": "Accessory Catalog",
@@ -551,7 +552,9 @@
     "rating": "Rating",
     "statusPreviouslyOwned": "Previously Owned",
     "mediaPhysical": "Physical",
-    "mediaDigital": "Digital"
+    "mediaDigital": "Digital",
+    "location": "Location",
+    "locationPlaceholder": "Select your location"
   },
   "HomePage": {
     "construction": "Under construction",

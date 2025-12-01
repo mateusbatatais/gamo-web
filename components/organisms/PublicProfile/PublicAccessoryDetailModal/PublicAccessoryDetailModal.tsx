@@ -65,6 +65,12 @@ export const PublicAccessoryDetailModal = ({
               </h2>
             </Link>
 
+            {accessoryItem.variantName && (
+              <p className="text-lg text-gray-700 dark:text-gray-300 font-medium">
+                {accessoryItem.variantName}
+              </p>
+            )}
+
             {accessoryItem.type && (
               <p className="mt-1 text-gray-600 dark:text-gray-400 capitalize">
                 {accessoryItem.type}
@@ -83,9 +89,23 @@ export const PublicAccessoryDetailModal = ({
                   </div>
                 )}
 
+                {accessoryItem.condition && (
+                  <Badge
+                    variant="soft"
+                    status={
+                      accessoryItem.condition === "NEW"
+                        ? "success"
+                        : accessoryItem.condition === "USED"
+                          ? "warning"
+                          : "default"
+                    }
+                  >
+                    {t(`condition.${accessoryItem.condition}`)}
+                  </Badge>
+                )}
+
                 <div className="flex flex-wrap gap-2">
                   <ItemBadges
-                    condition={accessoryItem.condition}
                     hasBox={accessoryItem.hasBox || false}
                     hasManual={accessoryItem.hasManual || false}
                   />
