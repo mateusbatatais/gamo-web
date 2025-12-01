@@ -550,7 +550,28 @@
     "mediaDigital": "Digital"
   },
   "HomePage": {
-    "construction": "Under construction"
+    "construction": "Under construction",
+    "hero": {
+      "title": "Track, Trade, Discover",
+      "subtitle": "The ultimate platform for game collectors.",
+      "cta": "Join Now",
+      "welcomeBack": "Welcome back, {name}",
+      "collectionValue": "Collection Value",
+      "totalItems": "Total Items",
+      "viewCollection": "View Collection"
+    },
+    "marketplace": {
+      "title": "Marketplace Highlights",
+      "viewAll": "View All"
+    },
+    "community": {
+      "title": "Community Spotlight",
+      "activityFeed": "Activity Feed"
+    },
+    "discovery": {
+      "title": "Did You Know?",
+      "refresh": "New Fact"
+    }
   },
   "NotFound": {
     "title": "Not found disk",

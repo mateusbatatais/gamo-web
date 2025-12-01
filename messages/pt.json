@@ -550,7 +550,28 @@
     "mediaDigital": "Digital"
   },
   "HomePage": {
-    "construction": "Em construção"
+    "construction": "Em construção",
+    "hero": {
+      "title": "Rastreie, Negocie, Descubra",
+      "subtitle": "A plataforma definitiva para colecionadores de jogos.",
+      "cta": "Participe Agora",
+      "welcomeBack": "Bem-vindo de volta, {name}",
+      "collectionValue": "Valor da Coleção",
+      "totalItems": "Total de Itens",
+      "viewCollection": "Ver Coleção"
+    },
+    "marketplace": {
+      "title": "Destaques do Marketplace",
+      "viewAll": "Ver Tudo"
+    },
+    "community": {
+      "title": "Destaque da Comunidade",
+      "activityFeed": "Feed de Atividades"
+    },
+    "discovery": {
+      "title": "Você Sabia?",
+      "refresh": "Novo Fato"
+    }
   },
   "NotFound": {
     "title": "Disco não encontrado!",
