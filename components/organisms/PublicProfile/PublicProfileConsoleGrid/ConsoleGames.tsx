@@ -76,7 +76,7 @@ export function ConsoleGames({
             <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner} />
           ))}
         </div>
-        {item.totalGames && item.totalGames > 10 && (
+        {item.totalGames && (
           <div className="mt-4 text-center">
             <a
               href={`/user/${userSlug}/console/${item.id}`}
@@ -134,7 +134,7 @@ export function ConsoleGamesCompact({
             <PublicProfileGameCompact key={game.id} game={game} isOwner={isOwner} />
           ))}
         </div>
-        {item.totalGames && item.totalGames > 10 && (
+        {item.totalGames && (
           <div className="mt-4 text-center">
             <a
               href={`/user/${userSlug}/console/${item.id}`}
@@ -173,7 +173,7 @@ export function ConsoleGamesList({
             <PublicProfileGameList key={game.id} game={game} isOwner={isOwner} />
           ))}
         </div>
-        {item.totalGames && item.totalGames > 10 && (
+        {item.totalGames && (
           <div className="mt-4 text-center">
             <a
               href={`/user/${userSlug}/console/${item.id}`}
@@ -227,7 +227,7 @@ export function ConsoleGamesTable({
             </tbody>
           </table>
         </div>
-        {item.totalGames && item.totalGames > 10 && (
+        {item.totalGames && (
           <div className="p-4 text-center border-t border-gray-200 dark:border-gray-700">
             <a
               href={`/user/${userSlug}/console/${item.id}`}

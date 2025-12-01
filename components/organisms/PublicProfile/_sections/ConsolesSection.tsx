@@ -43,6 +43,7 @@ interface ConsolesSectionProps {
   compactCols: number;
   onFilterOpen: () => void;
   locale: string;
+  userSlug: string;
 }
 
 export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
@@ -58,6 +59,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
   compactCols,
   onFilterOpen,
   locale,
+  userSlug,
 }) => {
   const t = useTranslations("PublicProfile");
 
@@ -175,7 +177,12 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                     {isExpanded && collapseManager.openTableType === "games" && (
                       <tr className="bg-gray-50 dark:bg-gray-800">
                         <td colSpan={6 + (isOwner ? 1 : 0)} className="p-4">
-                          <ConsoleGamesTable item={consoleItem} isOwner={isOwner} sale={true} />
+                          <ConsoleGamesTable
+                            item={consoleItem}
+                            isOwner={isOwner}
+                            sale={true}
+                            userSlug={userSlug}
+                          />
                         </td>
                       </tr>
                     )}
@@ -219,7 +226,12 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                 )}
                 {isOpen && collapseManager.openListType === "games" && (
                   <div>
-                    <ConsoleGamesList item={consoleItem} isOwner={isOwner} sale={true} />
+                    <ConsoleGamesList
+                      item={consoleItem}
+                      isOwner={isOwner}
+                      sale={true}
+                      userSlug={userSlug}
+                    />
                   </div>
                 )}
               </div>
@@ -319,6 +331,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       item={consoles.find((c) => c.id === collapseManager.openCompactId)}
                       isOwner={isOwner}
                       sale={true}
+                      userSlug={userSlug}
                       columnIndex={
                         (consoles.findIndex((c) => c.id === collapseManager.openCompactId) +
                           (isOwner ? 1 : 0)) %
@@ -425,6 +438,7 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       item={consoles.find((c) => c.id === collapseManager.openGridId)}
                       isOwner={isOwner}
                       sale={true}
+                      userSlug={userSlug}
                       columnIndex={
                         (consoles.findIndex((c) => c.id === collapseManager.openGridId) +
                           (isOwner ? 1 : 0)) %

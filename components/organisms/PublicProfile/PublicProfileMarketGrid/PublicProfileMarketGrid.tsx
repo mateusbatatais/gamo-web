@@ -264,6 +264,7 @@ const PublicProfileMarketGridContent = ({
         compactCols={compactCols}
         onFilterOpen={() => setIsConsoleFilterOpen(true)}
         locale={locale}
+        userSlug={slug}
       />
 
       <GamesSection
