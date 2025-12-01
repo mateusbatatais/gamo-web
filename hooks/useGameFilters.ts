@@ -7,9 +7,11 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 export interface UseGameFiltersReturn {
   selectedGenres: number[];
   selectedPlatforms: number[];
+  selectedMedia: string[];
   showOnlyFavorites: boolean;
   handleGenreChange: (genres: number[]) => void;
   handlePlatformChange: (platforms: number[]) => void;
+  handleMediaChange: (media: string[]) => void;
   handleFavoriteChange: (showOnlyFavorites: boolean) => void;
   clearFilters: () => void;
 }
@@ -25,6 +27,10 @@ export const useGameFilters = (): UseGameFiltersReturn => {
 
   const [selectedPlatforms, setSelectedPlatforms] = useState<number[]>(
     searchParams.get("platforms")?.split(",").map(Number).filter(Boolean) || [],
+  );
+
+  const [selectedMedia, setSelectedMedia] = useState<string[]>(
+    searchParams.get("media")?.split(",").filter(Boolean) || [],
   );
 
   const [showOnlyFavorites, setShowOnlyFavorites] = useState<boolean>(
@@ -65,6 +71,14 @@ export const useGameFilters = (): UseGameFiltersReturn => {
     [updateURL],
   );
 
+  const handleMediaChange = useCallback(
+    (media: string[]) => {
+      setSelectedMedia(media);
+      updateURL({ media: media.join(",") });
+    },
+    [updateURL],
+  );
+
   const handleFavoriteChange = useCallback(
     (favorites: boolean) => {
       setShowOnlyFavorites(favorites);
@@ -76,11 +90,13 @@ export const useGameFilters = (): UseGameFiltersReturn => {
   const clearFilters = useCallback(() => {
     setSelectedGenres([]);
     setSelectedPlatforms([]);
+    setSelectedMedia([]);
     setShowOnlyFavorites(false);
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("genres");
     params.delete("platforms");
+    params.delete("media");
     params.delete("isFavorite");
     params.set("page", "1");
 
@@ -90,9 +106,11 @@ export const useGameFilters = (): UseGameFiltersReturn => {
   return {
     selectedGenres,
     selectedPlatforms,
+    selectedMedia,
     showOnlyFavorites,
     handleGenreChange,
     handlePlatformChange,
+    handleMediaChange,
     handleFavoriteChange,
     clearFilters,
   };

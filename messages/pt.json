@@ -71,6 +71,9 @@
   "filters": {
     "label": "Filtros",
     "clear": "limpar",
+    "media": "Tipo de Mídia",
+    "physical": "Física",
+    "digital": "Digital",
     "favorites": {
       "onlyFavorites": "Somente favoritos"
     },

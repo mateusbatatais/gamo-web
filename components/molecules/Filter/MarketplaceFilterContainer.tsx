@@ -29,8 +29,10 @@ interface MarketplaceFilterContainerProps {
   // Game filter props
   selectedGenres?: number[];
   selectedPlatforms?: number[];
+  selectedMedia?: string[];
   onGenreChange?: (genres: number[]) => void;
   onPlatformChange?: (platforms: number[]) => void;
+  onMediaChange?: (media: string[]) => void;
   // Console filter props
   selectedBrands?: string[];
   selectedGenerations?: string[];
@@ -90,8 +92,10 @@ const MarketplaceFilterContainer = ({
   // Game props
   selectedGenres = [],
   selectedPlatforms = [],
+  selectedMedia = [],
   onGenreChange,
   onPlatformChange,
+  onMediaChange,
   // Console props
   selectedBrands = [],
   selectedGenerations = [],
@@ -241,8 +245,10 @@ const MarketplaceFilterContainer = ({
         <GameFilterContainer
           selectedGenres={selectedGenres}
           selectedPlatforms={selectedPlatforms}
+          selectedMedia={selectedMedia}
           onGenreChange={onGenreChange}
           onPlatformChange={onPlatformChange}
+          onMediaChange={onMediaChange}
           clearFilters={() => {}} // Handled by parent
           className="mt-0! space-y-4!"
         />
@@ -321,7 +327,7 @@ const MarketplaceFilterContainer = ({
           onAllDigitalChange={onAllDigitalChange}
           onRetroCompatibleChange={onRetroCompatibleChange}
           clearFilters={() => {}} // Handled by parent
-          className="!mt-0 !space-y-4"
+          className="mt-0! space-y-4!"
         />
       </div>
     );

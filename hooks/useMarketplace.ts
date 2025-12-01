@@ -23,6 +23,7 @@ interface UseMarketplaceOptions {
   // Game filters
   platforms?: number[];
   genres?: number[];
+  media?: string[];
   // Console filters
   brands?: string[];
   generations?: string[];
@@ -55,6 +56,7 @@ export function useMarketplace({
   // Game filters
   platforms = [],
   genres = [],
+  media = [],
   // Console filters
   brands = [],
   generations = [],
@@ -89,6 +91,7 @@ export function useMarketplace({
       acceptsTrade,
       platforms.join(","),
       genres.join(","),
+      media.join(","),
       brands.join(","),
       generations.join(","),
       consoleModels.join(","),
@@ -124,6 +127,7 @@ export function useMarketplace({
       // Game filters
       if (platforms.length > 0) params.append("platforms", platforms.join(","));
       if (genres.length > 0) params.append("genres", genres.join(","));
+      if (media.length === 1) params.append("media", media[0]);
 
       // Console filters
       if (brands.length > 0) params.append("brands", brands.join(","));

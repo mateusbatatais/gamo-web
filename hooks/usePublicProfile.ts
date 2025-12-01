@@ -138,6 +138,7 @@ export function useUserGamesPublic(
   platforms?: number[],
   showOnlyFavorites?: boolean,
   standalone?: boolean,
+  media?: string[],
 ) {
   const { apiFetch } = useApiClient();
 
@@ -150,6 +151,7 @@ export function useUserGamesPublic(
   if (search) queryParams.append("search", search);
   if (genres && genres.length > 0) queryParams.append("genres", genres.join(","));
   if (platforms && platforms.length > 0) queryParams.append("platforms", platforms.join(","));
+  if (media && media.length === 1) queryParams.append("media", media[0]);
   if (showOnlyFavorites) queryParams.append("isFavorite", "true");
   if (standalone) queryParams.append("standalone", "true");
 
@@ -165,6 +167,7 @@ export function useUserGamesPublic(
       search,
       genres,
       platforms,
+      media,
       showOnlyFavorites,
       standalone,
     ],

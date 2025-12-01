@@ -68,6 +68,7 @@ const PublicProfileGameGridContent = ({ slug, locale, isOwner }: PublicProfileGa
     gameFilters: {
       selectedGenres: gameFilters.selectedGenres,
       selectedPlatforms: gameFilters.selectedPlatforms,
+      selectedMedia: gameFilters.selectedMedia,
       showOnlyFavorites: gameFilters.showOnlyFavorites,
     },
   });

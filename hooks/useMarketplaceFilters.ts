@@ -17,6 +17,7 @@ export interface UseMarketplaceFiltersReturn {
   // Game filters
   selectedGenres: number[];
   selectedPlatforms: number[];
+  selectedMedia: string[];
   // Console filters
   selectedBrands: string[];
   selectedGenerations: string[];
@@ -41,6 +42,7 @@ export interface UseMarketplaceFiltersReturn {
   handleAcceptsTradeChange: (value: boolean) => void;
   handleGenreChange: (genres: number[]) => void;
   handlePlatformChange: (platforms: number[]) => void;
+  handleMediaChange: (media: string[]) => void;
   handleBrandChange: (brands: string[]) => void;
   handleGenerationChange: (generations: string[]) => void;
   handleModelChange: (models: string[]) => void;
@@ -86,6 +88,9 @@ export function useMarketplaceFilters(): UseMarketplaceFiltersReturn {
   );
   const [selectedPlatforms, setSelectedPlatforms] = useState<number[]>(
     searchParams.get("platforms")?.split(",").map(Number).filter(Boolean) || [],
+  );
+  const [selectedMedia, setSelectedMedia] = useState<string[]>(
+    searchParams.get("media")?.split(",").filter(Boolean) || [],
   );
 
   // Console filters
@@ -146,10 +151,14 @@ export function useMarketplaceFilters(): UseMarketplaceFiltersReturn {
     const singleType = selectedItemTypes.length === 1 ? selectedItemTypes[0] : null;
 
     // Clear game filters if not GAME
-    if (singleType !== "GAME" && (selectedGenres.length > 0 || selectedPlatforms.length > 0)) {
+    if (
+      singleType !== "GAME" &&
+      (selectedGenres.length > 0 || selectedPlatforms.length > 0 || selectedMedia.length > 0)
+    ) {
       setSelectedGenres([]);
       setSelectedPlatforms([]);
-      updateURL({ genres: "", platforms: "" });
+      setSelectedMedia([]);
+      updateURL({ genres: "", platforms: "", media: "" });
     }
 
     // Clear console filters if not CONSOLE
@@ -280,6 +289,14 @@ export function useMarketplaceFilters(): UseMarketplaceFiltersReturn {
     [updateURL],
   );
 
+  const handleMediaChange = useCallback(
+    (media: string[]) => {
+      setSelectedMedia(media);
+      updateURL({ media: media.join(",") });
+    },
+    [updateURL],
+  );
+
   // Console handlers
   const handleBrandChange = useCallback(
     (brands: string[]) => {
@@ -386,6 +403,7 @@ export function useMarketplaceFilters(): UseMarketplaceFiltersReturn {
     // Reset game filters
     setSelectedGenres([]);
     setSelectedPlatforms([]);
+    setSelectedMedia([]);
 
     // Reset console filters
     setSelectedBrands([]);
@@ -421,6 +439,7 @@ export function useMarketplaceFilters(): UseMarketplaceFiltersReturn {
     acceptsTrade,
     selectedGenres,
     selectedPlatforms,
+    selectedMedia,
     selectedBrands,
     selectedGenerations,
     selectedModels,
@@ -442,6 +461,7 @@ export function useMarketplaceFilters(): UseMarketplaceFiltersReturn {
     handleAcceptsTradeChange,
     handleGenreChange,
     handlePlatformChange,
+    handleMediaChange,
     handleBrandChange,
     handleGenerationChange,
     handleModelChange,

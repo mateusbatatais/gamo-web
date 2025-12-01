@@ -58,6 +58,7 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
     // Game filters
     platforms: marketplaceFilters.selectedPlatforms,
     genres: marketplaceFilters.selectedGenres,
+    media: marketplaceFilters.selectedMedia,
     // Console filters
     brands: marketplaceFilters.selectedBrands,
     generations: marketplaceFilters.selectedGenerations,
@@ -191,10 +192,10 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
           onHasManualChange={marketplaceFilters.handleHasManualChange}
           onAcceptsTradeChange={marketplaceFilters.handleAcceptsTradeChange}
           // Game filters
-          selectedGenres={marketplaceFilters.selectedGenres}
-          selectedPlatforms={marketplaceFilters.selectedPlatforms}
           onGenreChange={marketplaceFilters.handleGenreChange}
+          selectedMedia={marketplaceFilters.selectedMedia}
           onPlatformChange={marketplaceFilters.handlePlatformChange}
+          onMediaChange={marketplaceFilters.handleMediaChange}
           // Console filters
           selectedBrands={marketplaceFilters.selectedBrands}
           selectedGenerations={marketplaceFilters.selectedGenerations}
@@ -240,10 +241,10 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
           onHasManualChange={marketplaceFilters.handleHasManualChange}
           onAcceptsTradeChange={marketplaceFilters.handleAcceptsTradeChange}
           // Game filters
-          selectedGenres={marketplaceFilters.selectedGenres}
-          selectedPlatforms={marketplaceFilters.selectedPlatforms}
           onGenreChange={marketplaceFilters.handleGenreChange}
+          selectedMedia={marketplaceFilters.selectedMedia}
           onPlatformChange={marketplaceFilters.handlePlatformChange}
+          onMediaChange={marketplaceFilters.handleMediaChange}
           // Console filters
           selectedBrands={marketplaceFilters.selectedBrands}
           selectedGenerations={marketplaceFilters.selectedGenerations}

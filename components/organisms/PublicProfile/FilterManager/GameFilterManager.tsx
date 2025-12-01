@@ -28,9 +28,11 @@ export const GameFilterManager: React.FC<GameFilterManagerProps> = ({
       <GameFilterContainer
         onGenreChange={gameFilters.handleGenreChange}
         onPlatformChange={gameFilters.handlePlatformChange}
+        onMediaChange={gameFilters.handleMediaChange}
         onFavoriteChange={gameFilters.handleFavoriteChange}
         selectedGenres={gameFilters.selectedGenres}
         selectedPlatforms={gameFilters.selectedPlatforms}
+        selectedMedia={gameFilters.selectedMedia}
         showOnlyFavorites={gameFilters.showOnlyFavorites}
         clearFilters={gameFilters.clearFilters}
       />

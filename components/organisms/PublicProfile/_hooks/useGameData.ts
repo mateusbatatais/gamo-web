@@ -16,6 +16,7 @@ interface UseGameDataProps {
   gameFilters: {
     selectedGenres: number[];
     selectedPlatforms: number[];
+    selectedMedia?: string[];
     showOnlyFavorites?: boolean;
   };
 }
@@ -52,6 +53,8 @@ export function useGameData({
     gameFilters.selectedGenres,
     gameFilters.selectedPlatforms,
     gameFilters.showOnlyFavorites,
+    undefined, // standalone
+    gameFilters.selectedMedia,
   );
 
   return {

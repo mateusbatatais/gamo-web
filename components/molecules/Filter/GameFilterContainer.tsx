@@ -5,12 +5,15 @@ import GenreFilter from "./GenreFilter/GenreFilter";
 import PlatformFilter from "./PlatformFilter/PlatformFilter";
 import { useTranslations } from "next-intl";
 import SingleCheckboxFilter from "./SingleCheckboxFilter/SingleCheckboxFilter";
+import MediaFilter from "./MediaFilter/MediaFilter";
 
 interface GameFilterContainerProps {
   onGenreChange: (selectedGenres: number[]) => void;
   onPlatformChange: (selectedPlatforms: number[]) => void;
   selectedGenres: number[];
   selectedPlatforms: number[];
+  selectedMedia?: string[];
+  onMediaChange?: (selectedMedia: string[]) => void;
   clearFilters: () => void;
   className?: string;
   // Tornar as props de favoritos opcionais
@@ -24,6 +27,8 @@ const GameFilterContainer = ({
   onFavoriteChange,
   selectedGenres,
   selectedPlatforms,
+  selectedMedia = [],
+  onMediaChange,
   showOnlyFavorites = false,
   clearFilters,
   className,
@@ -39,6 +44,7 @@ const GameFilterContainer = ({
 
       <PlatformFilter selectedPlatforms={selectedPlatforms} onPlatformChange={onPlatformChange} />
       <GenreFilter selectedGenres={selectedGenres} onGenreChange={onGenreChange} />
+      {onMediaChange && <MediaFilter selectedMedia={selectedMedia} onMediaChange={onMediaChange} />}
       {onFavoriteChange && (
         <SingleCheckboxFilter
           label={t("filters.onlyFavorites")}
