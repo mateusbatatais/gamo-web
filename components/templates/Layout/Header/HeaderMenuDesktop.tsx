@@ -66,6 +66,7 @@ export default function HeaderMenuDesktop({
             variant="transparent"
             className="flex items-center gap-2"
             icon={renderIcon(link.iconType)}
+            label={link.label}
             title={link.label}
           />
         </Link>

@@ -214,8 +214,8 @@ const PublicConsoleGamesPageContent = ({
         onPageChange={catalogState.setPage}
         title=""
         emptyMessage={t("noGames")}
-        addButtonText=""
-        addButtonLink=""
+        addButtonText={t("txtAddGame")}
+        addButtonLink="/user/collection/games/add"
       />
     </div>
   );
