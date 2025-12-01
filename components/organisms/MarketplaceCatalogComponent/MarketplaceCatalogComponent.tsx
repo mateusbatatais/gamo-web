@@ -146,7 +146,7 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
       <div
         className={
           catalogState.viewMode === "grid"
-            ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
+            ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
             : "flex flex-col space-y-6"
         }
       >

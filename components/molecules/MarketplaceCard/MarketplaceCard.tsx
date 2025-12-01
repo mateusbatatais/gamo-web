@@ -47,14 +47,14 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
     <Card
       className={clsx(
         "overflow-hidden hover:shadow-lg transition-all duration-300 p-0! h-full flex group",
-        isList ? "flex-row h-auto min-h-[200px]" : "flex-col",
+        isList ? "flex-row h-auto min-h-[140px] sm:min-h-[200px]" : "flex-col",
       )}
     >
       <Link
         href={itemLink}
         className={clsx(
           "block relative bg-gray-100 dark:bg-gray-800 cursor-pointer overflow-hidden",
-          isList ? "w-48 shrink-0" : "h-48 w-full",
+          isList ? "w-32 sm:w-48 shrink-0" : "h-48 w-full",
         )}
         target="_blank"
       >
@@ -76,7 +76,7 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
           fill
           sizes={
             isList
-              ? "(max-width: 768px) 192px, 192px"
+              ? "(max-width: 640px) 128px, 192px"
               : "(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
           }
           className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -84,8 +84,8 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
         />
       </Link>
 
-      <div className="p-4 flex-1 flex flex-col">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{item.name}</h3>
+      <div className={clsx("flex-1 flex flex-col", isList ? "p-3 sm:p-4" : "p-4")}>
+        <h3 className="font-semibold text-base sm:text-lg mb-2 line-clamp-2">{item.name}</h3>
 
         {formattedPrice && (
           <div className="flex items-center justify-between mb-2">
@@ -113,16 +113,16 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
           className="mb-4"
         />
 
-        <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between text-xs text-gray-500">
+        <div className="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex flex-wrap gap-2 items-center justify-between text-xs text-gray-500">
           <Link
             href={`/user/${item.seller.slug}`}
-            className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors"
+            className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 hover:text-primary-500 transition-colors min-w-0"
           >
             <User size={16} />
             <span className="truncate font-medium">{item.seller.name}</span>
           </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <span className="text-[10px] text-gray-400" title={`Criado em ${formattedDate}`}>
               {formattedDate}
             </span>
