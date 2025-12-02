@@ -25,11 +25,12 @@ const mapContainerStyle = {
 const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
 
 // Função para obter cor do marcador por tipo de item
-const getMarkerColor = (itemType: "GAME" | "CONSOLE" | "ACCESSORY"): string => {
+const getMarkerColor = (itemType: "GAME" | "CONSOLE" | "ACCESSORY" | "KIT"): string => {
   const colors = {
     GAME: "#3B82F6", // blue
     CONSOLE: "#10B981", // green
     ACCESSORY: "#F59E0B", // amber
+    KIT: "#8B5CF6", // violet
   };
   return colors[itemType];
 };
@@ -138,7 +139,7 @@ export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
 
   // Criar ícone customizado
   const createMarkerIcon = useCallback(
-    (itemType: "GAME" | "CONSOLE" | "ACCESSORY", count?: number) => {
+    (itemType: "GAME" | "CONSOLE" | "ACCESSORY" | "KIT", count?: number) => {
       if (!isLoaded) return undefined;
 
       const color = getMarkerColor(itemType);

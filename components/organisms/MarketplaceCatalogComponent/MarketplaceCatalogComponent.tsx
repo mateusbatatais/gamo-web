@@ -14,7 +14,8 @@ import { useEffect } from "react";
 import { CatalogSkeleton } from "../Catalog/CatalogSkeleton";
 import { CatalogEmptyState } from "../Catalog/CatalogEmptyState";
 import { CatalogLayout } from "../Catalog/Layouts/CatalogLayout";
-import { Grid3X3, List, Map } from "lucide-react";
+import { Grid3X3, List, Map, Package } from "lucide-react";
+import Link from "next/link";
 
 interface MarketplaceCatalogComponentProps {
   perPage: number;
@@ -163,136 +164,150 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
   };
 
   return (
-    <CatalogLayout
-      // Header
-      searchPlaceholder="Buscar itens..."
-      searchPath="/marketplace"
-      sortOptions={SORT_OPTIONS}
-      toggleItems={TOGGLE_ITEMS}
-      toggleValue={marketplaceFilters.selectedStatus}
-      onToggleChange={marketplaceFilters.handleStatusChange}
-      viewModeOptions={VIEW_MODE_OPTIONS}
-      // Filtros
-      filterSidebar={
-        <MarketplaceFilterContainer
-          onItemTypeChange={marketplaceFilters.handleItemTypeChange}
-          onConditionChange={marketplaceFilters.handleConditionChange}
-          selectedItemTypes={marketplaceFilters.selectedItemTypes}
-          selectedConditions={marketplaceFilters.selectedConditions}
-          clearFilters={marketplaceFilters.clearFilters}
-          // General filters
-          priceMin={marketplaceFilters.priceMin}
-          priceMax={marketplaceFilters.priceMax}
-          hasBox={marketplaceFilters.hasBox}
-          hasManual={marketplaceFilters.hasManual}
-          acceptsTrade={marketplaceFilters.acceptsTrade}
-          onPriceMinChange={marketplaceFilters.handlePriceMinChange}
-          onPriceMaxChange={marketplaceFilters.handlePriceMaxChange}
-          onHasBoxChange={marketplaceFilters.handleHasBoxChange}
-          onHasManualChange={marketplaceFilters.handleHasManualChange}
-          onAcceptsTradeChange={marketplaceFilters.handleAcceptsTradeChange}
-          // Game filters
-          onGenreChange={marketplaceFilters.handleGenreChange}
-          selectedMedia={marketplaceFilters.selectedMedia}
-          onPlatformChange={marketplaceFilters.handlePlatformChange}
-          onMediaChange={marketplaceFilters.handleMediaChange}
-          // Console filters
-          selectedBrands={marketplaceFilters.selectedBrands}
-          selectedGenerations={marketplaceFilters.selectedGenerations}
-          selectedModels={marketplaceFilters.selectedModels}
-          selectedConsoleTypes={marketplaceFilters.selectedConsoleTypes}
-          selectedMediaFormats={marketplaceFilters.selectedMediaFormats}
-          selectedStorageRanges={marketplaceFilters.selectedStorageRanges}
-          allDigital={marketplaceFilters.allDigital}
-          retroCompatible={marketplaceFilters.retroCompatible}
-          onBrandChange={marketplaceFilters.handleBrandChange}
-          onGenerationChange={marketplaceFilters.handleGenerationChange}
-          onModelChange={marketplaceFilters.handleModelChange}
-          onConsoleTypeChange={marketplaceFilters.handleConsoleTypeChange}
-          onMediaFormatChange={marketplaceFilters.handleMediaFormatChange}
-          onStorageChange={marketplaceFilters.handleStorageChange}
-          onAllDigitalChange={marketplaceFilters.handleAllDigitalChange}
-          onRetroCompatibleChange={marketplaceFilters.handleRetroCompatibleChange}
-          // Accessory filters
-          selectedAccessoryTypes={marketplaceFilters.selectedAccessoryTypes}
-          selectedAccessorySubTypes={marketplaceFilters.selectedAccessorySubTypes}
-          selectedConsoles={marketplaceFilters.selectedConsoles}
-          onAccessoryTypeChange={marketplaceFilters.handleAccessoryTypeChange}
-          onAccessorySubTypeChange={marketplaceFilters.handleAccessorySubTypeChange}
-          onConsoleChange={marketplaceFilters.handleConsoleChange}
-        />
-      }
-      filterDrawer={
-        <MarketplaceFilterContainer
-          onItemTypeChange={marketplaceFilters.handleItemTypeChange}
-          onConditionChange={marketplaceFilters.handleConditionChange}
-          selectedItemTypes={marketplaceFilters.selectedItemTypes}
-          selectedConditions={marketplaceFilters.selectedConditions}
-          clearFilters={marketplaceFilters.clearFilters}
-          // General filters
-          priceMin={marketplaceFilters.priceMin}
-          priceMax={marketplaceFilters.priceMax}
-          hasBox={marketplaceFilters.hasBox}
-          hasManual={marketplaceFilters.hasManual}
-          acceptsTrade={marketplaceFilters.acceptsTrade}
-          onPriceMinChange={marketplaceFilters.handlePriceMinChange}
-          onPriceMaxChange={marketplaceFilters.handlePriceMaxChange}
-          onHasBoxChange={marketplaceFilters.handleHasBoxChange}
-          onHasManualChange={marketplaceFilters.handleHasManualChange}
-          onAcceptsTradeChange={marketplaceFilters.handleAcceptsTradeChange}
-          // Game filters
-          onGenreChange={marketplaceFilters.handleGenreChange}
-          selectedMedia={marketplaceFilters.selectedMedia}
-          onPlatformChange={marketplaceFilters.handlePlatformChange}
-          onMediaChange={marketplaceFilters.handleMediaChange}
-          // Console filters
-          selectedBrands={marketplaceFilters.selectedBrands}
-          selectedGenerations={marketplaceFilters.selectedGenerations}
-          selectedModels={marketplaceFilters.selectedModels}
-          selectedConsoleTypes={marketplaceFilters.selectedConsoleTypes}
-          selectedMediaFormats={marketplaceFilters.selectedMediaFormats}
-          selectedStorageRanges={marketplaceFilters.selectedStorageRanges}
-          allDigital={marketplaceFilters.allDigital}
-          retroCompatible={marketplaceFilters.retroCompatible}
-          onBrandChange={marketplaceFilters.handleBrandChange}
-          onGenerationChange={marketplaceFilters.handleGenerationChange}
-          onModelChange={marketplaceFilters.handleModelChange}
-          onConsoleTypeChange={marketplaceFilters.handleConsoleTypeChange}
-          onMediaFormatChange={marketplaceFilters.handleMediaFormatChange}
-          onStorageChange={marketplaceFilters.handleStorageChange}
-          onAllDigitalChange={marketplaceFilters.handleAllDigitalChange}
-          onRetroCompatibleChange={marketplaceFilters.handleRetroCompatibleChange}
-          // Accessory filters
-          selectedAccessoryTypes={marketplaceFilters.selectedAccessoryTypes}
-          selectedAccessorySubTypes={marketplaceFilters.selectedAccessorySubTypes}
-          selectedConsoles={marketplaceFilters.selectedConsoles}
-          onAccessoryTypeChange={marketplaceFilters.handleAccessoryTypeChange}
-          onAccessorySubTypeChange={marketplaceFilters.handleAccessorySubTypeChange}
-          onConsoleChange={marketplaceFilters.handleConsoleChange}
-        />
-      }
-      // Conteúdo
-      content={renderContent()}
-      emptyState={null} // Já tratamos no renderContent
-      loadingState={null} // Já tratamos acima
-      // Paginação
-      pagination={
-        marketplace?.meta
-          ? {
-              currentPage: catalogState.page,
-              totalPages: marketplace.meta.totalPages,
-              onPageChange: catalogState.setPage,
-            }
-          : undefined
-      }
-      // Estados
-      viewMode={catalogState.viewMode}
-      onViewModeChange={catalogState.setViewMode}
-      sort={catalogState.sort}
-      onSortChange={catalogState.setSort}
-      isFilterDrawerOpen={catalogState.isFilterDrawerOpen}
-      onFilterDrawerToggle={catalogState.setFilterDrawerOpen}
-    />
+    <>
+      <CatalogLayout
+        // Header
+        searchPlaceholder="Buscar itens..."
+        searchPath="/marketplace"
+        sortOptions={SORT_OPTIONS}
+        toggleItems={TOGGLE_ITEMS}
+        toggleValue={marketplaceFilters.selectedStatus}
+        onToggleChange={marketplaceFilters.handleStatusChange}
+        viewModeOptions={VIEW_MODE_OPTIONS}
+        // Filtros
+        filterSidebar={
+          <MarketplaceFilterContainer
+            onItemTypeChange={marketplaceFilters.handleItemTypeChange}
+            onConditionChange={marketplaceFilters.handleConditionChange}
+            selectedItemTypes={marketplaceFilters.selectedItemTypes}
+            selectedConditions={marketplaceFilters.selectedConditions}
+            clearFilters={marketplaceFilters.clearFilters}
+            // General filters
+            priceMin={marketplaceFilters.priceMin}
+            priceMax={marketplaceFilters.priceMax}
+            hasBox={marketplaceFilters.hasBox}
+            hasManual={marketplaceFilters.hasManual}
+            acceptsTrade={marketplaceFilters.acceptsTrade}
+            onPriceMinChange={marketplaceFilters.handlePriceMinChange}
+            onPriceMaxChange={marketplaceFilters.handlePriceMaxChange}
+            onHasBoxChange={marketplaceFilters.handleHasBoxChange}
+            onHasManualChange={marketplaceFilters.handleHasManualChange}
+            onAcceptsTradeChange={marketplaceFilters.handleAcceptsTradeChange}
+            // Game filters
+            onGenreChange={marketplaceFilters.handleGenreChange}
+            selectedMedia={marketplaceFilters.selectedMedia}
+            onPlatformChange={marketplaceFilters.handlePlatformChange}
+            onMediaChange={marketplaceFilters.handleMediaChange}
+            // Console filters
+            selectedBrands={marketplaceFilters.selectedBrands}
+            selectedGenerations={marketplaceFilters.selectedGenerations}
+            selectedModels={marketplaceFilters.selectedModels}
+            selectedConsoleTypes={marketplaceFilters.selectedConsoleTypes}
+            selectedMediaFormats={marketplaceFilters.selectedMediaFormats}
+            selectedStorageRanges={marketplaceFilters.selectedStorageRanges}
+            allDigital={marketplaceFilters.allDigital}
+            retroCompatible={marketplaceFilters.retroCompatible}
+            onBrandChange={marketplaceFilters.handleBrandChange}
+            onGenerationChange={marketplaceFilters.handleGenerationChange}
+            onModelChange={marketplaceFilters.handleModelChange}
+            onConsoleTypeChange={marketplaceFilters.handleConsoleTypeChange}
+            onMediaFormatChange={marketplaceFilters.handleMediaFormatChange}
+            onStorageChange={marketplaceFilters.handleStorageChange}
+            onAllDigitalChange={marketplaceFilters.handleAllDigitalChange}
+            onRetroCompatibleChange={marketplaceFilters.handleRetroCompatibleChange}
+            // Accessory filters
+            selectedAccessoryTypes={marketplaceFilters.selectedAccessoryTypes}
+            selectedAccessorySubTypes={marketplaceFilters.selectedAccessorySubTypes}
+            selectedConsoles={marketplaceFilters.selectedConsoles}
+            onAccessoryTypeChange={marketplaceFilters.handleAccessoryTypeChange}
+            onAccessorySubTypeChange={marketplaceFilters.handleAccessorySubTypeChange}
+            onConsoleChange={marketplaceFilters.handleConsoleChange}
+          />
+        }
+        filterDrawer={
+          <MarketplaceFilterContainer
+            onItemTypeChange={marketplaceFilters.handleItemTypeChange}
+            onConditionChange={marketplaceFilters.handleConditionChange}
+            selectedItemTypes={marketplaceFilters.selectedItemTypes}
+            selectedConditions={marketplaceFilters.selectedConditions}
+            clearFilters={marketplaceFilters.clearFilters}
+            // General filters
+            priceMin={marketplaceFilters.priceMin}
+            priceMax={marketplaceFilters.priceMax}
+            hasBox={marketplaceFilters.hasBox}
+            hasManual={marketplaceFilters.hasManual}
+            acceptsTrade={marketplaceFilters.acceptsTrade}
+            onPriceMinChange={marketplaceFilters.handlePriceMinChange}
+            onPriceMaxChange={marketplaceFilters.handlePriceMaxChange}
+            onHasBoxChange={marketplaceFilters.handleHasBoxChange}
+            onHasManualChange={marketplaceFilters.handleHasManualChange}
+            onAcceptsTradeChange={marketplaceFilters.handleAcceptsTradeChange}
+            // Game filters
+            onGenreChange={marketplaceFilters.handleGenreChange}
+            selectedMedia={marketplaceFilters.selectedMedia}
+            onPlatformChange={marketplaceFilters.handlePlatformChange}
+            onMediaChange={marketplaceFilters.handleMediaChange}
+            // Console filters
+            selectedBrands={marketplaceFilters.selectedBrands}
+            selectedGenerations={marketplaceFilters.selectedGenerations}
+            selectedModels={marketplaceFilters.selectedModels}
+            selectedConsoleTypes={marketplaceFilters.selectedConsoleTypes}
+            selectedMediaFormats={marketplaceFilters.selectedMediaFormats}
+            selectedStorageRanges={marketplaceFilters.selectedStorageRanges}
+            allDigital={marketplaceFilters.allDigital}
+            retroCompatible={marketplaceFilters.retroCompatible}
+            onBrandChange={marketplaceFilters.handleBrandChange}
+            onGenerationChange={marketplaceFilters.handleGenerationChange}
+            onModelChange={marketplaceFilters.handleModelChange}
+            onConsoleTypeChange={marketplaceFilters.handleConsoleTypeChange}
+            onMediaFormatChange={marketplaceFilters.handleMediaFormatChange}
+            onStorageChange={marketplaceFilters.handleStorageChange}
+            onAllDigitalChange={marketplaceFilters.handleAllDigitalChange}
+            onRetroCompatibleChange={marketplaceFilters.handleRetroCompatibleChange}
+            // Accessory filters
+            selectedAccessoryTypes={marketplaceFilters.selectedAccessoryTypes}
+            selectedAccessorySubTypes={marketplaceFilters.selectedAccessorySubTypes}
+            selectedConsoles={marketplaceFilters.selectedConsoles}
+            onAccessoryTypeChange={marketplaceFilters.handleAccessoryTypeChange}
+            onAccessorySubTypeChange={marketplaceFilters.handleAccessorySubTypeChange}
+            onConsoleChange={marketplaceFilters.handleConsoleChange}
+          />
+        }
+        // Conteúdo
+        content={renderContent()}
+        emptyState={null} // Já tratamos no renderContent
+        loadingState={null} // Já tratamos acima
+        // Paginação
+        pagination={
+          marketplace?.meta
+            ? {
+                currentPage: catalogState.page,
+                totalPages: marketplace.meta.totalPages,
+                onPageChange: catalogState.setPage,
+              }
+            : undefined
+        }
+        // Estados
+        viewMode={catalogState.viewMode}
+        onViewModeChange={catalogState.setViewMode}
+        sort={catalogState.sort}
+        onSortChange={catalogState.setSort}
+        isFilterDrawerOpen={catalogState.isFilterDrawerOpen}
+        onFilterDrawerToggle={catalogState.setFilterDrawerOpen}
+      />
+
+      {/* FAB para criar Kit */}
+      <Link
+        href="/marketplace/sell/kit"
+        className="fixed bottom-6 right-6 z-50 bg-primary-600 hover:bg-primary-700 text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 flex items-center justify-center group"
+        title="Vender Kit"
+      >
+        <Package size={24} />
+        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out whitespace-nowrap ml-0 group-hover:ml-2">
+          Vender Kit
+        </span>
+      </Link>
+    </>
   );
 };
 

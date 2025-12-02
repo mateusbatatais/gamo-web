@@ -9,6 +9,7 @@ interface ItemBadgesProps {
   className?: string;
   gamesCount?: number;
   accessoriesCount?: number;
+  consolesCount?: number;
 }
 
 export const ItemBadges = ({
@@ -17,6 +18,7 @@ export const ItemBadges = ({
   className,
   gamesCount,
   accessoriesCount,
+  consolesCount,
 }: ItemBadgesProps) => {
   const t = useTranslations("ConsoleDetails");
 
@@ -30,6 +32,11 @@ export const ItemBadges = ({
       {hasManual && (
         <Badge variant="soft" className="flex items-center gap-1">
           <FileText size={12} /> {t("manual")}
+        </Badge>
+      )}
+      {consolesCount !== undefined && consolesCount > 0 && (
+        <Badge variant="soft" className="flex items-center gap-1">
+          <Gamepad2 size={12} /> {consolesCount}x {t("console")}
         </Badge>
       )}
       {gamesCount !== undefined && gamesCount > 0 && (

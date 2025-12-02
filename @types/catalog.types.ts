@@ -158,7 +158,7 @@ export interface MarketItem {
 
 export interface MarketplaceItem {
   id: number;
-  itemType: "GAME" | "CONSOLE" | "ACCESSORY";
+  itemType: "GAME" | "CONSOLE" | "ACCESSORY" | "KIT";
   status: "SELLING" | "LOOKING_FOR";
   price: number | null;
   condition: string | null;
@@ -180,6 +180,13 @@ export interface MarketplaceItem {
   accessoryInfo?: {
     typeSlug: string;
     subTypeSlug: string;
+  };
+  kitInfo?: {
+    itemCount: number;
+    gamesCount: number;
+    consolesCount: number;
+    accessoriesCount: number;
+    previewImages: string[];
   };
   seller: {
     id: number;

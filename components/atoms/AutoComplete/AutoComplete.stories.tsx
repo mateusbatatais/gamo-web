@@ -128,30 +128,39 @@ export const WithCustomRender: Story = {
     placeholder: "Buscar com renderização customizada...",
   },
   render: (args) => {
-    const CustomRenderItem = (item: AutoCompleteItem) => (
-      <div className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700">
-        <div className="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
-          {item.type === "user" && (
-            <User size={16} className="text-primary-600 dark:text-primary-400" />
-          )}
-          {item.type === "team" && (
-            <Users size={16} className="text-primary-600 dark:text-primary-400" />
-          )}
-          {item.type === "game" && (
-            <Gamepad2 size={16} className="text-primary-600 dark:text-primary-400" />
-          )}
+    interface StoryItem extends AutoCompleteItem {
+      email?: string;
+      members?: number;
+      category?: string;
+    }
+
+    const CustomRenderItem = (item: AutoCompleteItem) => {
+      const storyItem = item as StoryItem;
+      return (
+        <div className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+          <div className="flex-shrink-0 w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+            {storyItem.type === "user" && (
+              <User size={16} className="text-primary-600 dark:text-primary-400" />
+            )}
+            {storyItem.type === "team" && (
+              <Users size={16} className="text-primary-600 dark:text-primary-400" />
+            )}
+            {storyItem.type === "game" && (
+              <Gamepad2 size={16} className="text-primary-600 dark:text-primary-400" />
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-900 dark:text-white">{storyItem.label}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+              {storyItem.type}
+              {storyItem.email && ` • ${storyItem.email}`}
+              {storyItem.members && ` • ${storyItem.members} membros`}
+              {storyItem.category && ` • ${storyItem.category}`}
+            </p>
+          </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-gray-900 dark:text-white">{item.label}</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-            {item.type}
-            {item.email && ` • ${item.email}`}
-            {item.members && ` • ${item.members} membros`}
-            {item.category && ` • ${item.category}`}
-          </p>
-        </div>
-      </div>
-    );
+      );
+    };
 
     const WrapperWithCustomRender = (
       props: Omit<AutoCompleteProps, "items" | "onSearch" | "onItemSelect">,

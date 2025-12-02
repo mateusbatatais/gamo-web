@@ -63,6 +63,8 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
     itemLink += `&game=${item.id}`;
   } else if (item.itemType === "ACCESSORY") {
     itemLink += `&accessory=${item.id}`;
+  } else if (item.itemType === "KIT") {
+    itemLink += `&kit=${item.id}`;
   }
 
   const isList = viewMode === "list";
@@ -138,8 +140,9 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
         <ItemBadges
           hasBox={item.hasBox}
           hasManual={item.hasManual}
-          gamesCount={item.gamesCount}
-          accessoriesCount={item.accessoriesCount}
+          gamesCount={item.gamesCount || item.kitInfo?.gamesCount}
+          accessoriesCount={item.accessoriesCount || item.kitInfo?.accessoriesCount}
+          consolesCount={item.kitInfo?.consolesCount}
           className="mb-3"
         />
 

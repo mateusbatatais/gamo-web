@@ -12,7 +12,8 @@ export interface AutoCompleteItem {
   label: string;
   imageUrl?: string | null;
   type?: string;
-  [key: string]: string | number | boolean | null | undefined;
+  subtitle?: string | null;
+  [key: string]: unknown;
 }
 
 export interface AutoCompleteProps extends Omit<InputProps, "onChange" | "value"> {
