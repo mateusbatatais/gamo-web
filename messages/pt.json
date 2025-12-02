@@ -1079,5 +1079,32 @@
   },
   "emptyCard": {
     "massImport": "Importar em massa"
+  },
+  "KitForm": {
+    "title": "Criar Novo Kit",
+    "subtitle": "Agrupe seus itens para vender mais rápido.",
+    "basicInfo": "Informações Básicas",
+    "nameLabel": "Nome do Kit",
+    "namePlaceholder": "Ex: Super Nintendo Completo com Jogos",
+    "descriptionLabel": "Descrição (Opcional)",
+    "descriptionPlaceholder": "Descreva o estado dos itens, motivos da venda, etc.",
+    "priceLabel": "Preço Total (R$)",
+    "pricePlaceholder": "0.00",
+    "selectItems": "Selecionar Itens",
+    "gamesLabel": "Jogos",
+    "gamesPlaceholder": "Buscar jogos no catálogo...",
+    "accessoriesLabel": "Acessórios",
+    "accessoriesPlaceholder": "Buscar acessórios no catálogo...",
+    "consolesLabel": "Consoles",
+    "consolesPlaceholder": "Buscar consoles no catálogo...",
+    "submitButton": "Criar Kit",
+    "submittingButton": "Criando Kit...",
+    "successMessage": "Kit criado com sucesso!",
+    "errorMessage": "Erro ao criar kit. Tente novamente.",
+    "selectItemWarning": "Selecione pelo menos um item para o kit",
+    "validation": {
+      "nameMin": "O nome deve ter pelo menos 3 caracteres",
+      "priceMin": "O preço deve ser maior que zero"
+    }
   }
 }

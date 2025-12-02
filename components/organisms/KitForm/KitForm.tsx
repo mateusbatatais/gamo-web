@@ -6,6 +6,7 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
+import { useTranslations } from "next-intl";
 import {
   CatalogGameSelector,
   CatalogGameItem,
@@ -18,17 +19,12 @@ import {
   CatalogAccessorySelector,
   CatalogAccessoryItem,
 } from "@/components/molecules/CatalogAccessorySelector/CatalogAccessorySelector";
-import { Loader2 } from "lucide-react";
-
-const createKitSchema = z.object({
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-  description: z.string().optional(),
-  price: z.coerce.number().min(0.01, "O preço deve ser maior que zero"),
-});
-
-type CreateKitFormData = z.infer<typeof createKitSchema>;
+import { Input } from "@/components/atoms/Input/Input";
+import { Textarea } from "@/components/atoms/Textarea/Textarea";
+import { Button } from "@/components/atoms/Button/Button";
 
 export const KitForm = () => {
+  const t = useTranslations("KitForm");
   const router = useRouter();
   const { apiFetch } = useApiClient();
   const { showToast } = useToast();
@@ -38,12 +34,21 @@ export const KitForm = () => {
   const [selectedConsoles, setSelectedConsoles] = useState<CatalogConsoleItem[]>([]);
   const [selectedAccessories, setSelectedAccessories] = useState<CatalogAccessoryItem[]>([]);
 
+  const createKitSchema = z.object({
+    name: z.string().min(3, t("validation.nameMin")),
+    description: z.string().optional(),
+    price: z.coerce.number().min(0.01, t("validation.priceMin")),
+  });
+
+  type CreateKitFormData = z.infer<typeof createKitSchema>;
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateKitFormData>({
-    resolver: zodResolver(createKitSchema as never),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(createKitSchema as any),
   });
 
   const onSubmit = async (data: CreateKitFormData) => {
@@ -52,7 +57,7 @@ export const KitForm = () => {
       selectedConsoles.length === 0 &&
       selectedAccessories.length === 0
     ) {
-      showToast("Selecione pelo menos um item para o kit", "warning");
+      showToast(t("selectItemWarning"), "warning");
       return;
     }
 
@@ -93,11 +98,11 @@ export const KitForm = () => {
         },
       });
 
-      showToast("Kit criado com sucesso!", "success");
+      showToast(t("successMessage"), "success");
       router.push("/marketplace");
     } catch (error) {
       console.error("Error creating kit:", error);
-      showToast("Erro ao criar kit. Tente novamente.", "danger");
+      showToast(t("errorMessage"), "danger");
     } finally {
       setIsSubmitting(false);
     }
@@ -106,87 +111,66 @@ export const KitForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto p-6">
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Criar Novo Kit</h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          Agrupe seus itens para vender mais rápido.
-        </p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
+        <p className="text-gray-500 dark:text-gray-400">{t("subtitle")}</p>
       </div>
 
       {/* Basic Info */}
       <div className="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Informações Básicas
+          {t("basicInfo")}
         </h2>
 
         <div className="space-y-2">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-          >
-            Nome do Kit
-          </label>
-          <input
+          <Input
             id="name"
-            type="text"
+            label={t("nameLabel")}
+            placeholder={t("namePlaceholder")}
+            error={errors.name?.message}
             {...register("name")}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-            placeholder="Ex: Super Nintendo Completo com Jogos"
           />
-          {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="description"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-          >
-            Descrição (Opcional)
-          </label>
-          <textarea
+          <Textarea
             id="description"
-            {...register("description")}
+            label={t("descriptionLabel")}
+            placeholder={t("descriptionPlaceholder")}
             rows={4}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none"
-            placeholder="Descreva o estado dos itens, motivos da venda, etc."
+            {...register("description")}
           />
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="price"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-200"
-          >
-            Preço Total (R$)
-          </label>
-          <input
+          <Input
             id="price"
             type="number"
             step="0.01"
+            label={t("priceLabel")}
+            placeholder={t("pricePlaceholder")}
+            error={errors.price?.message}
             {...register("price")}
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-            placeholder="0.00"
           />
-          {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
         </div>
       </div>
 
       {/* Items Selection */}
       <div className="space-y-6 bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Selecionar Itens
+          {t("selectItems")}
         </h2>
 
         <CatalogGameSelector
-          label="Jogos (do catálogo)"
-          placeholder="Buscar jogos no catálogo..."
+          label={t("gamesLabel")}
+          placeholder={t("gamesPlaceholder")}
           selectedItems={selectedGames}
           onItemSelect={(item) => setSelectedGames((prev) => [...prev, item])}
           onItemRemove={(id) => setSelectedGames((prev) => prev.filter((i) => i.gameId !== id))}
         />
 
         <CatalogAccessorySelector
-          label="Acessórios (do catálogo)"
-          placeholder="Buscar acessórios no catálogo..."
+          label={t("accessoriesLabel")}
+          placeholder={t("accessoriesPlaceholder")}
           selectedItems={selectedAccessories}
           onItemSelect={(item) => setSelectedAccessories((prev) => [...prev, item])}
           onItemRemove={(id) =>
@@ -195,8 +179,8 @@ export const KitForm = () => {
         />
 
         <CatalogConsoleSelector
-          label="Consoles (do catálogo)"
-          placeholder="Buscar consoles no catálogo..."
+          label={t("consolesLabel")}
+          placeholder={t("consolesPlaceholder")}
           selectedItems={selectedConsoles}
           onItemSelect={(item) => setSelectedConsoles((prev) => [...prev, item])}
           onItemRemove={(id) =>
@@ -214,20 +198,13 @@ export const KitForm = () => {
 
       {/* Submit Button */}
       <div className="flex justify-end pt-4">
-        <button
+        <Button
           type="submit"
           disabled={isSubmitting}
-          className="px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-        >
-          {isSubmitting ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              Criando Kit...
-            </>
-          ) : (
-            "Criar Kit"
-          )}
-        </button>
+          loading={isSubmitting}
+          className="px-8 py-3"
+          label={isSubmitting ? t("submittingButton") : t("submitButton")}
+        />
       </div>
     </form>
   );

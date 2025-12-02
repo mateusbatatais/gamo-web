@@ -1080,5 +1080,32 @@
   },
   "emptyCard": {
     "massImport": "Mass Import"
+  },
+  "KitForm": {
+    "title": "Create New Kit",
+    "subtitle": "Bundle your items to sell faster.",
+    "basicInfo": "Basic Information",
+    "nameLabel": "Kit Name",
+    "namePlaceholder": "Ex: Super Nintendo Complete with Games",
+    "descriptionLabel": "Description (Optional)",
+    "descriptionPlaceholder": "Describe the condition of the items, reasons for selling, etc.",
+    "priceLabel": "Total Price (R$)",
+    "pricePlaceholder": "0.00",
+    "selectItems": "Select Items",
+    "gamesLabel": "Games",
+    "gamesPlaceholder": "Search games in catalog...",
+    "accessoriesLabel": "Accessories",
+    "accessoriesPlaceholder": "Search accessories in catalog...",
+    "consolesLabel": "Consoles",
+    "consolesPlaceholder": "Search consoles in catalog...",
+    "submitButton": "Create Kit",
+    "submittingButton": "Creating Kit...",
+    "successMessage": "Kit created successfully!",
+    "errorMessage": "Error creating kit. Please try again.",
+    "selectItemWarning": "Select at least one item for the kit",
+    "validation": {
+      "nameMin": "Name must be at least 3 characters",
+      "priceMin": "Price must be greater than zero"
+    }
   }
 }
