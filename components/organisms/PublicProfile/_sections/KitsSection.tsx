@@ -15,7 +15,7 @@ import { Edit, Trash2, Package } from "lucide-react";
 interface KitsSectionProps {
   kits: UserKit[];
   kitsMeta: PaginationMeta | undefined;
-  isOwner: boolean;
+  isOwner: boolean | undefined;
   type: string;
   viewMode: ViewMode;
   currentPage: number;
