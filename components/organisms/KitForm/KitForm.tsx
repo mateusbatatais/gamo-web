@@ -91,6 +91,7 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       });
       setSelectedGames(
         initialData.items.games.map((g) => ({
+          internalId: Math.random().toString(36).substr(2, 9),
           gameId: g.gameId,
           userGameId: g.id,
           platformId: g.platformId || 0,
@@ -102,6 +103,7 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       );
       setSelectedConsoles(
         initialData.items.consoles.map((c) => ({
+          internalId: Math.random().toString(36).substr(2, 9),
           consoleId: c.consoleId,
           userConsoleId: c.id,
           consoleVariantId: c.consoleVariantId,
@@ -114,6 +116,7 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       );
       setSelectedAccessories(
         initialData.items.accessories.map((a) => ({
+          internalId: Math.random().toString(36).substr(2, 9),
           accessoryId: a.accessoryId || 0,
           userAccessoryId: a.id,
           accessoryVariantId: a.accessoryVariantId || 0,
@@ -263,7 +266,7 @@ export const KitForm = ({ initialData }: KitFormProps) => {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg  shadow-sm border border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-white">
           {t("itemsTitle")}
         </h3>
@@ -273,7 +276,7 @@ export const KitForm = ({ initialData }: KitFormProps) => {
           placeholder={t("gamesPlaceholder")}
           selectedItems={selectedGames}
           onItemSelect={(item) => setSelectedGames((prev) => [...prev, item])}
-          onItemRemove={(id) => setSelectedGames((prev) => prev.filter((i) => i.gameId !== id))}
+          onItemRemove={(id) => setSelectedGames((prev) => prev.filter((i) => i.internalId !== id))}
         />
 
         <CatalogAccessorySelector
@@ -282,7 +285,7 @@ export const KitForm = ({ initialData }: KitFormProps) => {
           selectedItems={selectedAccessories}
           onItemSelect={(item) => setSelectedAccessories((prev) => [...prev, item])}
           onItemRemove={(id) =>
-            setSelectedAccessories((prev) => prev.filter((i) => i.accessoryVariantId !== id))
+            setSelectedAccessories((prev) => prev.filter((i) => i.internalId !== id))
           }
         />
 
@@ -292,13 +295,11 @@ export const KitForm = ({ initialData }: KitFormProps) => {
           selectedItems={selectedConsoles}
           onItemSelect={(item) => setSelectedConsoles((prev) => [...prev, item])}
           onItemRemove={(id) =>
-            setSelectedConsoles((prev) => prev.filter((i) => i.consoleVariantId !== id))
+            setSelectedConsoles((prev) => prev.filter((i) => i.internalId !== id))
           }
           onItemUpdate={(updatedItem) => {
             setSelectedConsoles((prev) =>
-              prev.map((item) =>
-                item.consoleVariantId === updatedItem.consoleVariantId ? updatedItem : item,
-              ),
+              prev.map((item) => (item.internalId === updatedItem.internalId ? updatedItem : item)),
             );
           }}
         />

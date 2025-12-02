@@ -18,6 +18,7 @@ export interface CatalogConsoleItem {
 }
 
 export interface CatalogGameItem {
+  internalId: string;
   gameId: number;
   userGameId?: number;
   platformId?: number;
@@ -29,7 +30,7 @@ export interface CatalogGameItem {
 interface CatalogGameSelectorProps {
   selectedItems: CatalogGameItem[];
   onItemSelect: (item: CatalogGameItem) => void;
-  onItemRemove: (gameId: number) => void;
+  onItemRemove: (internalId: string) => void;
   label: string;
   placeholder: string;
 }
@@ -82,34 +83,28 @@ export const CatalogGameSelector = ({
   });
 
   const filteredItems = useMemo(() => {
-    return items
-      .filter(
-        (item: CatalogGameItem) =>
-          !selectedItems.some((selected) => selected.gameId === item.gameId),
-      )
-      .map((item: CatalogGameItem) => ({
-        id: item.gameId,
-        label: item.name,
-        imageUrl: item.imageUrl,
-        originalItem: item,
-      }));
-  }, [items, selectedItems]);
+    return items.map((item) => ({
+      id: item.gameId,
+      label: item.name,
+      imageUrl: item.imageUrl,
+      originalItem: item,
+    }));
+  }, [items]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
   };
 
   const handleSelect = (item: AutoCompleteItem) => {
-    const selected = item.originalItem as CatalogGameItem;
+    const selected = item.originalItem as Omit<CatalogGameItem, "internalId">;
     if (selected) {
-      // If multiple platforms, we might want to ask. For now, default to first.
-      // Ideally, we should show a platform selector.
-      // I'll add the item, and if platforms > 1, maybe show a dropdown in the list?
+      // Generate a temporary internalId, the parent component should ideally handle this or overwrite it
       const itemWithPlatform = {
         ...selected,
+        internalId: Math.random().toString(36).substr(2, 9),
         platformId: selected.platforms.length > 0 ? selected.platforms[0].id : undefined,
       };
-      onItemSelect(itemWithPlatform);
+      onItemSelect(itemWithPlatform as CatalogGameItem);
     }
     setSearchQuery("");
   };
@@ -134,9 +129,8 @@ export const CatalogGameSelector = ({
 
   return (
     <div className="space-y-3">
-      <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">{label}</label>
-
       <AutoComplete
+        label={label}
         items={filteredItems}
         onItemSelect={handleSelect}
         onSearch={handleSearch}
@@ -147,43 +141,45 @@ export const CatalogGameSelector = ({
 
       {/* Selected Items List */}
       {selectedItems.length > 0 && (
-        <div className="grid grid-cols-1 gap-2 mt-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
           {selectedItems.map((item) => (
             <div
-              key={item.gameId}
-              className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+              key={item.internalId}
+              className="relative flex flex-col items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 group"
             >
-              <div className="flex items-center gap-3 overflow-hidden">
-                <div className="shrink-0 w-10 h-10 relative">
-                  <ImageWithFallback
-                    src={item.imageUrl}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                    fallbackClassName="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded"
-                    imgClassName="object-cover rounded"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                    {item.name}
-                  </p>
-                  {item.platforms.length > 0 && (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {item.platforms.find((p) => p.id === item.platformId)?.name ||
-                        item.platforms[0].name}
-                    </p>
-                  )}
-                </div>
-              </div>
               <button
                 type="button"
-                onClick={() => onItemRemove(item.gameId)}
-                className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                onClick={() => onItemRemove(item.internalId)}
+                className="absolute top-2 right-2 p-1 bg-white/80 dark:bg-black/50 rounded-full text-gray-500 hover:text-red-500 transition-colors z-10 opacity-0 group-hover:opacity-100"
                 title="Remover item"
               >
-                <X size={18} />
+                <X size={16} />
               </button>
+
+              <div className="w-full aspect-3/4 relative mb-2 rounded overflow-hidden">
+                <ImageWithFallback
+                  src={item.imageUrl}
+                  alt={item.name}
+                  sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                  fallbackClassName="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700"
+                  imgClassName="object-cover"
+                />
+              </div>
+
+              <div className="w-full text-center">
+                <p
+                  className="text-sm font-medium text-gray-900 dark:text-white truncate w-full"
+                  title={item.name}
+                >
+                  {item.name}
+                </p>
+                {item.platforms.length > 0 && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {item.platforms.find((p) => p.id === item.platformId)?.name ||
+                      item.platforms[0].name}
+                  </p>
+                )}
+              </div>
             </div>
           ))}
         </div>
