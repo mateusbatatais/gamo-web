@@ -5,8 +5,9 @@ import {
   useUserGamesPublic,
   useUserConsolesPublic,
   useUserAccessoriesPublic,
+  useUserKitsPublic,
 } from "@/hooks/usePublicProfile";
-import { UserGame, UserConsole, UserAccessory } from "@/@types/collection.types";
+import { UserGame, UserConsole, UserAccessory, UserKit } from "@/@types/collection.types";
 import { PaginationMeta } from "@/@types/catalog.types";
 
 interface UseMarketDataProps {
@@ -45,17 +46,21 @@ interface UseMarketDataReturn {
   games: UserGame[];
   consoles: UserConsole[];
   accessories: UserAccessory[];
+  kits: UserKit[];
   gamesMeta: PaginationMeta | undefined;
   consolesMeta: PaginationMeta | undefined;
   accessoriesMeta: PaginationMeta | undefined;
+  kitsMeta: PaginationMeta | undefined;
   isLoading: boolean;
   gamesLoading: boolean;
   consolesLoading: boolean;
   accessoriesLoading: boolean;
+  kitsLoading: boolean;
   error: Error | null;
   gamesError: Error | null;
   consolesError: Error | null;
   accessoriesError: Error | null;
+  kitsError: Error | null;
 }
 
 export function useMarketData({
@@ -127,20 +132,30 @@ export function useMarketData({
     accessoryFilters.selectedConsoles.join(","),
   );
 
+  const {
+    data: kitsData,
+    isLoading: kitsLoading,
+    error: kitsError,
+  } = useUserKitsPublic(slug, page, perPage, sort, status);
+
   return {
     games: gamesData?.items || [],
     consoles: consolesData?.items || [],
     accessories: accessoriesData?.items || [],
+    kits: kitsData?.items || [],
     gamesMeta: gamesData?.meta,
     consolesMeta: consolesData?.meta,
     accessoriesMeta: accessoriesData?.meta,
-    isLoading: gamesLoading || consolesLoading || accessoriesLoading,
+    kitsMeta: kitsData?.meta,
+    isLoading: gamesLoading || consolesLoading || accessoriesLoading || kitsLoading,
     gamesLoading,
     consolesLoading,
     accessoriesLoading,
-    error: gamesError || consolesError || accessoriesError || null,
+    kitsLoading,
+    error: gamesError || consolesError || accessoriesError || kitsError || null,
     gamesError: gamesError || null,
     consolesError: consolesError || null,
     accessoriesError: accessoriesError || null,
+    kitsError: kitsError || null,
   };
 }

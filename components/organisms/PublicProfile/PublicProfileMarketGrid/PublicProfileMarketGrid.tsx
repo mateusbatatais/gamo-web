@@ -19,6 +19,7 @@ import { useMarketData } from "../_hooks/useMarketData";
 import { ConsolesSection } from "../_sections/ConsolesSection";
 import { GamesSection } from "../_sections/GamesSection";
 import { AccessoriesSection } from "../_sections/AccessoriesSection";
+import { KitsSection } from "../_sections/KitsSection";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
@@ -295,10 +296,24 @@ const PublicProfileMarketGridContent = ({
         perPageOptions={PER_PAGE_OPTIONS}
       />
 
+      <KitsSection
+        kits={marketData.kits}
+        kitsMeta={marketData.kitsMeta}
+        isOwner={isOwner}
+        type={type}
+        viewMode={catalogState.viewMode}
+        currentPage={catalogState.page}
+        onPageChange={catalogState.setPage}
+      />
+
       {/* ✅ ESTADO VAZIO GLOBAL */}
-      {games.length === 0 && consoles.length === 0 && accessories.length === 0 && !isOwner && (
-        <EmptyState type="global" marketType={type as "selling" | "looking"} isOwner={isOwner} />
-      )}
+      {games.length === 0 &&
+        consoles.length === 0 &&
+        accessories.length === 0 &&
+        marketData.kits.length === 0 &&
+        !isOwner && (
+          <EmptyState type="global" marketType={type as "selling" | "looking"} isOwner={isOwner} />
+        )}
 
       {/* ✅ GERENCIADOR DE FILTROS UNIFICADO */}
       <FilterManager

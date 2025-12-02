@@ -501,7 +501,13 @@
     "saleInfo": "Informações de Venda",
     "associatedGames": "Jogos Associados",
     "associatedAccessories": "Acessórios Associados",
-    "noAccessories": "Nenhum acessório associado"
+    "noAccessories": "Nenhum acessório associado",
+    "kits": "Kits",
+    "items": "Itens",
+    "gamesLabel": "jogos",
+    "consolesLabel": "consoles",
+    "accessoriesLabel": "acessórios",
+    "confirmDeleteKit": "Tem certeza que deseja excluir este kit?"
   },
   "TradeForm": {
     "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",

@@ -4,7 +4,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useApiClient } from "@/lib/api-client";
 import { useToast } from "@/contexts/ToastContext";
-import { UserAccessory, UserConsole, UserGame } from "@/@types/collection.types";
+import { UserAccessory, UserConsole, UserGame, UserKit } from "@/@types/collection.types";
 import { UserProfile } from "@/@types/auth.types";
 import { PaginatedResponse } from "@/@types/catalog.types";
 
@@ -350,6 +350,67 @@ export function useDeleteUserAccessory() {
       // Invalida para garantir sincronização com o servidor
       queryClient.invalidateQueries({ queryKey: ["userAccessoriesPublic"] });
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
+    },
+  });
+}
+
+export function useUserKitsPublic(
+  slug: string,
+  page: number = 1,
+  perPage: number = 20,
+  sort?: string,
+  status?: string,
+) {
+  const { apiFetch } = useApiClient();
+
+  const queryParams = new URLSearchParams();
+  queryParams.append("page", page.toString());
+  queryParams.append("perPage", perPage.toString());
+  if (sort) queryParams.append("sort", sort);
+  if (status) queryParams.append("status", status);
+
+  return useQuery<PaginatedResponse<UserKit>>({
+    queryKey: ["userKitsPublic", slug, page, perPage, sort, status],
+    queryFn: () => apiFetch(`/public/profile/${slug}/kits?${queryParams.toString()}`),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export function useDeleteUserKit() {
+  const { apiFetch } = useApiClient();
+  const { showToast } = useToast();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      apiFetch(`/kits/${id}`, {
+        method: "DELETE",
+      }),
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: ["userKitsPublic"] });
+
+      const previousKits = queryClient.getQueryData<PaginatedResponse<UserKit>>(["userKitsPublic"]);
+
+      if (previousKits) {
+        queryClient.setQueryData<PaginatedResponse<UserKit>>(["userKitsPublic"], {
+          ...previousKits,
+          items: previousKits.items.filter((kit) => kit.id !== id),
+        });
+      }
+
+      return { previousKits };
+    },
+    onError: (err, id, context) => {
+      if (context?.previousKits) {
+        queryClient.setQueryData(["userKitsPublic"], context.previousKits);
+      }
+      showToast("Erro ao excluir kit", "danger");
+    },
+    onSuccess: () => {
+      showToast("Kit excluído com sucesso", "success");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["userKitsPublic"] });
     },
   });
 }

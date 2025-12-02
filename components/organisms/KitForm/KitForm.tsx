@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,8 +22,13 @@ import {
 import { Input } from "@/components/atoms/Input/Input";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Button } from "@/components/atoms/Button/Button";
+import { UserKit } from "@/@types/collection.types";
 
-export const KitForm = () => {
+interface KitFormProps {
+  initialData?: UserKit;
+}
+
+export const KitForm = ({ initialData }: KitFormProps) => {
   const t = useTranslations("KitForm");
   const router = useRouter();
   const { apiFetch } = useApiClient();
@@ -33,6 +38,41 @@ export const KitForm = () => {
   const [selectedGames, setSelectedGames] = useState<CatalogGameItem[]>([]);
   const [selectedConsoles, setSelectedConsoles] = useState<CatalogConsoleItem[]>([]);
   const [selectedAccessories, setSelectedAccessories] = useState<CatalogAccessoryItem[]>([]);
+
+  useEffect(() => {
+    if (initialData) {
+      setSelectedGames(
+        initialData.items.games.map((g) => ({
+          gameId: g.gameId,
+          platformId: g.platformId || 0, // Fallback if null
+          name: g.gameTitle || "Unknown Game",
+          imageUrl: g.gameImageUrl,
+          platformName: "", // We might not have this easily available, but it's for display
+          platforms: [], // Add empty platforms array
+        })),
+      );
+      setSelectedConsoles(
+        initialData.items.consoles.map((c) => ({
+          consoleId: c.consoleId,
+          consoleVariantId: c.consoleVariantId,
+          skinId: c.skinId || undefined, // We need to handle skin if available
+          name: c.consoleName || "Unknown Console",
+          variantName: c.variantName || "Unknown Variant",
+          imageUrl: c.photoMain,
+          skins: [], // Add empty skins array
+        })),
+      );
+      setSelectedAccessories(
+        initialData.items.accessories.map((a) => ({
+          accessoryId: a.accessoryId || 0,
+          accessoryVariantId: a.accessoryVariantId || 0,
+          name: a.accessoryName || "Accessory",
+          imageUrl: a.photoMain,
+          type: a.type || "",
+        })),
+      );
+    }
+  }, [initialData]);
 
   const createKitSchema = z.object({
     name: z.string().min(3, t("validation.nameMin")),
@@ -49,6 +89,13 @@ export const KitForm = () => {
   } = useForm<CreateKitFormData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     resolver: zodResolver(createKitSchema as any),
+    defaultValues: initialData
+      ? {
+          name: initialData.name,
+          description: initialData.description || "",
+          price: initialData.price,
+        }
+      : undefined,
   });
 
   const onSubmit = async (data: CreateKitFormData) => {
@@ -63,45 +110,55 @@ export const KitForm = () => {
 
     setIsSubmitting(true);
     try {
-      await apiFetch("/kits", {
-        method: "POST",
-        body: {
-          ...data,
-          // Send new games to be created
-          newGames: selectedGames.map((i) => ({
-            gameId: i.gameId,
-            platformId: i.platformId,
-            condition: "USED",
-            hasBox: false,
-            hasManual: false,
-            media: "PHYSICAL",
-          })),
-          // Send new consoles/accessories to be created
-          newConsoles: selectedConsoles.map((i) => ({
-            consoleId: i.consoleId,
-            consoleVariantId: i.consoleVariantId,
-            skinId: i.skinId,
-            condition: "USED", // Defaulting to USED for now
-            hasBox: false,
-            hasManual: false,
-          })),
-          newAccessories: selectedAccessories.map((i) => ({
-            accessoryId: i.accessoryId,
-            accessoryVariantId: i.accessoryVariantId,
-            condition: "USED",
-            hasBox: false,
-            hasManual: false,
-          })),
-          gameIds: [], // We are creating new ones
-          consoleIds: [], // We are creating new ones
-          accessoryIds: [], // We are creating new ones
-        },
-      });
+      const payload = {
+        ...data,
+        // Send new games to be created
+        newGames: selectedGames.map((i) => ({
+          gameId: i.gameId,
+          platformId: i.platformId,
+          condition: "USED",
+          hasBox: false,
+          hasManual: false,
+          media: "PHYSICAL",
+        })),
+        // Send new consoles/accessories to be created
+        newConsoles: selectedConsoles.map((i) => ({
+          consoleId: i.consoleId,
+          consoleVariantId: i.consoleVariantId,
+          skinId: i.skinId,
+          condition: "USED", // Defaulting to USED for now
+          hasBox: false,
+          hasManual: false,
+        })),
+        newAccessories: selectedAccessories.map((i) => ({
+          accessoryId: i.accessoryId,
+          accessoryVariantId: i.accessoryVariantId,
+          condition: "USED",
+          hasBox: false,
+          hasManual: false,
+        })),
+        gameIds: [], // We are creating new ones
+        consoleIds: [], // We are creating new ones
+        accessoryIds: [], // We are creating new ones
+      };
 
-      showToast(t("successMessage"), "success");
+      if (initialData) {
+        await apiFetch(`/kits/${initialData.id}`, {
+          method: "PUT",
+          body: payload,
+        });
+        showToast(t("successUpdateMessage"), "success");
+      } else {
+        await apiFetch("/kits", {
+          method: "POST",
+          body: payload,
+        });
+        showToast(t("successMessage"), "success");
+      }
+
       router.push("/marketplace");
     } catch (error) {
-      console.error("Error creating kit:", error);
+      console.error("Error saving kit:", error);
       showToast(t("errorMessage"), "danger");
     } finally {
       setIsSubmitting(false);
@@ -111,8 +168,12 @@ export const KitForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto p-6">
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
-        <p className="text-gray-500 dark:text-gray-400">{t("subtitle")}</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {initialData ? t("editTitle") : t("title")}
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400">
+          {initialData ? t("editSubtitle") : t("subtitle")}
+        </p>
       </div>
 
       {/* Basic Info */}
@@ -203,7 +264,13 @@ export const KitForm = () => {
           disabled={isSubmitting}
           loading={isSubmitting}
           className="px-8 py-3"
-          label={isSubmitting ? t("submittingButton") : t("submitButton")}
+          label={
+            isSubmitting
+              ? t("submittingButton")
+              : initialData
+                ? t("updateButton")
+                : t("submitButton")
+          }
         />
       </div>
     </form>

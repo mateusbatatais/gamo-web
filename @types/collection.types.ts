@@ -94,3 +94,22 @@ export interface UserAccessory extends BaseCollectionItem {
   };
   isFavorite?: boolean;
 }
+
+export interface UserKit extends BaseCollectionItem {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  price: number;
+  items: {
+    games: UserGame[];
+    consoles: UserConsole[];
+    accessories: UserAccessory[];
+  };
+  user?: {
+    id: number;
+    name: string;
+    slug: string;
+    profileImage: string | null;
+  };
+}

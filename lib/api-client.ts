@@ -51,7 +51,8 @@ export function useApiClient() {
         credentials: "include",
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
         const code = data.code;

@@ -503,7 +503,13 @@
     "saleInfo": "Sale Information",
     "associatedGames": "Associated Games",
     "associatedAccessories": "Associated Accessories",
-    "noAccessories": "No associated accessories"
+    "noAccessories": "No associated accessories",
+    "kits": "Kits",
+    "items": "Items",
+    "gamesLabel": "games",
+    "consolesLabel": "consoles",
+    "accessoriesLabel": "accessories",
+    "confirmDeleteKit": "Are you sure you want to delete this kit?"
   },
   "TradeForm": {
     "keepCopyInCollection": "Keep a copy in my collection (previously owned)",
