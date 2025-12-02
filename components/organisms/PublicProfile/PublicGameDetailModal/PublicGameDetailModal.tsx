@@ -130,7 +130,6 @@ export const PublicGameDetailModal = ({
 
                 <div className="flex flex-wrap gap-2">
                   <ItemBadges
-                    condition={gameItem.condition}
                     hasBox={gameItem.hasBox || false}
                     hasManual={gameItem.hasManual || false}
                   />
