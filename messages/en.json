@@ -338,7 +338,14 @@
     "cancelCrop": "Cancel Crop",
     "confirmCrop": "Confirm Crop"
   },
+  "SimpleConsoleForm": {
+    "noGamesSelected": "No games selected",
+    "searchGames": "Search games"
+  },
   "ConsoleDetails": {
+    "brand": "Brand",
+    "generation": "Generation",
+    "type": "Type",
     "catalog": "Console Catalog",
     "storage": "Storage",
     "description": "Description",

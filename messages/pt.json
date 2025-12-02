@@ -337,7 +337,14 @@
     "cancelCrop": "Cancelar Crop",
     "confirmCrop": "Confirmar Crop"
   },
+  "SimpleConsoleForm": {
+    "noGamesSelected": "Nenhuma jogo selecionado",
+    "searchGames": "Buscar jogos"
+  },
   "ConsoleDetails": {
+    "brand": "Marca",
+    "generation": "Geração",
+    "type": "Tipo",
     "catalog": "Catálogo de Consoles",
     "storage": "Armazenamento",
     "description": "Descrição",
