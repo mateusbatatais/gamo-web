@@ -63,6 +63,7 @@ const ITEM_TYPES = [
   { value: "GAME", label: "Jogos" },
   { value: "CONSOLE", label: "Consoles" },
   { value: "ACCESSORY", label: "Acessórios" },
+  { value: "KIT", label: "Kits" },
 ];
 
 const CONDITION_OPTIONS = [

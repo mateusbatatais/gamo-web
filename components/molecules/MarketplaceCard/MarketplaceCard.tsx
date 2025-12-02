@@ -96,18 +96,52 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
           )}
         </div>
 
-        <SafeImage
-          src={safeImageUrl}
-          alt={item.name}
-          fill
-          sizes={
-            isList
-              ? "(max-width: 640px) 128px, 192px"
-              : "(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-          }
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-          priority={false}
-        />
+        {item.itemType === "KIT" && !item.photoMain && item.photos && item.photos.length > 0 ? (
+          <div
+            className={`grid h-full w-full ${
+              item.photos.length === 1
+                ? "grid-cols-1"
+                : item.photos.length === 2
+                  ? "grid-cols-2"
+                  : item.photos.length === 3
+                    ? "grid-cols-2 grid-rows-2"
+                    : "grid-cols-3 grid-rows-2"
+            }`}
+          >
+            {item.photos.slice(0, 5).map((img, index) => (
+              <div
+                key={index}
+                className={`relative overflow-hidden border-white dark:border-gray-800 ${
+                  item.photos.length === 3 && index === 0
+                    ? "row-span-2"
+                    : item.photos.length >= 4 && index === 0
+                      ? "col-span-2 row-span-2"
+                      : ""
+                } ${index > 0 ? "border-l border-t" : ""}`}
+              >
+                <SafeImage
+                  src={getSafeImageUrl(img)}
+                  alt={`${item.name} item ${index + 1}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <SafeImage
+            src={safeImageUrl}
+            alt={item.name}
+            fill
+            sizes={
+              isList
+                ? "(max-width: 640px) 128px, 192px"
+                : "(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            }
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            priority={false}
+          />
+        )}
       </Link>
 
       <div className={clsx("flex-1 flex flex-col", isList ? "p-3 sm:p-4" : "p-4")}>

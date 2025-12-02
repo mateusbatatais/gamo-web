@@ -201,7 +201,16 @@ export const KitForm = ({ initialData }: KitFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-3xl mx-auto p-6">
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-6 max-w-3xl mx-auto p-6"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && (e.target as HTMLElement).tagName !== "TEXTAREA") {
+          e.preventDefault();
+        }
+      }}
+    >
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
           {initialData ? t("editTitle") : t("createTitle")}

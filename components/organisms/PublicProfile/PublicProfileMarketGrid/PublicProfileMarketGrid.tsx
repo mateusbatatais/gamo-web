@@ -26,6 +26,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { PublicConsoleDetailModal } from "../PublicConsoleDetailModal/PublicConsoleDetailModal";
 import { PublicGameDetailModal } from "../PublicGameDetailModal/PublicGameDetailModal";
 import { PublicAccessoryDetailModal } from "../PublicAccessoryDetailModal/PublicAccessoryDetailModal";
+import { PublicKitDetailModal } from "../PublicKitDetailModal/PublicKitDetailModal";
 
 interface PublicProfileMarketGridProps {
   slug: string;
@@ -146,12 +147,18 @@ const PublicProfileMarketGridContent = ({
     ? accessories.find((a) => a.id === parseInt(accessoryIdParam))
     : null;
 
+  const kitIdParam = searchParams.get("kit");
+  const selectedKit = kitIdParam
+    ? marketData.kits.find((k) => k.id === parseInt(kitIdParam))
+    : null;
+
   // Handle modal close
   const handleCloseModal = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("console");
     params.delete("game");
     params.delete("accessory");
+    params.delete("kit");
     router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
   };
 
@@ -354,6 +361,11 @@ const PublicProfileMarketGridContent = ({
           isOpen={!!accessoryIdParam}
           onClose={handleCloseModal}
         />
+      )}
+
+      {/* Kit Detail Modal */}
+      {selectedKit && (
+        <PublicKitDetailModal kit={selectedKit} isOpen={!!kitIdParam} onClose={handleCloseModal} />
       )}
     </div>
   );

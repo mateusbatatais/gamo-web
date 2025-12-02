@@ -6,11 +6,11 @@ import { useTranslations } from "next-intl";
 import { UserKit } from "@/@types/collection.types";
 import { PaginationMeta } from "@/@types/catalog.types";
 import { ViewMode } from "@/@types/catalog-state.types";
-import { Card } from "@/components/atoms/Card/Card";
+// import { Card } from "@/components/atoms/Card/Card";
 import Pagination from "@/components/molecules/Pagination/Pagination";
 import { useDeleteUserKit } from "@/hooks/usePublicProfile";
-import { Button } from "@/components/atoms/Button/Button";
-import { Edit, Trash2, Package } from "lucide-react";
+import { Package } from "lucide-react";
+import { KitCard } from "@/components/molecules/KitCard/KitCard";
 
 interface KitsSectionProps {
   kits: UserKit[];
@@ -21,13 +21,6 @@ interface KitsSectionProps {
   currentPage: number;
   onPageChange: (page: number) => void;
 }
-
-const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(value);
-};
 
 export const KitsSection = ({
   kits,
@@ -69,64 +62,14 @@ export const KitsSection = ({
         }
       >
         {kits.map((kit) => (
-          <Card key={kit.id} className="p-6 flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-1">
-                  {kit.name}
-                </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mt-1">
-                  {kit.description}
-                </p>
-              </div>
-              <div className="text-lg font-bold text-primary-600 dark:text-primary-400">
-                {formatCurrency(kit.price)}
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-3 mb-6">
-              <div className="text-sm text-gray-600 dark:text-gray-300">
-                <span className="font-medium">{t("items")}:</span>
-                <ul className="list-disc list-inside mt-1 space-y-1">
-                  {kit.items.games.length > 0 && (
-                    <li>
-                      {kit.items.games.length} {t("gamesLabel")}
-                    </li>
-                  )}
-                  {kit.items.consoles.length > 0 && (
-                    <li>
-                      {kit.items.consoles.length} {t("consolesLabel")}
-                    </li>
-                  )}
-                  {kit.items.accessories.length > 0 && (
-                    <li>
-                      {kit.items.accessories.length} {t("accessoriesLabel")}
-                    </li>
-                  )}
-                </ul>
-              </div>
-            </div>
-
-            {isOwner && (
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-100 dark:border-gray-800">
-                <Button
-                  variant="transparent"
-                  size="sm"
-                  onClick={() => handleEdit(kit.id)}
-                  icon={<Edit size={16} />}
-                  className="text-gray-500 hover:text-primary-600"
-                />
-                <Button
-                  variant="transparent"
-                  size="sm"
-                  onClick={() => handleDelete(kit.id)}
-                  icon={<Trash2 size={16} />}
-                  className="text-gray-500 hover:text-red-600"
-                  loading={deleteKitMutation.isPending}
-                />
-              </div>
-            )}
-          </Card>
+          <KitCard
+            key={kit.id}
+            kit={kit}
+            isOwner={isOwner}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            isDeleting={deleteKitMutation.isPending}
+          />
         ))}
       </div>
 
