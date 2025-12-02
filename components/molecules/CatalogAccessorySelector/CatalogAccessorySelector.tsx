@@ -9,6 +9,7 @@ import { PaginationMeta } from "@/@types/catalog.types";
 export interface CatalogAccessoryItem {
   accessoryId: number;
   accessoryVariantId: number;
+  userAccessoryId?: number;
   name: string;
   imageUrl?: string | null;
   subtitle?: string | null;

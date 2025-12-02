@@ -9,6 +9,7 @@ import { PaginationMeta } from "@/@types/catalog.types";
 export interface CatalogConsoleItem {
   consoleId: number;
   consoleVariantId: number;
+  userConsoleId?: number;
   skinId?: number;
   name: string;
   imageUrl?: string | null;

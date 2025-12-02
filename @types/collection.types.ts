@@ -113,3 +113,37 @@ export interface UserKit extends BaseCollectionItem {
     profileImage: string | null;
   };
 }
+
+export interface CreateKitDTO {
+  name: string;
+  description?: string;
+  price: number;
+  gameIds?: number[];
+  consoleIds?: number[];
+  accessoryIds?: number[];
+  newConsoles?: {
+    consoleId: number;
+    consoleVariantId: number;
+    skinId?: number;
+    condition?: Condition;
+    hasBox?: boolean;
+    hasManual?: boolean;
+  }[];
+  newAccessories?: {
+    accessoryId: number;
+    accessoryVariantId: number;
+    condition?: Condition;
+    hasBox?: boolean;
+    hasManual?: boolean;
+  }[];
+  newGames?: {
+    gameId: number;
+    platformId?: number;
+    condition?: Condition;
+    hasBox?: boolean;
+    hasManual?: boolean;
+    media?: MediaType;
+  }[];
+  photoMain?: string;
+  photos?: string[];
+}

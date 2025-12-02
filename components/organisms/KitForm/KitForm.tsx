@@ -1,11 +1,10 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import { useApiClient } from "@/lib/api-client";
-import { useToast } from "@/contexts/ToastContext";
 import { useTranslations } from "next-intl";
 import {
   CatalogGameSelector,
@@ -23,6 +22,12 @@ import { Input } from "@/components/atoms/Input/Input";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
 import { Button } from "@/components/atoms/Button/Button";
 import { UserKit } from "@/@types/collection.types";
+import { useCollectionForm } from "@/hooks/useCollectionForm";
+import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
+import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
+import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
+import { useKitMutation } from "@/hooks/useKitMutation";
+import { useToast } from "@/contexts/ToastContext";
 
 interface KitFormProps {
   initialData?: UserKit;
@@ -31,40 +36,86 @@ interface KitFormProps {
 export const KitForm = ({ initialData }: KitFormProps) => {
   const t = useTranslations("KitForm");
   const router = useRouter();
-  const { apiFetch } = useApiClient();
+  const { createKit, updateKit, isPending } = useKitMutation();
   const { showToast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [selectedGames, setSelectedGames] = useState<CatalogGameItem[]>([]);
   const [selectedConsoles, setSelectedConsoles] = useState<CatalogConsoleItem[]>([]);
   const [selectedAccessories, setSelectedAccessories] = useState<CatalogAccessoryItem[]>([]);
 
+  const {
+    photoMain,
+    additionalPhotos,
+    currentCropImage,
+    mainFileInputRef,
+    additionalFileInputRef,
+    loading: uploadLoading,
+    handleImageUpload,
+    handleCropComplete,
+    removeImage,
+    uploadImages,
+    setCurrentCropImage,
+    setPhotoMain,
+    setAdditionalPhotos,
+  } = useCollectionForm(initialData?.photos || [], initialData?.photoMain || undefined);
+
+  const kitSchema = z.object({
+    name: z.string().min(3, t("validation.nameMin")),
+    description: z.string().optional(),
+    price: z.coerce.number().min(0.01, t("validation.priceMin")),
+  });
+
+  type KitFormData = z.infer<typeof kitSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<KitFormData>({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    resolver: zodResolver(kitSchema as any),
+    defaultValues: {
+      name: "",
+      description: "",
+      price: 0,
+    },
+  });
+
   useEffect(() => {
     if (initialData) {
+      reset({
+        name: initialData.name,
+        description: initialData.description || "",
+        price: initialData.price,
+      });
       setSelectedGames(
         initialData.items.games.map((g) => ({
           gameId: g.gameId,
-          platformId: g.platformId || 0, // Fallback if null
+          userGameId: g.id,
+          platformId: g.platformId || 0,
           name: g.gameTitle || "Unknown Game",
           imageUrl: g.gameImageUrl,
-          platformName: "", // We might not have this easily available, but it's for display
-          platforms: [], // Add empty platforms array
+          platformName: "",
+          platforms: [],
         })),
       );
       setSelectedConsoles(
         initialData.items.consoles.map((c) => ({
           consoleId: c.consoleId,
+          userConsoleId: c.id,
           consoleVariantId: c.consoleVariantId,
-          skinId: c.skinId || undefined, // We need to handle skin if available
+          skinId: c.skinId || undefined,
           name: c.consoleName || "Unknown Console",
           variantName: c.variantName || "Unknown Variant",
           imageUrl: c.photoMain,
-          skins: [], // Add empty skins array
+          skins: [],
         })),
       );
       setSelectedAccessories(
         initialData.items.accessories.map((a) => ({
           accessoryId: a.accessoryId || 0,
+          userAccessoryId: a.id,
           accessoryVariantId: a.accessoryVariantId || 0,
           name: a.accessoryName || "Accessory",
           imageUrl: a.photoMain,
@@ -72,33 +123,9 @@ export const KitForm = ({ initialData }: KitFormProps) => {
         })),
       );
     }
-  }, [initialData]);
+  }, [initialData, reset]);
 
-  const createKitSchema = z.object({
-    name: z.string().min(3, t("validation.nameMin")),
-    description: z.string().optional(),
-    price: z.coerce.number().min(0.01, t("validation.priceMin")),
-  });
-
-  type CreateKitFormData = z.infer<typeof createKitSchema>;
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CreateKitFormData>({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolver: zodResolver(createKitSchema as any),
-    defaultValues: initialData
-      ? {
-          name: initialData.name,
-          description: initialData.description || "",
-          price: initialData.price,
-        }
-      : undefined,
-  });
-
-  const onSubmit = async (data: CreateKitFormData) => {
+  const onSubmit = async (data: KitFormData) => {
     if (
       selectedGames.length === 0 &&
       selectedConsoles.length === 0 &&
@@ -108,118 +135,138 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      const payload = {
-        ...data,
-        // Send new games to be created
-        newGames: selectedGames.map((i) => ({
-          gameId: i.gameId,
-          platformId: i.platformId,
-          condition: "USED",
-          hasBox: false,
-          hasManual: false,
-          media: "PHYSICAL",
-        })),
-        // Send new consoles/accessories to be created
-        newConsoles: selectedConsoles.map((i) => ({
-          consoleId: i.consoleId,
-          consoleVariantId: i.consoleVariantId,
-          skinId: i.skinId,
-          condition: "USED", // Defaulting to USED for now
-          hasBox: false,
-          hasManual: false,
-        })),
-        newAccessories: selectedAccessories.map((i) => ({
-          accessoryId: i.accessoryId,
-          accessoryVariantId: i.accessoryVariantId,
-          condition: "USED",
-          hasBox: false,
-          hasManual: false,
-        })),
-        gameIds: [], // We are creating new ones
-        consoleIds: [], // We are creating new ones
-        accessoryIds: [], // We are creating new ones
-      };
+    const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
-      if (initialData) {
-        await apiFetch(`/kits/${initialData.id}`, {
-          method: "PUT",
-          body: payload,
-        });
-        showToast(t("successUpdateMessage"), "success");
-      } else {
-        await apiFetch("/kits", {
-          method: "POST",
-          body: payload,
-        });
-        showToast(t("successMessage"), "success");
-      }
+    // Split items into existing (UserItems) and new (CatalogItems)
+    const gameIds = selectedGames.filter((g) => g.userGameId).map((g) => g.userGameId!);
 
-      router.push("/marketplace");
-    } catch (error) {
-      console.error("Error saving kit:", error);
-      showToast(t("errorMessage"), "danger");
-    } finally {
-      setIsSubmitting(false);
+    const newGames = selectedGames
+      .filter((g) => !g.userGameId)
+      .map((g) => ({
+        gameId: g.gameId,
+        platformId: g.platformId,
+        condition: "USED" as const,
+        hasBox: false,
+        hasManual: false,
+        media: "PHYSICAL" as const,
+      }));
+
+    const consoleIds = selectedConsoles.filter((c) => c.userConsoleId).map((c) => c.userConsoleId!);
+
+    const newConsoles = selectedConsoles
+      .filter((c) => !c.userConsoleId)
+      .map((c) => ({
+        consoleId: c.consoleId,
+        consoleVariantId: c.consoleVariantId,
+        skinId: c.skinId,
+        condition: "USED" as const,
+        hasBox: false,
+        hasManual: false,
+      }));
+
+    const accessoryIds = selectedAccessories
+      .filter((a) => a.userAccessoryId)
+      .map((a) => a.userAccessoryId!);
+
+    const newAccessories = selectedAccessories
+      .filter((a) => !a.userAccessoryId)
+      .map((a) => ({
+        accessoryId: a.accessoryId,
+        accessoryVariantId: a.accessoryVariantId,
+        condition: "USED" as const,
+        hasBox: false,
+        hasManual: false,
+      }));
+
+    const payload = {
+      ...data,
+      gameIds,
+      newGames,
+      consoleIds,
+      newConsoles,
+      accessoryIds,
+      newAccessories,
+      photoMain: mainPhotoUrl || undefined,
+      photos: additionalUrls,
+    };
+
+    if (initialData) {
+      await updateKit({ id: initialData.id, data: payload });
+    } else {
+      await createKit(payload);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-3xl mx-auto p-6">
-      <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {initialData ? t("editTitle") : t("title")}
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400">
-          {initialData ? t("editSubtitle") : t("subtitle")}
-        </p>
-      </div>
-
-      {/* Basic Info */}
-      <div className="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          {t("basicInfo")}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-3xl mx-auto p-6">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+          {initialData ? t("editTitle") : t("createTitle")}
         </h2>
 
-        <div className="space-y-2">
+        <div className="mb-6">
+          <MainImageUpload
+            label={t("mainPhoto")}
+            photo={photoMain}
+            fileInputRef={mainFileInputRef}
+            onImageUpload={(e) => handleImageUpload(e, "main")}
+            onRemove={() => removeImage("main")}
+            onCropComplete={(blob) => {
+              const url = URL.createObjectURL(blob);
+              setPhotoMain({ url, blob });
+            }}
+            t={t}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <Input
-            id="name"
-            label={t("nameLabel")}
-            placeholder={t("namePlaceholder")}
-            error={errors.name?.message}
+            label={t("name")}
             {...register("name")}
+            error={errors.name?.message}
+            placeholder={t("namePlaceholder")}
           />
-        </div>
-
-        <div className="space-y-2">
-          <Textarea
-            id="description"
-            label={t("descriptionLabel")}
-            placeholder={t("descriptionPlaceholder")}
-            rows={4}
-            {...register("description")}
-          />
-        </div>
-
-        <div className="space-y-2">
           <Input
-            id="price"
+            label={t("price")}
             type="number"
             step="0.01"
-            label={t("priceLabel")}
-            placeholder={t("pricePlaceholder")}
-            error={errors.price?.message}
             {...register("price")}
+            error={errors.price?.message}
+            placeholder="0.00"
+            icon={<span className="text-gray-500">R$</span>}
+          />
+        </div>
+
+        <Textarea
+          label={t("description")}
+          {...register("description")}
+          error={errors.description?.message}
+          placeholder={t("descriptionPlaceholder")}
+          rows={4}
+        />
+
+        <div className="mt-6">
+          <AdditionalImagesUpload
+            label={t("additionalPhotos")}
+            photos={additionalPhotos}
+            fileInputRef={additionalFileInputRef}
+            onImageUpload={(e) => handleImageUpload(e, "additional")}
+            onRemove={(index) => removeImage("additional", index)}
+            onCropComplete={(blob, index) => {
+              const url = URL.createObjectURL(blob);
+              const newPhotos = [...additionalPhotos];
+              newPhotos[index] = { url, blob };
+              setAdditionalPhotos(newPhotos);
+            }}
+            t={t}
           />
         </div>
       </div>
 
-      {/* Items Selection */}
-      <div className="space-y-6 bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          {t("selectItems")}
-        </h2>
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-white">
+          {t("itemsTitle")}
+        </h3>
 
         <CatalogGameSelector
           label={t("gamesLabel")}
@@ -257,21 +304,26 @@ export const KitForm = ({ initialData }: KitFormProps) => {
         />
       </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-end pt-4">
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          loading={isSubmitting}
-          className="px-8 py-3"
-          label={
-            isSubmitting
-              ? t("submittingButton")
-              : initialData
-                ? t("updateButton")
-                : t("submitButton")
-          }
+      {currentCropImage && (
+        <ImageCropper
+          src={currentCropImage.url}
+          onBlobReady={handleCropComplete}
+          onCancel={() => setCurrentCropImage(null)}
         />
+      )}
+
+      <div className="flex justify-end gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.back()}
+          disabled={isPending || uploadLoading}
+        >
+          {t("cancel")}
+        </Button>
+        <Button type="submit" loading={isPending || uploadLoading}>
+          {initialData ? t("updateButton") : t("createButton")}
+        </Button>
       </div>
     </form>
   );

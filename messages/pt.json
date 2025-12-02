@@ -515,6 +515,7 @@
     "keepGameCopyInCollectionDescription": "É importante caso você tenha avaliado ou adicionado progresso ao jogo.",
     "mainPhoto": "Foto principal",
     "description": "Descrição",
+
     "descriptionPlaceholder": "Detalhes sobre seu item...",
     "tradeSection": "Detalhes de Troca/Venda",
     "status": "Incluir: ",
@@ -1087,7 +1088,18 @@
     "massImport": "Importar em massa"
   },
   "KitForm": {
-    "title": "Criar Novo Kit",
+    "createTitle": "Criar Novo Kit",
+    "editTitle": "Editar Kit",
+    "mainPhoto": "Foto principal",
+    "description": "Descrição",
+    "name": "Nome",
+    "price": "Preço",
+    "additionalPhotos": "Fotos adicionais",
+    "itemsTitle": "Itens",
+    "addPhoto": "Add Fotos",
+    "createButton": "Criar Kit",
+    "updateButton": "Atualizar kit",
+    "cancel": "Cancelar",
     "subtitle": "Agrupe seus itens para vender mais rápido.",
     "basicInfo": "Informações Básicas",
     "nameLabel": "Nome do Kit",

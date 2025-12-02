@@ -6,8 +6,20 @@ import { X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { PaginationMeta } from "@/@types/catalog.types";
 
+export interface CatalogConsoleItem {
+  consoleId: number;
+  userConsoleId?: number;
+  consoleVariantId: number;
+  skinId?: number;
+  name: string;
+  imageUrl?: string | null;
+  subtitle?: string | null;
+  skins: { id: number; name: string; imageUrl: string | null }[];
+}
+
 export interface CatalogGameItem {
   gameId: number;
+  userGameId?: number;
   platformId?: number;
   name: string;
   imageUrl?: string | null;
