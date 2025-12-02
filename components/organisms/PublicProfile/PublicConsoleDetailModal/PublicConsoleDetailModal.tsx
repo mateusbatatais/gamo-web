@@ -86,7 +86,6 @@ export const PublicConsoleDetailModal = ({
 
                 <div className="flex flex-wrap gap-2">
                   <ItemBadges
-                    condition={consoleItem.condition}
                     hasBox={consoleItem.hasBox || false}
                     hasManual={consoleItem.hasManual || false}
                   />
