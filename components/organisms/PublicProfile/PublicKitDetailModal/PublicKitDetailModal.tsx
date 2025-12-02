@@ -37,7 +37,7 @@ export const PublicKitDetailModal = ({
   const formattedDate = kit.createdAt ? new Date(kit.createdAt).toLocaleDateString("pt-BR") : null;
 
   return (
-    <Dialog open={isOpen} onClose={onClose} title={t("kitDetails")} size="lg">
+    <Dialog open={isOpen} onClose={onClose} title={kit.name} size="lg">
       <div className="space-y-6">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row gap-6">
@@ -56,10 +56,8 @@ export const PublicKitDetailModal = ({
 
           {/* Basic Info */}
           <div className="flex-1">
-            <h2 className="text-2xl font-bold dark:text-white">{kit.name}</h2>
-
             {/* Sale Information */}
-            <div className="mt-4 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-3">
+            <div className="mt-4 bg-gray-50 dark:bg-gray-800 rounded-lg space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold text-primary-600 dark:text-primary-400">
                   {formattedPrice}
