@@ -507,7 +507,10 @@
     "gamesLabel": "jogos",
     "consolesLabel": "consoles",
     "accessoriesLabel": "acessórios",
-    "confirmDeleteKit": "Tem certeza que deseja excluir este kit?"
+    "confirmDeleteKit": "Tem certeza que deseja excluir este kit?",
+    "kitDetails": "Detalhes do Kit",
+    "listedOn": "Listado em",
+    "description": "Descrição"
   },
   "TradeForm": {
     "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",

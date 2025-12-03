@@ -14,9 +14,17 @@ interface KitCardProps {
   onEdit?: (id: number) => void;
   onDelete?: (id: number) => void;
   isDeleting?: boolean;
+  priority?: boolean;
 }
 
-export const KitCard = ({ kit, isOwner, onEdit, onDelete, isDeleting }: KitCardProps) => {
+export const KitCard = ({
+  kit,
+  isOwner,
+  onEdit,
+  onDelete,
+  isDeleting,
+  priority = false,
+}: KitCardProps) => {
   const t = useTranslations("PublicProfile");
   const { getSafeImageUrl } = useSafeImageUrl();
 
@@ -74,6 +82,8 @@ export const KitCard = ({ kit, isOwner, onEdit, onDelete, isDeleting }: KitCardP
               alt={kit.name}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
+              priority={priority}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div
@@ -103,6 +113,8 @@ export const KitCard = ({ kit, isOwner, onEdit, onDelete, isDeleting }: KitCardP
                     alt={`${kit.name} item ${index + 1}`}
                     fill
                     className="object-cover"
+                    priority={priority && index === 0}
+                    sizes="(max-width: 768px) 50vw, 20vw"
                   />
                 </div>
               ))}

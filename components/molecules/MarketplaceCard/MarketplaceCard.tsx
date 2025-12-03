@@ -16,9 +16,14 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 interface MarketplaceCardProps {
   item: MarketplaceItem;
   viewMode?: "grid" | "list";
+  priority?: boolean;
 }
 
-export default function MarketplaceCard({ item, viewMode = "grid" }: MarketplaceCardProps) {
+export default function MarketplaceCard({
+  item,
+  viewMode = "grid",
+  priority = false,
+}: MarketplaceCardProps) {
   const t = useTranslations("ConsoleDetails");
   const { getSafeImageUrl } = useSafeImageUrl();
   const [isExpanded, setIsExpanded] = useState(false);
@@ -80,7 +85,7 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
         href={itemLink}
         className={clsx(
           "block relative bg-gray-100 dark:bg-gray-800 cursor-pointer overflow-hidden",
-          isList ? "w-32 sm:w-48 shrink-0" : "h-48 w-full",
+          isList ? "w-32 sm:w-48 shrink-0 h-full" : "h-48 w-full",
         )}
         target="_blank"
       >
@@ -124,6 +129,8 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
                   alt={`${item.name} item ${index + 1}`}
                   fill
                   className="object-cover"
+                  priority={priority && index === 0}
+                  sizes="(max-width: 768px) 50vw, 20vw"
                 />
               </div>
             ))}
@@ -139,7 +146,7 @@ export default function MarketplaceCard({ item, viewMode = "grid" }: Marketplace
                 : "(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
             }
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            priority={false}
+            priority={priority}
           />
         )}
       </Link>

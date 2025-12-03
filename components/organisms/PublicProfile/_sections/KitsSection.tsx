@@ -61,7 +61,7 @@ export const KitsSection = ({
           viewMode === "grid" ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" : "space-y-4"
         }
       >
-        {kits.map((kit) => (
+        {kits.map((kit, index) => (
           <KitCard
             key={kit.id}
             kit={kit}
@@ -69,6 +69,7 @@ export const KitsSection = ({
             onEdit={handleEdit}
             onDelete={handleDelete}
             isDeleting={deleteKitMutation.isPending}
+            priority={index < 6}
           />
         ))}
       </div>

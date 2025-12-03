@@ -21,6 +21,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@googlemaps/markerclusterer": "^2.6.2",
+    "@hookform/resolvers": "^5.2.2",
     "@mui/icons-material": "^7.3.5",
     "@mui/material": "^7.3.5",
     "@react-google-maps/api": "^2.20.7",
@@ -45,10 +46,12 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-dropzone": "^14.3.8",
+    "react-hook-form": "^7.67.0",
     "react-image-crop": "^11.0.10",
     "react-phone-number-input": "^3.4.14",
     "tailwindcss": "^4.1.17",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.3",

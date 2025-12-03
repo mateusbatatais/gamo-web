@@ -152,11 +152,12 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
             : "flex flex-col space-y-6"
         }
       >
-        {marketplace.items.map((item: MarketplaceItem) => (
+        {marketplace.items.map((item: MarketplaceItem, index: number) => (
           <MarketplaceCard
             key={`${item.itemType}-${item.id}`}
             item={item}
             viewMode={catalogState.viewMode === "list" ? "list" : "grid"}
+            priority={index < 6}
           />
         ))}
       </div>

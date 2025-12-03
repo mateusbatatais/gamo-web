@@ -509,7 +509,10 @@
     "gamesLabel": "games",
     "consolesLabel": "consoles",
     "accessoriesLabel": "accessories",
-    "confirmDeleteKit": "Are you sure you want to delete this kit?"
+    "confirmDeleteKit": "Are you sure you want to delete this kit?",
+    "kitDetails": "Kit Details",
+    "listedOn": "listed on",
+    "description": "Description"
   },
   "TradeForm": {
     "keepCopyInCollection": "Keep a copy in my collection (previously owned)",
