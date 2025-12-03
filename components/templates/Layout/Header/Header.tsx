@@ -77,7 +77,7 @@ export default function Header() {
         {
           id: "wishlist",
           label: t("wishlist"),
-          href: "/wishlist",
+          href: `/user/${user.slug}/market?tradetype=looking`,
         },
         {
           id: "logout",

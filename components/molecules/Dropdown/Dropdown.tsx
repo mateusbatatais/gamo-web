@@ -149,16 +149,20 @@ export function Dropdown({
                 item.className,
               )}
             >
-              {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
+              {item.icon && <span className="shrink-0">{item.icon}</span>}
               <span>{item.label}</span>
             </div>
           );
 
           if (item.href) {
             return (
-              <Link key={item.id} href={item.href} passHref>
-                <div className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">{content}</div>
-              </Link>
+              <MenuItem key={item.id} onClick={handleClose} className="w-full p-0!">
+                <Link href={item.href} className="w-full">
+                  <div className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full">
+                    {content}
+                  </div>
+                </Link>
+              </MenuItem>
             );
           }
 

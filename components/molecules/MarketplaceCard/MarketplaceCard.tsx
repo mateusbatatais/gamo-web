@@ -85,7 +85,9 @@ export default function MarketplaceCard({
         href={itemLink}
         className={clsx(
           "block relative bg-gray-100 dark:bg-gray-800 cursor-pointer overflow-hidden",
-          isList ? "w-32 sm:w-48 shrink-0 h-full" : "h-48 w-full",
+          isList
+            ? "w-32 sm:w-48 shrink-0 min-h-[140px] sm:min-h-[200px] self-stretch"
+            : "h-48 w-full",
         )}
         target="_blank"
       >
