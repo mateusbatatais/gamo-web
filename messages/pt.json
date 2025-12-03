@@ -651,7 +651,8 @@
     "terms": "Termos",
     "privacy": "Privacidade",
     "contact": "Contato",
-    "about": "Sobre"
+    "about": "Sobre",
+    "betaMessage": "Versão Beta - Apenas para fins de teste"
   },
   "AddConsole": {
     "title": "Adicionar Console à Coleção",

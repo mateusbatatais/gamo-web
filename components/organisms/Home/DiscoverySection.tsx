@@ -42,8 +42,8 @@ export default function DiscoverySection() {
             onClick={nextFact}
             variant="outline"
             className="border-indigo-400 text-indigo-100 hover:bg-indigo-800 hover:text-white"
+            icon={<RefreshCw size={16} className="mr-2" />}
           >
-            <RefreshCw size={16} className="mr-2" />
             {t("refresh")}
           </Button>
         </div>

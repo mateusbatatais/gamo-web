@@ -650,7 +650,8 @@
     "terms": "Terms",
     "privacy": "Privacy",
     "contact": "Contact",
-    "about": "About"
+    "about": "About",
+    "betaMessage": "Beta Version - For testing purposes only"
   },
   "AddConsole": {
     "title": "Add Console to Collection",

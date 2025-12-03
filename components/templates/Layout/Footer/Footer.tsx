@@ -22,35 +22,11 @@ export default function Footer() {
   return (
     <footer className="bg-gray-800 text-gray-200 dark:bg-gray-900 dark:text-gray-400">
       <div className="container mx-auto p-4 flex flex-col md:flex-row justify-between items-center">
-        <p className="mb-4 md:mb-0">
-          © {new Date().getFullYear()} GAMO. {t("rightsReserved")}
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-4">
-          <Link
-            href={"/terms"}
-            className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
-          >
-            {t("terms")}
-          </Link>
-          <Link
-            href={"/privacy"}
-            className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
-          >
-            {t("privacy")}
-          </Link>
-          <Link
-            href={"/contact"}
-            className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
-          >
-            {t("contact")}
-          </Link>
-          <Link
-            href={"/about"}
-            className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
-          >
-            {t("about")}
-          </Link>
+        <div className="flex flex-col items-center md:items-start mb-4 md:mb-0">
+          <p>
+            © {new Date().getFullYear()} GAMO. {t("rightsReserved")}
+          </p>
+          <p className="text-xs text-primary  mt-1">{t("betaMessage")}</p>
         </div>
 
         {isClient && (
@@ -65,6 +41,32 @@ export default function Footer() {
             {randomPhrase}
           </Button>
         )}
+      </div>
+      <div className="flex flex-wrap justify-center gap-4 mb-4">
+        <Link
+          href={"/terms"}
+          className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
+        >
+          {t("terms")}
+        </Link>
+        <Link
+          href={"/privacy"}
+          className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
+        >
+          {t("privacy")}
+        </Link>
+        <Link
+          href={"/contact"}
+          className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
+        >
+          {t("contact")}
+        </Link>
+        <Link
+          href={"/about"}
+          className="hover:underline dark:text-gray-300 dark:hover:text-gray-100"
+        >
+          {t("about")}
+        </Link>
       </div>
     </footer>
   );
