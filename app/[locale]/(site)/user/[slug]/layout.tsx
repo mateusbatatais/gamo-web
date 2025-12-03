@@ -15,14 +15,30 @@ interface PublicProfileLayoutProps {
   };
 }
 
+import { JsonLd } from "@/components/atoms/JsonLd/JsonLd";
+
+// ... imports
+
 export default async function PublicProfileLayout({ children, params }: PublicProfileLayoutProps) {
   const { slug, locale } = await params;
 
   try {
     const profile = await fetchPublicProfile(slug, locale);
 
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      mainEntity: {
+        "@type": "Person",
+        name: profile.name,
+        image: profile.profileImage,
+        description: profile.description,
+      },
+    };
+
     return (
       <div className="max-w-7xl mx-auto px-4 py-6">
+        <JsonLd data={jsonLd} />
         <PublicProfileHeader profile={profile} />
         <div className="my-4">
           <ProfileNavigation slug={slug} />

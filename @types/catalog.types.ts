@@ -94,6 +94,7 @@ export interface Accessory {
   type: string;
   subType?: string;
   name: string;
+  description?: string;
   imageUrl?: string;
   isFavorite?: boolean;
 }

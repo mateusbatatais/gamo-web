@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import clsx from "clsx";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation";
 import { BreadcrumbItem, useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 import { MoreVert } from "@mui/icons-material";
 import { HomeIcon } from "lucide-react";
@@ -26,6 +26,16 @@ export function Breadcrumbs({ condensed = false, maxItems = 3 }: BreadcrumbsProp
   const { items } = useBreadcrumbs();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const params = useParams();
+  const locale = params?.locale as string;
+
+  // Hide breadcrumbs on homepage
+  const isHome =
+    pathname === "/" || (locale && (pathname === `/${locale}` || pathname === `/${locale}/`));
+  if (isHome) {
+    return null;
+  }
 
   // Usar apenas itens do contexto ou estrutura básica sem formatação
   const breadcrumbs = items.length > 0 ? items : generateBasicBreadcrumbs(pathname);

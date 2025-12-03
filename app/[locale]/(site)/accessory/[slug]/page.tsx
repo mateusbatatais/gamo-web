@@ -1,136 +1,80 @@
-// app/[locale]/accessory/[slug]/page.tsx
-"use client";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { fetchApiServer } from "@/lib/api-server";
+import { Accessory } from "@/@types/catalog.types";
+import AccessoryDetailClient from "@/components/organisms/_accessory/AccessoryDetailClient/AccessoryDetailClient";
 
-import { useTranslations } from "next-intl";
-import useAccessoryDetails from "@/hooks/useAccessoryDetails";
-import { useParams } from "next/navigation";
-import { useToast } from "@/contexts/ToastContext";
-import { useEffect } from "react";
-import { Card } from "@/components/atoms/Card/Card";
-import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
-import { useFavorite } from "@/hooks/useFavorite";
-import { CardActionButtons } from "@/components/molecules/CardActionButtons/CardActionButtons";
-import { Gamepad } from "lucide-react";
-import AccessoryInfo from "@/components/organisms/_accessory/AccessoryInfo/AccessoryInfo";
-import AccessoryVariantCard from "@/components/molecules/_accessory/AccessoryVariantCard/AccessoryVariantCard";
-import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
-import AccessoryMarket from "@/components/organisms/_accessory/AccessoryMarket/AccessoryMarket";
+type Props = {
+  params: Promise<{ locale: string; slug: string }>;
+};
 
-export default function AccessoryDetailPage() {
-  const params = useParams();
-  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
-  const locale = Array.isArray(params.locale) ? params.locale[0] : params.locale;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "AccessoryDetails" });
 
-  const t = useTranslations("AccessoryDetails");
-  const { data, isLoading, isError, error } = useAccessoryDetails(slug || "", locale || "pt");
-  const { showToast } = useToast();
-  const { setItems } = useBreadcrumbs();
+  try {
+    const accessory = await fetchApiServer<Accessory>(`/accessories/${slug}?locale=${locale}`);
 
-  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
+    const title = `${accessory.name} | Gamo`;
+    const description = accessory.description || t("defaultDescription");
 
-  const handleToggleFavorite = async () => {
-    if (!data) return;
-
-    try {
-      await toggleFavorite({
-        itemId: data.id,
-        itemType: "ACCESSORY",
-      });
-    } catch {}
-  };
-
-  useEffect(() => {
-    if (isError && error) {
-      showToast(error.message || t("notFound"), "danger");
-    }
-  }, [isError, error, t, showToast]);
-
-  useEffect(() => {
-    setItems([
-      {
-        label: t("catalog"),
-        href: "/accessory-catalog",
-        icon: <Gamepad size={16} className="text-primary-500" />,
+    return {
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        images: accessory.imageUrl ? [accessory.imageUrl] : [],
       },
-      { label: data?.name || "" },
-    ]);
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: accessory.imageUrl ? [accessory.imageUrl] : [],
+      },
+    };
+  } catch {
+    return {
+      title: "Accessory not found | Gamo",
+    };
+  }
+}
 
-    return () => setItems([]);
-  }, [setItems, t, data]);
+import { JsonLd } from "@/components/atoms/JsonLd/JsonLd";
+import { AccessoryDetail } from "@/@types/catalog.types";
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto max-w-6xl">
-        <div>
-          <Skeleton className="h-8 w-1/4 mb-4" />
-          <Skeleton className="h-4 w-1/2 mb-8" />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Skeleton className="h-80 rounded" />
-            <div className="space-y-4">
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+// ... imports
+
+export default async function AccessoryDetailPage({ params }: Props) {
+  const { slug, locale } = await params;
+  let accessory: AccessoryDetail | null = null;
+
+  try {
+    accessory = await fetchApiServer<AccessoryDetail>(`/accessories/${slug}?locale=${locale}`);
+  } catch {
+    // Ignore error
   }
 
-  if (!isLoading && !data) {
-    return (
-      <div className="container mx-auto">
-        <Card>
-          <div className="text-center py-12 text-gray-500">{t("notFound")}</div>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!data) return null;
+  const jsonLd = accessory
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: accessory.name,
+        description: accessory.description,
+        image: accessory.imageUrl,
+        brand: {
+          "@type": "Brand",
+          name: "Gamo", // Or fetch brand if available
+        },
+        releaseDate: accessory.releaseDate,
+        // Add more fields as available
+      }
+    : null;
 
   return (
-    <div className="container mx-auto max-w-6xl">
-      <div className="relative">
-        <div className="absolute top-4 right-4 z-10" data-testid="favorite-action-button">
-          <CardActionButtons
-            loading={isLoading}
-            favoriteLoading={favoriteLoading}
-            actions={[
-              {
-                key: "favorite",
-                active: data.isFavorite,
-                onClick: handleToggleFavorite,
-              },
-            ]}
-          />
-        </div>
-
-        <AccessoryInfo accessory={data} />
-      </div>
-
-      {/* Seção de variantes */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
-          {t("availableVariants")} ({data.variants.length})
-        </h2>
-
-        {data.variants.length > 0 ? (
-          <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`}>
-            {data.variants.map((variant) => (
-              <AccessoryVariantCard key={variant.id} variant={variant} accessoryId={data.id} />
-            ))}
-          </div>
-        ) : (
-          <Card>
-            <div className="text-center py-12 text-gray-500 dark:text-gray-400">
-              {t("noVariantsAvailable")}
-            </div>
-          </Card>
-        )}
-      </section>
-
-      <AccessoryMarket slug={data.slug} />
-    </div>
+    <>
+      {jsonLd && <JsonLd data={jsonLd} />}
+      <AccessoryDetailClient />
+    </>
   );
 }
