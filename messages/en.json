@@ -597,6 +597,9 @@
     "discovery": {
       "title": "Did You Know?",
       "refresh": "New Fact"
+    },
+    "map": {
+      "title": "Items near you"
     }
   },
   "NotFound": {

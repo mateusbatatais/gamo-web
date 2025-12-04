@@ -13,9 +13,10 @@ import { MapPin, User } from "lucide-react";
 
 interface MarketplaceMapViewProps {
   items: MarketplaceItem[];
+  containerStyle?: React.CSSProperties;
 }
 
-const mapContainerStyle = {
+const defaultMapContainerStyle = {
   width: "100%",
   height: "calc(100vh - 200px)",
   minHeight: "500px",
@@ -35,7 +36,7 @@ const getMarkerColor = (itemType: "GAME" | "CONSOLE" | "ACCESSORY" | "KIT"): str
   return colors[itemType];
 };
 
-export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
+export default function MarketplaceMapView({ items, containerStyle }: MarketplaceMapViewProps) {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
     libraries: GOOGLE_MAPS_LIBRARIES,
@@ -327,7 +328,7 @@ export default function MarketplaceMapView({ items }: MarketplaceMapViewProps) {
   return (
     <div className="rounded-lg overflow-hidden shadow-lg">
       <GoogleMap
-        mapContainerStyle={mapContainerStyle}
+        mapContainerStyle={containerStyle || defaultMapContainerStyle}
         center={defaultCenter}
         zoom={defaultZoom}
         onLoad={onLoad}

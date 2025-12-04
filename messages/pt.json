@@ -598,6 +598,9 @@
     "discovery": {
       "title": "Você Sabia?",
       "refresh": "Novo Fato"
+    },
+    "map": {
+      "title": "Itens perto de você"
     }
   },
   "NotFound": {
