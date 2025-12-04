@@ -603,10 +603,15 @@
       "title": "Itens perto de você"
     },
     "topCollectors": {
-      "title": "Top Colecionadores"
+      "title": "Grandes colecionadores"
     },
     "topSellers": {
-      "title": "Top Vendedores"
+      "title": "Muitos itens a venda"
+    },
+    "activity": {
+      "title": "Atividades Recentes",
+      "added": "adicionou",
+      "listed": "anunciou"
     }
   },
   "NotFound": {

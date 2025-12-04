@@ -17,7 +17,7 @@ export default function TopUsersSection({ type }: TopUsersSectionProps) {
 
   if (isLoading) {
     return (
-      <section className="py-8">
+      <section className="py-2">
         <div className="flex justify-between items-center mb-6">
           <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
         </div>
@@ -35,7 +35,7 @@ export default function TopUsersSection({ type }: TopUsersSectionProps) {
   }
 
   return (
-    <section className="py-8">
+    <section className="py-2">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t("title")}</h2>
         {/* Optional: Link to a full leaderboard page if it exists */}

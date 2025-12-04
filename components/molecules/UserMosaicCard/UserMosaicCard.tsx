@@ -24,7 +24,7 @@ export default function UserMosaicCard({ user, rank, type }: UserMosaicCardProps
 
   return (
     <Link
-      href={`/user/${user.slug}`}
+      href={`/user/${user.slug}${type === "SELLING" ? "/market" : ""}`}
       className="group block bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all hover:-translate-y-1 border border-gray-100 dark:border-gray-700"
     >
       {/* Mosaic Header */}
@@ -76,7 +76,7 @@ export default function UserMosaicCard({ user, rank, type }: UserMosaicCardProps
             className={type === "COLLECTION" ? "text-blue-500" : "text-green-500"}
           />
           <span className="font-medium">
-            {user.totalItems} {type === "COLLECTION" ? "Items" : "Vendas"}
+            {user.totalItems} {type === "COLLECTION" ? "Items" : "na loja"}
           </span>
         </div>
       </div>

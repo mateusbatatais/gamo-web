@@ -606,6 +606,11 @@
     },
     "topSellers": {
       "title": "Top Sellers"
+    },
+    "activity": {
+      "title": "Recent Activities",
+      "added": "added",
+      "listed": "listed"
     }
   },
   "NotFound": {
