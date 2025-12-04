@@ -3,6 +3,7 @@ import MarketplaceHighlights from "@/components/organisms/Home/MarketplaceHighli
 import CommunitySpotlight from "@/components/organisms/Home/CommunitySpotlight";
 import DiscoverySection from "@/components/organisms/Home/DiscoverySection";
 import HomeMapSection from "@/components/organisms/Home/HomeMapSection";
+import TopUsersSection from "@/components/organisms/Home/TopUsersSection";
 
 export default function HomeTemplate() {
   return (
@@ -10,6 +11,8 @@ export default function HomeTemplate() {
       <HeroSection />
       <MarketplaceHighlights />
       <HomeMapSection />
+      <TopUsersSection type="COLLECTION" />
+      <TopUsersSection type="SELLING" />
       <CommunitySpotlight />
       <DiscoverySection />
     </div>

@@ -601,6 +601,12 @@
     },
     "map": {
       "title": "Itens perto de você"
+    },
+    "topCollectors": {
+      "title": "Top Colecionadores"
+    },
+    "topSellers": {
+      "title": "Top Vendedores"
     }
   },
   "NotFound": {

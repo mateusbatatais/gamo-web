@@ -600,6 +600,12 @@
     },
     "map": {
       "title": "Items near you"
+    },
+    "topCollectors": {
+      "title": "Top Collectors"
+    },
+    "topSellers": {
+      "title": "Top Sellers"
     }
   },
   "NotFound": {

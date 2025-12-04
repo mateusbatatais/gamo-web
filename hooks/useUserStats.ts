@@ -16,7 +16,7 @@ export function useUserStats() {
     queryKey: ["user-stats", user?.userId],
     queryFn: async () => {
       if (!user) return null;
-      return await apiFetch<UserStats>("/users/me/stats");
+      return await apiFetch<UserStats>("/user/me/stats");
     },
     enabled: !!user,
     refetchOnWindowFocus: false,
