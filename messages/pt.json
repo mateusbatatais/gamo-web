@@ -1128,5 +1128,8 @@
       "nameMin": "O nome deve ter pelo menos 3 caracteres",
       "priceMin": "O preço deve ser maior que zero"
     }
+  },
+  "BetaAlert": {
+    "message": "Estamos em fase beta! Algumas imagens e informações podem estar incorretas pois são obtidas via scraping. Podem haver itens faltando. Ajude-nos reportando qualquer problema que encontrar."
   }
 }

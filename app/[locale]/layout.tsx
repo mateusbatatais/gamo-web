@@ -10,6 +10,7 @@ import { Providers } from "@/contexts/Providers";
 import { ThemeProvider } from "next-themes";
 import { DonationModal } from "@/components/organisms/DonationModal/DonationModal";
 import Script from "next/script";
+import BetaAlert from "@/components/molecules/BetaAlert/BetaAlert";
 
 const quicksand = Quicksand({
   subsets: ["latin"],
@@ -118,6 +119,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <Providers>
               <LogRocketInit />
               <DonationModal />
+              <BetaAlert />
               {children}
             </Providers>
           </NextIntlClientProvider>
