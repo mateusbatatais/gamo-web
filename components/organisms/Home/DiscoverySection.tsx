@@ -1,25 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useTranslations } from "next-intl";
 import { Lightbulb, RefreshCw } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
+import { useRandomConsoleNote } from "@/hooks/useConsoleNote";
 
 export default function DiscoverySection() {
   const t = useTranslations("HomePage.discovery");
-
-  const facts = [
-    "The PlayStation 2 is the best-selling game console of all time, with over 155 million units sold.",
-    "Nintendo was founded in 1889 as a playing card company.",
-    "The first video game played in space was Tetris on a Game Boy.",
-    "Pac-Man was invented by Toru Iwatani while he was eating pizza.",
-  ];
-
-  const [currentFactIndex, setCurrentFactIndex] = useState(0);
-
-  const nextFact = () => {
-    setCurrentFactIndex((prev) => (prev + 1) % facts.length);
-  };
+  const { data: note, isLoading, refetch, isRefetching } = useRandomConsoleNote();
 
   return (
     <section className="py-8">
@@ -35,14 +24,29 @@ export default function DiscoverySection() {
             <Lightbulb size={24} />
           </div>
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">{t("title")}</h2>
-          <p className="text-lg md:text-xl text-indigo-100 mb-8 min-h-14">
-            &quot;{facts[currentFactIndex]}&quot;
-          </p>
+
+          <div className="min-h-32 flex flex-col justify-center items-center mb-8">
+            {isLoading || isRefetching ? (
+              <div className="animate-pulse flex flex-col items-center space-y-3 w-full">
+                <div className="h-4 bg-indigo-800/50 rounded w-3/4"></div>
+                <div className="h-4 bg-indigo-800/50 rounded w-1/2"></div>
+              </div>
+            ) : note ? (
+              <>
+                <p className="text-lg md:text-xl text-indigo-100 mb-2">&quot;{note.text}&quot;</p>
+                <p className="text-sm text-indigo-300 font-medium">— {note.consoleName}</p>
+              </>
+            ) : (
+              <p className="text-lg md:text-xl text-indigo-100">{t("noFacts")}</p>
+            )}
+          </div>
+
           <Button
-            onClick={nextFact}
+            onClick={() => refetch()}
             variant="outline"
             className="border-indigo-400 text-indigo-100 hover:bg-indigo-800 hover:text-white"
-            icon={<RefreshCw size={16} className="mr-2" />}
+            icon={<RefreshCw size={16} className={`mr-2 ${isRefetching ? "animate-spin" : ""}`} />}
+            disabled={isLoading || isRefetching}
           >
             {t("refresh")}
           </Button>
