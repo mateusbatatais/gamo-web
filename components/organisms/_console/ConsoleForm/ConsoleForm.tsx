@@ -119,20 +119,22 @@ export const ConsoleForm = ({
   useEffect(() => {
     if (hasPrefilledLocation.current) return;
 
-    if (profileQuery.data && !locationData) {
-      if (profileQuery.data.address || profileQuery.data.city) {
-        setLocationData({
-          formattedAddress:
-            profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
-          address: profileQuery.data.address || "",
-          zipCode: profileQuery.data.zipCode || "",
-          city: profileQuery.data.city || "",
-          state: profileQuery.data.state || "",
-          latitude: profileQuery.data.latitude || 0,
-          longitude: profileQuery.data.longitude || 0,
-        });
-        hasPrefilledLocation.current = true;
-      }
+    if (
+      profileQuery.data &&
+      !locationData &&
+      (profileQuery.data.address || profileQuery.data.city)
+    ) {
+      setLocationData({
+        formattedAddress:
+          profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
+        address: profileQuery.data.address || "",
+        zipCode: profileQuery.data.zipCode || "",
+        city: profileQuery.data.city || "",
+        state: profileQuery.data.state || "",
+        latitude: profileQuery.data.latitude || 0,
+        longitude: profileQuery.data.longitude || 0,
+      });
+      hasPrefilledLocation.current = true;
     }
   }, [profileQuery.data, locationData]);
 
@@ -332,10 +334,8 @@ export const ConsoleForm = ({
       }
     }
 
-    if (formData.status === "LOOKING_FOR") {
-      if (!locationData || !locationData.city) {
-        validationErrors.location = t("locationRequired");
-      }
+    if (formData.status === "LOOKING_FOR" && (!locationData || !locationData.city)) {
+      validationErrors.location = t("locationRequired");
     }
 
     // Se houver erros, atualiza o estado e não submete

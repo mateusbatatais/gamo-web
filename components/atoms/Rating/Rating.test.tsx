@@ -26,10 +26,8 @@ vi.mock("@mui/material", () => ({
       className={className}
       onClick={() => onChange && onChange({}, value === 0 ? 2.5 : 0)}
       onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          if (onChange) {
-            onChange({}, value === 0 ? 2.5 : 0);
-          }
+        if ((e.key === "Enter" || e.key === " ") && onChange) {
+          onChange({}, value === 0 ? 2.5 : 0);
         }
       }}
       role="slider"

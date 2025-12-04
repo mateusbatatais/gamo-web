@@ -12,6 +12,7 @@ interface ImageProps {
 // Mock next/image
 vi.mock("next/image", () => ({
   default: ({ src, alt, className }: ImageProps) => (
+    // eslint-disable-next-line @next/next/no-img-element
     <img src={src} alt={alt} className={className} data-testid="next-image" />
   ),
 }));
