@@ -581,7 +581,10 @@
       "welcomeBack": "Welcome back, {name}",
       "collectionValue": "Collection Value",
       "totalItems": "Total Items",
-      "viewCollection": "View Collection"
+      "viewCollection": "View Collection",
+      "games": "Games",
+      "consoles": "Consoles",
+      "accessories": "Accessories"
     },
     "marketplace": {
       "title": "Marketplace Highlights",
