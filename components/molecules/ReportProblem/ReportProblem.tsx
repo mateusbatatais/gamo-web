@@ -136,15 +136,12 @@ export function ReportProblem({ className, trigger }: ReportProblemProps) {
   );
 
   if (trigger) {
+    const triggerElement = trigger as React.ReactElement<{ onClick?: React.MouseEventHandler }>;
     return (
       <>
-        {React.cloneElement(trigger, {
+        {React.cloneElement(triggerElement, {
           onClick: (e: React.MouseEvent) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const props = (trigger as any).props;
-            if (props && props.onClick) {
-              props.onClick(e);
-            }
+            triggerElement.props.onClick?.(e);
             handleOpen();
           },
         })}
