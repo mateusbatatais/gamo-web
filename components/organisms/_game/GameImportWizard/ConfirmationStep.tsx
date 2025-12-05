@@ -5,7 +5,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
-import { ImportSession, ImportMatch } from "@/hooks/useGameImport";
+import { ImportSession, ImportMatch, useGameImport } from "@/hooks/useGameImport";
 import { GameImportMatchCard } from "../GameImportMatchCard/GameImportMatchCard";
 
 interface ConfirmationStepProps {
@@ -22,7 +22,21 @@ export function ConfirmationStep({
   isExecuting,
 }: ConfirmationStepProps) {
   const t = useTranslations("GameImport.confirmation");
+  const { confirmMatches, confirmLoading } = useGameImport();
   const [confirmedMatches, setConfirmedMatches] = useState<Set<number>>(new Set());
+
+  // Initialize confirmed matches set from session data
+  useEffect(() => {
+    if (session.matches) {
+      const confirmed = new Set<number>();
+      session.matches.forEach((match) => {
+        if (match.matchStatus === "CONFIRMED") {
+          confirmed.add(match.id);
+        }
+      });
+      setConfirmedMatches(confirmed);
+    }
+  }, [session.matches]);
 
   useEffect(() => {
     const initialConfirmed = new Set<number>();
@@ -49,6 +63,36 @@ export function ConfirmationStep({
       }
       return newSet;
     });
+  };
+
+  const handleConfirmAll = async () => {
+    if (!session.matches) return;
+
+    const matchesToConfirm = session.matches
+      .filter(
+        (match) =>
+          match.matchStatus !== "CONFIRMED" && (match.suggestedGameId || match.confirmedGameId),
+      )
+      .map((match) => ({
+        matchId: match.id,
+        confirmedGameId: match.confirmedGameId || match.suggestedGameId || null,
+      }));
+
+    if (matchesToConfirm.length === 0) return;
+
+    try {
+      await confirmMatches({
+        sessionId: session.id,
+        matches: matchesToConfirm,
+      });
+
+      // Optimistically update local state while query invalidates
+      const newConfirmed = new Set(confirmedMatches);
+      matchesToConfirm.forEach((m) => newConfirmed.add(m.matchId));
+      setConfirmedMatches(newConfirmed);
+    } catch (error) {
+      console.error("Error confirming matches:", error);
+    }
   };
 
   const matchStats = useMemo(() => {
@@ -200,6 +244,25 @@ export function ConfirmationStep({
             </div>
 
             <div className="flex space-x-3">
+              {/* Show Confirm All button only if there are unconfirmed matches with suggestions */}
+              {(() => {
+                const unconfirmedWithSuggestions =
+                  session.matches?.filter(
+                    (match) =>
+                      !confirmedMatches.has(match.id) &&
+                      (match.suggestedGameId || match.confirmedGameId),
+                  ).length || 0;
+
+                return unconfirmedWithSuggestions > 0 ? (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    onClick={handleConfirmAll}
+                    loading={confirmLoading}
+                    label={t("actions.confirmAll")}
+                  />
+                ) : null;
+              })()}
               <Button
                 type="button"
                 variant="outline"

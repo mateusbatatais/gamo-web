@@ -60,6 +60,17 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     findBestPlatformMatch,
   ]);
 
+  // Sync status from props (e.g. when "Confirm All" updates the match)
+  useEffect(() => {
+    setCurrentStatus(
+      match.matchStatus === "CONFIRMED"
+        ? "CONFIRMED"
+        : match.matchStatus === "SKIPPED"
+          ? "SKIPPED"
+          : "PENDING",
+    );
+  }, [match.matchStatus]);
+
   const platformOptions = getPlatformOptions();
   const confidencePercentage = match.confidence ? Math.round(match.confidence * 100) : 0;
   const selectedPlatformName = selectedPlatformId
