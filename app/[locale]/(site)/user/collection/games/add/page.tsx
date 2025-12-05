@@ -18,6 +18,8 @@ import { AutoComplete, AutoCompleteItem } from "@/components/atoms/AutoComplete/
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import { CreateGameModal } from "@/components/organisms/Modals/CreateGameModal";
 import { Button } from "@/components/atoms/Button/Button";
+import { Upload } from "lucide-react";
+import { Link } from "@/navigation";
 
 type Step = "game" | "form";
 
@@ -188,9 +190,20 @@ export default function AddGamePage() {
 
   return (
     <div className="container mx-auto max-w-6xl sm:px-4">
-      <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
+      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
         {type === "collection" ? t("title") : t("titleMarket")}
       </h1>
+
+      {/* Bulk Import Button */}
+      <Link href="/user/collection/games/import" className="block mb-8">
+        <Button
+          variant="primary"
+          size="lg"
+          label={t("bulkImportButton")}
+          icon={<Upload size={20} />}
+          className="w-full justify-center"
+        />
+      </Link>
 
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1 space-y-6">

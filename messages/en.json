@@ -700,7 +700,8 @@
     "popularGames": "Popular Games",
     "titleMarket": "Put game up for sale",
     "noResultsFound": "Didn't find the game?",
-    "includeManually": "Include manually"
+    "includeManually": "Include manually",
+    "bulkImportButton": "Want to add many games? Do bulk import"
   },
   "CreateGameModal": {
     "title": "Include Game Manually",

@@ -26,7 +26,7 @@ export default function CommunitySpotlight() {
   return (
     <section className="grid grid-cols-1 md:grid-cols-3 gap-6 py-8">
       {/* Featured Collector */}
-      <div className="md:col-span-1 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+      <div className="md:col-span-1 bg-linear-to-br from-yellow-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
         <div className="absolute top-0 right-0 p-4 opacity-20">
           <Trophy size={64} />
         </div>
@@ -64,7 +64,7 @@ export default function CommunitySpotlight() {
         <div className="space-y-4">
           {activities.map((activity) => (
             <div
-              key={activity.id}
+              key={activity.time}
               className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
             >
               <div className="w-2 h-2 rounded-full bg-blue-500" />

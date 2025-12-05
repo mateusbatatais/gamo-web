@@ -701,7 +701,8 @@
     "popularGames": "Jogos Populares",
     "titleMarket": "Colocar jogo à venda",
     "noResultsFound": "Não encontrou o jogo?",
-    "includeManually": "Incluir manualmente"
+    "includeManually": "Incluir manualmente",
+    "bulkImportButton": "Quer adicionar muitos jogos? Faça a importação em lote"
   },
   "CreateGameModal": {
     "title": "Incluir Jogo Manualmente",
