@@ -2,14 +2,45 @@
 "use client";
 
 import React, { useMemo, useState, useCallback, useEffect } from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, useJsApiLoader, Marker, OverlayView } from "@react-google-maps/api";
 import type { Libraries } from "@react-google-maps/api";
 import { MarketplaceItem } from "@/@types/catalog.types";
 import Link from "next/link";
 import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
 import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
 import { Button } from "@/components/atoms/Button/Button";
-import { MapPin, User } from "lucide-react";
+import { MapPin, User, X } from "lucide-react";
+
+interface MapPopupProps {
+  position: { lat: number; lng: number };
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+const MapPopup = ({ position, onClose, children }: MapPopupProps) => {
+  return (
+    <OverlayView
+      position={position}
+      mapPaneName="floatPane"
+      getPixelPositionOffset={() => ({ x: 0, y: 0 })}
+    >
+      <div className="absolute transform -translate-x-1/2 -translate-y-full pb-4">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 min-w-[300px] overflow-hidden">
+          <button
+            onClick={onClose}
+            className="absolute top-2 right-2 p-1 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors z-10"
+            aria-label="Fechar"
+          >
+            <X size={16} />
+          </button>
+          <div className="p-1">{children}</div>
+        </div>
+        {/* Seta indicadora (triângulo) */}
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-2 w-4 h-4 bg-white dark:bg-gray-900 border-r border-b border-gray-200 dark:border-gray-700 rotate-45 transform" />
+      </div>
+    </OverlayView>
+  );
+};
 
 interface MarketplaceMapViewProps {
   items: MarketplaceItem[];
@@ -189,7 +220,7 @@ export default function MarketplaceMapView({ items, containerStyle }: Marketplac
       const tradeType = item.status === "SELLING" ? "selling" : "looking";
 
       return (
-        <InfoWindow position={position} onCloseClick={() => setSelectedItems([])}>
+        <MapPopup position={position} onClose={() => setSelectedItems([])}>
           <div className="max-w-xs">
             <div className="relative h-32 w-full mb-2 rounded overflow-hidden">
               <SafeImage
@@ -201,42 +232,49 @@ export default function MarketplaceMapView({ items, containerStyle }: Marketplac
               />
             </div>
 
-            <h3 className="font-semibold text-sm mb-1 line-clamp-2">{item.name}</h3>
+            <div className="px-2 pb-2">
+              <h3 className="font-semibold text-sm mb-1 line-clamp-2 text-gray-900 dark:text-gray-100 pr-6">
+                {item.name}
+              </h3>
 
-            {formattedPrice && (
-              <p className="text-primary-600 font-bold text-lg mb-2">{formattedPrice}</p>
-            )}
+              {formattedPrice && (
+                <p className="text-primary-600 font-bold text-lg mb-2">{formattedPrice}</p>
+              )}
 
-            <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
-              <User size={12} />
-              <span className="truncate">{item.seller.name}</span>
-            </div>
-
-            {(item.city || item.state) && (
-              <div className="flex items-center gap-1 text-xs text-gray-600 mb-3">
-                <MapPin size={12} />
-                <span className="truncate">
-                  {item.city}
-                  {item.city && item.state && ", "}
-                  {item.state}
-                </span>
+              <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <User size={12} />
+                <span className="truncate">{item.seller.name}</span>
               </div>
-            )}
 
-            <Link href={`/user/${item.seller.slug}/market?tradetype=${tradeType}`}>
-              <Button variant="primary" size="sm" label="Ver detalhes" className="w-full" />
-            </Link>
+              {(item.city || item.state) && (
+                <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-3">
+                  <MapPin size={12} />
+                  <span className="truncate">
+                    {item.city}
+                    {item.city && item.state && ", "}
+                    {item.state}
+                  </span>
+                </div>
+              )}
+
+              <Link href={`/user/${item.seller.slug}/market?tradetype=${tradeType}`}>
+                <Button variant="primary" size="sm" label="Ver detalhes" className="w-full" />
+              </Link>
+            </div>
           </div>
-        </InfoWindow>
+        </MapPopup>
       );
     }
 
     // Se houver múltiplos items, renderizar lista
+    // Se houver múltiplos items, renderizar lista
     return (
-      <InfoWindow position={position} onCloseClick={() => setSelectedItems([])}>
-        <div className="w-80">
-          <h3 className="font-semibold text-sm mb-2">{items.length} itens neste local</h3>
-          <div className="max-h-96 overflow-y-auto space-y-2">
+      <MapPopup position={position} onClose={() => setSelectedItems([])}>
+        <div className="w-80 pt-2 px-2 pb-2">
+          <h3 className="font-semibold text-sm mb-2 text-gray-900 dark:text-gray-100 pr-8">
+            {items.length} itens neste local
+          </h3>
+          <div className="max-h-96 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
             {items.map((item) => {
               const safeImageUrl = getSafeImageUrl(item.photoMain || item.imageUrl);
               const formattedPrice = item.price
@@ -251,9 +289,9 @@ export default function MarketplaceMapView({ items, containerStyle }: Marketplac
               return (
                 <div
                   key={`${item.itemType}-${item.id}`}
-                  className="flex gap-2 p-2 border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+                  className="flex gap-2 p-2 border border-gray-200 dark:border-gray-700 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <div className="relative h-16 w-16 shrink-0 rounded overflow-hidden">
+                  <div className="relative h-16 w-16 shrink-0 rounded overflow-hidden bg-gray-100 dark:bg-gray-800">
                     <SafeImage
                       src={safeImageUrl}
                       alt={item.name}
@@ -263,11 +301,13 @@ export default function MarketplaceMapView({ items, containerStyle }: Marketplac
                     />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-xs mb-1 line-clamp-1">{item.name}</h4>
+                    <h4 className="font-medium text-xs mb-1 line-clamp-1 text-gray-900 dark:text-gray-100">
+                      {item.name}
+                    </h4>
                     {formattedPrice && (
                       <p className="text-primary-600 font-bold text-sm mb-1">{formattedPrice}</p>
                     )}
-                    <div className="flex items-center gap-1 text-xs text-gray-600 mb-1">
+                    <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
                       <User size={10} />
                       <span className="truncate">{item.seller.name}</span>
                     </div>
@@ -285,7 +325,7 @@ export default function MarketplaceMapView({ items, containerStyle }: Marketplac
             })}
           </div>
         </div>
-      </InfoWindow>
+      </MapPopup>
     );
   };
 
