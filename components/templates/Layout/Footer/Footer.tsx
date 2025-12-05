@@ -7,11 +7,13 @@ import { Button } from "@/components/atoms/Button/Button";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { useTranslations } from "next-intl";
 import { useRandomDonationPhrase } from "@/hooks/useRandomDonationPhrase";
+import { ReportProblem } from "@/components/molecules/ReportProblem/ReportProblem";
 import { useState, useEffect } from "react";
 
 export default function Footer() {
   const { openModal } = useModalUrl("donation");
   const t = useTranslations("Footer");
+  const tReport = useTranslations("ReportProblem");
   const randomPhrase = useRandomDonationPhrase();
   const [isClient, setIsClient] = useState(false);
 
@@ -27,6 +29,13 @@ export default function Footer() {
             © {new Date().getFullYear()} GAMO. {t("rightsReserved")}
           </p>
           <p className="text-xs text-primary  mt-1">{t("betaMessage")}</p>
+          <ReportProblem
+            trigger={
+              <p className="text-xs text-red-400 hover:text-red-300 cursor-pointer mt-1 underline">
+                {tReport("reportProblem")}
+              </p>
+            }
+          />
         </div>
 
         {isClient && (
