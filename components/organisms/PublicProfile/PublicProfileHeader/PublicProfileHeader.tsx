@@ -124,7 +124,7 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
             🖥️ {profile.consolesTotal} Consoles
           </Badge>
           <Badge className="text-sm" variant="soft">
-            👾 {profile.gamesTotal} {t("games")}
+            👾 {profile.gamesTotal} {t("gamesCount")}
           </Badge>
           <Badge className="text-sm" variant="soft">
             🎮 {profile.accessoriesTotal} {t("accessories")}

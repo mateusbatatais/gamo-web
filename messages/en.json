@@ -74,7 +74,6 @@
     "media": "Media Type",
     "physical": "Physical",
     "digital": "Digital",
-
     "favorites": {
       "onlyFavorites": "Only favorites"
     },
@@ -435,6 +434,7 @@
     "recentlyPlayed": "Recently Played",
     "seeMore": "See More",
     "readFullReview": "Read Full Review",
+    "gamesCount": "games",
     "games": "All games",
     "txtConsoles": "Consoles",
     "allGames": "All games",
@@ -1091,7 +1091,6 @@
       "confirmButton": "Select"
     }
   },
-
   "About": {
     "construction": "About"
   },
