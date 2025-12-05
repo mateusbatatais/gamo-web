@@ -302,7 +302,12 @@
       "completedTransactions": "Completed Transactions",
       "accountRating": "Account Rating",
       "viewAll": "View All",
-      "publicProfile": "Public Profile"
+      "publicProfile": "Public Profile",
+      "totalGames": "Total Games",
+      "totalConsoles": "Total Consoles",
+      "totalAccessories": "Total Accessories",
+      "totalItems": "Total Items",
+      "noActivities": "No recent activities"
     },
     "detailsForm": {
       "name": "Name",

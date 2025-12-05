@@ -11,10 +11,10 @@ import {
   Home,
   User,
   Lock,
-  ShoppingBag,
-  Package,
-  Shield,
-  Settings,
+  // ShoppingBag,
+  // Package,
+  // Shield,
+  // Settings,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -31,10 +31,10 @@ export default function AccountSidebar() {
     { name: t("overview"), href: "/account", icon: Home },
     { name: t("details"), href: "/account/details", icon: User },
     { name: t("security"), href: "/account/security", icon: Lock },
-    { name: t("sales"), href: "/account/sales", icon: ShoppingBag },
-    { name: t("purchases"), href: "/account/purchases", icon: Package },
-    { name: t("privacy"), href: "/account/privacy", icon: Shield },
-    { name: t("settings"), href: "/account/settings", icon: Settings },
+    // { name: t("sales"), href: "/account/sales", icon: ShoppingBag },
+    // { name: t("purchases"), href: "/account/purchases", icon: Package },
+    // { name: t("privacy"), href: "/account/privacy", icon: Shield },
+    // { name: t("settings"), href: "/account/settings", icon: Settings },
   ];
 
   return (

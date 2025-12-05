@@ -301,7 +301,12 @@
       "completedTransactions": "Transações Concluídas",
       "accountRating": "Avaliação da Conta",
       "viewAll": "Ver Tudo",
-      "publicProfile": "Perfil Público"
+      "publicProfile": "Perfil Público",
+      "totalGames": "Total de Jogos",
+      "totalConsoles": "Total de Consoles",
+      "totalAccessories": "Total de Acessórios",
+      "totalItems": "Total de Itens",
+      "noActivities": "Nenhuma atividade recente"
     },
     "detailsForm": {
       "name": "Nome",

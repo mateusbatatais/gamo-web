@@ -4,50 +4,91 @@ import { Button } from "@/components/atoms/Button/Button";
 import { useTranslations } from "next-intl";
 import {
   Lock,
-  Settings,
-  ShoppingBag,
   User,
   ArrowUpRight,
-  CheckCircle,
-  AlertCircle,
-  Info,
+  Gamepad2,
+  Monitor,
+  Headphones,
+  Package,
+  Activity,
 } from "lucide-react";
 import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserStats } from "@/hooks/useUserStats";
+import { useUserActivities } from "@/hooks/useUserActivities";
+import { SafeImage } from "@/components/atoms/SafeImage/SafeImage";
+import { useSafeImageUrl } from "@/hooks/useSafeImageUrl";
+import { Link } from "@/navigation";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR, enUS } from "date-fns/locale";
+import { useLocale } from "next-intl";
 
 export default function AccountOverview() {
   const t = useTranslations("account.overview");
   const { user } = useAuth();
+  const { data: stats, isLoading: statsLoading } = useUserStats();
+  const { data: activities, isLoading: activitiesLoading } = useUserActivities();
+  const { getSafeImageUrl } = useSafeImageUrl();
+  const locale = useLocale();
+  const dateLocale = locale === "pt" ? ptBR : enUS;
+
+  const totalItems = stats ? stats.games + stats.consoles + stats.accessories : 0;
+
+  const getIcon = (type: string) => {
+    switch (type) {
+      case "GAME":
+        return <Gamepad2 size={16} className="text-purple-500" />;
+      case "CONSOLE":
+        return <Monitor size={16} className="text-blue-500" />;
+      case "ACCESSORY":
+        return <Headphones size={16} className="text-pink-500" />;
+      default:
+        return <Activity size={16} className="text-gray-500" />;
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title={t("totalSales")}
-          value="24"
-          change="+12%"
-          icon={<ShoppingBag className="w-5 h-5" />}
-          color="primary"
-        />
-        <StatCard
-          title={t("pendingOrders")}
-          value="3"
-          icon={<AlertCircle className="w-5 h-5" />}
-          color="warning"
-        />
-        <StatCard
-          title={t("completedTransactions")}
-          value="21"
-          change="+5%"
-          icon={<CheckCircle className="w-5 h-5" />}
-          color="success"
-        />
-        <StatCard
-          title={t("accountRating")}
-          value="4.8"
-          icon={<Info className="w-5 h-5" />}
-          color="info"
-        />
+        {statsLoading ? (
+          <>
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="p-5">
+                <div className="animate-pulse">
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20 mb-2"></div>
+                  <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
+                </div>
+              </Card>
+            ))}
+          </>
+        ) : (
+          <>
+            <StatCard
+              title={t("totalGames")}
+              value={stats?.games || 0}
+              icon={<Gamepad2 className="w-5 h-5" />}
+              color="primary"
+            />
+            <StatCard
+              title={t("totalConsoles")}
+              value={stats?.consoles || 0}
+              icon={<Monitor className="w-5 h-5" />}
+              color="info"
+            />
+            <StatCard
+              title={t("totalAccessories")}
+              value={stats?.accessories || 0}
+              icon={<Headphones className="w-5 h-5" />}
+              color="warning"
+            />
+            <StatCard
+              title={t("totalItems")}
+              value={totalItems}
+              icon={<Package className="w-5 h-5" />}
+              color="success"
+            />
+          </>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -66,10 +107,71 @@ export default function AccountOverview() {
           </div>
 
           <div className="space-y-4">
-            <ActivityItem title="Pedido #12345 concluído" date="2023-10-15" status="success" />
-            <ActivityItem title="Alteração de senha" date="2023-10-10" status="info" />
-            <ActivityItem title="Novo console cadastrado" date="2023-10-05" status="success" />
-            <ActivityItem title="Pagamento pendente" date="2023-10-01" status="warning" />
+            {activitiesLoading ? (
+              <>
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                      <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : activities && activities.length > 0 ? (
+              activities.slice(0, 5).map((activity) => (
+                <div key={activity.id} className="flex items-start gap-4 group">
+                  {/* User Avatar */}
+                  <Link href={`/user/${activity.userSlug}`} className="shrink-0 relative">
+                    <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-400 dark:border-gray-700">
+                      <SafeImage
+                        src={getSafeImageUrl(activity.userImage)}
+                        alt={activity.userName}
+                        fill
+                        sizes="40px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 bg-white dark:bg-gray-800 rounded-full p-0.5 border border-gray-100 dark:border-gray-700">
+                      {getIcon(activity.type)}
+                    </div>
+                  </Link>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-gray-900 dark:text-white">
+                      <span className="font-medium text-gray-900 dark:text-white ">
+                        {activity.itemName}
+                      </span>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-0.5">
+                      {formatDistanceToNow(new Date(activity.createdAt), {
+                        addSuffix: true,
+                        locale: dateLocale,
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Item Image (Optional) */}
+                  {activity.itemImage && (
+                    <div className="shrink-0 w-12 h-12 rounded-lg overflow-hidden border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 relative">
+                      <SafeImage
+                        src={getSafeImageUrl(activity.itemImage)}
+                        alt={activity.itemName}
+                        fill
+                        sizes="48px"
+                        className="object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
+                {t("noActivities")}
+              </p>
+            )}
           </div>
         </Card>
 
@@ -92,6 +194,7 @@ export default function AccountOverview() {
               href="/account/security"
               color="primary"
             />
+            {/*             
             <ActionCard
               title={t("viewSales")}
               icon={<ShoppingBag className="w-6 h-6" />}
@@ -103,7 +206,7 @@ export default function AccountOverview() {
               icon={<Settings className="w-6 h-6" />}
               href="/account/settings"
               color="success"
-            />
+            /> */}
           </div>
         </Card>
       </div>
@@ -152,33 +255,6 @@ const StatCard = ({
         </p>
       )}
     </Card>
-  );
-};
-
-const ActivityItem = ({
-  title,
-  date,
-  status,
-}: {
-  title: string;
-  date: string;
-  status: "success" | "warning" | "info" | "danger";
-}) => {
-  const statusClasses = {
-    success: "bg-success-500",
-    warning: "bg-warning-500",
-    info: "bg-info-500",
-    danger: "bg-danger-500",
-  };
-
-  return (
-    <div className="flex items-start">
-      <div className={`w-2 h-2 rounded-full mt-2.5 flex-shrink-0 ${statusClasses[status]}`}></div>
-      <div className="ml-3 min-w-0">
-        <p className="font-medium text-gray-900 dark:text-white truncate">{title}</p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{date}</p>
-      </div>
-    </div>
   );
 };
 

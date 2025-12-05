@@ -90,7 +90,7 @@ export default function RecentActivitySection() {
                 <span className="text-gray-600 dark:text-gray-400">
                   {activity.action === "ADDED" ? t("added") : t("listed")}
                 </span>{" "}
-                <span className="font-medium text-gray-900 dark:text-white truncate">
+                <span className="font-medium text-gray-900 dark:text-white ">
                   {activity.itemName}
                 </span>
               </div>
