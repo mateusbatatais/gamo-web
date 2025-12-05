@@ -203,7 +203,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
                 {match.rawInput}
               </h3>
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${getStatusColor(currentStatus)}`}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium shrink-0 ${getStatusColor(currentStatus)}`}
               >
                 {getStatusText(currentStatus)}
                 {match.confidence && currentStatus === "PENDING" && ` (${confidencePercentage}%)`}
@@ -218,7 +218,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
           <div className="flex items-center justify-between mb-3 p-2 bg-gray-50 dark:bg-gray-800 rounded">
             {/* Jogo */}
             <div className="flex items-center space-x-2 flex-1 min-w-0">
-              <div className="w-8 h-8 flex-shrink-0">
+              <div className="w-8 h-8 shrink-0">
                 <ImageWithFallback
                   src={currentGame.imageUrl}
                   alt={currentGame.name}
@@ -249,7 +249,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
 
             {/* Plataforma Compacta */}
             {(match.userPlatform || platformOptions.length > 0) && (
-              <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+              <div className="flex items-center gap-2 ml-3 shrink-0">
                 {currentStatus === "CONFIRMED" && selectedPlatformName ? (
                   // Plataforma como texto quando confirmado
                   <div className="text-right">
