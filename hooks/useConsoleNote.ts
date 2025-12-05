@@ -6,6 +6,7 @@ export interface ConsoleNote {
   id: number;
   consoleId: number;
   consoleSlug: string;
+  consoleVariantSlug: string | null;
   consoleName: string;
   text: string;
 }

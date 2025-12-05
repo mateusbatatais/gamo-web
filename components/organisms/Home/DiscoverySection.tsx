@@ -37,7 +37,7 @@ export default function DiscoverySection() {
               <p className="text-xs text-indigo-300 font-medium">
                 —{" "}
                 <Link
-                  href={`/console/${note.consoleSlug}`}
+                  href={`/console/${note.consoleVariantSlug || note.consoleSlug}`}
                   className="hover:text-white hover:underline transition-colors"
                 >
                   {note.consoleName}
