@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Lightbulb, RefreshCw } from "lucide-react";
 import { Button } from "@/components/atoms/Button/Button";
 import { useRandomConsoleNote } from "@/hooks/useConsoleNote";
+import Link from "next/link";
 
 export default function DiscoverySection() {
   const t = useTranslations("HomePage.discovery");
@@ -33,7 +34,15 @@ export default function DiscoverySection() {
           ) : note ? (
             <>
               <p className="text-base text-indigo-100 mb-2 italic">&quot;{note.text}&quot;</p>
-              <p className="text-xs text-indigo-300 font-medium">— {note.consoleName}</p>
+              <p className="text-xs text-indigo-300 font-medium">
+                —{" "}
+                <Link
+                  href={`/console/${note.consoleSlug}`}
+                  className="hover:text-white hover:underline transition-colors"
+                >
+                  {note.consoleName}
+                </Link>
+              </p>
             </>
           ) : (
             <p className="text-base text-indigo-100">{t("noFacts")}</p>

@@ -64,7 +64,7 @@ export default function RecentActivitySection() {
       </h3>
       <div className="space-y-6">
         {activities.map((activity) => (
-          <div key={activity.id} className="flex items-start gap-4 group">
+          <div key={activity.createdAt} className="flex items-start gap-4 group">
             {/* User Avatar */}
             <Link href={`/user/${activity.userSlug}`} className="shrink-0 relative">
               <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700">

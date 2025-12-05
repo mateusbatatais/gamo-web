@@ -345,7 +345,8 @@
   },
   "SimpleConsoleForm": {
     "noGamesSelected": "No games selected",
-    "searchGames": "Search games"
+    "searchGames": "Search games",
+    "removeGame": "Remove game"
   },
   "ConsoleDetails": {
     "brand": "Brand",
@@ -442,6 +443,11 @@
       "owned": "Owned",
       "selling": "Selling",
       "lookingFor": "Looking For"
+    },
+    "condition": {
+      "USED": "Used",
+      "NEW": "New",
+      "REFURBISHED": "Refurbished"
     },
     "deleteTitle": "Confirm Deletion",
     "deleteMessage": "Are you sure you want to delete this item? This action cannot be undone.",
@@ -575,7 +581,9 @@
     "mediaPhysical": "Physical",
     "mediaDigital": "Digital",
     "location": "Location",
-    "locationPlaceholder": "Select your location"
+    "locationPlaceholder": "Select your location",
+    "noCompatibleConsoles": "No compatible consoles found",
+    "priceRequired": "Price is required for sale"
   },
   "HomePage": {
     "construction": "Under construction",
@@ -601,7 +609,8 @@
     },
     "discovery": {
       "title": "Did You Know?",
-      "refresh": "New Fact"
+      "refresh": "New Fact",
+      "noFacts": "No facts available at the moment"
     },
     "map": {
       "title": "Items near you"

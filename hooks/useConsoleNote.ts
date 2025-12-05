@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 export interface ConsoleNote {
   id: number;
   consoleId: number;
+  consoleSlug: string;
   consoleName: string;
   text: string;
 }

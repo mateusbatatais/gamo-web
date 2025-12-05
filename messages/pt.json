@@ -344,7 +344,8 @@
   },
   "SimpleConsoleForm": {
     "noGamesSelected": "Nenhuma jogo selecionado",
-    "searchGames": "Buscar jogos"
+    "searchGames": "Buscar jogos",
+    "removeGame": "Remover jogo"
   },
   "ConsoleDetails": {
     "brand": "Marca",
@@ -440,6 +441,11 @@
       "owned": "Tenho",
       "selling": "Vendendo",
       "lookingFor": "Procurando"
+    },
+    "condition": {
+      "USED": "Usado",
+      "NEW": "Novo",
+      "REFURBISHED": "Recondicionado"
     },
     "deleteTitle": "Confirmar exclusão",
     "deleteMessage": "Tem certeza que deseja remover este item da sua coleção?",
@@ -576,7 +582,9 @@
     "mediaPhysical": "Física",
     "mediaDigital": "Digital",
     "location": "Localização",
-    "locationPlaceholder": "Selecione sua localização"
+    "locationPlaceholder": "Selecione sua localização",
+    "noCompatibleConsoles": "Nenhum console compatível encontrado",
+    "priceRequired": "Preço é obrigatório para venda"
   },
   "HomePage": {
     "construction": "Em construção",
@@ -602,7 +610,8 @@
     },
     "discovery": {
       "title": "Você Sabia?",
-      "refresh": "Novo Fato"
+      "refresh": "Novo Fato",
+      "noFacts": "Nenhuma curiosidade disponível no momento"
     },
     "map": {
       "title": "Itens perto de você"
