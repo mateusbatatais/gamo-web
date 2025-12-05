@@ -170,21 +170,22 @@ describe("GenerationFilter Component", () => {
     expect(screen.queryByText("2ª Geração")).not.toBeInTheDocument();
   });
 
-  it("mantém a seleção ao expandir e recolher", () => {
-    selectedGenerations = ["9", "1"]; // 9ª visível, 1ª oculta
+  it("mantém a seleção visível mesmo ao recolher", () => {
+    selectedGenerations = ["9", "1"]; // 9ª visível, 1ª (seria oculta, mas agora é visível por estar selecionada)
     renderComponent();
 
     // Verifica que a 9ª está selecionada
     const gen9Checkbox = screen.getByLabelText("9ª Geração") as HTMLInputElement;
     expect(gen9Checkbox.checked).toBe(true);
 
-    // Expande
-    const showMoreButton = screen.getByText("Exibir mais (6)");
-    fireEvent.click(showMoreButton);
-
-    // Verifica que a 1ª também está selecionada
+    // Verifica que a 1ª TAMBÉM está visível e selecionada (nova lógica)
     const gen1Checkbox = screen.getByLabelText("1ª Geração") as HTMLInputElement;
+    expect(gen1Checkbox).toBeInTheDocument();
     expect(gen1Checkbox.checked).toBe(true);
+
+    // Expande (O contador deve ser 5, pois a 1ª Geração saiu da lista de ocultos)
+    const showMoreButton = screen.getByText("Exibir mais (5)");
+    fireEvent.click(showMoreButton);
 
     // Recolhe
     const showLessButton = screen.getByText("Exibir menos");
@@ -192,5 +193,9 @@ describe("GenerationFilter Component", () => {
 
     // Verifica que a 9ª continua selecionada
     expect(gen9Checkbox.checked).toBe(true);
+
+    // Verifica que a 1ª continua visível e selecionada após recolher
+    expect(gen1Checkbox).toBeInTheDocument();
+    expect(gen1Checkbox.checked).toBe(true);
   });
 });
