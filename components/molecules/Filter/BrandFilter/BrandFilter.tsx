@@ -49,8 +49,18 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
   if (error) return <div>{error.message}</div>;
   if (!brands) return null;
 
-  const firstFiveBrands = brands.slice(0, 5);
-  const remainingBrands = brands.slice(5);
+  // Separar as 5 primeiras e o restante
+  const defaultVisible = brands.slice(0, 5);
+  const others = brands.slice(5);
+
+  // Visíveis: Padrão + Selecionados que estariam escondidos
+  const firstFiveBrands = [
+    ...defaultVisible,
+    ...others.filter((b) => selectedBrands.includes(b.slug)),
+  ];
+
+  // Restante: Outros - Selecionados
+  const remainingBrands = others.filter((b) => !selectedBrands.includes(b.slug));
 
   return (
     <div className="mb-4">

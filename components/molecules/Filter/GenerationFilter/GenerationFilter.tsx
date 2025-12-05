@@ -29,8 +29,17 @@ const GenerationFilter = ({ selectedGenerations, onGenerationChange }: Generatio
   ];
 
   // Separar as 3 primeiras (que serão as últimas gerações) e o restante
-  const firstThreeGenerations = allGenerations.slice(0, 3);
-  const remainingGenerations = allGenerations.slice(3);
+  const defaultVisible = allGenerations.slice(0, 3);
+  const others = allGenerations.slice(3);
+
+  // Visíveis: Padrão + Selecionados que estariam escondidos
+  const firstThreeGenerations = [
+    ...defaultVisible,
+    ...others.filter((g) => selectedGenerations.includes(g.value)),
+  ];
+
+  // Restante: Outros - Selecionados
+  const remainingGenerations = others.filter((g) => !selectedGenerations.includes(g.value));
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;

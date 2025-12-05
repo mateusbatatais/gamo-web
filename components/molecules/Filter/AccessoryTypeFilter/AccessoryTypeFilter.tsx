@@ -55,8 +55,18 @@ const AccessoryTypeFilter = ({
   if (!types) return null;
 
   // Separar os primeiros 4 tipos e o restante
-  const firstFourTypes = types.slice(0, 4);
-  const remainingTypes = types.slice(4);
+  // Separar os primeiros 4 tipos e o restante
+  const defaultVisible = types.slice(0, 4);
+  const others = types.slice(4);
+
+  // Visíveis: Padrão + Selecionados que estariam escondidos
+  const firstFourTypes = [
+    ...defaultVisible,
+    ...others.filter((t) => selectedTypes.includes(t.slug)),
+  ];
+
+  // Restante: Outros - Selecionados
+  const remainingTypes = others.filter((t) => !selectedTypes.includes(t.slug));
 
   return (
     <div className="mb-4">

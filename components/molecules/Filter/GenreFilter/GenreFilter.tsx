@@ -38,12 +38,19 @@ const GenreFilter = ({ selectedGenres, onGenreChange }: GenreFilterProps) => {
   if (error) return <div>{error.message}</div>;
   if (!genresData) return null;
 
-  const priorityGenres = genresData.results
-    .filter((genre) => PRIORITY_GENRE_IDS.includes(genre.id))
-    .sort((a, b) => PRIORITY_GENRE_IDS.indexOf(a.id) - PRIORITY_GENRE_IDS.indexOf(b.id));
+  const priorityGenres = [
+    ...genresData.results
+      .filter((genre) => PRIORITY_GENRE_IDS.includes(genre.id))
+      .sort((a, b) => PRIORITY_GENRE_IDS.indexOf(a.id) - PRIORITY_GENRE_IDS.indexOf(b.id)),
+    ...genresData.results
+      .filter(
+        (genre) => !PRIORITY_GENRE_IDS.includes(genre.id) && selectedGenres.includes(genre.id),
+      )
+      .sort((a, b) => a.name.localeCompare(b.name)),
+  ];
 
   const remainingGenres = genresData.results
-    .filter((genre) => !PRIORITY_GENRE_IDS.includes(genre.id))
+    .filter((genre) => !PRIORITY_GENRE_IDS.includes(genre.id) && !selectedGenres.includes(genre.id))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (

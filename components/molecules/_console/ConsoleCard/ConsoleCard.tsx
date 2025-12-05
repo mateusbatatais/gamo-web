@@ -80,7 +80,7 @@ const ConsoleCard = ({
     >
       <div
         className={clsx(
-          "relative bg-gray-100 dark:bg-gray-800 flex items-center justify-center",
+          "relative bg-white flex items-center justify-center p-2",
           orientation === "vertical" ? "w-full aspect-video" : "w-1/3 min-w-[160px]",
         )}
       >
