@@ -32,6 +32,7 @@ export default function ImageCropper({
   const onImageLoad = useCallback(
     (e: React.SyntheticEvent<HTMLImageElement>) => {
       const { width, height } = e.currentTarget;
+
       const initialCrop = centerCrop(
         makeAspectCrop({ unit: "%", width: 90 }, aspect, width, height),
         width,
@@ -100,39 +101,45 @@ export default function ImageCropper({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-center p-4">
-      <div className="flex-1 flex items-center justify-center w-full ">
-        <ReactCrop
-          crop={crop}
-          onChange={(c) => setCrop(c)}
-          onComplete={onCropComplete}
-          aspect={aspect}
-          className="max-w-full max-h-full"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={imgRef}
-            alt="Crop preview"
-            src={src}
-            onLoad={onImageLoad}
-            crossOrigin="anonymous"
-            className="max-w-full h-[82vh] object-contain"
-            data-testid="image-cropper"
-          />
-        </ReactCrop>
-      </div>
+      <div className="w-full h-full max-w-[90vw] max-h-[90vh] flex flex-col gap-4">
+        <div className="flex-1 flex items-center justify-center overflow-hidden">
+          <ReactCrop
+            crop={crop}
+            onChange={(c) => setCrop(c)}
+            onComplete={onCropComplete}
+            aspect={aspect}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              ref={imgRef}
+              alt="Crop preview"
+              src={src}
+              onLoad={onImageLoad}
+              crossOrigin="anonymous"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "calc(90vh - 100px)",
+                width: "auto",
+                height: "auto",
+              }}
+              data-testid="image-cropper"
+            />
+          </ReactCrop>
+        </div>
 
-      <div className="mt-4 gap-3 flex justify-end w-full max-w-3xl px-4 py-3 bg-white dark:bg-gray-900 rounded-lg">
-        <Button
-          variant="transparent"
-          status="danger"
-          onClick={handleCancel}
-          label={t("crop.cancelCrop")}
-        />
-        <Button
-          onClick={onConfirm}
-          label={t("crop.confirmCrop")}
-          data-testid="button-crop-confirm"
-        />
+        <div className="flex gap-3 justify-end px-4 py-3 bg-white dark:bg-gray-900 rounded-lg flex-shrink-0">
+          <Button
+            variant="transparent"
+            status="danger"
+            onClick={handleCancel}
+            label={t("crop.cancelCrop")}
+          />
+          <Button
+            onClick={onConfirm}
+            label={t("crop.confirmCrop")}
+            data-testid="button-crop-confirm"
+          />
+        </div>
       </div>
     </div>
   );
