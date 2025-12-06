@@ -18,6 +18,7 @@ export function useUserConsoleMutation() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
+    mutationKey: ["createUserConsole"],
     mutationFn: async (data: UserConsole): Promise<UserConsoleResponse> => {
       return apiFetch("/user-consoles", {
         method: "POST",
@@ -35,6 +36,7 @@ export function useUserConsoleMutation() {
   });
 
   const updateMutation = useMutation({
+    mutationKey: ["updateUserConsole"],
     mutationFn: async ({
       id,
       data,

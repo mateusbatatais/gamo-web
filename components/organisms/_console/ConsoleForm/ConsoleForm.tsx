@@ -57,6 +57,8 @@ interface ConsoleFormProps {
   };
   onSuccess: () => void;
   onCancel?: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 interface SelectedAccessoryVariant {
@@ -74,6 +76,8 @@ export const ConsoleForm = ({
   variantSlug,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons = false,
 }: ConsoleFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
@@ -424,7 +428,7 @@ export const ConsoleForm = ({
   );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-6">
       {initialData?.status === "OWNED" && (
         <div className="space-y-3">
           <Checkbox
@@ -646,14 +650,16 @@ export const ConsoleForm = ({
         />
       )}
 
-      <div className="flex justify-end gap-3 mt-6">
-        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
-        <Button
-          type="submit"
-          loading={isPending || uploadLoading}
-          label={mode === "create" ? t("addToCollection") : t("saveChanges")}
-        />
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-3 mt-6">
+          <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
+          <Button
+            type="submit"
+            loading={isPending || uploadLoading}
+            label={mode === "create" ? t("addToCollection") : t("saveChanges")}
+          />
+        </div>
+      )}
     </form>
   );
 };

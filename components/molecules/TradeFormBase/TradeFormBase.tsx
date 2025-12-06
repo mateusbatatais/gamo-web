@@ -63,6 +63,8 @@ export interface TradeFormBaseProps<C extends string = string> {
   conditionOptions?: { value: C; label: string }[];
   extraFields?: React.ReactNode;
   showLocation?: boolean;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 interface FormDataType<C extends string = string> {
@@ -93,6 +95,8 @@ export function TradeFormBase<C extends string = string>({
   conditionOptions,
   extraFields,
   showLocation = true,
+  formId,
+  hideButtons = false,
 }: TradeFormBaseProps<C>) {
   const { profileQuery } = useAccount();
   const [locationData, setLocationData] = useState<LocationData | null>(() => {
@@ -285,7 +289,7 @@ export function TradeFormBase<C extends string = string>({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col gap-4">
         <div>
           <div className="flex space-x-4">
@@ -377,20 +381,22 @@ export function TradeFormBase<C extends string = string>({
 
       {extraFields}
 
-      <div className="flex justify-end gap-3 mt-6">
-        <Button type="button" variant="outline" onClick={onCancel} label={translate("cancel")} />
-        <Button
-          type="submit"
-          loading={isLoading}
-          label={
-            isLoading
-              ? translate("saving")
-              : initialData?.id
-                ? translate("saveChanges")
-                : translate("publish")
-          }
-        />
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-3 mt-6">
+          <Button type="button" variant="outline" onClick={onCancel} label={translate("cancel")} />
+          <Button
+            type="submit"
+            loading={isLoading}
+            label={
+              isLoading
+                ? translate("saving")
+                : initialData?.id
+                  ? translate("saveChanges")
+                  : translate("publish")
+            }
+          />
+        </div>
+      )}
     </form>
   );
 }

@@ -29,6 +29,7 @@ import { SelectOption } from "@/components/atoms/Select/Select";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 
 export const PublicProfileGameCard = ({
   game,
@@ -42,7 +43,8 @@ export const PublicProfileGameCard = ({
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const { mutate: deleteGame, isPending } = useDeleteUserGame();
+  const { mutate: deleteGame, isPending: isDeletePending } = useDeleteUserGame();
+  const { isPending } = useUserGameMutation();
   const { platformsMap } = usePlatformsCache();
   const { getGamesQueryKey } = useCatalogQueryKeys();
   const pathname = usePathname();
@@ -101,7 +103,7 @@ export const PublicProfileGameCard = ({
             />
             <Button
               onClick={() => setShowDeleteModal(true)}
-              disabled={isPending}
+              disabled={isDeletePending}
               variant="transparent"
               aria-label={t("deleteItem")}
               icon={<Trash size={16} />}
@@ -261,11 +263,37 @@ export const PublicProfileGameCard = ({
         </div>
       </Card>
 
-      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
+      <Dialog
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={t("editTitle")}
+        actionButtons={{
+          confirm: {
+            label: t("saveChanges"),
+            type: "submit",
+            form: `edit-game-form-${game.id}`,
+            // We use the mutation state here. However, to get isPending for UPDATE,
+            // we need to access it. Currently useDeleteUserGame is used, let's verify if we can get update status.
+            // GameForm uses useUserGameMutation inside.
+            // To properly show loading on the parent button, we should ideally hoist the mutation or expose loading state.
+            // For now, let's assume the mutation is fast or the user sees the internal loading if any.
+            // BUT, since we are hiding internal buttons, we MUST show loading here.
+            // So we need to import useUserGameMutation here too? No, GameForm submits it.
+            // We need to pass loading state up? Or just use isPending from a hook here?
+            // Let's import useUserGameMutation here.
+            loading: isPending,
+          },
+          cancel: {
+            label: t("cancel"),
+            onClick: () => setShowEditModal(false),
+            disabled: isPending,
+          },
+        }}
+      >
         <GameForm
           mode="edit"
           type={type}
-          gameId={game.gameId}
+          gameId={game.id || 0}
           gameSlug={game.gameSlug || ""}
           platformOptions={platformOptions}
           initialData={{
@@ -293,6 +321,8 @@ export const PublicProfileGameCard = ({
             longitude: game.longitude,
             compatibleUserConsoleIds: game.compatibleUserConsoleIds,
           }}
+          formId={`edit-game-form-${game.id}`}
+          hideButtons
           onSuccess={() => {
             setShowEditModal(false);
           }}
@@ -308,7 +338,7 @@ export const PublicProfileGameCard = ({
         message={t("deleteMessage")}
         confirmText={t("deleteConfirm")}
         cancelText={t("cancel")}
-        isLoading={isPending}
+        isLoading={isDeletePending}
       />
     </>
   );

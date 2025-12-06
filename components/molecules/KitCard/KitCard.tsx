@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { UserKit, UserGame, UserConsole, UserAccessory } from "@/@types/collection.types";
+import { UserKit } from "@/@types/collection.types";
 import { Card } from "@/components/atoms/Card/Card";
 import { Package, Edit, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -41,27 +41,20 @@ export const KitCard = ({
       return [kit.photoMain];
     }
 
-    const images: string[] = [];
-
-    const extractImage = (item: UserGame | UserConsole | UserAccessory) => {
-      if ("gameImageUrl" in item) return item.gameImageUrl;
-      if ("photoMain" in item) return item.photoMain;
-      return (item as { image?: string }).image;
-    };
-
     const allItems = [
       ...(kit.items?.games || []),
       ...(kit.items?.consoles || []),
       ...(kit.items?.accessories || []),
     ];
 
-    for (const item of allItems) {
-      if (images.length >= 5) break;
-      const img = extractImage(item);
-      if (img) images.push(img);
-    }
-
-    return images;
+    return allItems
+      .map((item) => {
+        if ("gameImageUrl" in item) return item.gameImageUrl;
+        if ("photoMain" in item) return item.photoMain;
+        return (item as { image?: string }).image;
+      })
+      .filter((img): img is string => !!img)
+      .slice(0, 5);
   };
 
   const images = getImages();

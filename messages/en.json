@@ -347,6 +347,12 @@
     "searchGames": "Search games",
     "removeGame": "Remove game"
   },
+  "SimpleAccessoryForm": {
+    "description": "Add this accessory to your collection.",
+    "noConsoles": "You do not have compatible consoles in your collection.",
+    "add": "Add",
+    "cancel": "Cancel"
+  },
   "ConsoleDetails": {
     "brand": "Brand",
     "generation": "Generation",
@@ -523,7 +529,8 @@
     "confirmDeleteKit": "Are you sure you want to delete this kit?",
     "kitDetails": "Kit Details",
     "listedOn": "listed on",
-    "description": "Description"
+    "description": "Description",
+    "saveChanges": "Save changes"
   },
   "TradeForm": {
     "keepCopyInCollection": "Keep a copy in my collection (previously owned)",
@@ -583,7 +590,10 @@
     "location": "Location",
     "locationPlaceholder": "Select your location",
     "noCompatibleConsoles": "No compatible consoles found",
-    "priceRequired": "Price is required for sale"
+    "priceRequired": "Price is required for sale",
+    "locationSuccess": "Location obtained successfully!",
+    "locationRequired": "Location is required",
+    "noConsoles": "You do not have compatible consoles."
   },
   "HomePage": {
     "construction": "Under construction",

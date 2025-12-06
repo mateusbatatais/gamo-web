@@ -45,6 +45,8 @@ interface AccessoryFormProps {
   };
   onSuccess: () => void;
   onCancel?: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 export const AccessoryForm = ({
@@ -56,6 +58,8 @@ export const AccessoryForm = ({
   initialData,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons = false,
 }: AccessoryFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserAccessory, updateUserAccessory, isPending } = useUserAccessoryMutation();
@@ -280,7 +284,7 @@ export const AccessoryForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-6">
       {initialData?.status === "OWNED" && (
         <div className="space-y-3">
           <Checkbox
@@ -482,20 +486,22 @@ export const AccessoryForm = ({
         />
       )}
 
-      <div className="flex justify-end gap-3 mt-6">
-        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
-        <Button
-          type="submit"
-          loading={isPending || uploadLoading}
-          label={
-            isPending || uploadLoading
-              ? t("saving")
-              : mode === "create"
-                ? t("addToCollection")
-                : t("saveChanges")
-          }
-        />
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-3 mt-6">
+          <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
+          <Button
+            type="submit"
+            loading={isPending || uploadLoading}
+            label={
+              isPending || uploadLoading
+                ? t("saving")
+                : mode === "create"
+                  ? t("addToCollection")
+                  : t("saveChanges")
+            }
+          />
+        </div>
+      )}
     </form>
   );
 };

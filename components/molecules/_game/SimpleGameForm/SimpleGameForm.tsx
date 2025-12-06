@@ -19,6 +19,8 @@ interface SimpleGameFormProps {
   platformOptions: SelectOption[];
   onSuccess: () => void;
   onCancel: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 interface SimpleFormState {
@@ -36,6 +38,8 @@ export const SimpleGameForm = ({
   platformOptions,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons = false,
 }: SimpleGameFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserGame, isPending } = useUserGameMutation();
@@ -95,7 +99,7 @@ export const SimpleGameForm = ({
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Select
           name="platformId"
@@ -158,14 +162,16 @@ export const SimpleGameForm = ({
         label={t("abandoned")}
       />
 
-      <div className="flex justify-end gap-3 pt-4">
-        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
-        <Button
-          type="submit"
-          loading={isPending}
-          label={isPending ? t("saving") : t("addToCollection")}
-        />
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-3 pt-4">
+          <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
+          <Button
+            type="submit"
+            loading={isPending}
+            label={isPending ? t("saving") : t("addToCollection")}
+          />
+        </div>
+      )}
     </form>
   );
 };

@@ -55,6 +55,8 @@ interface GameFormProps {
   };
   onSuccess: () => void;
   onCancel?: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 export const GameForm = ({
@@ -66,6 +68,8 @@ export const GameForm = ({
   initialData,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons = false,
 }: GameFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
@@ -300,7 +304,7 @@ export const GameForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-6">
       {initialData?.status === "OWNED" && (
         <div className="space-y-3">
           <Checkbox
@@ -589,20 +593,22 @@ export const GameForm = ({
           onCancel={() => setCurrentCropImage(null)}
         />
       )}
-      <div className="flex justify-end gap-3 mt-6">
-        <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
-        <Button
-          type="submit"
-          loading={isPending || uploadLoading}
-          label={
-            isPending || uploadLoading
-              ? t("saving")
-              : mode === "create"
-                ? t("addToCollection")
-                : t("saveChanges")
-          }
-        />
-      </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-3 mt-6">
+          <Button type="button" variant="outline" onClick={onCancel} label={t("cancel")} />
+          <Button
+            type="submit"
+            loading={isPending || uploadLoading}
+            label={
+              isPending || uploadLoading
+                ? t("saving")
+                : mode === "create"
+                  ? t("addToCollection")
+                  : t("saveChanges")
+            }
+          />
+        </div>
+      )}
     </form>
   );
 };

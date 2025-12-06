@@ -20,6 +20,8 @@ interface SimpleConsoleFormProps {
   skinId?: number;
   onSuccess: () => void;
   onCancel: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 interface SelectedAccessoryVariant {
@@ -34,6 +36,8 @@ export const SimpleConsoleForm = ({
   skinId,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons = false,
 }: SimpleConsoleFormProps) => {
   const t = useTranslations("SimpleConsoleForm");
   const { data: storageOptions, isLoading: storageOptionsLoading } =
@@ -67,7 +71,8 @@ export const SimpleConsoleForm = ({
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setIsSubmitting(true);
     try {
       const userConsoleResponse = await createUserConsole({
@@ -116,7 +121,7 @@ export const SimpleConsoleForm = ({
   );
 
   return (
-    <div className="space-y-4">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-4">
       {storageOptionsLoading && <Spinner />}
 
       {storageOptions && storageOptions.length > 0 && (
@@ -146,15 +151,22 @@ export const SimpleConsoleForm = ({
         />
       </Collapse>
 
-      <div className="flex justify-end gap-2 mt-6">
-        <Button variant="outline" onClick={onCancel} disabled={isSubmitting} label={t("cancel")} />
-        <Button
-          loading={isSubmitting}
-          onClick={handleSubmit}
-          label={t("add")}
-          disabled={isSubmitting}
-        />
-      </div>
-    </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-2 mt-6">
+          <Button
+            variant="outline"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            label={t("cancel")}
+          />
+          <Button
+            loading={isSubmitting}
+            onClick={() => handleSubmit()}
+            label={t("add")}
+            disabled={isSubmitting}
+          />
+        </div>
+      )}
+    </form>
   );
 };

@@ -12,6 +12,7 @@ import { useFavorite } from "@/hooks/useFavorite";
 import { SimpleGameForm } from "../SimpleGameForm/SimpleGameForm";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import { TradeGameForm } from "../TradeGameForm/TradeGameForm";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 
 interface Props {
   gameId: number;
@@ -45,6 +46,9 @@ export function AddGameToCollection({
   } = useModalUrl(`add-game-simple-${gameId}`);
   const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
   const { platformsMap, isLoading: platformsLoading } = usePlatformsCache();
+
+  // Mutation hooks for loading state
+  const { isPending: isGamePending } = useUserGameMutation();
 
   const handleFavorite = async () => {
     const { added } = await toggleFavorite({
@@ -80,6 +84,9 @@ export function AddGameToCollection({
       label: platformsMap[id],
     }));
 
+  const tradeFormId = `trade-game-form-${gameId}`;
+  const simpleFormId = `simple-game-form-${gameId}`;
+
   return (
     <div className="flex justify-end">
       <CardActionButtons
@@ -102,8 +109,27 @@ export function AddGameToCollection({
         ]}
       />
 
-      <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar jogo"}>
+      <Dialog
+        open={isTradeModalOpen}
+        onClose={closeTradeModal}
+        title={"Anunciar jogo"}
+        actionButtons={{
+          confirm: {
+            label: "Anunciar",
+            type: "submit",
+            form: tradeFormId,
+            loading: isGamePending,
+          },
+          cancel: {
+            label: "Cancelar",
+            onClick: closeTradeModal,
+            disabled: isGamePending,
+          },
+        }}
+      >
         <TradeGameForm
+          formId={tradeFormId}
+          hideButtons
           platformOptions={platformOptions}
           gameId={gameId}
           gameSlug={gameSlug}
@@ -119,11 +145,26 @@ export function AddGameToCollection({
         open={isSimpleModalOpen}
         onClose={closeSimpleModal}
         title={"Adicionar jogo à coleção"}
+        actionButtons={{
+          confirm: {
+            label: "Adicionar à coleção",
+            type: "submit",
+            form: simpleFormId,
+            loading: isGamePending,
+          },
+          cancel: {
+            label: "Cancelar",
+            onClick: closeSimpleModal,
+            disabled: isGamePending,
+          },
+        }}
       >
         {platformsLoading ? (
           <div>Carregando plataformas...</div>
         ) : (
           <SimpleGameForm
+            formId={simpleFormId}
+            hideButtons
             gameId={gameId}
             gameSlug={gameSlug}
             platformOptions={platformOptions}

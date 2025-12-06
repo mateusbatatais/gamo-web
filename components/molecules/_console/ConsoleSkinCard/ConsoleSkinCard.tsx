@@ -96,6 +96,7 @@ export default function ConsoleSkinCard({
             consoleVariantId={consoleVariantId}
             skinId={skin.id}
             onAddSuccess={() => triggerFeedback(skin.id)}
+            isFavorite={false}
           />
         </div>
       </div>

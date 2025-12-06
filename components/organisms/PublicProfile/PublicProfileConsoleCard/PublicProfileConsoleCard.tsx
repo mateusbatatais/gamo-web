@@ -30,6 +30,7 @@ import { Button } from "@/components/atoms/Button/Button";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { ConsoleForm } from "../../_console/ConsoleForm/ConsoleForm";
 import { useQueryClient } from "@tanstack/react-query";
+import { useIsMutating } from "@tanstack/react-query";
 import { useDeleteUserConsole } from "@/hooks/usePublicProfile";
 import { CollectionStatus, UserConsole } from "@/@types/collection.types";
 import Link from "next/link";
@@ -82,7 +83,8 @@ export const PublicProfileConsoleCard = ({
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const queryClient = useQueryClient();
-  const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
+  const { mutate: deleteConsole, isPending: isDeletePending } = useDeleteUserConsole();
+  const isUpdatePending = useIsMutating({ mutationKey: ["updateUserConsole"] }) > 0;
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
   const { getConsolesQueryKey } = useCatalogQueryKeys();
@@ -152,7 +154,7 @@ export const PublicProfileConsoleCard = ({
             />
             <Button
               onClick={() => setShowDeleteModal(true)}
-              disabled={isPending}
+              disabled={isDeletePending}
               variant="transparent"
               aria-label={t("deleteItem")}
               icon={<Trash size={16} />}
@@ -307,26 +309,43 @@ export const PublicProfileConsoleCard = ({
         )}
       </Card>
 
-      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
+      <Dialog
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={t("editTitle")}
+        actionButtons={{
+          confirm: {
+            label: t("saveChanges"),
+            type: "submit",
+            form: `edit-console-form-${consoleItem.id}`,
+            loading: isUpdatePending,
+          },
+          cancel: {
+            label: t("cancel"),
+            onClick: () => setShowEditModal(false),
+            disabled: isUpdatePending,
+          },
+        }}
+      >
         <ConsoleForm
           mode="edit"
           type={type}
           consoleId={consoleItem.consoleId}
           consoleVariantId={consoleItem.consoleVariantId}
-          variantSlug={consoleItem.variantSlug}
           skinId={consoleItem.skinId}
+          variantSlug={consoleItem.variantSlug || ""}
           initialData={{
             id: consoleItem.id,
-            description: consoleItem.description,
+            description: consoleItem.description || undefined,
             status: consoleItem.status,
-            price: consoleItem.price,
-            hasBox: consoleItem.hasBox,
-            hasManual: consoleItem.hasManual,
-            condition: consoleItem.condition,
-            acceptsTrade: consoleItem.acceptsTrade,
-            photoMain: consoleItem.photoMain,
-            photos: consoleItem.photos,
-            storageOptionId: consoleItem.storageOption?.id,
+            price: consoleItem.price || undefined,
+            hasBox: consoleItem.hasBox || false,
+            hasManual: consoleItem.hasManual || false,
+            condition: consoleItem.condition || undefined,
+            acceptsTrade: consoleItem.acceptsTrade || false,
+            photoMain: consoleItem.photoMain || undefined,
+            photos: consoleItem.photos || undefined,
+            storageOptionId: consoleItem.storageOptionId || undefined,
             address: consoleItem.address,
             zipCode: consoleItem.zipCode,
             city: consoleItem.city,
@@ -341,6 +360,8 @@ export const PublicProfileConsoleCard = ({
             });
           }}
           onCancel={() => setShowEditModal(false)}
+          formId={`edit-console-form-${consoleItem.id}`}
+          hideButtons
         />
       </Dialog>
 
@@ -352,7 +373,7 @@ export const PublicProfileConsoleCard = ({
         message={t("deleteMessage")}
         confirmText={t("deleteConfirm")}
         cancelText={t("cancel")}
-        isLoading={isPending}
+        isLoading={isDeletePending}
       />
     </>
   );

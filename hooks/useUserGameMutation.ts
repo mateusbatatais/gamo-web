@@ -12,6 +12,7 @@ export function useUserGameMutation() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
+    mutationKey: ["createUserGame"],
     mutationFn: async (data: UserGame) => {
       return apiFetch("/user-games", {
         method: "POST",
@@ -29,6 +30,7 @@ export function useUserGameMutation() {
   });
 
   const updateMutation = useMutation({
+    mutationKey: ["updateUserGame"],
     mutationFn: async ({ id, data }: { id: number; data: UserGame }) => {
       return apiFetch(`/user-games/${id}`, {
         method: "PUT",

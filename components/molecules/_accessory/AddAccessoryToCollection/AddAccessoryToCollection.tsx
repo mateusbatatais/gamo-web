@@ -8,13 +8,16 @@ import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
 import { TradeAccessoryForm } from "../TradeAccessoryForm/TradeAccessoryForm";
 import { SimpleAccessoryForm } from "../SimpleAccessoryForm/SimpleAccessoryForm";
-import { useUserAccessoryMutation } from "@/hooks/useUserAccessoryMutation";
+import { useFavorite } from "@/hooks/useFavorite";
+import { useIsMutating } from "@tanstack/react-query";
 
 interface Props {
   accessoryId: number;
   accessoryVariantId: number;
   accessorySlug: string;
   onAddSuccess?: () => void;
+  isFavorite: boolean;
+  onFavoriteToggle?: (isFavorite: boolean) => void;
 }
 
 export function AddAccessoryToCollection({
@@ -22,6 +25,8 @@ export function AddAccessoryToCollection({
   accessoryVariantId,
   accessorySlug,
   onAddSuccess,
+  isFavorite,
+  onFavoriteToggle,
 }: Props) {
   const { user } = useAuth();
   const router = useRouter();
@@ -36,13 +41,22 @@ export function AddAccessoryToCollection({
     openModal: openSimpleModal,
     closeModal: closeSimpleModal,
   } = useModalUrl(`add-accessory-simple-${accessoryVariantId}`);
-  const { isPending } = useUserAccessoryMutation();
+  const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
+  const isAccessoryPending = useIsMutating({ mutationKey: ["createUserAccessory"] }) > 0;
+
+  const handleFavorite = async () => {
+    const { added } = await toggleFavorite({
+      itemId: accessoryId,
+      itemType: "ACCESSORY",
+    });
+    onFavoriteToggle?.(added);
+  };
 
   const handleAction = (type: "OWNED" | "TRADE") => {
     if (!user) {
       setPendingAction({
         type: "ADD_ACCESSORY_TO_COLLECTION",
-        payload: { type, accessoryId, accessoryVariantId, accessorySlug },
+        payload: { type, accessoryId },
       });
 
       const returnUrl = `${window.location.pathname}${window.location.search}`;
@@ -57,11 +71,20 @@ export function AddAccessoryToCollection({
     }
   };
 
+  const tradeFormId = `trade-accessory-form-${accessoryId}`;
+  const simpleFormId = `simple-accessory-form-${accessoryId}`;
+
   return (
     <div className="flex justify-end">
       <CardActionButtons
-        loading={isPending}
+        loading={favoriteLoading}
+        favoriteLoading={favoriteLoading}
         actions={[
+          {
+            key: "favorite",
+            active: isFavorite,
+            onClick: handleFavorite,
+          },
           {
             key: "collection",
             onClick: () => handleAction("OWNED"),
@@ -73,7 +96,24 @@ export function AddAccessoryToCollection({
         ]}
       />
 
-      <Dialog open={isTradeModalOpen} onClose={closeTradeModal} title={"Anunciar acessório"}>
+      <Dialog
+        open={isTradeModalOpen}
+        onClose={closeTradeModal}
+        title={"Anunciar acessório"}
+        actionButtons={{
+          confirm: {
+            label: "Anunciar",
+            type: "submit",
+            form: tradeFormId,
+            loading: isAccessoryPending,
+          },
+          cancel: {
+            label: "Cancelar",
+            onClick: closeTradeModal,
+            disabled: isAccessoryPending,
+          },
+        }}
+      >
         <TradeAccessoryForm
           accessoryId={accessoryId}
           accessoryVariantId={accessoryVariantId}
@@ -83,10 +123,29 @@ export function AddAccessoryToCollection({
             onAddSuccess?.();
           }}
           onCancel={closeTradeModal}
+          formId={tradeFormId}
+          hideButtons
         />
       </Dialog>
 
-      <Dialog open={isSimpleModalOpen} onClose={closeSimpleModal} title={"Adicionar à coleção"}>
+      <Dialog
+        open={isSimpleModalOpen}
+        onClose={closeSimpleModal}
+        title={"Adicionar acessório à coleção"}
+        actionButtons={{
+          confirm: {
+            label: "Adicionar à coleção",
+            type: "submit",
+            form: simpleFormId,
+            loading: isAccessoryPending,
+          },
+          cancel: {
+            label: "Cancelar",
+            onClick: closeSimpleModal,
+            disabled: isAccessoryPending,
+          },
+        }}
+      >
         <SimpleAccessoryForm
           accessoryId={accessoryId}
           accessoryVariantId={accessoryVariantId}
@@ -95,6 +154,8 @@ export function AddAccessoryToCollection({
             onAddSuccess?.();
           }}
           onCancel={closeSimpleModal}
+          formId={simpleFormId}
+          hideButtons
         />
       </Dialog>
     </div>

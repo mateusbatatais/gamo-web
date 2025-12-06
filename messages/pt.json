@@ -347,6 +347,12 @@
     "searchGames": "Buscar jogos",
     "removeGame": "Remover jogo"
   },
+  "SimpleAccessoryForm": {
+    "description": "Adicione este acessório à sua coleção.",
+    "noConsoles": "Você não possui consoles compatíveis em sua coleção.",
+    "add": "Adicionar",
+    "cancel": "Cancelar"
+  },
   "ConsoleDetails": {
     "brand": "Marca",
     "generation": "Geração",
@@ -522,7 +528,8 @@
     "confirmDeleteKit": "Tem certeza que deseja excluir este kit?",
     "kitDetails": "Detalhes do Kit",
     "listedOn": "Listado em",
-    "description": "Descrição"
+    "description": "Descrição",
+    "saveChanges": "Salvar alterações"
   },
   "TradeForm": {
     "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",
@@ -585,7 +592,10 @@
     "location": "Localização",
     "locationPlaceholder": "Selecione sua localização",
     "noCompatibleConsoles": "Nenhum console compatível encontrado",
-    "priceRequired": "Preço é obrigatório para venda"
+    "priceRequired": "Preço é obrigatório para venda",
+    "locationSuccess": "Localização obtida com sucesso!",
+    "locationRequired": "Localização é obrigatória",
+    "noConsoles": "Você não possui consoles compatíveis."
   },
   "HomePage": {
     "construction": "Em construção",

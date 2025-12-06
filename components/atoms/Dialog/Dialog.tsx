@@ -10,6 +10,8 @@ import {
   IconButton,
   Box,
   Typography,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { Button, ButtonProps } from "../Button/Button";
 import clsx from "clsx";
@@ -31,6 +33,7 @@ interface DialogProps extends Omit<MuiDialogProps, "maxWidth"> {
     cancel?: ButtonProps;
   };
   modalId?: string; // Identificador único para o modal
+  stickyFooter?: boolean;
 }
 
 const sizeMap: Record<DialogSize, MuiDialogProps["maxWidth"]> = {
@@ -52,12 +55,15 @@ export function Dialog({
   actionButtons,
   className,
   modalId, // Nova prop
+  stickyFooter = true,
 
   ...props
 }: DialogProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const shouldOpen = modalId && searchParams.get("modal") === modalId;
 
@@ -85,12 +91,14 @@ export function Dialog({
   return (
     <MuiDialog
       fullWidth
+      fullScreen={isMobile}
       maxWidth={sizeMap[size]}
+      scroll={stickyFooter ? "paper" : "body"}
       {...props}
       className={clsx("custom-dialog-root", className)}
       sx={{
         "& .MuiDialog-paper": {
-          borderRadius: "var(--border-radius-xl)",
+          borderRadius: isMobile ? 0 : "var(--border-radius-xl)",
           background: "var(--color-neutral-50)",
           color: "var(--color-neutral-900)",
           // Modo escuro usando classes Tailwind
@@ -101,9 +109,9 @@ export function Dialog({
       onClose={handleCloseModal}
       open={!!shouldOpen || !!props.open}
     >
-      <DialogTitle className="flex items-center gap-2 m-0 p-3 border-b border-neutral-200 dark:border-neutral-700 dark:bg-gray-800">
+      <DialogTitle className="flex items-center gap-2 m-0 p-3 border-b border-neutral-200 dark:border-neutral-700 dark:bg-gray-800 shrink-0">
         {icon && <Box className="text-primary-500 dark:text-primary-400">{icon}</Box>}
-        <Box className="flex-grow">
+        <Box className="grow">
           <Typography
             variant="h5"
             component="div"
@@ -161,6 +169,7 @@ export function Dialog({
             px-3 py-2
             border-t border-neutral-200 dark:border-neutral-700
             bg-neutral-100 dark:bg-neutral-800
+             shrink-0
           "
         >
           {actions || (

@@ -8,6 +8,7 @@ import { Badge } from "@/components/atoms/Badge/Badge";
 import { Package } from "lucide-react";
 import { AccessoryVariantDetail } from "@/@types/catalog.types";
 import { AddAccessoryToCollection } from "../AddAccessoryToCollection/AddAccessoryToCollection";
+import { useFavorite } from "@/hooks/useFavorite";
 
 interface AccessoryVariantCardProps {
   variant: AccessoryVariantDetail;
@@ -30,6 +31,7 @@ export default function AccessoryVariantCard({ variant, accessoryId }: Accessory
   const imageUrl = variant.imageUrl;
   const [imageError, setImageError] = useState(false);
   const { recentlyAdded, triggerFeedback } = useAddToCollectionFeedback();
+  const { toggleFavorite } = useFavorite();
 
   return (
     <Card
@@ -84,6 +86,8 @@ export default function AccessoryVariantCard({ variant, accessoryId }: Accessory
             accessoryVariantId={variant.id}
             accessorySlug={variant.slug}
             onAddSuccess={() => triggerFeedback(variant.id)}
+            isFavorite={false} // Default to false as state is not available here
+            onFavoriteToggle={() => toggleFavorite({ itemId: accessoryId, itemType: "ACCESSORY" })}
           />
         </div>
       </div>

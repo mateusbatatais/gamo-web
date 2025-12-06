@@ -13,6 +13,8 @@ interface SimpleAccessoryFormProps {
   accessoryVariantId: number;
   onSuccess: () => void;
   onCancel: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 export const SimpleAccessoryForm = ({
@@ -20,6 +22,8 @@ export const SimpleAccessoryForm = ({
   accessoryVariantId,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons = false,
 }: SimpleAccessoryFormProps) => {
   const t = useTranslations("SimpleAccessoryForm");
   const { data: userConsoles, isLoading } = useUserConsoles(accessoryId);
@@ -32,7 +36,8 @@ export const SimpleAccessoryForm = ({
     );
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     await createUserAccessory({
       accessoryId,
       accessoryVariantId,
@@ -48,7 +53,7 @@ export const SimpleAccessoryForm = ({
   }
 
   return (
-    <div className="space-y-4">
+    <form id={formId} onSubmit={handleSubmit} className="space-y-4">
       <p className="text-sm text-gray-600 dark:text-gray-300">{t("description")}</p>
       {userConsoles?.length === 0 ? (
         <p className="text-sm text-gray-500 dark:text-gray-400">{t("noConsoles")}</p>
@@ -65,10 +70,17 @@ export const SimpleAccessoryForm = ({
         </div>
       )}
 
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={onCancel} label={t("cancel")} />
-        <Button loading={isPending} onClick={handleSubmit} label={t("add")} disabled={isPending} />
-      </div>
-    </div>
+      {!hideButtons && (
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onCancel} label={t("cancel")} />
+          <Button
+            loading={isPending}
+            onClick={() => handleSubmit()}
+            label={t("add")}
+            disabled={isPending}
+          />
+        </div>
+      )}
+    </form>
   );
 };

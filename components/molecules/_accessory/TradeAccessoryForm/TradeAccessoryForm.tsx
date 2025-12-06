@@ -36,6 +36,8 @@ interface TradeAccessoryFormProps {
   };
   onSuccess: () => void;
   onCancel?: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 export const TradeAccessoryForm = ({
@@ -45,6 +47,8 @@ export const TradeAccessoryForm = ({
   initialData,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons,
 }: TradeAccessoryFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserAccessory, updateUserAccessory, isPending } = useUserAccessoryMutation();
@@ -112,6 +116,8 @@ export const TradeAccessoryForm = ({
       conditionOptions={conditionOptions}
       extraFields={extraFields}
       showLocation={true}
+      formId={formId}
+      hideButtons={hideButtons}
     />
   );
 };

@@ -36,6 +36,8 @@ interface TradeGameFormProps {
   };
   onSuccess: () => void;
   onCancel?: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 export const TradeGameForm = ({
@@ -45,6 +47,8 @@ export const TradeGameForm = ({
   initialData,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons,
 }: TradeGameFormProps) => {
   const [selectedPlatformId, setSelectedPlatformId] = useState<number>(
     initialData?.platformId || (platformOptions[0] ? Number(platformOptions[0].value) : 0),
@@ -107,6 +111,8 @@ export const TradeGameForm = ({
         </div>
       }
       showLocation={true}
+      formId={formId}
+      hideButtons={hideButtons}
     />
   );
 };

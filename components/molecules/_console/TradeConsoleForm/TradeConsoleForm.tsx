@@ -41,6 +41,8 @@ interface TradeConsoleFormProps {
   };
   onSuccess: () => void;
   onCancel?: () => void;
+  formId?: string;
+  hideButtons?: boolean;
 }
 
 interface SelectedAccessoryVariant {
@@ -56,6 +58,8 @@ export const TradeConsoleForm = ({
   initialData,
   onSuccess,
   onCancel,
+  formId,
+  hideButtons,
 }: TradeConsoleFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
@@ -264,6 +268,8 @@ export const TradeConsoleForm = ({
       conditionOptions={conditionOptions}
       extraFields={extraFields}
       showLocation={true}
+      formId={formId}
+      hideButtons={hideButtons}
     />
   );
 };
