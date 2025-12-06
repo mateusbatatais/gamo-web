@@ -9,10 +9,10 @@ import { fetchPublicProfile } from "./publicProfileService";
 
 interface PublicProfileLayoutProps {
   children: ReactNode;
-  params: {
+  params: Promise<{
     slug: string;
     locale: string;
-  };
+  }>;
 }
 
 import { JsonLd } from "@/components/atoms/JsonLd/JsonLd";
@@ -55,7 +55,7 @@ export default async function PublicProfileLayout({ children, params }: PublicPr
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string; locale: string };
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
   const { slug, locale } = await params;
 
