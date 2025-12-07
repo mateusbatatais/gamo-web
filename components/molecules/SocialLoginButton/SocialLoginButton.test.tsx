@@ -80,8 +80,11 @@ describe("SocialLoginButton", () => {
   });
 
   it("chama onError quando login falha", async () => {
+    const user = userEvent.setup();
     const onError = vi.fn();
     const testError = new Error("Login failed");
+
+    mockLogin.mockRejectedValue(testError);
 
     mockUseSocialLogin.mockReturnValue({
       login: mockLogin,
@@ -90,6 +93,9 @@ describe("SocialLoginButton", () => {
     });
 
     render(<SocialLoginButton provider="google" onError={onError} />);
+
+    const button = screen.getByTestId("social-login-google");
+    await user.click(button);
 
     await waitFor(() => {
       expect(onError).toHaveBeenCalledWith(testError);

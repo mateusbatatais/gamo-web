@@ -593,7 +593,7 @@
     "mediaDigital": "Digital",
     "location": "Localização",
     "locationPlaceholder": "Selecione sua localização",
-    "noCompatibleConsoles": "Nenhum console compatível encontrado",
+    "noCompatibleConsoles": "Parece que você ainda não cadastrou consoles na sua coleção. Então, vamos adicionar este jogo como “avulso” por enquanto.",
     "priceRequired": "Preço é obrigatório para venda",
     "locationSuccess": "Localização obtida com sucesso!",
     "locationRequired": "Localização é obrigatória",
