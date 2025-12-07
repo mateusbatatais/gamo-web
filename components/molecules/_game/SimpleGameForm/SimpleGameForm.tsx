@@ -155,12 +155,14 @@ export const SimpleGameForm = ({
         rows={3}
       />
 
-      <Checkbox
-        name="abandoned"
-        checked={formData.abandoned}
-        onChange={handleChange}
-        label={t("abandoned")}
-      />
+      {Number(formData.progress) !== 10 && (
+        <Checkbox
+          name="abandoned"
+          checked={formData.abandoned}
+          onChange={handleChange}
+          label={t("abandoned")}
+        />
+      )}
 
       {!hideButtons && (
         <div className="flex justify-end gap-3 pt-4">

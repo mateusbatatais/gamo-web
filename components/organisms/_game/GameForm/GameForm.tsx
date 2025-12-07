@@ -536,12 +536,14 @@ export const GameForm = ({
             rows={4}
           />
 
-          <Checkbox
-            name="abandoned"
-            checked={formData.abandoned}
-            onChange={handleChange}
-            label={t("abandoned")}
-          />
+          {Number(formData.progress) !== 10 && (
+            <Checkbox
+              name="abandoned"
+              checked={formData.abandoned}
+              onChange={handleChange}
+              label={t("abandoned")}
+            />
+          )}
         </SimpleCollapse>
       ) : (
         <>
@@ -578,12 +580,14 @@ export const GameForm = ({
             rows={4}
           />
 
-          <Checkbox
-            name="abandoned"
-            checked={formData.abandoned}
-            onChange={handleChange}
-            label={t("abandoned")}
-          />
+          {Number(formData.progress) !== 10 && (
+            <Checkbox
+              name="abandoned"
+              checked={formData.abandoned}
+              onChange={handleChange}
+              label={t("abandoned")}
+            />
+          )}
         </>
       )}
       {currentCropImage && (
