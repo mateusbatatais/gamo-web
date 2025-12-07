@@ -346,7 +346,8 @@
   "SimpleConsoleForm": {
     "noGamesSelected": "Nenhuma jogo selecionado",
     "searchGames": "Buscar jogos",
-    "removeGame": "Remover jogo"
+    "removeGame": "Remover jogo",
+    "storageOption": "Capacidade"
   },
   "SimpleAccessoryForm": {
     "description": "Adicione este acessório à sua coleção.",

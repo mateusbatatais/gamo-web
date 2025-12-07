@@ -565,6 +565,7 @@
     "publish": "Publish",
     "media": "Media",
     "progress": "Progress",
+    "includeAccessories": "Add Accessories",
     "includeGames": "Add games",
     "putUpForSale": "Put {item} for sale?",
     "backToCollection": "Back {item} to your collection?",
