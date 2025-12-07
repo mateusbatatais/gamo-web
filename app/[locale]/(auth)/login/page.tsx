@@ -158,16 +158,8 @@ export default function LoginPage() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <SocialLoginButton
-                provider="google"
-                onError={(error) => showToast(error.message, "danger")}
-                returnUrl={returnUrl}
-              />
-              <SocialLoginButton
-                provider="microsoft"
-                onError={(error) => showToast(error.message, "danger")}
-                returnUrl={returnUrl}
-              />
+              <SocialLoginButton provider="google" returnUrl={returnUrl} />
+              <SocialLoginButton provider="microsoft" returnUrl={returnUrl} />
             </div>
             <div className="mt-6 flex justify-between text-sm">
               <Link href="/reset-password" className="text-primary hover:underline">

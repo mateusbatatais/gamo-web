@@ -23,6 +23,7 @@ export function useKitMutation() {
       showToast("Kit criado com sucesso", "success");
       queryClient.invalidateQueries({ queryKey: ["userKits"] });
       queryClient.invalidateQueries({ queryKey: ["userKitsPublic"] });
+      queryClient.invalidateQueries({ queryKey: ["marketplace"] });
       router.push("/marketplace");
     },
     onError: (error: Error) => {
@@ -41,6 +42,7 @@ export function useKitMutation() {
       showToast("Kit atualizado com sucesso", "success");
       queryClient.invalidateQueries({ queryKey: ["userKits"] });
       queryClient.invalidateQueries({ queryKey: ["userKitsPublic"] });
+      queryClient.invalidateQueries({ queryKey: ["marketplace"] });
       router.push("/marketplace");
     },
     onError: (error: Error) => {

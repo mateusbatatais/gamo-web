@@ -102,7 +102,7 @@ const MarketplaceCatalogComponent = ({ perPage }: MarketplaceCatalogComponentPro
   useEffect(() => {
     setItems([
       {
-        label: "Marketplace",
+        label: t("Marketplace.title"),
       },
     ]);
 

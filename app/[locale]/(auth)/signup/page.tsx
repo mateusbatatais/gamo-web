@@ -6,13 +6,12 @@ import { useTranslations, useLocale } from "next-intl";
 import { AuthForm } from "@/components/organisms/AuthForm/AuthForm";
 import { Link } from "@/i18n/navigation";
 import { SocialLoginButton } from "@/components/molecules/SocialLoginButton/SocialLoginButton";
-import { useToast } from "@/contexts/ToastContext";
+
 import { FieldError } from "@/@types/form.types";
 import { useSignup } from "@/hooks/auth/useSignup";
 
 export default function SignupPage() {
   const t = useTranslations();
-  const { showToast } = useToast();
   const locale = useLocale();
   const [errors, setErrors] = useState<Record<string, FieldError>>({});
   const [values, setValues] = useState({
@@ -126,14 +125,8 @@ export default function SignupPage() {
               <hr className="flex-1 border-gray-300 dark:border-gray-700" />
             </div>
             <div className="flex flex-col gap-2">
-              <SocialLoginButton
-                provider="google"
-                onError={(error) => showToast(error.message, "danger")}
-              />
-              <SocialLoginButton
-                provider="microsoft"
-                onError={(error) => showToast(error.message, "danger")}
-              />
+              <SocialLoginButton provider="google" />
+              <SocialLoginButton provider="microsoft" />
             </div>
             <div className="mt-6 flex justify-between text-sm">
               <Link href={`/login`} className="text-primary hover:underline">

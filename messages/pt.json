@@ -56,7 +56,8 @@
   "Breadcrumbs": {
     "game-catalog": "Catálogo de Jogos",
     "console-catalog": "Catálogo de Consoles",
-    "accessory-catalog": "Catálogo de Acessórios"
+    "accessory-catalog": "Catálogo de Acessórios",
+    "marketplace": "Marketplace"
   },
   "common": {
     "loading": "Carregando...",
@@ -1172,6 +1173,10 @@
       "nameMin": "O nome deve ter pelo menos 3 caracteres",
       "priceMin": "O preço deve ser maior que zero"
     }
+  },
+  "Marketplace": {
+    "title": "Marketplace",
+    "description": "Compre e venda itens de jogos com outros colecionadores"
   },
   "BetaAlert": {
     "message": "Estamos em fase beta! Algumas imagens e informações podem estar incorretas pois são obtidas via scraping. Podem haver itens faltando. Ajude-nos reportando qualquer problema que encontrar."

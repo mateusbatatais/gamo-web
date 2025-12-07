@@ -56,7 +56,8 @@
   "Breadcrumbs": {
     "game-catalog": "Game Catalog",
     "console-catalog": "Consoles Catalog",
-    "accessory-catalog": "Accessory Catalog"
+    "accessory-catalog": "Accessory Catalog",
+    "marketplace": "Marketplace"
   },
   "common": {
     "loading": "Loading...",
@@ -1170,6 +1171,10 @@
       "nameMin": "Name must be at least 3 characters",
       "priceMin": "Price must be greater than zero"
     }
+  },
+  "Marketplace": {
+    "title": "Marketplace",
+    "description": "Buy and sell gaming items with other collectors"
   },
   "BetaAlert": {
     "message": "We are in beta! Some images and information may be incorrect as they are gathered via scraping. Items might be missing. Please help us by reporting any issues you find."

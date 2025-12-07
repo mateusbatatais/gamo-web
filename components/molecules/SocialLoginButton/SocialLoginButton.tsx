@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 import { useTranslations } from "next-intl";
 import { GoogleIcon } from "@/components/atoms/Icons/GoogleIcon";
@@ -26,7 +26,7 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
   const { showToast } = useToast();
   const t = useTranslations("login");
 
-  const { login, loading, error } = useSocialLogin({
+  const { login, loading } = useSocialLogin({
     provider: provider === "google" ? "Google" : "Microsoft",
     errorMessages: {
       popupClosedByUser: t("errors.socialPopupClosed"),
@@ -35,20 +35,22 @@ export const SocialLoginButton: React.FC<SocialLoginButtonProps> = ({
     },
   });
 
-  useEffect(() => {
-    if (error) {
-      showToast(error.message, "danger");
-      onError?.(error);
-    }
-  }, [error, showToast, onError]);
-
   const handleLogin = async () => {
-    const token = await login();
-    if (token) {
-      showToast(t("success"), "success");
-      onSuccess?.(token);
-      if (returnUrl) {
-        window.location.href = returnUrl;
+    try {
+      const token = await login();
+      if (token) {
+        showToast(t("success"), "success");
+        onSuccess?.(token);
+        if (returnUrl) {
+          window.location.href = returnUrl;
+        }
+      }
+    } catch (error) {
+      // Trata erro uma única vez aqui
+      const errorMessage = error instanceof Error ? error.message : t("errors.socialLoginFailed");
+      showToast(errorMessage, "danger");
+      if (onError) {
+        onError(error instanceof Error ? error : new Error(errorMessage));
       }
     }
   };
