@@ -76,6 +76,9 @@ export function ConfirmationStep({
       .map((match) => ({
         matchId: match.id,
         confirmedGameId: match.confirmedGameId || match.suggestedGameId || null,
+        userData: match.confirmedConsoleIds
+          ? { confirmedConsoleIds: match.confirmedConsoleIds }
+          : undefined,
       }));
 
     if (matchesToConfirm.length === 0) return;

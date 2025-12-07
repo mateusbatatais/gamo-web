@@ -54,6 +54,7 @@ export interface ImportMatch {
   userPlatform?: string;
   suggestedPlatformId?: number | null;
   confirmedPlatformId?: number | null;
+  confirmedConsoleIds?: number[];
 
   userData: {
     progress?: number;

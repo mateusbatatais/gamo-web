@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
 import { Select } from "@/components/atoms/Select/Select";
+import { MultiSelect } from "@/components/atoms/MultiSelect/MultiSelect";
 import { ImportMatch } from "@/hooks/useGameImport";
 import { GameSearchModal } from "../GameSearchModal/GameSearchModal";
 import { Game } from "@/@types/catalog.types";
@@ -17,6 +18,12 @@ import { MatchFieldEditor } from "../MatchFieldEditor/MatchFieldEditor";
 interface GameImportMatchCardProps {
   match: ImportMatch;
   onConfirm: (matchId: number, confirmedGameId: number | null, newSuggestedGame?: Game) => void;
+}
+
+interface CompatibleConsole {
+  id: number;
+  console: { id: number; name: string };
+  variant: { id: number; name: string };
 }
 
 export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardProps) {
@@ -40,9 +47,37 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
         : "PENDING",
   );
   const [currentGame, setCurrentGame] = useState(match.suggestedGame);
+  const [compatibleConsoles, setCompatibleConsoles] = useState<CompatibleConsole[]>([]);
+  const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
   const [selectedPlatformId, setSelectedPlatformId] = useState<string>(
     match.confirmedPlatformId?.toString() || match.suggestedPlatformId?.toString() || "",
   );
+
+  // Carregar consoles compatíveis
+  useEffect(() => {
+    const fetchConsoles = async () => {
+      if (!currentGame?.slug) return;
+      try {
+        const consoles = await apiFetch<CompatibleConsole[]>(
+          `/user-consoles/compatible/${currentGame.slug}`,
+        );
+        setCompatibleConsoles(consoles);
+
+        // Lógica de pré-seleção
+        if (match.matchStatus !== "CONFIRMED") {
+          if (consoles.length === 0) {
+            setSelectedConsoleIds([-1]); // Avulso
+          } else {
+            setSelectedConsoleIds(consoles.map((c) => c.id)); // Selecionar todos
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching compatible consoles:", error);
+      }
+    };
+
+    fetchConsoles();
+  }, [currentGame?.slug, apiFetch, match.matchStatus]);
 
   // Encontrar melhor match de plataforma quando o componente carrega
   useEffect(() => {
@@ -103,7 +138,10 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
       if (gameId) {
         await apiFetch(`/user-games-import/match/${matchId}/game`, {
           method: "PUT",
-          body: { gameId },
+          body: {
+            gameId,
+            confirmedConsoleIds: selectedConsoleIds,
+          },
         });
         setCurrentStatus("CONFIRMED");
         if (game) setCurrentGame(game);
@@ -247,11 +285,10 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
               </div>
             </div>
 
-            {/* Plataforma Compacta */}
+            {/* Plataforma */}
             {(match.userPlatform || platformOptions.length > 0) && (
               <div className="flex items-center gap-2 ml-3 shrink-0">
                 {currentStatus === "CONFIRMED" && selectedPlatformName ? (
-                  // Plataforma como texto quando confirmado
                   <div className="text-right">
                     <p className="text-xs text-gray-600 dark:text-gray-400">Plataforma</p>
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
@@ -259,8 +296,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
                     </p>
                   </div>
                 ) : (
-                  // Seletor de plataforma quando pendente
-                  <div className="w-42">
+                  <div className="w-40">
                     <Select
                       options={[{ value: "", label: "Plataforma" }, ...platformOptions]}
                       value={selectedPlatformId}
@@ -277,6 +313,47 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
                 )}
               </div>
             )}
+
+            {/* Consoles */}
+            <div className="flex items-center gap-2 ml-3 shrink-0">
+              {currentStatus === "CONFIRMED" && selectedConsoleIds.length > 0 ? (
+                <div className="text-right">
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Consoles</p>
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {selectedConsoleIds.includes(-1)
+                      ? "Avulso"
+                      : `${selectedConsoleIds.length} selecionado(s)`}
+                  </p>
+                </div>
+              ) : (
+                <div className="w-56">
+                  <MultiSelect
+                    items={[
+                      { id: -1, name: "Adicionar como avulso" },
+                      ...compatibleConsoles.map((c) => ({
+                        id: c.id,
+                        name: `${c.console.name} (${c.variant.name})`,
+                      })),
+                    ]}
+                    selectedIds={selectedConsoleIds}
+                    onChange={(ids) => {
+                      if (ids.includes(-1)) {
+                        if (selectedConsoleIds.includes(-1) && ids.length > 1) {
+                          setSelectedConsoleIds(ids.filter((id) => id !== -1));
+                        } else {
+                          setSelectedConsoleIds([-1]);
+                        }
+                      } else {
+                        setSelectedConsoleIds(ids);
+                      }
+                    }}
+                    placeholder="Selecione os consoles"
+                    label=""
+                    disabled={isLoading || currentStatus === "CONFIRMED"}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         )}
 
