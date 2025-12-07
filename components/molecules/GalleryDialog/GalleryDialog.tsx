@@ -26,6 +26,11 @@ export const GalleryDialog = ({
   const [isLoading, setIsLoading] = useState(true);
   const imageRef = useRef<HTMLImageElement>(null);
 
+  // Swipe state
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 50;
+
   const isImageLoaded = () => {
     return imageRef.current?.complete && imageRef.current?.naturalHeight !== 0;
   };
@@ -38,15 +43,52 @@ export const GalleryDialog = ({
   }, [open, initialIndex]);
 
   const handlePrev = () => {
-    const newIndex = currentIndex > 0 ? currentIndex - 1 : images.length - 1;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
     setIsLoading(true);
   };
 
   const handleNext = () => {
-    const newIndex = currentIndex < images.length - 1 ? currentIndex + 1 : 0;
-    setCurrentIndex(newIndex);
+    setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
     setIsLoading(true);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        handlePrev();
+      } else if (e.key === "ArrowRight") {
+        handleNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, images]);
+
+  // Swipe handlers
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      handleNext();
+    }
+    if (isRightSwipe) {
+      handlePrev();
+    }
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -70,16 +112,12 @@ export const GalleryDialog = ({
     <MuiDialog
       open={open}
       onClose={onClose}
-      fullWidth
-      maxWidth="lg"
+      fullScreen
       className="custom-dialog-root"
       sx={{
         "& .MuiDialog-paper": {
-          borderRadius: "var(--border-radius-xl)",
           background: "var(--color-neutral-50)",
           color: "var(--color-neutral-900)",
-          maxHeight: "90vh",
-          height: "90vh",
           display: "flex",
           flexDirection: "column",
           "@apply dark:bg-gray-800 dark:text-neutral-100": {},
@@ -95,7 +133,12 @@ export const GalleryDialog = ({
         icon={<X size={24} />}
       ></Button>
 
-      <div className="relative flex flex-col items-center bg-neutral-50 dark:bg-gray-800 flex-grow">
+      <div
+        className="relative flex flex-col items-center bg-neutral-50 dark:bg-gray-800 flex-grow"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <Button
           icon={<ChevronLeft size={30} />}
           aria-label="previous"
@@ -128,7 +171,7 @@ export const GalleryDialog = ({
             alt={`${gameName} screenshot ${currentIndex + 1}`}
             fill
             className="object-contain"
-            sizes="(max-width: 768px) 100vw, 80vw"
+            sizes="100vw"
             onLoad={handleImageLoad}
             onError={() => setIsLoading(false)}
           />
