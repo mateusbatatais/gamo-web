@@ -209,6 +209,10 @@ export const ConsoleForm = ({
     initialData?.storageOptionId ?? undefined,
   );
 
+  useEffect(() => {
+    setSelectedStorageOptionId(initialData?.storageOptionId ?? undefined);
+  }, [initialData?.storageOptionId]);
+
   const [isAccessoriesOpen, setIsAccessoriesOpen] = useState(false);
   const [selectedVariants, setSelectedVariants] = useState<
     Record<number, SelectedAccessoryVariant>
