@@ -7,7 +7,7 @@ import RecentActivitySection from "@/components/organisms/Home/RecentActivitySec
 
 export default function HomeTemplate() {
   return (
-    <div className="space-y-12">
+    <main className="space-y-12">
       <HeroSection />
       <TopUsersSection type="COLLECTION" />
       <HomeMapSection />
@@ -23,6 +23,6 @@ export default function HomeTemplate() {
         </div>
       </div>
       <TopUsersSection type="SELLING" />
-    </div>
+    </main>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -28,6 +28,8 @@ import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesU
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import { useKitMutation } from "@/hooks/useKitMutation";
 import { useToast } from "@/contexts/ToastContext";
+import { LocationData, LocationInput } from "@/components/molecules/LocationInput/LocationInput";
+import { useAccount } from "@/hooks/account/useUserAccount";
 
 interface KitFormProps {
   initialData?: UserKit;
@@ -38,10 +40,28 @@ export const KitForm = ({ initialData }: KitFormProps) => {
   const router = useRouter();
   const { createKit, updateKit, isPending } = useKitMutation();
   const { showToast } = useToast();
+  const { profileQuery } = useAccount();
 
   const [selectedGames, setSelectedGames] = useState<CatalogGameItem[]>([]);
   const [selectedConsoles, setSelectedConsoles] = useState<CatalogConsoleItem[]>([]);
   const [selectedAccessories, setSelectedAccessories] = useState<CatalogAccessoryItem[]>([]);
+
+  const [locationData, setLocationData] = useState<LocationData | null>(() => {
+    if (initialData?.city) {
+      return {
+        formattedAddress: initialData.address || `${initialData.city}, ${initialData.state || ""}`,
+        address: initialData.address || "",
+        zipCode: initialData.zipCode || "",
+        city: initialData.city,
+        state: initialData.state || "",
+        latitude: initialData.latitude || 0,
+        longitude: initialData.longitude || 0,
+      };
+    }
+    return null;
+  });
+
+  const hasPrefilledLocation = useRef(false);
 
   const {
     photoMain,
@@ -81,6 +101,30 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       price: 0,
     },
   });
+
+  // Prefill location from user profile
+  useEffect(() => {
+    if (hasPrefilledLocation.current) return;
+
+    if (
+      !locationData &&
+      profileQuery.data &&
+      !initialData &&
+      (profileQuery.data.address || profileQuery.data.city)
+    ) {
+      setLocationData({
+        formattedAddress:
+          profileQuery.data.address || `${profileQuery.data.city}, ${profileQuery.data.state}`,
+        address: profileQuery.data.address || "",
+        zipCode: profileQuery.data.zipCode || "",
+        city: profileQuery.data.city || "",
+        state: profileQuery.data.state || "",
+        latitude: profileQuery.data.latitude || 0,
+        longitude: profileQuery.data.longitude || 0,
+      });
+      hasPrefilledLocation.current = true;
+    }
+  }, [profileQuery.data, locationData, initialData]);
 
   useEffect(() => {
     if (initialData) {
@@ -138,6 +182,12 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       return;
     }
 
+    // Validate location
+    if (!locationData || !locationData.city) {
+      showToast(t("locationRequired") || "Localização é obrigatória", "danger");
+      return;
+    }
+
     const { mainPhotoUrl, additionalUrls } = await uploadImages();
 
     // Split items into existing (UserItems) and new (CatalogItems)
@@ -191,6 +241,12 @@ export const KitForm = ({ initialData }: KitFormProps) => {
       newAccessories,
       photoMain: mainPhotoUrl || undefined,
       photos: additionalUrls,
+      address: locationData?.address || undefined,
+      zipCode: locationData?.zipCode || undefined,
+      city: locationData?.city || undefined,
+      state: locationData?.state || undefined,
+      latitude: locationData?.latitude || undefined,
+      longitude: locationData?.longitude || undefined,
     };
 
     if (initialData) {
@@ -255,6 +311,14 @@ export const KitForm = ({ initialData }: KitFormProps) => {
           error={errors.description?.message}
           placeholder={t("descriptionPlaceholder")}
           rows={4}
+        />
+
+        <LocationInput
+          label={t("location") || "Localização"}
+          placeholder={t("locationPlaceholder") || "Digite a localização"}
+          value={locationData}
+          onChange={setLocationData}
+          data-testid="input-location"
         />
 
         <div className="mt-6">

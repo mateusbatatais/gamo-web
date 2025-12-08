@@ -1182,6 +1182,9 @@
     "successMessage": "Kit criado com sucesso!",
     "errorMessage": "Erro ao criar kit. Tente novamente.",
     "selectItemWarning": "Selecione pelo menos um item para o kit",
+    "location": "Localização",
+    "locationPlaceholder": "Digite a localização",
+    "locationRequired": "Localização é obrigatória",
     "validation": {
       "nameMin": "O nome deve ter pelo menos 3 caracteres",
       "priceMin": "O preço deve ser maior que zero"
