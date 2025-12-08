@@ -595,7 +595,13 @@
     "priceRequired": "Price is required for sale",
     "locationSuccess": "Location obtained successfully!",
     "locationRequired": "Location is required",
-    "noConsoles": "You do not have compatible consoles."
+    "noConsoles": "You do not have compatible consoles.",
+    "wishlistTitle": "Adding to Wishlist",
+    "wishlistSubmit": "Add to Wishlist",
+    "maxPrice": "Max Search Price",
+    "observations": "Observations",
+    "saleTitle": "Put up for Sale",
+    "saleSubmit": "Put up for Sale"
   },
   "HomePage": {
     "construction": "Under construction",
@@ -713,7 +719,9 @@
     "titleMarket": "Put game up for sale",
     "noResultsFound": "Didn't find the game?",
     "includeManually": "Include manually",
-    "bulkImportButton": "Want to add many games? Do bulk import"
+    "bulkImportButton": "Want to add many games? Do bulk import",
+    "saleTitle": "Put up for Sale",
+    "saleSubmit": "Put up for Sale"
   },
   "CreateGameModal": {
     "title": "Include Game Manually",

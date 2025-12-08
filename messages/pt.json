@@ -597,7 +597,13 @@
     "priceRequired": "Preço é obrigatório para venda",
     "locationSuccess": "Localização obtida com sucesso!",
     "locationRequired": "Localização é obrigatória",
-    "noConsoles": "Você não possui consoles compatíveis."
+    "noConsoles": "Você não possui consoles compatíveis.",
+    "wishlistTitle": "Adicionando à lista de desejos",
+    "wishlistSubmit": "Adicionar à lista de desejos",
+    "maxPrice": "Preço máximo de busca",
+    "observations": "Observações",
+    "saleTitle": "Colocar à venda",
+    "saleSubmit": "Colocar à venda"
   },
   "HomePage": {
     "construction": "Em construção",
@@ -705,6 +711,8 @@
     "selectVariant": "Selecione um modelo",
     "selectSkin": "Selecione uma edição ",
     "titleMarket": "Colocar console a venda",
+    "saleTitle": "Colocar console à venda",
+    "wishlistTitle": "Adicionar à lista de desejos",
     "includeManually": "Incluir manualmente"
   },
   "AddGame": {
@@ -713,6 +721,8 @@
     "searchPlaceholder": "Buscar jogos...",
     "popularGames": "Jogos Populares",
     "titleMarket": "Colocar jogo à venda",
+    "saleTitle": "Colocar jogo à venda",
+    "wishlistTitle": "Adicionar à lista de desejos",
     "noResultsFound": "Não encontrou o jogo?",
     "includeManually": "Incluir manualmente",
     "bulkImportButton": "Quer adicionar muitos jogos? Faça a importação em lote"

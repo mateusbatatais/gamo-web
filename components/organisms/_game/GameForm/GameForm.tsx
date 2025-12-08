@@ -57,6 +57,7 @@ interface GameFormProps {
   onCancel?: () => void;
   formId?: string;
   hideButtons?: boolean;
+  forcedStatus?: CollectionStatus;
 }
 
 export const GameForm = ({
@@ -70,6 +71,7 @@ export const GameForm = ({
   onCancel,
   formId,
   hideButtons = false,
+  forcedStatus,
 }: GameFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
@@ -134,11 +136,12 @@ export const GameForm = ({
 
   const [formData, setFormData] = useState(() => {
     const status =
-      mode === "edit"
+      forcedStatus ||
+      (mode === "edit"
         ? initialData?.status
         : mode === "create" && type === "trade"
           ? "SELLING"
-          : "OWNED";
+          : "OWNED");
     return {
       description: initialData?.description || "",
       status,
@@ -394,7 +397,7 @@ export const GameForm = ({
           </div>
         </div>
       )}
-      {mode === "create" && type === "trade" && (
+      {mode === "create" && type === "trade" && !forcedStatus && (
         <div className="flex space-x-4">
           <Radio
             name="status"
@@ -444,12 +447,14 @@ export const GameForm = ({
           />
         </div>
 
-        <ConsoleSelector
-          gameSlug={gameSlug}
-          platformId={formData.platformId ? Number(formData.platformId) : undefined}
-          selectedConsoleIds={selectedConsoleIds}
-          onChange={setSelectedConsoleIds}
-        />
+        {formData.status !== "SELLING" && (
+          <ConsoleSelector
+            gameSlug={gameSlug}
+            platformId={formData.platformId ? Number(formData.platformId) : undefined}
+            selectedConsoleIds={selectedConsoleIds}
+            onChange={setSelectedConsoleIds}
+          />
+        )}
       </div>
       {(type === "trade" || showTrade) && (
         <>
@@ -460,6 +465,7 @@ export const GameForm = ({
             t={t}
             showPrice={true}
             priceError={errors.price}
+            priceLabel={formData.status === "LOOKING_FOR" ? t("maxPrice") : undefined}
           />
 
           {(formData.status === "SELLING" || formData.status === "LOOKING_FOR") && (
@@ -478,7 +484,7 @@ export const GameForm = ({
             name="description"
             value={formData.description}
             onChange={handleChange}
-            label={t("description")}
+            label={formData.status === "LOOKING_FOR" ? t("observations") : t("description")}
             placeholder={t("descriptionPlaceholder")}
             rows={4}
           />
@@ -607,7 +613,11 @@ export const GameForm = ({
               isPending || uploadLoading
                 ? t("saving")
                 : mode === "create"
-                  ? t("addToCollection")
+                  ? formData.status === "LOOKING_FOR"
+                    ? t("wishlistSubmit")
+                    : formData.status === "SELLING"
+                      ? t("saleSubmit")
+                      : t("addToCollection")
                   : t("saveChanges")
             }
           />

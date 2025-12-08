@@ -21,6 +21,7 @@ interface TradeSectionProps {
   t: (key: string) => string;
   showPrice?: boolean;
   priceError?: string;
+  priceLabel?: string;
 }
 
 export const TradeSection = ({
@@ -30,6 +31,7 @@ export const TradeSection = ({
   t: translate,
   showPrice = true,
   priceError,
+  priceLabel,
 }: TradeSectionProps) => {
   return (
     <div className="space-y-4">
@@ -50,7 +52,7 @@ export const TradeSection = ({
               name="price"
               value={formData.price}
               onChange={handleChange}
-              label={translate("price")}
+              label={priceLabel || translate("price")}
               placeholder={translate("pricePlaceholder")}
               type="number"
               min="0"

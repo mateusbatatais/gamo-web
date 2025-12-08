@@ -38,6 +38,7 @@ interface TradeAccessoryFormProps {
   onCancel?: () => void;
   formId?: string;
   hideButtons?: boolean;
+  forcedStatus?: "SELLING" | "LOOKING_FOR";
 }
 
 export const TradeAccessoryForm = ({
@@ -49,6 +50,7 @@ export const TradeAccessoryForm = ({
   onCancel,
   formId,
   hideButtons,
+  forcedStatus,
 }: TradeAccessoryFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserAccessory, updateUserAccessory, isPending } = useUserAccessoryMutation();
@@ -118,6 +120,7 @@ export const TradeAccessoryForm = ({
       showLocation={true}
       formId={formId}
       hideButtons={hideButtons}
+      forcedStatus={forcedStatus}
     />
   );
 };

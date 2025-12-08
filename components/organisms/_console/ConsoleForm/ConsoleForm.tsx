@@ -59,6 +59,7 @@ interface ConsoleFormProps {
   onCancel?: () => void;
   formId?: string;
   hideButtons?: boolean;
+  forcedStatus?: CollectionStatus;
 }
 
 interface SelectedAccessoryVariant {
@@ -78,6 +79,7 @@ export const ConsoleForm = ({
   onCancel,
   formId,
   hideButtons = false,
+  forcedStatus,
 }: ConsoleFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
@@ -144,11 +146,12 @@ export const ConsoleForm = ({
 
   const [formData, setFormData] = useState(() => {
     const status =
-      mode === "edit"
+      forcedStatus ||
+      (mode === "edit"
         ? initialData?.status
         : mode === "create" && type === "trade"
           ? "SELLING"
-          : "OWNED";
+          : "OWNED");
 
     return {
       description: initialData?.description || "",
@@ -523,7 +526,7 @@ export const ConsoleForm = ({
         </div>
       )}
 
-      {mode === "create" && type === "trade" && (
+      {mode === "create" && type === "trade" && !forcedStatus && (
         <div className="flex space-x-4">
           <Radio
             name="status"
@@ -579,6 +582,7 @@ export const ConsoleForm = ({
             t={t}
             showPrice={true}
             priceError={errors.price}
+            priceLabel={formData.status === "LOOKING_FOR" ? t("maxPrice") : undefined}
           />
 
           {(formData.status === "SELLING" || formData.status === "LOOKING_FOR") && (
@@ -596,7 +600,7 @@ export const ConsoleForm = ({
             name="description"
             value={formData.description}
             onChange={handleChange}
-            label={t("description")}
+            label={formData.status === "LOOKING_FOR" ? t("observations") : t("description")}
             placeholder={t("descriptionPlaceholder")}
             rows={4}
           />
@@ -620,7 +624,7 @@ export const ConsoleForm = ({
         </>
       )}
 
-      {accessoryVariants && accessoryVariants.length > 0 && (
+      {accessoryVariants && accessoryVariants.length > 0 && formData.status !== "LOOKING_FOR" && (
         <Collapse
           title={t("includeAccessories")}
           defaultOpen={false}
@@ -635,16 +639,18 @@ export const ConsoleForm = ({
         </Collapse>
       )}
 
-      <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
-        <GameSelector
-          consoleId={consoleId}
-          platformIds={consoleDetails?.platformIds}
-          selectedVariants={selectedGameVariants}
-          onQuantityChange={handleGameQuantityChange}
-          onRemoveGame={handleRemoveGame}
-          onAddGame={handleAddGame}
-        />
-      </Collapse>
+      {formData.status !== "LOOKING_FOR" && (
+        <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
+          <GameSelector
+            consoleId={consoleId}
+            platformIds={consoleDetails?.platformIds}
+            selectedVariants={selectedGameVariants}
+            onQuantityChange={handleGameQuantityChange}
+            onRemoveGame={handleRemoveGame}
+            onAddGame={handleAddGame}
+          />
+        </Collapse>
+      )}
 
       {currentCropImage && (
         <ImageCropper
@@ -660,7 +666,15 @@ export const ConsoleForm = ({
           <Button
             type="submit"
             loading={isPending || uploadLoading}
-            label={mode === "create" ? t("addToCollection") : t("saveChanges")}
+            label={
+              mode === "create"
+                ? formData.status === "LOOKING_FOR"
+                  ? t("wishlistSubmit")
+                  : formData.status === "SELLING"
+                    ? t("saleSubmit")
+                    : t("addToCollection")
+                : t("saveChanges")
+            }
           />
         </div>
       )}

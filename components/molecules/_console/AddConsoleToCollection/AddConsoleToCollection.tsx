@@ -7,9 +7,10 @@ import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { CardActionButtons } from "../../CardActionButtons/CardActionButtons";
 import { usePendingAction } from "@/contexts/PendingActionContext";
 import { useModalUrl } from "@/hooks/useModalUrl";
-import { TradeConsoleForm } from "../TradeConsoleForm/TradeConsoleForm";
 import { SimpleConsoleForm } from "../SimpleConsoleForm/SimpleConsoleForm";
+import { TradeConsoleForm } from "../TradeConsoleForm/TradeConsoleForm";
 import { useFavorite } from "@/hooks/useFavorite";
+import { StatusType } from "../../TradeFormBase/TradeFormBase";
 import { useIsMutating } from "@tanstack/react-query";
 
 interface Props {
@@ -18,8 +19,9 @@ interface Props {
   consoleId: number;
   skinId: number;
   onAddSuccess?: () => void;
-  isFavorite: boolean;
-  onFavoriteToggle?: (isFavorite: boolean) => void;
+  isFavorite?: boolean;
+  onFavoriteToggle?: (newState: boolean) => void;
+  forcedTradeStatus?: StatusType;
 }
 
 export function AddConsoleToCollection({
@@ -28,8 +30,9 @@ export function AddConsoleToCollection({
   skinId,
   consoleId,
   onAddSuccess,
-  isFavorite,
+  isFavorite = false,
   onFavoriteToggle,
+  forcedTradeStatus,
 }: Props) {
   const t = useTranslations("AddConsole");
   const tTrade = useTranslations("TradeForm");
@@ -104,11 +107,22 @@ export function AddConsoleToCollection({
       <Dialog
         open={isTradeModalOpen}
         onClose={closeTradeModal}
-        title={t("titleMarket")}
+        title={
+          forcedTradeStatus === "LOOKING_FOR"
+            ? t("wishlistTitle")
+            : forcedTradeStatus === "SELLING"
+              ? t("saleTitle")
+              : t("titleMarket")
+        }
         data-testid="trade-modal"
         actionButtons={{
           confirm: {
-            label: tTrade("publish"),
+            label:
+              forcedTradeStatus === "LOOKING_FOR"
+                ? tTrade("wishlistSubmit")
+                : forcedTradeStatus === "SELLING"
+                  ? tTrade("saleSubmit")
+                  : tTrade("publish"),
             type: "submit",
             form: tradeFormId,
             loading: isConsolePending,
@@ -131,6 +145,7 @@ export function AddConsoleToCollection({
           onCancel={closeTradeModal}
           formId={tradeFormId}
           hideButtons
+          forcedStatus={forcedTradeStatus}
         />
       </Dialog>
 

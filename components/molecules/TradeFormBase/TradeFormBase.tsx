@@ -65,6 +65,7 @@ export interface TradeFormBaseProps<C extends string = string> {
   showLocation?: boolean;
   formId?: string;
   hideButtons?: boolean;
+  forcedStatus?: StatusType;
 }
 
 interface FormDataType<C extends string = string> {
@@ -97,6 +98,7 @@ export function TradeFormBase<C extends string = string>({
   showLocation = true,
   formId,
   hideButtons = false,
+  forcedStatus,
 }: TradeFormBaseProps<C>) {
   const { profileQuery } = useAccount();
   const [locationData, setLocationData] = useState<LocationData | null>(() => {
@@ -156,7 +158,7 @@ export function TradeFormBase<C extends string = string>({
 
   const [formData, setFormData] = useState<FormDataType<C>>({
     description: initialData?.description ?? "",
-    status: initialData?.status || "SELLING",
+    status: forcedStatus || initialData?.status || "SELLING",
     price: initialData?.price ? String(initialData.price) : "",
     hasBox: initialData?.hasBox ?? false,
     hasManual: initialData?.hasManual ?? false,
@@ -292,22 +294,24 @@ export function TradeFormBase<C extends string = string>({
     <form id={formId} onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col gap-4">
         <div>
-          <div className="flex space-x-4">
-            <Radio
-              name="status"
-              value="SELLING"
-              checked={formData.status === "SELLING"}
-              onChange={() => handleRadioChange("status", "SELLING")}
-              label={translate("statusSelling")}
-            />
-            <Radio
-              name="status"
-              value="LOOKING_FOR"
-              checked={formData.status === "LOOKING_FOR"}
-              onChange={() => handleRadioChange("status", "LOOKING_FOR")}
-              label={translate("statusLookingFor")}
-            />
-          </div>
+          {!forcedStatus && (
+            <div className="flex space-x-4">
+              <Radio
+                name="status"
+                value="SELLING"
+                checked={formData.status === "SELLING"}
+                onChange={() => handleRadioChange("status", "SELLING")}
+                label={translate("statusSelling")}
+              />
+              <Radio
+                name="status"
+                value="LOOKING_FOR"
+                checked={formData.status === "LOOKING_FOR"}
+                onChange={() => handleRadioChange("status", "LOOKING_FOR")}
+                label={translate("statusLookingFor")}
+              />
+            </div>
+          )}
         </div>
 
         <MainImageUpload
@@ -332,6 +336,9 @@ export function TradeFormBase<C extends string = string>({
           t={translate}
           showPrice={true}
           priceError={errors.price}
+          priceLabel={
+            formData.status === "LOOKING_FOR" ? translate("maxPrice") : translate("price")
+          }
         />
 
         {showLocation && (formData.status === "SELLING" || formData.status === "LOOKING_FOR") && (
@@ -350,7 +357,9 @@ export function TradeFormBase<C extends string = string>({
           name="description"
           value={formData.description}
           onChange={handleChange}
-          label={translate("description")}
+          label={
+            formData.status === "LOOKING_FOR" ? translate("observations") : translate("description")
+          }
           placeholder={translate("descriptionPlaceholder")}
           rows={4}
         />
@@ -392,7 +401,11 @@ export function TradeFormBase<C extends string = string>({
                 ? translate("saving")
                 : initialData?.id
                   ? translate("saveChanges")
-                  : translate("publish")
+                  : formData.status === "LOOKING_FOR"
+                    ? translate("wishlistSubmit")
+                    : formData.status === "SELLING"
+                      ? translate("saleSubmit")
+                      : translate("publish")
             }
           />
         </div>

@@ -97,7 +97,9 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               <EmptyCard
                 text={t("txtConsole")}
                 buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-                buttonLink="/user/collection/consoles/add?type=trade"
+                buttonLink={`/user/collection/consoles/add?type=trade&status=${
+                  type === "selling" ? "SELLING" : "LOOKING_FOR"
+                }`}
                 viewMode="list"
               />
             )}
@@ -126,7 +128,9 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
                       buttonLabel={
                         type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")
                       }
-                      buttonLink="/user/collection/consoles/add?type=trade"
+                      buttonLink={`/user/collection/consoles/add?type=trade&status=${
+                        type === "selling" ? "SELLING" : "LOOKING_FOR"
+                      }`}
                       viewMode="table"
                       space={false}
                     />
@@ -198,7 +202,9 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
             <EmptyCard
               text={t("txtConsole")}
               buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-              buttonLink="/user/collection/consoles/add?type=trade"
+              buttonLink={`/user/collection/consoles/add?type=trade&status=${
+                type === "selling" ? "SELLING" : "LOOKING_FOR"
+              }`}
               viewMode="list"
             />
           )}
@@ -253,7 +259,9 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               <EmptyCard
                 text={t("txtConsole")}
                 buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-                buttonLink="/user/collection/consoles/add?type=trade"
+                buttonLink={`/user/collection/consoles/add?type=trade&status=${
+                  type === "selling" ? "SELLING" : "LOOKING_FOR"
+                }`}
                 viewMode="compact"
               />
             </div>
@@ -360,7 +368,9 @@ export const ConsolesSection: React.FC<ConsolesSectionProps> = ({
               <EmptyCard
                 text={t("txtConsole")}
                 buttonLabel={type === "selling" ? t("txtSellConsole") : t("txtLookForConsole")}
-                buttonLink="/user/collection/consoles/add?type=trade"
+                buttonLink={`/user/collection/consoles/add?type=trade&status=${
+                  type === "selling" ? "SELLING" : "LOOKING_FOR"
+                }`}
                 viewMode="card"
               />
             </div>

@@ -69,7 +69,9 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
               <EmptyCard
                 text={t("txtGame")}
                 buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-                buttonLink="/user/collection/games/add?type=trade"
+                buttonLink={`/user/collection/games/add?type=trade&status=${
+                  type === "selling" ? "SELLING" : "LOOKING_FOR"
+                }`}
                 viewMode="list"
               />
             )}
@@ -96,7 +98,9 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
                     <EmptyCard
                       text={t("txtGame")}
                       buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-                      buttonLink="/user/collection/games/add?type=trade"
+                      buttonLink={`/user/collection/games/add?type=trade&status=${
+                        type === "selling" ? "SELLING" : "LOOKING_FOR"
+                      }`}
                       viewMode="table"
                       space={false}
                     />
@@ -121,7 +125,9 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
             <EmptyCard
               text={t("txtGame")}
               buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-              buttonLink="/user/collection/games/add?type=trade"
+              buttonLink={`/user/collection/games/add?type=trade&status=${
+                type === "selling" ? "SELLING" : "LOOKING_FOR"
+              }`}
               viewMode="list"
             />
           )}
@@ -141,7 +147,9 @@ export const GamesSection: React.FC<GamesSectionProps> = ({
             <EmptyCard
               text={t("txtGame")}
               buttonLabel={type === "selling" ? t("txtSellGame") : t("txtLookForGame")}
-              buttonLink="/user/collection/games/add?type=trade"
+              buttonLink={`/user/collection/games/add?type=trade&status=${
+                type === "selling" ? "SELLING" : "LOOKING_FOR"
+              }`}
               viewMode={viewMode === "grid" ? "card" : "compact"}
             />
           )}

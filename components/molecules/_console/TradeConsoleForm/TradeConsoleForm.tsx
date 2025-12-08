@@ -43,6 +43,7 @@ interface TradeConsoleFormProps {
   onCancel?: () => void;
   formId?: string;
   hideButtons?: boolean;
+  forcedStatus?: "SELLING" | "LOOKING_FOR";
 }
 
 interface SelectedAccessoryVariant {
@@ -60,6 +61,7 @@ export const TradeConsoleForm = ({
   onCancel,
   formId,
   hideButtons,
+  forcedStatus,
 }: TradeConsoleFormProps) => {
   const t = useTranslations("TradeForm");
   const { createUserConsole, updateUserConsole, isPending } = useUserConsoleMutation();
@@ -231,29 +233,33 @@ export const TradeConsoleForm = ({
         />
       )}
 
-      <Collapse
-        title={t("includeAccessories")}
-        defaultOpen={false}
-        onToggle={handleAccessoriesToggle}
-      >
-        <AccessorySelector
-          variantsByType={variantsByType || {}}
-          selectedVariants={selectedVariants}
-          onQuantityChange={handleQuantityChange}
-          isLoading={accessoriesLoading}
-        />
-      </Collapse>
+      {forcedStatus !== "LOOKING_FOR" && (
+        <>
+          <Collapse
+            title={t("includeAccessories")}
+            defaultOpen={false}
+            onToggle={handleAccessoriesToggle}
+          >
+            <AccessorySelector
+              variantsByType={variantsByType || {}}
+              selectedVariants={selectedVariants}
+              onQuantityChange={handleQuantityChange}
+              isLoading={accessoriesLoading}
+            />
+          </Collapse>
 
-      <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
-        <GameSelector
-          consoleId={consoleId}
-          platformIds={consoleDetails?.platformIds}
-          selectedVariants={selectedGameVariants}
-          onQuantityChange={handleGameQuantityChange}
-          onRemoveGame={handleRemoveGame}
-          onAddGame={handleAddGame}
-        />
-      </Collapse>
+          <Collapse title={t("includeGames")} defaultOpen={false} onToggle={handleGamesToggle}>
+            <GameSelector
+              consoleId={consoleId}
+              platformIds={consoleDetails?.platformIds}
+              selectedVariants={selectedGameVariants}
+              onQuantityChange={handleGameQuantityChange}
+              onRemoveGame={handleRemoveGame}
+              onAddGame={handleAddGame}
+            />
+          </Collapse>
+        </>
+      )}
     </>
   );
 
@@ -270,6 +276,7 @@ export const TradeConsoleForm = ({
       showLocation={true}
       formId={formId}
       hideButtons={hideButtons}
+      forcedStatus={forcedStatus}
     />
   );
 };

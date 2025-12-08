@@ -38,6 +38,7 @@ interface TradeGameFormProps {
   onCancel?: () => void;
   formId?: string;
   hideButtons?: boolean;
+  forcedStatus?: "SELLING" | "LOOKING_FOR";
 }
 
 export const TradeGameForm = ({
@@ -49,6 +50,7 @@ export const TradeGameForm = ({
   onCancel,
   formId,
   hideButtons,
+  forcedStatus,
 }: TradeGameFormProps) => {
   const [selectedPlatformId, setSelectedPlatformId] = useState<number>(
     initialData?.platformId || (platformOptions[0] ? Number(platformOptions[0].value) : 0),
@@ -102,17 +104,20 @@ export const TradeGameForm = ({
               options={platformOptions}
             />
           )}
-          <ConsoleSelector
-            gameSlug={gameSlug}
-            platformId={selectedPlatformId}
-            selectedConsoleIds={selectedConsoleIds}
-            onChange={setSelectedConsoleIds}
-          />
+          {forcedStatus !== "SELLING" && (
+            <ConsoleSelector
+              gameSlug={gameSlug}
+              platformId={selectedPlatformId}
+              selectedConsoleIds={selectedConsoleIds}
+              onChange={setSelectedConsoleIds}
+            />
+          )}
         </div>
       }
       showLocation={true}
       formId={formId}
       hideButtons={hideButtons}
+      forcedStatus={forcedStatus}
     />
   );
 };

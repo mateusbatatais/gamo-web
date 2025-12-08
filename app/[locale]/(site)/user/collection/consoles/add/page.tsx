@@ -227,7 +227,13 @@ export default function AddConsolePage() {
   return (
     <div className="container mx-auto max-w-6xl sm:px-4">
       <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
-        {type === "collection" ? t("title") : t("titleMarket")}
+        {type === "collection"
+          ? t("title")
+          : searchParams.get("status") === "LOOKING_FOR"
+            ? t("wishlistTitle")
+            : searchParams.get("status") === "SELLING"
+              ? t("saleTitle")
+              : t("titleMarket")}
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-8">
@@ -459,6 +465,11 @@ export default function AddConsolePage() {
                   consoleVariantId={selectedVariant.id}
                   variantSlug={selectedVariant.slug}
                   skinId={selectedSkin?.id || null}
+                  forcedStatus={
+                    (["SELLING", "LOOKING_FOR"].includes(searchParams.get("status") || "")
+                      ? searchParams.get("status")
+                      : undefined) as "SELLING" | "LOOKING_FOR" | undefined
+                  }
                   onSuccess={() => {
                     window.location.href = `/user/${user?.slug}${type === "collection" ? "" : "/market"}`;
                   }}

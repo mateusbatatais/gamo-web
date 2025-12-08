@@ -13,6 +13,8 @@ import { SimpleGameForm } from "../SimpleGameForm/SimpleGameForm";
 import { usePlatformsCache } from "@/hooks/usePlatformsCache";
 import { TradeGameForm } from "../TradeGameForm/TradeGameForm";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import { useTranslations } from "next-intl";
+import { StatusType } from "../../TradeFormBase/TradeFormBase";
 
 interface Props {
   gameId: number;
@@ -21,6 +23,7 @@ interface Props {
   onAddSuccess?: () => void;
   isFavorite?: boolean;
   onFavoriteToggle?: (newState: boolean) => void;
+  forcedTradeStatus?: StatusType;
 }
 
 export function AddGameToCollection({
@@ -30,7 +33,9 @@ export function AddGameToCollection({
   onAddSuccess,
   isFavorite = false,
   onFavoriteToggle,
+  forcedTradeStatus,
 }: Props) {
+  const t = useTranslations("TradeForm");
   const { user } = useAuth();
   const router = useRouter();
   const { setPendingAction } = usePendingAction();
@@ -112,16 +117,27 @@ export function AddGameToCollection({
       <Dialog
         open={isTradeModalOpen}
         onClose={closeTradeModal}
-        title={"Anunciar jogo"}
+        title={
+          forcedTradeStatus === "LOOKING_FOR"
+            ? t("wishlistTitle")
+            : forcedTradeStatus === "SELLING"
+              ? t("saleTitle")
+              : t("title") // Default or existing title key? 'Anunciar jogo' was hardcoded. Checking translations...
+        }
         actionButtons={{
           confirm: {
-            label: "Anunciar",
+            label:
+              forcedTradeStatus === "LOOKING_FOR"
+                ? t("wishlistSubmit")
+                : forcedTradeStatus === "SELLING"
+                  ? t("saleSubmit")
+                  : t("publish"),
             type: "submit",
             form: tradeFormId,
             loading: isGamePending,
           },
           cancel: {
-            label: "Cancelar",
+            label: t("cancel"),
             onClick: closeTradeModal,
             disabled: isGamePending,
           },
@@ -138,6 +154,7 @@ export function AddGameToCollection({
             onAddSuccess?.();
           }}
           onCancel={closeTradeModal}
+          forcedStatus={forcedTradeStatus}
         />
       </Dialog>
 
