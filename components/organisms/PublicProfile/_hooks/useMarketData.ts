@@ -92,6 +92,8 @@ export function useMarketData({
     searchQuery,
     gameFilters.selectedGenres,
     gameFilters.selectedPlatforms,
+    false, // showOnlyFavorites
+    true, // standalone - only show games not associated with consoles
   );
 
   const {
