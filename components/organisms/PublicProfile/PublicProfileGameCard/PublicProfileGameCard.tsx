@@ -65,7 +65,11 @@ export const PublicProfileGameCard = ({
     })) || [];
 
   const handleDelete = () => {
-    deleteGame(game.id || 0);
+    deleteGame(game.id || 0, {
+      onSuccess: () => {
+        setShowDeleteModal(false);
+      },
+    });
   };
 
   // Build modal URL

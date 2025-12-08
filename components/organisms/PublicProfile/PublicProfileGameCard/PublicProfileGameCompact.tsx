@@ -60,7 +60,11 @@ export const PublicProfileGameCompact = ({
   };
 
   const handleDelete = () => {
-    deleteGame(game.id || 0);
+    deleteGame(game.id || 0, {
+      onSuccess: () => {
+        setShowDeleteModal(false);
+      },
+    });
   };
 
   return (

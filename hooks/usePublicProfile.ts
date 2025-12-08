@@ -248,6 +248,8 @@ export function useDeleteUserGame() {
       queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
       // Invalida queries de consoles para atualizar a lista de games associados
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
+      // Invalida queries de consoleGames para atualizar a tela de jogos de um console específico
+      queryClient.invalidateQueries({ queryKey: ["consoleGames"] });
     },
   });
 }
