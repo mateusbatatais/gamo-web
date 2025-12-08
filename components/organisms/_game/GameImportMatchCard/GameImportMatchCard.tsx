@@ -1,7 +1,7 @@
 // GameImportMatchCard.tsx - VERSÃO OTIMIZADA
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import { Button } from "@/components/atoms/Button/Button";
@@ -53,8 +53,9 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     match.confirmedPlatformId?.toString() || match.suggestedPlatformId?.toString() || "",
   );
 
-  // Carregar consoles compatíveis
-  // Carregar consoles compatíveis e aplicar pré-seleção inteligente
+  // Flag para rastrear se usuário fez mudanças manuais nos consoles
+  const hasManualConsoleChanges = React.useRef(false);
+
   // 1. Carregar consoles compatíveis (apenas quando o jogo muda)
   useEffect(() => {
     const fetchConsoles = async () => {
@@ -64,6 +65,8 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
           `/user-consoles/compatible/${currentGame.slug}`,
         );
         setCompatibleConsoles(consoles);
+        // Reset flag quando jogo muda
+        hasManualConsoleChanges.current = false;
       } catch (error) {
         console.error("Error fetching compatible consoles:", error);
       }
@@ -72,72 +75,42 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     fetchConsoles();
   }, [currentGame?.slug, apiFetch]);
 
-  // 2. Lógica de pré-seleção inteligente (quando consoles ou plataforma mudam)
-  useEffect(() => {
-    if (match.matchStatus === "CONFIRMED" || compatibleConsoles.length === 0) return;
+  // 2. Calcular IDs pré-selecionados (memoizado para performance)
+  const preSelectedConsoleIds = useMemo(() => {
+    // Não pré-selecionar se já confirmado ou sem consoles
+    if (match.matchStatus === "CONFIRMED" || compatibleConsoles.length === 0) {
+      return null; // null = não atualizar
+    }
 
     // NÃO pré-selecionar consoles para jogos LOOKING_FOR
     if (match.userData?.status === "LOOKING_FOR") {
-      setSelectedConsoleIds([]);
-      return;
+      return [];
     }
 
-    let preSelectedIds: number[] = [];
+    // Determinar plataforma alvo
     let targetPlatformName = "";
-
-    // Tentar pegar o nome da plataforma selecionada/sugerida
     if (selectedPlatformId && platformsMap?.[parseInt(selectedPlatformId)]) {
       targetPlatformName = platformsMap[parseInt(selectedPlatformId)];
-    }
-    // Se não tiver ID ainda, tentar dar match com o userPlatform (ex: planilha)
-    else if (match.userPlatform) {
+    } else if (match.userPlatform) {
       const bestMatch = findBestPlatformMatch(match.userPlatform);
-      if (bestMatch) targetPlatformName = bestMatch.name;
-      else targetPlatformName = match.userPlatform; // Fallback
+      targetPlatformName = bestMatch?.name || match.userPlatform;
     }
 
-    // Se temos um nome de plataforma alvo, filtramos os consoles
+    // Filtrar consoles por plataforma
     if (targetPlatformName) {
       const normalizedTarget = targetPlatformName.toLowerCase();
-      // Filtra consoles que contém o nome da plataforma
       const matchingConsoles = compatibleConsoles.filter((c) => {
         const consoleName = c.console.name.toLowerCase();
         return consoleName.includes(normalizedTarget) || normalizedTarget.includes(consoleName);
       });
 
       if (matchingConsoles.length > 0) {
-        preSelectedIds = matchingConsoles.map((c) => c.id);
+        return matchingConsoles.map((c) => c.id);
       }
     }
 
-    // Fallback: se não achou match específico, seleciona todos (comportamento original)
-    // OU se o filtro resultou em vazio mas existem consoles compatíveis
-    if (preSelectedIds.length === 0) {
-      if (match.userPlatform && !targetPlatformName) {
-        // Se tem plataforma definida no user mas não achamos match de nome,
-        // talvez seja melhor deixar vazio ou selecionar todos?
-        // Originalmente selecionava todos. Manteremos assim.
-        preSelectedIds = compatibleConsoles.map((c) => c.id);
-      } else if (!match.userPlatform && !selectedPlatformId) {
-        // Sem preferência de plataforma, seleciona todos
-        preSelectedIds = compatibleConsoles.map((c) => c.id);
-      } else {
-        // Tem plataforma mas não deu match em nenhum console...
-        // Nesse caso, talvez o usuário não tenha o console certo.
-        // Vamos selecionar todos (safe default) ou deixar vazio?
-        // User disse: "marcado apenas o principal". Se não achou principal,
-        // mas existem compatíveis, o fallback seguro é selecionar todos.
-        preSelectedIds = compatibleConsoles.map((c) => c.id);
-      }
-    }
-
-    // Apenas atualiza se mudou para evitar loops (básico, mas o React já faz shallow compare em primitivos, arrays são ref novas)
-    // Para evitar loop infinito com arrays novos, comparamos conteúdo
-    setSelectedConsoleIds((prev) => {
-      const isSame =
-        prev.length === preSelectedIds.length && prev.every((id) => preSelectedIds.includes(id));
-      return isSame ? prev : preSelectedIds;
-    });
+    // Fallback: selecionar todos os consoles compatíveis
+    return compatibleConsoles.map((c) => c.id);
   }, [
     compatibleConsoles,
     match.matchStatus,
@@ -147,6 +120,22 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     match.userPlatform,
     findBestPlatformMatch,
   ]);
+
+  // 3. Aplicar pré-seleção APENAS se usuário não fez mudanças manuais
+  useEffect(() => {
+    if (preSelectedConsoleIds === null) return;
+
+    // Não sobrescrever se usuário já fez mudanças manuais
+    if (hasManualConsoleChanges.current) return;
+
+    setSelectedConsoleIds((prev) => {
+      // Evitar atualizações desnecessárias
+      const isSame =
+        prev.length === preSelectedConsoleIds.length &&
+        prev.every((id) => preSelectedConsoleIds.includes(id));
+      return isSame ? prev : preSelectedConsoleIds;
+    });
+  }, [preSelectedConsoleIds]);
 
   // Encontrar melhor match de plataforma quando o componente carrega
   useEffect(() => {
@@ -201,58 +190,70 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
     return statusMap[status] || status;
   };
 
-  const updateMatch = async (matchId: number, gameId: number | null, game?: Game) => {
-    setIsLoading(true);
-    try {
-      if (gameId) {
-        await apiFetch(`/user-games-import/match/${matchId}/game`, {
-          method: "PUT",
-          body: {
-            gameId,
-            confirmedConsoleIds: selectedConsoleIds,
-          },
-        });
-        setCurrentStatus("CONFIRMED");
-        if (game) setCurrentGame(game);
-      } else {
-        await apiFetch(`/user-games-import/match/${matchId}/confirm`, {
-          method: "PUT",
-          body: { confirmedGameId: null },
-        });
-        setCurrentStatus("SKIPPED");
+  const updateMatch = useCallback(
+    async (matchId: number, gameId: number | null, game?: Game) => {
+      setIsLoading(true);
+      try {
+        if (gameId) {
+          await apiFetch(`/user-games-import/match/${matchId}/game`, {
+            method: "PUT",
+            body: {
+              gameId,
+              confirmedConsoleIds: selectedConsoleIds,
+            },
+          });
+          setCurrentStatus("CONFIRMED");
+          if (game) setCurrentGame(game);
+        } else {
+          await apiFetch(`/user-games-import/match/${matchId}/confirm`, {
+            method: "PUT",
+            body: { confirmedGameId: null },
+          });
+          setCurrentStatus("SKIPPED");
+        }
+        onConfirm(matchId, gameId, game);
+      } catch (error) {
+        console.error("Error updating match:", error);
+      } finally {
+        setIsLoading(false);
       }
-      onConfirm(matchId, gameId, game);
-    } catch (error) {
-      console.error("Error updating match:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [apiFetch, selectedConsoleIds, onConfirm],
+  );
 
-  const updatePlatform = async (platformId: string) => {
-    setPlatformLoading(true);
-    try {
-      await apiFetch(`/user-games-import/match/${match.id}/platform`, {
-        method: "PUT",
-        body: { platformId: platformId ? parseInt(platformId) : null },
-      });
-      setSelectedPlatformId(platformId);
-    } catch (error) {
-      console.error("Error updating platform:", error);
-    } finally {
-      setPlatformLoading(false);
-    }
-  };
+  const updatePlatform = useCallback(
+    async (platformId: string) => {
+      setPlatformLoading(true);
+      try {
+        await apiFetch(`/user-games-import/match/${match.id}/platform`, {
+          method: "PUT",
+          body: { platformId: platformId ? parseInt(platformId) : null },
+        });
+        setSelectedPlatformId(platformId);
+      } catch (error) {
+        console.error("Error updating platform:", error);
+      } finally {
+        setPlatformLoading(false);
+      }
+    },
+    [apiFetch, match.id],
+  );
 
-  const handleReopen = async (matchId: number) => {
-    await updateMatch(matchId, null);
-    setCurrentStatus("PENDING");
-  };
+  const handleReopen = useCallback(
+    async (matchId: number) => {
+      await updateMatch(matchId, null);
+      setCurrentStatus("PENDING");
+    },
+    [updateMatch],
+  );
 
-  const handleGameSelectFromModal = async (game: Game) => {
-    await updateMatch(match.id, game.id, game);
-    setShowSearchModal(false);
-  };
+  const handleGameSelectFromModal = useCallback(
+    async (game: Game) => {
+      await updateMatch(match.id, game.id, game);
+      setShowSearchModal(false);
+    },
+    [updateMatch, match.id],
+  );
 
   // Função para renderizar dados do usuário de forma compacta
   const renderUserDataCompact = () => {
@@ -406,6 +407,9 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
                     ]}
                     selectedIds={selectedConsoleIds}
                     onChange={(ids) => {
+                      // Marcar que usuário fez mudança manual
+                      hasManualConsoleChanges.current = true;
+
                       if (ids.includes(-1)) {
                         if (selectedConsoleIds.includes(-1) && ids.length > 1) {
                           setSelectedConsoleIds(ids.filter((id) => id !== -1));
