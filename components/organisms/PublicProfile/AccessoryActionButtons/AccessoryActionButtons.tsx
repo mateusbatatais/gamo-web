@@ -67,7 +67,7 @@ export const AccessoryActionButtons = ({
       <Dialog
         open={showEditModal}
         onClose={closeEditModal}
-        title={t("editTitle")}
+        title={`${t("editTitle")}: ${accessory.accessoryName}`}
         actionButtons={{
           confirm: {
             label: t("saveChanges"),

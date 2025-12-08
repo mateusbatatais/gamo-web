@@ -312,7 +312,7 @@ export const PublicProfileConsoleCard = ({
       <Dialog
         open={showEditModal}
         onClose={() => setShowEditModal(false)}
-        title={t("editTitle")}
+        title={`${t("editTitle")}: ${consoleItem.consoleName} - ${consoleItem.variantName}`}
         actionButtons={{
           confirm: {
             label: t("saveChanges"),

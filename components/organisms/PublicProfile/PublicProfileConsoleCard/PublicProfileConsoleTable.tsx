@@ -241,7 +241,11 @@ export const PublicProfileConsoleTable = ({
         </td>
       </tr>
 
-      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
+      <Dialog
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={`${t("editTitle")}: ${consoleItem.consoleName} - ${consoleItem.variantName}`}
+      >
         <ConsoleForm
           mode="edit"
           type={type}

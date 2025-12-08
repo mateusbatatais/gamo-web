@@ -200,7 +200,11 @@ export const PublicProfileConsoleCompact = ({
         </div>
       </Card>
 
-      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
+      <Dialog
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={`${t("editTitle")}: ${consoleItem.consoleName} - ${consoleItem.variantName}`}
+      >
         <ConsoleForm
           mode="edit"
           type={type}

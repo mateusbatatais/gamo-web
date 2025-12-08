@@ -152,7 +152,7 @@ export const PublicProfileGameCompact = ({
       <Dialog
         open={showEditModal}
         onClose={() => setShowEditModal(false)}
-        title={t("editTitle")}
+        title={`${t("editTitle")}: ${game.gameTitle}`}
         subtitle={t("editDescription")}
         size="lg"
       >
