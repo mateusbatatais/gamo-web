@@ -76,6 +76,12 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
   useEffect(() => {
     if (match.matchStatus === "CONFIRMED" || compatibleConsoles.length === 0) return;
 
+    // NÃO pré-selecionar consoles para jogos LOOKING_FOR
+    if (match.userData?.status === "LOOKING_FOR") {
+      setSelectedConsoleIds([]);
+      return;
+    }
+
     let preSelectedIds: number[] = [];
     let targetPlatformName = "";
 
@@ -135,6 +141,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
   }, [
     compatibleConsoles,
     match.matchStatus,
+    match.userData?.status,
     selectedPlatformId,
     platformsMap,
     match.userPlatform,
@@ -411,7 +418,7 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
                     }}
                     placeholder="Selecione os consoles"
                     label=""
-                    disabled={isLoading || currentStatus === "CONFIRMED"}
+                    disabled={isLoading}
                   />
                 </div>
               )}
@@ -463,14 +470,24 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
                 label={t("actions.reopen")}
               />
               {currentStatus === "CONFIRMED" && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowSearchModal(true)}
-                  loading={isLoading}
-                  label={t("actions.change")}
-                />
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowSearchModal(true)}
+                    loading={isLoading}
+                    label={t("actions.change")}
+                  />
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="sm"
+                    onClick={() => updateMatch(match.id, currentGame?.id || null)}
+                    loading={isLoading}
+                    label="Salvar"
+                  />
+                </>
               )}
             </>
           )}
