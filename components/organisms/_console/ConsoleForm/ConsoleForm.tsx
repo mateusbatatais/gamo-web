@@ -265,6 +265,7 @@ export const ConsoleForm = ({
           condition: formData.condition,
           compatibleUserConsoleIds: [userConsoleId],
           platformId: consoleDetails?.platformIds?.[0], // Default platform
+          isFavorite: selected.isFavorite,
           // Location data defaults
           address: locationData?.address || undefined,
           zipCode: locationData?.zipCode || undefined,

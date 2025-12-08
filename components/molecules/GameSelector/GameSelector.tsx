@@ -13,6 +13,7 @@ export interface SelectedGameVariant {
   name: string;
   imageUrl?: string | null;
   slug: string;
+  isFavorite?: boolean;
 }
 
 interface GameSelectorProps {
@@ -84,6 +85,7 @@ export const GameSelector = ({
         name: game.name,
         imageUrl: game.imageUrl,
         slug: game.slug,
+        isFavorite: game.isFavorite,
       });
     }
   };

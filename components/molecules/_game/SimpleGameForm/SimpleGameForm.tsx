@@ -12,6 +12,7 @@ import { Rating } from "@/components/atoms/Rating/Rating";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { MediaType, UserGame } from "@/@types/collection.types";
 import { ConsoleSelector } from "@/components/molecules/ConsoleSelector/ConsoleSelector";
+import { useCompatibleUserConsoles } from "@/hooks/useCompatibleUserConsoles";
 
 interface SimpleGameFormProps {
   gameId: number;
@@ -54,6 +55,11 @@ export const SimpleGameForm = ({
   });
 
   const [selectedConsoleIds, setSelectedConsoleIds] = useState<number[]>([]);
+
+  const { data: compatibleConsoles = [], isLoading: isLoadingConsoles } = useCompatibleUserConsoles(
+    gameSlug,
+    formData.platformId,
+  );
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
@@ -118,8 +124,8 @@ export const SimpleGameForm = ({
       </div>
 
       <ConsoleSelector
-        gameSlug={gameSlug}
-        platformId={formData.platformId}
+        consoles={compatibleConsoles}
+        isLoading={isLoadingConsoles}
         selectedConsoleIds={selectedConsoleIds}
         onChange={setSelectedConsoleIds}
       />
