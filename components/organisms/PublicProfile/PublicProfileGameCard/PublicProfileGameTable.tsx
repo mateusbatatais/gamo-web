@@ -223,6 +223,7 @@ export const PublicProfileGameTable = ({
             state: game.state,
             latitude: game.latitude,
             longitude: game.longitude,
+            compatibleUserConsoleIds: game.compatibleUserConsoleIds,
           }}
           onSuccess={() => {
             setShowEditModal(false);

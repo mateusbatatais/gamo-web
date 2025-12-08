@@ -162,6 +162,7 @@ export const PublicProfileGameCompact = ({
             state: game.state,
             latitude: game.latitude,
             longitude: game.longitude,
+            compatibleUserConsoleIds: game.compatibleUserConsoleIds,
           }}
           onSuccess={() => {
             setShowEditModal(false);

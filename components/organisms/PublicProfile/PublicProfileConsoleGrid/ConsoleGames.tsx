@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Card } from "@/components/atoms/Card/Card";
-import { UserConsole } from "@/@types/collection.types";
+import { UserConsole, UserGame } from "@/@types/collection.types";
 import { PublicProfileGameCard } from "../PublicProfileGameCard/PublicProfileGameCard";
 import { PublicProfileGameCompact } from "../PublicProfileGameCard/PublicProfileGameCompact";
 import { PublicProfileGameList } from "../PublicProfileGameCard/PublicProfileGameList";
@@ -72,9 +72,16 @@ export function ConsoleGames({
       <Card className="border-2 border-primary-500 dark:border-primary-500 relative z-0">
         <RenderGamesTitle item={item} />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {item.games?.map((game) => (
-            <PublicProfileGameCard key={game.id} game={game} isOwner={isOwner} />
-          ))}
+          {item.games?.map((game) => {
+            const gameWithConsole: UserGame = {
+              ...game,
+              compatibleUserConsoleIds:
+                game.compatibleUserConsoleIds && game.compatibleUserConsoleIds.length > 0
+                  ? game.compatibleUserConsoleIds
+                  : [item.id || 0],
+            };
+            return <PublicProfileGameCard key={game.id} game={gameWithConsole} isOwner={isOwner} />;
+          })}
         </div>
         {item.totalGames && (
           <div className="mt-4 text-center">
@@ -130,9 +137,18 @@ export function ConsoleGamesCompact({
       <Card className="border-2 border-primary-500 dark:border-primary-500 relative z-0">
         <RenderGamesTitle item={item} />
         <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
-          {item.games?.map((game) => (
-            <PublicProfileGameCompact key={game.id} game={game} isOwner={isOwner} />
-          ))}
+          {item.games?.map((game) => {
+            const gameWithConsole: UserGame = {
+              ...game,
+              compatibleUserConsoleIds:
+                game.compatibleUserConsoleIds && game.compatibleUserConsoleIds.length > 0
+                  ? game.compatibleUserConsoleIds
+                  : [item.id || 0],
+            };
+            return (
+              <PublicProfileGameCompact key={game.id} game={gameWithConsole} isOwner={isOwner} />
+            );
+          })}
         </div>
         {item.totalGames && (
           <div className="mt-4 text-center">
@@ -169,9 +185,16 @@ export function ConsoleGamesList({
       <Card className="border-2 border-primary-500 dark:border-primary-500 relative z-0">
         <RenderGamesTitle item={item} />
         <div className="space-y-3">
-          {item.games?.map((game) => (
-            <PublicProfileGameList key={game.id} game={game} isOwner={isOwner} />
-          ))}
+          {item.games?.map((game) => {
+            const gameWithConsole: UserGame = {
+              ...game,
+              compatibleUserConsoleIds:
+                game.compatibleUserConsoleIds && game.compatibleUserConsoleIds.length > 0
+                  ? game.compatibleUserConsoleIds
+                  : [item.id || 0],
+            };
+            return <PublicProfileGameList key={game.id} game={gameWithConsole} isOwner={isOwner} />;
+          })}
         </div>
         {item.totalGames && (
           <div className="mt-4 text-center">
@@ -221,9 +244,18 @@ export function ConsoleGamesTable({
               </tr>
             </thead>
             <tbody>
-              {item.games?.map((game) => (
-                <PublicProfileGameTable key={game.id} game={game} isOwner={isOwner} />
-              ))}
+              {item.games?.map((game) => {
+                const gameWithConsole: UserGame = {
+                  ...game,
+                  compatibleUserConsoleIds:
+                    game.compatibleUserConsoleIds && game.compatibleUserConsoleIds.length > 0
+                      ? game.compatibleUserConsoleIds
+                      : [item.id || 0],
+                };
+                return (
+                  <PublicProfileGameTable key={game.id} game={gameWithConsole} isOwner={isOwner} />
+                );
+              })}
             </tbody>
           </table>
         </div>

@@ -17,7 +17,7 @@ export default function HeroSection() {
     return (
       <section className="relative bg-linear-to-r from-blue-600 to-purple-700 text-white rounded-3xl overflow-hidden shadow-xl mb-8">
         <div className="absolute inset-0 bg-black/20" />
-        <div className="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="relative z-10 p-4 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-4 text-center md:text-left">
             <h1 className="text-3xl md:text-4xl font-bold">
               {t("welcomeBack", { name: user.name.split(" ")[0] })}
@@ -34,21 +34,21 @@ export default function HeroSection() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-3 gap-4 w-full md:w-auto">
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 flex flex-col items-center justify-center text-center min-w-[100px]">
-              <Gamepad2 className="w-8 h-8 mb-2 text-green-300" />
-              <span className="text-sm text-blue-100">{t("games")}</span>
-              <span className="text-xl font-bold">{isLoading ? "..." : stats?.games || 0}</span>
+          <div className="grid grid-cols-3 gap-2 w-full md:w-auto">
+            <div className="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 flex flex-col items-center justify-center text-center min-w-[80px]">
+              <Gamepad2 className="w-6 h-6 mb-2 text-green-300" />
+              <span className="text-xs text-blue-100">{t("games")}</span>
+              <span className="text-lg font-bold">{isLoading ? "..." : stats?.games || 0}</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 flex flex-col items-center justify-center text-center min-w-[100px]">
-              <Library className="w-8 h-8 mb-2 text-purple-300" />
-              <span className="text-sm text-blue-100">{t("consoles")}</span>
-              <span className="text-xl font-bold">{isLoading ? "..." : stats?.consoles || 0}</span>
+            <div className="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 flex flex-col items-center justify-center text-center min-w-[80px]">
+              <Library className="w-6 h-6 mb-2 text-purple-300" />
+              <span className="text-xs text-blue-100">{t("consoles")}</span>
+              <span className="text-lg font-bold">{isLoading ? "..." : stats?.consoles || 0}</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 flex flex-col items-center justify-center text-center min-w-[100px]">
-              <Wallet className="w-8 h-8 mb-2 text-blue-300" />
-              <span className="text-sm text-blue-100">{t("accessories")}</span>
-              <span className="text-xl font-bold">
+            <div className="bg-white/10 backdrop-blur-md p-3 rounded-xl border border-white/20 flex flex-col items-center justify-center text-center min-w-[80px]">
+              <Wallet className="w-6 h-6 mb-2 text-blue-300" />
+              <span className="text-xs text-blue-100">{t("accessories")}</span>
+              <span className="text-lg font-bold">
                 {isLoading ? "..." : stats?.accessories || 0}
               </span>
             </div>
