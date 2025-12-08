@@ -43,6 +43,8 @@ export function useUserGameMutation() {
       queryClient.invalidateQueries({ queryKey: ["userGamesPublic"] });
       // Invalidar queries de consoles para atualizar a lista de games associados
       queryClient.invalidateQueries({ queryKey: ["userConsolesPublic"] });
+      // Invalidar query de game específico (usado no modal de edição)
+      queryClient.invalidateQueries({ queryKey: ["userGame"] });
     },
     onError: (error: Error) => {
       showToast(error.message || "Erro ao atualizar jogo", "danger");

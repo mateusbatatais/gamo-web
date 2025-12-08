@@ -30,6 +30,8 @@ import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import { Spinner } from "@/components/atoms/Spinner/Spinner";
+import { useUserGame } from "@/hooks/useUserGame";
 
 export const PublicProfileGameCard = ({
   game,
@@ -50,6 +52,10 @@ export const PublicProfileGameCard = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const { data: fullGameData, isLoading: isLoadingGame } = useUserGame(game.id || 0, {
+    enabled: showEditModal && isOwner && !!game.id,
+  });
+
   const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
   const platformOptions: SelectOption[] =
@@ -66,6 +72,15 @@ export const PublicProfileGameCard = ({
   const params = new URLSearchParams(searchParams.toString());
   params.set("game", String(game.id));
   const modalUrl = `${pathname}?${params.toString()}`;
+
+  const mergedGameData = {
+    ...game,
+    ...fullGameData,
+    compatibleUserConsoleIds:
+      fullGameData?.compatibleUserConsoleIds && fullGameData.compatibleUserConsoleIds.length > 0
+        ? fullGameData.compatibleUserConsoleIds
+        : game.compatibleUserConsoleIds,
+  };
 
   return (
     <>
@@ -267,67 +282,45 @@ export const PublicProfileGameCard = ({
         open={showEditModal}
         onClose={() => setShowEditModal(false)}
         title={t("editTitle")}
-        actionButtons={{
-          confirm: {
-            label: t("saveChanges"),
-            type: "submit",
-            form: `edit-game-form-${game.id}`,
-            // We use the mutation state here. However, to get isPending for UPDATE,
-            // we need to access it. Currently useDeleteUserGame is used, let's verify if we can get update status.
-            // GameForm uses useUserGameMutation inside.
-            // To properly show loading on the parent button, we should ideally hoist the mutation or expose loading state.
-            // For now, let's assume the mutation is fast or the user sees the internal loading if any.
-            // BUT, since we are hiding internal buttons, we MUST show loading here.
-            // So we need to import useUserGameMutation here too? No, GameForm submits it.
-            // We need to pass loading state up? Or just use isPending from a hook here?
-            // Let's import useUserGameMutation here.
-            loading: isPending,
-          },
-          cancel: {
-            label: t("cancel"),
-            onClick: () => setShowEditModal(false),
-            disabled: isPending,
-          },
-        }}
+        subtitle={t("editDescription")}
+        size="lg"
       >
-        <GameForm
-          mode="edit"
-          type={type}
-          gameId={game.id || 0}
-          gameSlug={game.gameSlug || ""}
-          platformOptions={platformOptions}
-          initialData={{
-            id: game.id,
-            description: game.description || undefined,
-            status: game.status,
-            price: game.price || undefined,
-            hasBox: game.hasBox || false,
-            hasManual: game.hasManual || false,
-            condition: game.condition || undefined,
-            acceptsTrade: game.acceptsTrade || false,
-            photoMain: game.photoMain || undefined,
-            photos: game.photos || undefined,
-            progress: game.progress || undefined,
-            rating: game.rating || undefined,
-            review: game.review || undefined,
-            abandoned: game.abandoned || false,
-            media: game.media,
-            platformId: game.platformId,
-            address: game.address,
-            zipCode: game.zipCode,
-            city: game.city,
-            state: game.state,
-            latitude: game.latitude,
-            longitude: game.longitude,
-            compatibleUserConsoleIds: game.compatibleUserConsoleIds,
-          }}
-          formId={`edit-game-form-${game.id}`}
-          hideButtons
-          onSuccess={() => {
-            setShowEditModal(false);
-          }}
-          onCancel={() => setShowEditModal(false)}
-        />
+        {isLoadingGame ? (
+          <div className="flex justify-center p-8">
+            <Spinner size={32} />
+          </div>
+        ) : (
+          <GameForm
+            mode="edit"
+            type={type}
+            gameId={game.id || 0}
+            gameSlug={game.gameSlug || ""}
+            platformOptions={platformOptions}
+            initialData={{
+              ...mergedGameData,
+              compatibleUserConsoleIds: mergedGameData.compatibleUserConsoleIds,
+            }}
+            formId={`edit-game-form-${game.id}`}
+            hideButtons
+            onSuccess={() => {
+              setShowEditModal(false);
+            }}
+            onCancel={() => setShowEditModal(false)}
+          />
+        )}
+        <div className="flex justify-end gap-3 mt-6 border-t pt-4 dark:border-gray-700">
+          <Button variant="outline" onClick={() => setShowEditModal(false)}>
+            {t("cancel")}
+          </Button>
+          <Button
+            type="submit"
+            form={`edit-game-form-${game.id}`}
+            loading={isPending}
+            disabled={isLoadingGame}
+          >
+            {t("save")}
+          </Button>
+        </div>
       </Dialog>
 
       <ConfirmationModal

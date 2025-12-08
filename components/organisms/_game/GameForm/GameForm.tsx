@@ -9,6 +9,7 @@ import { Select, SelectOption } from "@/components/atoms/Select/Select";
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import ImageCropper from "@/components/molecules/ImageCropper/ImageCropper";
 import { useCollectionForm } from "@/hooks/useCollectionForm";
+import { useCompatibleUserConsoles } from "@/hooks/useCompatibleUserConsoles";
 import { AdditionalImagesUpload } from "@/components/molecules/AdditionalImagesUpload/AdditionalImagesUpload";
 import { TradeSection } from "@/components/molecules/TradeSection/TradeSection";
 import { MainImageUpload } from "@/components/molecules/MainImageUpload/MainImageUpload";
@@ -165,6 +166,13 @@ export const GameForm = ({
     initialData?.compatibleUserConsoleIds || [],
   );
 
+  const { data: compatibleConsolesData, isLoading: isLoadingConsoles } = useCompatibleUserConsoles(
+    gameSlug,
+    formData.platformId ? Number(formData.platformId) : undefined,
+  );
+
+  const compatibleConsoles = compatibleConsolesData || [];
+
   const [errors, setErrors] = useState<{
     price?: string;
     location?: string;
@@ -222,7 +230,13 @@ export const GameForm = ({
     const validationErrors: { price?: string; location?: string } = {};
 
     if (formData.status === "SELLING") {
-      if (!formData.price || parseFloat(formData.price) <= 0) {
+      // Check if any selected console is being sold
+      const isConsoleSelling = selectedConsoleIds.some((id) => {
+        const console = compatibleConsoles.find((c) => c.id === id);
+        return console?.status === "SELLING";
+      });
+
+      if (!isConsoleSelling && (!formData.price || parseFloat(formData.price) <= 0)) {
         validationErrors.price = t("priceRequired");
       }
       if (!locationData || !locationData.city) {
@@ -447,12 +461,12 @@ export const GameForm = ({
           />
         </div>
 
-        {formData.status !== "SELLING" && (
+        {!(mode === "create" && formData.status === "SELLING") && (
           <ConsoleSelector
-            gameSlug={gameSlug}
-            platformId={formData.platformId ? Number(formData.platformId) : undefined}
             selectedConsoleIds={selectedConsoleIds}
             onChange={setSelectedConsoleIds}
+            consoles={compatibleConsoles}
+            isLoading={isLoadingConsoles}
           />
         )}
       </div>

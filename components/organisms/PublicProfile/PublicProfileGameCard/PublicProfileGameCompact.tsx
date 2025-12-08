@@ -17,6 +17,9 @@ import useGameDetails from "@/hooks/useGameDetails";
 import { SelectOption } from "@/components/atoms/Select/Select";
 import { FavoriteToggle } from "@/components/atoms/FavoriteToggle/FavoriteToggle";
 import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
+import { useUserGameMutation } from "@/hooks/useUserGameMutation";
+import { Spinner } from "@/components/atoms/Spinner/Spinner";
+import { useUserGame } from "@/hooks/useUserGame";
 
 export const PublicProfileGameCompact = ({
   game,
@@ -30,9 +33,14 @@ export const PublicProfileGameCompact = ({
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const { mutate: deleteGame, isPending } = useDeleteUserGame();
+  const { mutate: deleteGame, isPending: isDeletePending } = useDeleteUserGame();
+  const { isPending: isSavePending } = useUserGameMutation();
   const { platformsMap } = usePlatformsCache();
   const { getGamesQueryKey } = useCatalogQueryKeys();
+
+  const { data: fullGameData, isLoading: isLoadingGame } = useUserGame(game.id || 0, {
+    enabled: showEditModal && isOwner && !!game.id,
+  });
 
   const { data: gameDetails } = useGameDetails(game?.gameSlug || "");
 
@@ -41,6 +49,15 @@ export const PublicProfileGameCompact = ({
       value: platformId.toString(),
       label: platformsMap[platformId],
     })) || [];
+
+  const mergedGameData = {
+    ...game,
+    ...fullGameData,
+    compatibleUserConsoleIds:
+      fullGameData?.compatibleUserConsoleIds && fullGameData.compatibleUserConsoleIds.length > 0
+        ? fullGameData.compatibleUserConsoleIds
+        : game.compatibleUserConsoleIds,
+  };
 
   const handleDelete = () => {
     deleteGame(game.id || 0);
@@ -81,7 +98,7 @@ export const PublicProfileGameCompact = ({
             />
             <Button
               onClick={() => setShowDeleteModal(true)}
-              disabled={isPending}
+              disabled={isDeletePending}
               variant="transparent"
               aria-label={t("deleteItem")}
               icon={<Trash size={12} />}
@@ -132,43 +149,49 @@ export const PublicProfileGameCompact = ({
         </div>
       </Card>
 
-      <Dialog open={showEditModal} onClose={() => setShowEditModal(false)} title={t("editTitle")}>
-        <GameForm
-          mode="edit"
-          type={type}
-          gameId={game.gameId}
-          gameSlug={game.gameSlug || ""}
-          platformOptions={platformOptions}
-          initialData={{
-            id: game.id,
-            description: game.description || undefined,
-            status: game.status,
-            price: game.price || undefined,
-            hasBox: game.hasBox || false,
-            hasManual: game.hasManual || false,
-            condition: game.condition || undefined,
-            acceptsTrade: game.acceptsTrade || false,
-            photoMain: game.photoMain || undefined,
-            photos: game.photos || undefined,
-            progress: game.progress || undefined,
-            rating: game.rating || undefined,
-            review: game.review || undefined,
-            abandoned: game.abandoned || false,
-            media: game.media,
-            platformId: game.platformId,
-            address: game.address,
-            zipCode: game.zipCode,
-            city: game.city,
-            state: game.state,
-            latitude: game.latitude,
-            longitude: game.longitude,
-            compatibleUserConsoleIds: game.compatibleUserConsoleIds,
-          }}
-          onSuccess={() => {
-            setShowEditModal(false);
-          }}
-          onCancel={() => setShowEditModal(false)}
-        />
+      <Dialog
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        title={t("editTitle")}
+        subtitle={t("editDescription")}
+        size="lg"
+      >
+        {isLoadingGame ? (
+          <div className="flex justify-center p-8">
+            <Spinner size={32} />
+          </div>
+        ) : (
+          <GameForm
+            mode="edit"
+            type={type}
+            gameId={game.id || 0}
+            gameSlug={game.gameSlug || ""}
+            platformOptions={platformOptions}
+            initialData={{
+              ...mergedGameData,
+              compatibleUserConsoleIds: mergedGameData.compatibleUserConsoleIds,
+            }}
+            formId={`edit-game-form-${game.id}`}
+            hideButtons
+            onSuccess={() => {
+              setShowEditModal(false);
+            }}
+            onCancel={() => setShowEditModal(false)}
+          />
+        )}
+        <div className="flex justify-end gap-3 mt-6 border-t pt-4 dark:border-gray-700">
+          <Button variant="outline" onClick={() => setShowEditModal(false)}>
+            {t("cancel")}
+          </Button>
+          <Button
+            type="submit"
+            form={`edit-game-form-${game.id}`}
+            loading={isSavePending}
+            disabled={isLoadingGame}
+          >
+            {t("save")}
+          </Button>
+        </div>
       </Dialog>
 
       <ConfirmationModal
@@ -179,7 +202,7 @@ export const PublicProfileGameCompact = ({
         message={t("deleteMessage")}
         confirmText={t("deleteConfirm")}
         cancelText={t("cancel")}
-        isLoading={isPending}
+        isLoading={isDeletePending}
       />
     </>
   );

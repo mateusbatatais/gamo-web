@@ -531,7 +531,9 @@
     "kitDetails": "Kit Details",
     "listedOn": "listed on",
     "description": "Description",
-    "saveChanges": "Save changes"
+    "saveChanges": "Save changes",
+    "save": "Save",
+    "editDescription": "Edit item details"
   },
   "TradeForm": {
     "keepCopyInCollection": "Keep a copy in my collection (previously owned)",

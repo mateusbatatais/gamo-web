@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useUserGameMutation } from "@/hooks/useUserGameMutation";
 import { Condition, MediaType } from "@/@types/collection.types";
 import TradeFormBase, { TradeSubmitData } from "@/components/molecules/TradeFormBase/TradeFormBase";
+import { useCompatibleUserConsoles } from "@/hooks/useCompatibleUserConsoles";
 import { Select, SelectOption } from "@/components/atoms/Select/Select";
 import { ConsoleSelector } from "@/components/molecules/ConsoleSelector/ConsoleSelector";
 
@@ -59,6 +60,11 @@ export const TradeGameForm = ({
     initialData?.compatibleUserConsoleIds || [],
   );
 
+  const { data: compatibleConsoles, isLoading } = useCompatibleUserConsoles(
+    gameSlug,
+    selectedPlatformId,
+  );
+
   const t = useTranslations("TradeForm");
   const { createUserGame, updateUserGame, isPending } = useUserGameMutation();
 
@@ -104,14 +110,12 @@ export const TradeGameForm = ({
               options={platformOptions}
             />
           )}
-          {forcedStatus !== "SELLING" && (
-            <ConsoleSelector
-              gameSlug={gameSlug}
-              platformId={selectedPlatformId}
-              selectedConsoleIds={selectedConsoleIds}
-              onChange={setSelectedConsoleIds}
-            />
-          )}
+          <ConsoleSelector
+            selectedConsoleIds={selectedConsoleIds}
+            onChange={setSelectedConsoleIds}
+            consoles={compatibleConsoles || []}
+            isLoading={isLoading}
+          />
         </div>
       }
       showLocation={true}

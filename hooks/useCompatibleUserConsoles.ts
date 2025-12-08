@@ -13,6 +13,8 @@ interface CompatibleUserConsole {
     slug: string;
     name: string;
   };
+  status: "OWNED" | "SELLING" | "LOOKING_FOR" | "PREVIOUSLY_OWNED";
+  price?: number | null;
 }
 
 export function useCompatibleUserConsoles(

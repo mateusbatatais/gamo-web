@@ -1,24 +1,29 @@
 import React from "react";
 import { useTranslations } from "next-intl";
-import { useCompatibleUserConsoles } from "@/hooks/useCompatibleUserConsoles";
+
 import { Checkbox } from "@/components/atoms/Checkbox/Checkbox";
 import { Spinner } from "@/components/atoms/Spinner/Spinner";
 
 interface ConsoleSelectorProps {
-  gameSlug: string;
-  platformId?: number;
   selectedConsoleIds: number[];
   onChange: (ids: number[]) => void;
+  consoles: {
+    id: number;
+    console: { name: string };
+    variant: { name: string };
+    status: string;
+    price?: number | null;
+  }[];
+  isLoading?: boolean;
 }
 
 export const ConsoleSelector = ({
-  gameSlug,
-  platformId,
   selectedConsoleIds,
   onChange,
+  consoles,
+  isLoading,
 }: ConsoleSelectorProps) => {
   const t = useTranslations("TradeForm");
-  const { data: compatibleConsoles, isLoading } = useCompatibleUserConsoles(gameSlug, platformId);
 
   if (isLoading) {
     return (
@@ -28,7 +33,7 @@ export const ConsoleSelector = ({
     );
   }
 
-  if (!compatibleConsoles || compatibleConsoles.length === 0) {
+  if (!consoles || consoles.length === 0) {
     return (
       <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
@@ -52,7 +57,7 @@ export const ConsoleSelector = ({
         {t("compatibleConsoles")}
       </label>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {compatibleConsoles.map((uc) => (
+        {consoles.map((uc) => (
           <button
             type="button"
             key={uc.id}

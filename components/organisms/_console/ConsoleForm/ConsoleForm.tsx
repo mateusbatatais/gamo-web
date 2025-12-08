@@ -264,6 +264,14 @@ export const ConsoleForm = ({
           status: formData.status || "OWNED",
           condition: formData.condition,
           compatibleUserConsoleIds: [userConsoleId],
+          platformId: consoleDetails?.platformIds?.[0], // Default platform
+          // Location data defaults
+          address: locationData?.address || undefined,
+          zipCode: locationData?.zipCode || undefined,
+          city: locationData?.city || undefined,
+          state: locationData?.state || undefined,
+          latitude: locationData?.latitude || undefined,
+          longitude: locationData?.longitude || undefined,
         });
       }
     }
