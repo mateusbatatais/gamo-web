@@ -54,6 +54,8 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
   );
 
   // Carregar consoles compatíveis
+  // Carregar consoles compatíveis e aplicar pré-seleção inteligente
+  // 1. Carregar consoles compatíveis (apenas quando o jogo muda)
   useEffect(() => {
     const fetchConsoles = async () => {
       if (!currentGame?.slug) return;
@@ -62,22 +64,82 @@ export function GameImportMatchCard({ match, onConfirm }: GameImportMatchCardPro
           `/user-consoles/compatible/${currentGame.slug}`,
         );
         setCompatibleConsoles(consoles);
-
-        // Lógica de pré-seleção
-        if (match.matchStatus !== "CONFIRMED") {
-          if (consoles.length === 0) {
-            setSelectedConsoleIds([-1]); // Avulso
-          } else {
-            setSelectedConsoleIds(consoles.map((c) => c.id)); // Selecionar todos
-          }
-        }
       } catch (error) {
         console.error("Error fetching compatible consoles:", error);
       }
     };
 
     fetchConsoles();
-  }, [currentGame?.slug, apiFetch, match.matchStatus]);
+  }, [currentGame?.slug, apiFetch]);
+
+  // 2. Lógica de pré-seleção inteligente (quando consoles ou plataforma mudam)
+  useEffect(() => {
+    if (match.matchStatus === "CONFIRMED" || compatibleConsoles.length === 0) return;
+
+    let preSelectedIds: number[] = [];
+    let targetPlatformName = "";
+
+    // Tentar pegar o nome da plataforma selecionada/sugerida
+    if (selectedPlatformId && platformsMap?.[parseInt(selectedPlatformId)]) {
+      targetPlatformName = platformsMap[parseInt(selectedPlatformId)];
+    }
+    // Se não tiver ID ainda, tentar dar match com o userPlatform (ex: planilha)
+    else if (match.userPlatform) {
+      const bestMatch = findBestPlatformMatch(match.userPlatform);
+      if (bestMatch) targetPlatformName = bestMatch.name;
+      else targetPlatformName = match.userPlatform; // Fallback
+    }
+
+    // Se temos um nome de plataforma alvo, filtramos os consoles
+    if (targetPlatformName) {
+      const normalizedTarget = targetPlatformName.toLowerCase();
+      // Filtra consoles que contém o nome da plataforma
+      const matchingConsoles = compatibleConsoles.filter((c) => {
+        const consoleName = c.console.name.toLowerCase();
+        return consoleName.includes(normalizedTarget) || normalizedTarget.includes(consoleName);
+      });
+
+      if (matchingConsoles.length > 0) {
+        preSelectedIds = matchingConsoles.map((c) => c.id);
+      }
+    }
+
+    // Fallback: se não achou match específico, seleciona todos (comportamento original)
+    // OU se o filtro resultou em vazio mas existem consoles compatíveis
+    if (preSelectedIds.length === 0) {
+      if (match.userPlatform && !targetPlatformName) {
+        // Se tem plataforma definida no user mas não achamos match de nome,
+        // talvez seja melhor deixar vazio ou selecionar todos?
+        // Originalmente selecionava todos. Manteremos assim.
+        preSelectedIds = compatibleConsoles.map((c) => c.id);
+      } else if (!match.userPlatform && !selectedPlatformId) {
+        // Sem preferência de plataforma, seleciona todos
+        preSelectedIds = compatibleConsoles.map((c) => c.id);
+      } else {
+        // Tem plataforma mas não deu match em nenhum console...
+        // Nesse caso, talvez o usuário não tenha o console certo.
+        // Vamos selecionar todos (safe default) ou deixar vazio?
+        // User disse: "marcado apenas o principal". Se não achou principal,
+        // mas existem compatíveis, o fallback seguro é selecionar todos.
+        preSelectedIds = compatibleConsoles.map((c) => c.id);
+      }
+    }
+
+    // Apenas atualiza se mudou para evitar loops (básico, mas o React já faz shallow compare em primitivos, arrays são ref novas)
+    // Para evitar loop infinito com arrays novos, comparamos conteúdo
+    setSelectedConsoleIds((prev) => {
+      const isSame =
+        prev.length === preSelectedIds.length && prev.every((id) => preSelectedIds.includes(id));
+      return isSame ? prev : preSelectedIds;
+    });
+  }, [
+    compatibleConsoles,
+    match.matchStatus,
+    selectedPlatformId,
+    platformsMap,
+    match.userPlatform,
+    findBestPlatformMatch,
+  ]);
 
   // Encontrar melhor match de plataforma quando o componente carrega
   useEffect(() => {
