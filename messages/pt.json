@@ -573,6 +573,7 @@
     "putUpForSale": "Colocar {item} à venda?",
     "moveToOwned": "Comprei! Mover {item} para a coleção?",
     "backToCollection": "Voltar {item} para a coleção?",
+    "markAsPreviouslyOwned": "Marcar {item} como 'já tive'?",
     "game": "Jogo",
     "console": "Console",
     "accessory": "Acessório",

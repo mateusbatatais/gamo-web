@@ -312,6 +312,20 @@ export const AccessoryForm = ({
               </p>
             </div>
           )}
+
+          {formData.status !== "SELLING" && (
+            <Checkbox
+              label={t("markAsPreviouslyOwned", { item: t("accessory") })}
+              checked={formData.status === "PREVIOUSLY_OWNED"}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setFormData((prev) => ({
+                  ...prev,
+                  status: checked ? "PREVIOUSLY_OWNED" : "OWNED",
+                }));
+              }}
+            />
+          )}
         </div>
       )}
 

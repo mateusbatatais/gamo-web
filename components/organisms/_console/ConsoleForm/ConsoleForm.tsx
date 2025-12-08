@@ -472,6 +472,20 @@ export const ConsoleForm = ({
               </p>
             </div>
           )}
+
+          {formData.status !== "SELLING" && (
+            <Checkbox
+              label={t("markAsPreviouslyOwned", { item: t("console") })}
+              checked={formData.status === "PREVIOUSLY_OWNED"}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setFormData((prev) => ({
+                  ...prev,
+                  status: checked ? "PREVIOUSLY_OWNED" : "OWNED",
+                }));
+              }}
+            />
+          )}
         </div>
       )}
       {initialData?.status === "LOOKING_FOR" && (
