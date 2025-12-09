@@ -220,6 +220,20 @@ export const PublicProfileGameTable = ({
         title={`${t("editTitle")}: ${game.gameTitle}`}
         subtitle={t("editDescription")}
         size="lg"
+        actionButtons={{
+          confirm: {
+            label: t("save"),
+            type: "submit",
+            form: `edit-game-form-${game.id}`,
+            loading: isSavePending,
+            disabled: isLoadingGame,
+          },
+          cancel: {
+            label: t("cancel"),
+            onClick: () => setShowEditModal(false),
+            disabled: isSavePending || isLoadingGame,
+          },
+        }}
       >
         {isLoadingGame ? (
           <div className="flex justify-center p-8">
@@ -244,19 +258,6 @@ export const PublicProfileGameTable = ({
             onCancel={() => setShowEditModal(false)}
           />
         )}
-        <div className="flex justify-end gap-3 mt-6 border-t pt-4 dark:border-gray-700">
-          <Button variant="outline" onClick={() => setShowEditModal(false)}>
-            {t("cancel")}
-          </Button>
-          <Button
-            type="submit"
-            form={`edit-game-form-${game.id}`}
-            loading={isSavePending}
-            disabled={isLoadingGame}
-          >
-            {t("save")}
-          </Button>
-        </div>
       </Dialog>
 
       <ConfirmationModal

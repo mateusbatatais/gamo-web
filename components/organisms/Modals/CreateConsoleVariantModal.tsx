@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { Input } from "@/components/atoms/Input/Input";
-import { Button } from "@/components/atoms/Button/Button";
+
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Textarea } from "@/components/atoms/Textarea/Textarea";
@@ -94,8 +94,25 @@ export const CreateConsoleVariantModal: React.FC<CreateConsoleVariantModalProps>
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} title={t("title")}>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      title={t("title")}
+      actionButtons={{
+        confirm: {
+          label: t("create"),
+          type: "submit",
+          form: "create-console-variant-form",
+          loading: isLoading,
+        },
+        cancel: {
+          label: t("cancel"),
+          onClick: onClose,
+          disabled: isLoading,
+        },
+      }}
+    >
+      <form id="create-console-variant-form" onSubmit={handleSubmit} className="space-y-4">
         <p className="text-sm text-gray-600 dark:text-gray-400">{t("description")}</p>
 
         <div className="p-3 bg-gray-100 dark:bg-gray-900 rounded-md">
@@ -200,11 +217,6 @@ export const CreateConsoleVariantModal: React.FC<CreateConsoleVariantModalProps>
         </div>
 
         {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
-
-        <div className="flex justify-end gap-3 mt-6">
-          <Button type="button" variant="outline" onClick={onClose} label={t("cancel")} />
-          <Button type="submit" loading={isLoading} label={t("create")} />
-        </div>
       </form>
     </Dialog>
   );

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Dialog } from "@/components/atoms/Dialog/Dialog";
 import { Input } from "@/components/atoms/Input/Input";
-import { Button } from "@/components/atoms/Button/Button";
+
 import { apiFetch } from "@/utils/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { Game } from "@/@types/catalog.types";
@@ -134,8 +134,26 @@ export const CreateGameModal: React.FC<CreateGameModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} title={t("title")}>
-      <form onSubmit={handleSubmit} className="space-y-4 ">
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      title={t("title")}
+      actionButtons={{
+        confirm: {
+          label: t("create"),
+          type: "submit",
+          form: "create-game-form",
+          loading: isLoading,
+          disabled: !name.trim() || selectedGenres.length === 0,
+        },
+        cancel: {
+          label: t("cancel"),
+          onClick: onClose,
+          disabled: isLoading,
+        },
+      }}
+    >
+      <form id="create-game-form" onSubmit={handleSubmit} className="space-y-4 ">
         <p className="text-sm text-gray-600 dark:text-gray-400">{t("description")}</p>
 
         <Input
@@ -202,16 +220,6 @@ export const CreateGameModal: React.FC<CreateGameModalProps> = ({
             onItemSelect={(item) => setSeriesId(item.id)}
             loading={isSearchingSeries}
             placeholder={t("searchSeriesPlaceholder")}
-          />
-        </div>
-
-        <div className="flex justify-end gap-3 mt-6">
-          <Button type="button" variant="outline" onClick={onClose} label={t("cancel")} />
-          <Button
-            type="submit"
-            loading={isLoading}
-            label={t("create")}
-            disabled={!name.trim() || selectedGenres.length === 0}
           />
         </div>
       </form>
