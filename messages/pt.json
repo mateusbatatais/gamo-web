@@ -453,6 +453,8 @@
     "withManual": "Com manual",
     "defaultBio": "Jogador e colecionador de consoles",
     "recentlyPlayed": "Jogos Recentemente Jogados",
+    "playingNow": "Jogando agora",
+    "playingNowManyGames": "Como você consegue jogar {count} jogos ao mesmo tempo?",
     "seeMore": "Ver Mais",
     "readFullReview": "Ler Avaliação Completa",
     "gamesCount": "jogos",
@@ -983,7 +985,7 @@
       "fields": {
         "gameName": "Nome do Jogo",
         "platform": "Plataforma",
-        "status": "Status",
+        "status": "Status (Tenho, Procurando, Vendendo)",
         "progress": "Progresso",
         "rating": "Avaliação",
         "media": "Mídia",

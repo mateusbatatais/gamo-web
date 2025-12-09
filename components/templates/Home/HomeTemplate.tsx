@@ -4,11 +4,21 @@ import DiscoverySection from "@/components/organisms/Home/DiscoverySection";
 import HomeMapSection from "@/components/organisms/Home/HomeMapSection";
 import TopUsersSection from "@/components/organisms/Home/TopUsersSection";
 import RecentActivitySection from "@/components/organisms/Home/RecentActivitySection";
+import { PlayingNowSection } from "@/components/organisms/PublicProfile/PlayingNow/PlayingNowSection";
 
-export default function HomeTemplate() {
+interface HomeTemplateProps {
+  userSlug?: string;
+}
+
+export default function HomeTemplate({ userSlug }: HomeTemplateProps) {
   return (
     <main className="space-y-12">
       <HeroSection />
+      {userSlug && (
+        <div className="max-w-7xl mx-auto px-4">
+          <PlayingNowSection slug={userSlug} isOwner={true} />
+        </div>
+      )}
       <TopUsersSection type="COLLECTION" />
       <HomeMapSection />
 

@@ -15,6 +15,7 @@ interface BaseCollectionItem {
   photoMain?: string | null;
   photos?: string[] | null;
   createdAt?: Date;
+  updatedAt?: Date;
   address?: string | null;
   zipCode?: string | null;
   city?: string | null;

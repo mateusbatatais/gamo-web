@@ -453,6 +453,8 @@
     "withManual": "With manual",
     "defaultBio": "Gamer and console collector",
     "recentlyPlayed": "Recently Played",
+    "playingNow": "Playing Now",
+    "playingNowManyGames": "How can you play {count} games at the same time?",
     "seeMore": "See More",
     "readFullReview": "Read Full Review",
     "gamesCount": "games",
@@ -979,7 +981,7 @@
       "fields": {
         "gameName": "Game Name",
         "platform": "Platform",
-        "status": "Status",
+        "status": "Status (Owned, Selling, Looking For)",
         "progress": "Progress",
         "rating": "Rating",
         "media": "Media",
