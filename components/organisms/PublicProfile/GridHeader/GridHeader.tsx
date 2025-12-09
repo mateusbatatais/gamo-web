@@ -115,6 +115,7 @@ export const GridHeader: React.FC<GridHeaderProps> = ({
                 variant="outline"
                 size="sm"
                 icon={viewModeOptions.find((option) => option.value === viewModeValue)?.icon}
+                label={viewModeOptions.find((option) => option.value === viewModeValue)?.label}
               />
             }
             menuClassName="min-w-40"
