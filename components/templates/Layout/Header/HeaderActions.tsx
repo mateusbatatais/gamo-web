@@ -11,7 +11,6 @@ import { useTranslations } from "next-intl";
 import clsx from "clsx";
 import { MenuItem } from "./menuData";
 import { renderIcon } from "./iconRenderer";
-
 type Props = {
   user: { name: string; profileImage?: string; slug: string } | null;
   accountItems: MenuItem[];

@@ -37,7 +37,16 @@
     "pixImportantNote": "Importante: Você pode escolher qualquer valor ao fazer o pagamento. Após completar a transferência, clique no botão de confirmação abaixo.",
     "invalidCpf": "CPF inválido",
     "cpfPlaceholder": "000.000.000-00",
-    "paymentConfirmationError": "Erro ao confirmar pagamento"
+    "paymentConfirmationError": "Erro ao confirmar pagamento",
+    "survivalTitle": "Ajude a manter o Gamo vivo!",
+    "survivalMessage": "Somos uma equipe pequena (na verdade, apenas uma pessoa) trabalhando duro. Sua doação paga os servidores e mantém o site no ar."
+  },
+  "DonationPage": {
+    "title": "Apoie o Gamo",
+    "description": "Sua contribuição é essencial para manter a plataforma funcionando e evoluindo. Cada doação ajuda a cobrir custos de servidor e tempo de desenvolvimento.",
+    "searchTitle": "Doar - Apoie o Gamo",
+    "searchDescription": "Faça uma doação para ajudar a manter o Gamo online e crescendo.",
+    "securePaymentNote": "Todos os pagamentos são processados com segurança."
   },
   "PaymentSuccess": {
     "title": "Obrigado pela sua doação!",
@@ -178,7 +187,8 @@
     "news": "News",
     "marketplace": "Marketplace",
     "reviews": "Reviews",
-    "contact": "Contact"
+    "contact": "Contato",
+    "donate": "Doar"
   },
   "login": {
     "title": "Entrar",

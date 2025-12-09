@@ -37,7 +37,16 @@
     "pixImportantNote": "Important: You can choose any amount when making the payment. After completing the transfer, click the confirmation button below.",
     "invalidCpf": "Invalid CPF",
     "cpfPlaceholder": "000.000.000-00",
-    "paymentConfirmationError": "Error confirming payment"
+    "paymentConfirmationError": "Error confirming payment",
+    "survivalTitle": "Help keep Gamo alive!",
+    "survivalMessage": "We are a small team (actually just one person) working hard. Your donation pays for servers and keeps the site online."
+  },
+  "DonationPage": {
+    "title": "Support Gamo",
+    "description": "Your contribution is essential to keep the platform running and evolving. Every donation helps cover server costs and development time.",
+    "searchTitle": "Donate - Support Gamo",
+    "searchDescription": "Make a donation to help keep Gamo online and growing.",
+    "securePaymentNote": "All payments are processed securely."
   },
   "PaymentSuccess": {
     "title": "Thank you for your donation!",
@@ -178,7 +187,8 @@
     "news": "News",
     "marketplace": "Marketplace",
     "reviews": "Reviews",
-    "contact": "Contact"
+    "contact": "Contact",
+    "donate": "Donate"
   },
   "login": {
     "title": "Login",

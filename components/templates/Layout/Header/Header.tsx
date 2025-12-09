@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/contexts/AuthContext";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/components/atoms/Button/Button";
 import HeaderMenuDesktop from "./HeaderMenuDesktop";
@@ -11,6 +11,7 @@ import HeaderMenuMobile from "./HeaderMenuMobile";
 import HeaderActions from "./HeaderActions";
 import { useHeaderMenuData, MenuItem } from "./menuData";
 import HeaderLogo from "./HeaderLogo";
+import { useModalUrl } from "@/hooks/useModalUrl";
 
 export default function Header() {
   const t = useTranslations("Header");
@@ -18,6 +19,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { consolesItems, gamesItems, accessoriesItems, directLinks } = useHeaderMenuData();
+  const { openModal } = useModalUrl("donation");
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -96,7 +98,17 @@ export default function Header() {
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
-          <HeaderLogo isScrolled={isScrolled} />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <HeaderLogo isScrolled={isScrolled} />
+            <Button
+              variant="transparent"
+              size="sm"
+              onClick={openModal}
+              className="text-pink-500 hover:text-pink-600 dark:text-pink-400 dark:hover:text-pink-300 flex items-center gap-1.5 px-2"
+              label={t("donate")}
+              icon={<Heart size={18} className="fill-current" />}
+            />
+          </div>
 
           <div
             className={clsx(
