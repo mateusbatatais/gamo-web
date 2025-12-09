@@ -18,6 +18,9 @@ import { ViewMode } from "@/@types/catalog-state.types";
 import { GridHeader } from "@/components/organisms/PublicProfile/GridHeader/GridHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { PublicGameDetailModal } from "@/components/organisms/PublicProfile/PublicGameDetailModal/PublicGameDetailModal";
+import { usePublicUserGame } from "@/hooks/usePublicUserGame";
 
 interface PublicConsoleGamesPageProps {
   slug: string;
@@ -47,6 +50,9 @@ const PublicConsoleGamesPageContent = ({
   const t = useTranslations("PublicProfile");
   const { user } = useAuth();
   const { setItems } = useBreadcrumbs();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Verificar se o usuário logado é o dono do perfil
   const isOwner = user?.slug === slug;
@@ -75,6 +81,25 @@ const PublicConsoleGamesPageContent = ({
     sort: catalogState.sort,
     searchQuery: catalogState.searchQuery,
   });
+
+  // Find game for modal from existing data OR fetch if missing
+  const gameIdParam = searchParams.get("game");
+  const gameId = gameIdParam ? parseInt(gameIdParam) : null;
+
+  const existingGame = gameId ? games.find((g) => g.id === gameId) : null;
+
+  const { data: fetchedGame } = usePublicUserGame(slug, gameId!, {
+    enabled: !!gameId && !existingGame,
+  });
+
+  const selectedGame = existingGame || fetchedGame || null;
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("game");
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   useEffect(() => {
     if (consoleData) {
@@ -229,6 +254,15 @@ const PublicConsoleGamesPageContent = ({
         addButtonText={t("txtAddGame")}
         addButtonLink="/user/collection/games/add"
       />
+
+      {/* Game Detail Modal */}
+      {selectedGame && (
+        <PublicGameDetailModal
+          gameItem={selectedGame}
+          isOpen={!!gameIdParam}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

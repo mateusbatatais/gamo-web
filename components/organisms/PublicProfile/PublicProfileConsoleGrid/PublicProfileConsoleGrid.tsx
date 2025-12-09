@@ -23,6 +23,7 @@ import { Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { PublicConsoleDetailModal } from "../PublicConsoleDetailModal/PublicConsoleDetailModal";
 import { PublicGameDetailModal } from "../PublicGameDetailModal/PublicGameDetailModal";
 import { PublicAccessoryDetailModal } from "../PublicAccessoryDetailModal/PublicAccessoryDetailModal";
+import { usePublicUserGame } from "@/hooks/usePublicUserGame";
 
 interface PublicProfileConsoleGridProps {
   slug: string;
@@ -126,9 +127,17 @@ const PublicProfileConsoleGridContent = ({
     ? consoles.find((c) => c.id === parseInt(consoleIdParam))
     : null;
 
-  // Find game for modal from existing data
+  // Find game for modal from existing data OR fetch if missing
   const gameIdParam = searchParams.get("game");
-  const selectedGame = gameIdParam ? games.find((g) => g.id === parseInt(gameIdParam)) : null;
+  const gameId = gameIdParam ? parseInt(gameIdParam) : null;
+
+  const existingGame = gameId ? games.find((g) => g.id === gameId) : null;
+
+  const { data: fetchedGame } = usePublicUserGame(slug, gameId!, {
+    enabled: !!gameId && !existingGame,
+  });
+
+  const selectedGame = existingGame || fetchedGame || null;
 
   // Find accessory for modal from existing data
   const accessoryIdParam = searchParams.get("accessory");
