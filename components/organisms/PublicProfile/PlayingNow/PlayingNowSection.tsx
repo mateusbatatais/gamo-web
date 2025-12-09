@@ -46,7 +46,7 @@ const PlayingNowSectionContent = ({ slug, isOwner }: PlayingNowSectionProps) => 
 
   // Take first 5 items
   const displayItems = data.items.slice(0, 5);
-  const totalPlaying = data.total;
+  const totalPlaying = data.meta.total;
 
   return (
     <div className="mb-10 animate-fade-in">
