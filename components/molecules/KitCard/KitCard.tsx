@@ -35,7 +35,6 @@ export const KitCard = ({
     }).format(value);
   };
 
-  // Logic to get images
   const getImages = () => {
     if (kit.photoMain) {
       return [kit.photoMain];
@@ -49,17 +48,41 @@ export const KitCard = ({
 
     return allItems
       .map((item) => {
-        if ("gameImageUrl" in item) return item.gameImageUrl;
-        if ("photoMain" in item) return item.photoMain;
-        return (item as { image?: string }).image;
+        if ("gameImageUrl" in item && item.gameImageUrl) return item.gameImageUrl;
+        if ("photoMain" in item && item.photoMain) return item.photoMain;
+        if ((item as { image?: string }).image) return (item as { image?: string }).image;
+        return null;
       })
-      .filter((img): img is string => !!img)
       .slice(0, 5);
   };
 
   const images = getImages();
   const hasMainImage = !!kit.photoMain;
   const displayImages = hasMainImage ? [images[0]] : images.slice(0, 5);
+
+  const getGridClass = (count: number) => {
+    if (count === 1) return "grid-cols-1";
+    if (count === 2) return "grid-cols-2";
+    if (count === 3) return "grid-cols-2 grid-rows-2";
+    return "grid-cols-3 grid-rows-2";
+  };
+
+  const getItemClass = (count: number, index: number) => {
+    let classes =
+      "relative overflow-hidden border-white dark:border-gray-800 bg-gray-200 dark:bg-gray-700";
+
+    if (count === 3 && index === 0) {
+      classes += " row-span-2";
+    } else if (count >= 4 && index === 0) {
+      classes += " col-span-2 row-span-2";
+    }
+
+    if (index > 0) {
+      classes += " border-l border-t";
+    }
+
+    return classes;
+  };
 
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 p-0! h-full flex flex-col group">
@@ -79,36 +102,23 @@ export const KitCard = ({
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
-            <div
-              className={`grid h-full w-full ${
-                displayImages.length === 1
-                  ? "grid-cols-1"
-                  : displayImages.length === 2
-                    ? "grid-cols-2"
-                    : displayImages.length === 3
-                      ? "grid-cols-2 grid-rows-2"
-                      : "grid-cols-3 grid-rows-2"
-              }`}
-            >
+            <div className={`grid h-full w-full ${getGridClass(displayImages.length)}`}>
               {displayImages.map((img, index) => (
-                <div
-                  key={index}
-                  className={`relative overflow-hidden border-white dark:border-gray-800 ${
-                    displayImages.length === 3 && index === 0
-                      ? "row-span-2"
-                      : displayImages.length >= 4 && index === 0
-                        ? "col-span-2 row-span-2"
-                        : ""
-                  } ${index > 0 ? "border-l border-t" : ""}`}
-                >
-                  <SafeImage
-                    src={getSafeImageUrl(img)}
-                    alt={`${kit.name} item ${index + 1}`}
-                    fill
-                    className="object-cover"
-                    priority={priority && index === 0}
-                    sizes="(max-width: 768px) 50vw, 20vw"
-                  />
+                <div key={index} className={getItemClass(displayImages.length, index)}>
+                  {img ? (
+                    <SafeImage
+                      src={getSafeImageUrl(img)}
+                      alt={`${kit.name} item ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={priority && index === 0}
+                      sizes="(max-width: 768px) 50vw, 20vw"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <Package size={24} />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
