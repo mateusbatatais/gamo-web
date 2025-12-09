@@ -48,6 +48,7 @@ const AccessoryCard = ({
   onFavoriteToggle,
 }: AccessoryCardProps) => {
   const [imageError, setImageError] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
   const t = useTranslations("");
   const defaultButtonLabel = buttonLabel ?? t("button.viewdetails");
@@ -86,15 +87,26 @@ const AccessoryCard = ({
               <span className="sr-only">No image available</span>
             </div>
           ) : (
-            <Image
-              src={normalizeImageUrl(imageUrl)}
-              alt={`${name} accessory`}
-              fill
-              className="object-contain"
-              sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
-              onError={() => setImageError(true)}
-              priority={true}
-            />
+            <>
+              {isImageLoading && (
+                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+                </div>
+              )}
+              <Image
+                src={normalizeImageUrl(imageUrl)}
+                alt={`${name} accessory`}
+                fill
+                className={clsx(
+                  "object-contain transition-opacity duration-500",
+                  isImageLoading ? "opacity-0" : "opacity-100",
+                )}
+                sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
+                onLoad={() => setIsImageLoading(false)}
+                onError={() => setImageError(true)}
+                priority={true}
+              />
+            </>
           )}
         </Link>
         {badge && <div className="absolute top-2 right-2 z-10">{badge}</div>}

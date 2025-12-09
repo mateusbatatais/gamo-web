@@ -38,6 +38,7 @@ const GameCard = ({
   isFavorite: initialIsFavorite = false,
 }: Game) => {
   const [imageError, setImageError] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -119,6 +120,11 @@ const GameCard = ({
             </div>
           ) : (
             <div className="relative w-full h-full">
+              {isImageLoading && (
+                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+                </div>
+              )}
               <Image
                 src={allImages[currentImageIndex] || ""}
                 alt={`Capa do jogo ${name}`}
@@ -126,8 +132,10 @@ const GameCard = ({
                 className={clsx(
                   "object-cover transition-all duration-500",
                   isHovered ? "scale-110" : "scale-100",
+                  isImageLoading ? "opacity-0" : "opacity-100",
                 )}
                 sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
+                onLoad={() => setIsImageLoading(false)}
                 onError={() => setImageError(true)}
                 priority
               />
