@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/atoms/Card/Card";
+import clsx from "clsx";
 import { Pencil, Trash, Heart } from "lucide-react";
 import { ConfirmationModal } from "@/components/molecules/ConfirmationModal/ConfirmationModal";
 import { Button } from "@/components/atoms/Button/Button";
@@ -33,6 +34,7 @@ export const PublicProfileGameCompact = ({
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const { mutate: deleteGame, isPending: isDeletePending } = useDeleteUserGame();
   const { isPending: isSavePending } = useUserGameMutation();
   const { platformsMap } = usePlatformsCache();
@@ -124,21 +126,43 @@ export const PublicProfileGameCompact = ({
           `}
         >
           {game.photoMain ? (
-            <Image
-              src={game.photoMain}
-              alt={game.gameTitle || ""}
-              fill
-              sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
-              className="object-cover"
-            />
+            <>
+              {isImageLoading && (
+                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center z-10">
+                  <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+                </div>
+              )}
+              <Image
+                src={game.photoMain}
+                alt={game.gameTitle || ""}
+                fill
+                sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
+                className={clsx(
+                  "object-cover transition-opacity duration-500",
+                  isImageLoading ? "opacity-0" : "opacity-100",
+                )}
+                onLoad={() => setIsImageLoading(false)}
+              />
+            </>
           ) : game.gameImageUrl ? (
-            <Image
-              src={game.gameImageUrl}
-              alt={game.gameTitle || ""}
-              fill
-              sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
-              className="object-cover"
-            />
+            <>
+              {isImageLoading && (
+                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center z-10">
+                  <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+                </div>
+              )}
+              <Image
+                src={game.gameImageUrl}
+                alt={game.gameTitle || ""}
+                fill
+                sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
+                className={clsx(
+                  "object-cover transition-opacity duration-500",
+                  isImageLoading ? "opacity-0" : "opacity-100",
+                )}
+                onLoad={() => setIsImageLoading(false)}
+              />
+            </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
               <span className="text-2xl">👾</span>

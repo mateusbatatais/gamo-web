@@ -4,6 +4,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import { Badge } from "@/components/atoms/Badge/Badge";
+import clsx from "clsx";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/atoms/Card/Card";
 import {
@@ -82,6 +83,7 @@ export const PublicProfileConsoleList = ({
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const { mutate: deleteConsole, isPending } = useDeleteUserConsole();
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(consoleItem.photoMain);
@@ -146,17 +148,28 @@ export const PublicProfileConsoleList = ({
               `}
             >
               {safeImageUrl ? (
-                <Image
-                  src={safeImageUrl}
-                  alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
-                  fill
-                  sizes="80px"
-                  className="object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = "none";
-                  }}
-                />
+                <>
+                  {isImageLoading && (
+                    <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center z-10">
+                      <div className="w-6 h-6 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+                    </div>
+                  )}
+                  <Image
+                    src={safeImageUrl}
+                    alt={`${consoleItem.consoleName} ${consoleItem.variantName}`}
+                    fill
+                    sizes="80px"
+                    className={clsx(
+                      "object-cover transition-opacity duration-500",
+                      isImageLoading ? "opacity-0" : "opacity-100",
+                    )}
+                    onLoad={() => setIsImageLoading(false)}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = "none";
+                    }}
+                  />
+                </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
                   <span className="text-2xl">🖥️</span>

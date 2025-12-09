@@ -100,26 +100,40 @@ const AccessoryCatalogComponent = ({ locale, perPage }: AccessoryCatalogComponen
     }
 
     return (
-      <div
-        className={
-          catalogState.viewMode === "grid"
-            ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
-            : "flex flex-col space-y-6"
-        }
-      >
-        {accessories.items.map((accessory: Accessory) => (
-          <AccessoryCard
-            key={accessory.id}
-            id={accessory.id}
-            name={accessory.name}
-            type={accessory.type}
-            subType={accessory.subType}
-            imageUrl={accessory.imageUrl || "https://via.placeholder.com/150"}
-            slug={accessory.slug}
-            orientation={catalogState.viewMode === "grid" ? "vertical" : "horizontal"}
-            isFavorite={accessory.isFavorite}
-          />
-        ))}
+      <div className="relative">
+        {/* Loading overlay quando filtros são aplicados */}
+        {isPlaceholderData && (
+          <div className="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                Aplicando filtros...
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={
+            catalogState.viewMode === "grid"
+              ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
+              : "flex flex-col space-y-6"
+          }
+        >
+          {accessories.items.map((accessory: Accessory) => (
+            <AccessoryCard
+              key={accessory.id}
+              id={accessory.id}
+              name={accessory.name}
+              type={accessory.type}
+              subType={accessory.subType}
+              imageUrl={accessory.imageUrl || "https://via.placeholder.com/150"}
+              slug={accessory.slug}
+              orientation={catalogState.viewMode === "grid" ? "vertical" : "horizontal"}
+              isFavorite={accessory.isFavorite}
+            />
+          ))}
+        </div>
       </div>
     );
   };

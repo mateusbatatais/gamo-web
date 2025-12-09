@@ -8,6 +8,7 @@ import { AddConsoleToCollection } from "../AddConsoleToCollection/AddConsoleToCo
 import { Card } from "@/components/atoms/Card/Card";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Monitor } from "lucide-react";
+import clsx from "clsx";
 
 interface ConsoleSkinCardProps {
   skin: {
@@ -43,6 +44,7 @@ export default function ConsoleSkinCard({
   const t = useTranslations("ConsoleDetails");
   const imageUrl = skin.imageUrl;
   const [imageError, setImageError] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const { recentlyAdded, triggerFeedback } = useAddToCollectionFeedback();
 
   return (
@@ -59,15 +61,26 @@ export default function ConsoleSkinCard({
             <span className="sr-only">{t("noImage")}</span>
           </div>
         ) : (
-          <Image
-            src={normalizeImageUrl(imageUrl!)}
-            alt={skin.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            onError={() => setImageError(true)}
-            priority={true}
-          />
+          <>
+            {isImageLoading && (
+              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center rounded-t-lg">
+                <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+              </div>
+            )}
+            <Image
+              src={normalizeImageUrl(imageUrl!)}
+              alt={skin.name}
+              fill
+              className={clsx(
+                "object-cover transition-opacity duration-500",
+                isImageLoading ? "opacity-0" : "opacity-100",
+              )}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onLoad={() => setIsImageLoading(false)}
+              onError={() => setImageError(true)}
+              priority={true}
+            />
+          </>
         )}
       </div>
       <div className="p-4">

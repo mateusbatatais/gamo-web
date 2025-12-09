@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { UserAccessory } from "@/@types/collection.types";
 import { AccessoryActionButtons } from "../AccessoryActionButtons/AccessoryActionButtons";
@@ -10,6 +10,7 @@ import { useCatalogQueryKeys } from "@/hooks/useCatalogQueryKeys";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Heart } from "lucide-react";
+import clsx from "clsx";
 
 interface AccessoryCompactCardProps {
   accessory: UserAccessory;
@@ -18,6 +19,7 @@ interface AccessoryCompactCardProps {
 }
 
 export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryCompactCardProps) => {
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const { getSafeImageUrl } = useSafeImageUrl();
   const safeImageUrl = getSafeImageUrl(accessory.photoMain);
   const { getAccessoriesQueryKey } = useCatalogQueryKeys();
@@ -77,17 +79,28 @@ export const AccessoryCompactCard = ({ accessory, isOwner, type }: AccessoryComp
           `}
       >
         {safeImageUrl ? (
-          <Image
-            src={safeImageUrl}
-            alt={accessory.variantName || "Acessório"}
-            fill
-            sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
-            className="object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = "none";
-            }}
-          />
+          <>
+            {isImageLoading && (
+              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center z-10">
+                <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+              </div>
+            )}
+            <Image
+              src={safeImageUrl}
+              alt={accessory.variantName || "Acessório"}
+              fill
+              sizes="(max-width: 768px) 33vw, (max-width: 1200px) 25vw, 16vw"
+              className={clsx(
+                "object-cover transition-opacity duration-500",
+                isImageLoading ? "opacity-0" : "opacity-100",
+              )}
+              onLoad={() => setIsImageLoading(false)}
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = "none";
+              }}
+            />
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">
             <span className="text-xl">🎮</span>

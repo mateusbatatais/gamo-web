@@ -98,30 +98,44 @@ const GameCatalogComponent = ({ perPage }: GameCatalogComponentProps) => {
     }
 
     return (
-      <div
-        className={
-          catalogState.viewMode === "grid"
-            ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
-            : "flex flex-col space-y-6"
-        }
-      >
-        {games.items.map((game: Game) => (
-          <GameCard
-            key={game.id}
-            id={game.id}
-            name={game.name}
-            imageUrl={game.imageUrl || ""}
-            parentPlatforms={game.parentPlatforms}
-            platforms={game.platforms}
-            slug={game.slug}
-            releaseDate={game.releaseDate || ""}
-            metacritic={game.metacritic}
-            developer={game.developer}
-            orientation={catalogState.viewMode === "grid" ? "vertical" : "horizontal"}
-            shortScreenshots={game.shortScreenshots}
-            isFavorite={game.isFavorite}
-          />
-        ))}
+      <div className="relative">
+        {/* Loading overlay quando filtros são aplicados */}
+        {isPlaceholderData && (
+          <div className="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-12 h-12 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                Aplicando filtros...
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div
+          className={
+            catalogState.viewMode === "grid"
+              ? "grid grid-cols-2 xl:grid-cols-3 gap-6"
+              : "flex flex-col space-y-6"
+          }
+        >
+          {games.items.map((game: Game) => (
+            <GameCard
+              key={game.id}
+              id={game.id}
+              name={game.name}
+              imageUrl={game.imageUrl || ""}
+              parentPlatforms={game.parentPlatforms}
+              platforms={game.platforms}
+              slug={game.slug}
+              releaseDate={game.releaseDate || ""}
+              metacritic={game.metacritic}
+              developer={game.developer}
+              orientation={catalogState.viewMode === "grid" ? "vertical" : "horizontal"}
+              shortScreenshots={game.shortScreenshots}
+              isFavorite={game.isFavorite}
+            />
+          ))}
+        </div>
       </div>
     );
   };
