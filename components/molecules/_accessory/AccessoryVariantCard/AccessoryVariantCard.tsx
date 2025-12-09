@@ -1,6 +1,5 @@
 // components/molecules/AccessoryVariantCard/AccessoryVariantCard.tsx
 import React, { useState } from "react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { normalizeImageUrl } from "@/utils/validate-url";
 import { Card } from "@/components/atoms/Card/Card";
@@ -9,7 +8,7 @@ import { Package } from "lucide-react";
 import { AccessoryVariantDetail } from "@/@types/catalog.types";
 import { AddAccessoryToCollection } from "../AddAccessoryToCollection/AddAccessoryToCollection";
 import { useFavorite } from "@/hooks/useFavorite";
-import clsx from "clsx";
+import { ImageWithLoading } from "@/components/atoms/ImageWithLoading/ImageWithLoading";
 
 interface AccessoryVariantCardProps {
   variant: AccessoryVariantDetail;
@@ -31,7 +30,6 @@ export default function AccessoryVariantCard({ variant, accessoryId }: Accessory
   const t = useTranslations("AccessoryDetails");
   const imageUrl = variant.imageUrl;
   const [imageError, setImageError] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
   const { recentlyAdded, triggerFeedback } = useAddToCollectionFeedback();
   const { toggleFavorite } = useFavorite();
 
@@ -48,26 +46,16 @@ export default function AccessoryVariantCard({ variant, accessoryId }: Accessory
             <span className="sr-only">{t("noImage")}</span>
           </div>
         ) : (
-          <>
-            {isImageLoading && (
-              <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center rounded-t-lg">
-                <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
-              </div>
-            )}
-            <Image
-              src={normalizeImageUrl(imageUrl!)}
-              alt={variant.name}
-              fill
-              className={clsx(
-                "object-cover transition-opacity duration-500",
-                isImageLoading ? "opacity-0" : "opacity-100",
-              )}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              onLoad={() => setIsImageLoading(false)}
-              onError={() => setImageError(true)}
-              priority={true}
-            />
-          </>
+          <ImageWithLoading
+            src={normalizeImageUrl(imageUrl!)}
+            alt={variant.name}
+            fill
+            spinnerSize="card"
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            onErrorOccurred={() => setImageError(true)}
+            priority
+          />
         )}
       </div>
       <div className="p-4">

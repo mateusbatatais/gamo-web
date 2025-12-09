@@ -46,7 +46,6 @@ export const PublicProfileGameCard = ({
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
   const { mutate: deleteGame, isPending: isDeletePending } = useDeleteUserGame();
   const { isPending } = useUserGameMutation();
   const { platformsMap } = usePlatformsCache();

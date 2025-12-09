@@ -1,7 +1,6 @@
 // components/molecules/ConsoleCard.tsx
 
 import { Button, ButtonVariant, ButtonStatus } from "@/components/atoms/Button/Button";
-import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { ReactNode, useState } from "react";
@@ -11,6 +10,7 @@ import { normalizeImageUrl } from "@/utils/validate-url";
 import { useTranslations } from "next-intl";
 import { CardActionButtons } from "../../CardActionButtons/CardActionButtons";
 import { useFavorite } from "@/hooks/useFavorite";
+import { ImageWithLoading } from "@/components/atoms/ImageWithLoading/ImageWithLoading";
 
 export interface ConsoleCardProps {
   name: string;
@@ -52,7 +52,6 @@ const ConsoleCard = ({
   onFavoriteToggle,
 }: ConsoleCardProps) => {
   const [imageError, setImageError] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(true);
   const t = useTranslations("");
   const { toggleFavorite, isPending: favoriteLoading } = useFavorite();
   const defaultButtonLabel = buttonLabel ?? t("button.viewdetails");
@@ -96,26 +95,16 @@ const ConsoleCard = ({
               <span className="sr-only">{t("ConsoleDetails.noImage")}</span>
             </div>
           ) : (
-            <>
-              {isImageLoading && (
-                <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
-                </div>
-              )}
-              <Image
-                src={normalizeImageUrl(imageUrl)}
-                alt={`${name} console`}
-                fill
-                className={clsx(
-                  "object-contain transition-opacity duration-500",
-                  isImageLoading ? "opacity-0" : "opacity-100",
-                )}
-                sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
-                onLoad={() => setIsImageLoading(false)}
-                onError={() => setImageError(true)}
-                priority={true}
-              />
-            </>
+            <ImageWithLoading
+              src={normalizeImageUrl(imageUrl)}
+              alt={`${name} console`}
+              fill
+              spinnerSize="card"
+              className="object-contain"
+              sizes={orientation === "vertical" ? "(max-width: 640px) 100vw, 320px" : "240px"}
+              onErrorOccurred={() => setImageError(true)}
+              priority
+            />
           )}
         </Link>
         {badge && <div className="absolute top-2 right-2 z-10">{badge}</div>}

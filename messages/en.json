@@ -536,6 +536,7 @@
     "editDescription": "Edit item details"
   },
   "TradeForm": {
+    "title": "Title",
     "keepCopyInCollection": "Keep a copy in my collection (previously owned)",
     "keepCopyInCollectionDescription": "Useful if you want to keep the item's history.",
     "keepGameCopyInCollectionDescription": "Important if you have rated or added progress to the game.",

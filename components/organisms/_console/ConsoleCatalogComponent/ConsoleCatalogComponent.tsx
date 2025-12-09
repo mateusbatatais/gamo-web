@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { CatalogSkeleton } from "../../Catalog/CatalogSkeleton";
 import { CatalogEmptyState } from "../../Catalog/CatalogEmptyState";
 import { CatalogLayout } from "../../Catalog/Layouts/CatalogLayout";
+import { LoadingOverlay } from "@/components/atoms/LoadingOverlay/LoadingOverlay";
 
 interface ConsoleCatalogComponentProps {
   locale: string;
@@ -107,17 +108,7 @@ const ConsoleCatalogComponent = ({ locale, perPage }: ConsoleCatalogComponentPro
 
     return (
       <div className="relative">
-        {/* Loading overlay quando filtros são aplicados */}
-        {isPlaceholderData && (
-          <div className="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm flex items-center justify-center z-50 rounded-lg">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 border-4 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
-              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
-                Aplicando filtros...
-              </p>
-            </div>
-          </div>
-        )}
+        <LoadingOverlay isVisible={isPlaceholderData} message="Aplicando filtros..." />
 
         <div
           className={

@@ -536,6 +536,7 @@
     "editDescription": "Edite os detalhes do item"
   },
   "TradeForm": {
+    "title": "Título",
     "keepCopyInCollection": "Manter uma cópia na minha coleção (já tive)",
     "keepCopyInCollectionDescription": "Útil caso você queira manter o histórico do item.",
     "keepGameCopyInCollectionDescription": "É importante caso você tenha avaliado ou adicionado progresso ao jogo.",
