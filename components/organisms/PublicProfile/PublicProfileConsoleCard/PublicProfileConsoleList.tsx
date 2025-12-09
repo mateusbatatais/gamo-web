@@ -179,8 +179,8 @@ export const PublicProfileConsoleList = ({
           </Link>
 
           <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-start mb-2">
-              <div className="flex-1 min-w-0">
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-2 mb-2">
+              <div className="w-full sm:w-auto flex-1 min-w-0">
                 <Link href={`/console/${consoleItem.variantSlug}`} target="_blank">
                   <h3 className="font-bold text-lg dark:text-white line-clamp-1 hover:text-primary-500">
                     {consoleItem.consoleName}
@@ -197,7 +197,7 @@ export const PublicProfileConsoleList = ({
                 </p>
               </div>
 
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center flex-wrap w-full sm:w-auto sm:justify-end">
                 {canExpandAccessories && onToggleAccessories && (
                   <Button
                     variant="secondary"
