@@ -307,7 +307,11 @@
       "totalConsoles": "Total de Consoles",
       "totalAccessories": "Total de Acessórios",
       "totalItems": "Total de Itens",
-      "noActivities": "Nenhuma atividade recente"
+      "noActivities": "Nenhuma atividade recente",
+      "startMinting": "Começar a mintar minha coleção",
+      "addGame": "Adicionar Jogo",
+      "addConsole": "Adicionar Console",
+      "addAccessory": "Adicionar Acessório"
     },
     "detailsForm": {
       "name": "Nome",

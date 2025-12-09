@@ -11,6 +11,7 @@ import {
   Headphones,
   Package,
   Activity,
+  PlusCircle,
 } from "lucide-react";
 import { Card } from "@/components/atoms/Card/Card";
 import { useAuth } from "@/contexts/AuthContext";
@@ -49,6 +50,50 @@ export default function AccountOverview() {
 
   return (
     <div className="space-y-6">
+      {!statsLoading && totalItems === 0 && (
+        <Card className="p-6 bg-gradient-to-r from-primary-50 to-transparent dark:from-primary-900/10 mb-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-primary-100 dark:bg-primary-900/50 rounded-full text-primary-600 dark:text-primary-300">
+                <PlusCircle size={24} />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t("startMinting")}
+                </h2>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Link href="/user/collection/games/add">
+                <Button
+                  variant="outline"
+                  icon={<Gamepad2 size={16} />}
+                  label={t("addGame")}
+                  className="bg-white dark:bg-gray-800"
+                />
+              </Link>
+              <Link href="/user/collection/consoles/add">
+                <Button
+                  variant="outline"
+                  icon={<Monitor size={16} />}
+                  label={t("addConsole")}
+                  className="bg-white dark:bg-gray-800"
+                />
+              </Link>
+              <Link href="/user/collection/accessories/add">
+                <Button
+                  variant="outline"
+                  icon={<Headphones size={16} />}
+                  label={t("addAccessory")}
+                  className="bg-white dark:bg-gray-800"
+                />
+              </Link>
+            </div>
+          </div>
+        </Card>
+      )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsLoading ? (
           <>

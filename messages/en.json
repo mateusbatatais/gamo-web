@@ -307,7 +307,11 @@
       "totalConsoles": "Total Consoles",
       "totalAccessories": "Total Accessories",
       "totalItems": "Total Items",
-      "noActivities": "No recent activities"
+      "noActivities": "No recent activities",
+      "startMinting": "Start minting my collection",
+      "addGame": "Add Game",
+      "addConsole": "Add Console",
+      "addAccessory": "Add Accessory"
     },
     "detailsForm": {
       "name": "Name",
