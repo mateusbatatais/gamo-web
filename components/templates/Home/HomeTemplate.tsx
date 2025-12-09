@@ -15,7 +15,7 @@ export default function HomeTemplate({ userSlug }: HomeTemplateProps) {
     <main className="space-y-12">
       <HeroSection />
       {userSlug && (
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto">
           <PlayingNowSection slug={userSlug} isOwner={true} />
         </div>
       )}

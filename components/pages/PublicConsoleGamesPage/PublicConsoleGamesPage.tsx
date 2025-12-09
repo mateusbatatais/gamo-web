@@ -1,7 +1,7 @@
 // components/pages/PublicConsoleGamesPage/PublicConsoleGamesPage.tsx
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Skeleton } from "@/components/atoms/Skeleton/Skeleton";
@@ -17,6 +17,7 @@ import { Grid3X3, List, Table, ListChecks } from "lucide-react";
 import { ViewMode } from "@/@types/catalog-state.types";
 import { GridHeader } from "@/components/organisms/PublicProfile/GridHeader/GridHeader";
 import { useAuth } from "@/contexts/AuthContext";
+import { useBreadcrumbs } from "@/contexts/BreadcrumbsContext";
 
 interface PublicConsoleGamesPageProps {
   slug: string;
@@ -45,6 +46,7 @@ const PublicConsoleGamesPageContent = ({
 }: PublicConsoleGamesPageProps) => {
   const t = useTranslations("PublicProfile");
   const { user } = useAuth();
+  const { setItems } = useBreadcrumbs();
 
   // Verificar se o usuário logado é o dono do perfil
   const isOwner = user?.slug === slug;
@@ -73,6 +75,16 @@ const PublicConsoleGamesPageContent = ({
     sort: catalogState.sort,
     searchQuery: catalogState.searchQuery,
   });
+
+  useEffect(() => {
+    if (consoleData) {
+      setItems([
+        { label: slug, href: `/user/${slug}` },
+        { label: consoleData.consoleName || "Console", href: undefined },
+      ]);
+    }
+    return () => setItems([]);
+  }, [consoleData, slug, setItems]);
 
   const SORT_OPTIONS = [
     { value: "title-asc", label: t("order.titleAsc") },
@@ -135,7 +147,7 @@ const PublicConsoleGamesPageContent = ({
       <div className="mb-3">
         <Link href={`/user/${slug}`}>
           <Button variant="transparent" icon={<ArrowLeft size={16} />}>
-            {t("backToProfile")}
+            {t("backToCollection")}
           </Button>
         </Link>
       </div>
