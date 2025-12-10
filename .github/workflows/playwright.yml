@@ -23,7 +23,7 @@ jobs:
     env:
       # Variáveis da API
       # Use local postgres service container for tests instead of production DB
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gamo_dev
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gamo_dev?sslmode=disable
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       SMTP_HOST: ${{ secrets.SMTP_HOST }}
