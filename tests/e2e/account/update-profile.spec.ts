@@ -44,7 +44,7 @@ test.describe("Atualização de Perfil", () => {
 });
 
 test.describe("Acesso não autenticado", () => {
-  test.use({ storageState: undefined });
+  test.use({ storageState: { cookies: [], origins: [] } });
 
   test("Redireciona ou bloqueia acesso à página de detalhes sem autenticação", async ({ page }) => {
     await page.goto(`/${DEFAULT_LOCALE}/account/details`);

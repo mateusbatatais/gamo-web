@@ -156,7 +156,7 @@ test.describe("Detalhes do Console", () => {
   });
 
   test.describe("Redireciona para login sem autenticação", () => {
-    test.use({ storageState: undefined });
+    test.use({ storageState: { cookies: [], origins: [] } });
 
     test("Redireciona para login ao tentar adicionar sem autenticação", async ({ page }) => {
       await page.goto(`/${DEFAULT_LOCALE}/console/ps5-slim`);
