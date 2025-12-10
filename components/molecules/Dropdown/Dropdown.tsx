@@ -102,16 +102,25 @@ export function Dropdown({
   return (
     <div className={clsx("relative inline-block", className)}>
       {trigger ? (
-        <div ref={anchorRef}>
-          <Link
-            href="#"
-            onClick={handleOpen}
-            className="cursor-pointer focus:outline-none"
-            aria-haspopup="true"
-            aria-expanded={isOpen}
-          >
-            {trigger}
-          </Link>
+        <div
+          ref={anchorRef}
+          onClick={(e) => {
+            e.preventDefault();
+            handleOpen();
+          }}
+          className="cursor-pointer focus:outline-none inline-block"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              handleOpen();
+            }
+          }}
+          aria-haspopup="true"
+          aria-expanded={isOpen}
+        >
+          {trigger}
         </div>
       ) : (
         defaultTrigger

@@ -159,13 +159,29 @@ function BreadcrumbItemRenderer({
 }
 
 function generateBasicBreadcrumbs(pathname: string): BreadcrumbItem[] {
+  // Extract locale from URL (ex: /pt/console → pt)
+  const localeMatch = pathname.match(/^\/([a-z]{2})(?:\/|$)/);
+  const locale = localeMatch ? localeMatch[1] : null;
+
   // Remove o locale da URL (ex: /pt/console → /console)
-  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(\/|$)/, "/");
+  const pathWithoutLocale = pathname.replace(/^\/[a-z]{2}(?:\/|$)/, "/");
   const segments = pathWithoutLocale.split("/").filter(Boolean);
 
-  return segments.map((segment, index) => {
-    const href = "/" + segments.slice(0, index + 1).join("/");
-    const isLast = index === segments.length - 1;
+  // Map segments with their original indices before filtering
+  const segmentsWithIndices = segments.map((segment, index) => ({
+    segment,
+    originalIndex: index,
+  }));
+
+  // Filter out "user" segment for public profile pages
+  const filteredSegments = segmentsWithIndices.filter(({ segment }) => segment !== "user");
+
+  return filteredSegments.map(({ segment, originalIndex }, index) => {
+    // Build href using original segments to maintain correct navigation
+    const pathSegments = segments.slice(0, originalIndex + 1);
+    const basePath = "/" + pathSegments.join("/");
+    const href = locale ? `/${locale}${basePath}` : basePath;
+    const isLast = index === filteredSegments.length - 1;
 
     // Usar o segmento cru SEM formatação
     return {
