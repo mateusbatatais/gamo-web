@@ -103,6 +103,16 @@ export default function MarketplaceCard({
           )}
         </div>
 
+        <div className="absolute top-2 right-2 z-10">
+          <Badge
+            variant="solid"
+            status={item.status === "SELLING" ? "success" : "info"}
+            className="text-xs font-semibold shadow-md"
+          >
+            {item.status === "SELLING" ? "À venda" : "Buscando"}
+          </Badge>
+        </div>
+
         {item.itemType === "KIT" && !item.photoMain && item.photos && item.photos.length > 0 ? (
           <div
             className={`grid h-full w-full ${

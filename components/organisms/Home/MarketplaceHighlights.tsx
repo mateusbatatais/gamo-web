@@ -23,7 +23,7 @@ export default function MarketplaceHighlights() {
           <div className="h-8 w-48 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
           <div className="h-10 w-24 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {[...Array(4)].map((_, i) => (
             <div key={i} className="h-80 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
           ))}
@@ -49,7 +49,7 @@ export default function MarketplaceHighlights() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {marketplace.items.map((item: MarketplaceItem) => (
           <MarketplaceCard key={`${item.itemType}-${item.id}`} item={item} viewMode="grid" />
         ))}
