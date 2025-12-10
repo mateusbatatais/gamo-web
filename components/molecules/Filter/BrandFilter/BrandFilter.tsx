@@ -64,7 +64,7 @@ const BrandFilter = ({ selectedBrands, onBrandChange }: BrandFilterProps) => {
 
   return (
     <div className="mb-4">
-      <p className="font-medium text-lg mb-2" data-testid="label-filter">
+      <p className="font-medium text-lg mb-2" data-testid="label-filter-brand">
         {t("filters.brand.label")}
       </p>
 

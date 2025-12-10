@@ -62,7 +62,13 @@ const ConsoleFilterContainer = ({
     <div className={clsx("space-y-6", className)}>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold">{t("filters.label")}</h3>
-        <Button variant="outline" size="sm" onClick={clearFilters} label={t("filters.clear")} />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={clearFilters}
+          label={t("filters.clear")}
+          data-testid="clear-filters-button"
+        />
       </div>
 
       <BrandFilter selectedBrands={selectedBrands} onBrandChange={onBrandChange} />

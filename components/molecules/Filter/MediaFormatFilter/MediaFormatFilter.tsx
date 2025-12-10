@@ -43,7 +43,7 @@ const MediaFormatFilter = ({
     );
 
   if (error) return <div>{error.message}</div>;
-  if (!mediaFormats) return null;
+  if (!mediaFormats || !Array.isArray(mediaFormats)) return null;
 
   return (
     <div className="mb-4">

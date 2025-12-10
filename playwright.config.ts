@@ -24,20 +24,32 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Reduce workers to avoid overloading Next.js server */
+  workers: process.env.CI ? 1 : 3, // Reduced from 8 to 3
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://localhost:3000/en",
+    baseURL: "http://localhost:3000",
     //storageState: "storageState.json",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+
+    /* Add navigation timeout */
+    navigationTimeout: 30000,
+
+    /* Add action timeout */
+    actionTimeout: 15000,
   },
-  timeout: 60000,
+  /* Increased global timeout for slower parallel runs */
+  timeout: 90000, // Increased from 60s to 90s
+
+  /* Expect timeout for assertions */
+  expect: {
+    timeout: 10000,
+  },
 
   /* Configure projects for major browsers */
   projects: [

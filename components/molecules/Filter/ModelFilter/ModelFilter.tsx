@@ -31,7 +31,7 @@ const ModelFilter = ({ selectedModels, onModelChange }: ModelFilterProps) => {
 
   if (isLoading) return <ModelSkeleton />;
   if (error) return <div>{error.message}</div>;
-  if (!models) return null;
+  if (!models || !Array.isArray(models)) return null;
 
   // Separar os 3 últimos modelos e o restante
   const lastThreeModels = models.slice(-3); // Últimos 3

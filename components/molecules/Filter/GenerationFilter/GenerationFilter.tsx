@@ -56,7 +56,7 @@ const GenerationFilter = ({ selectedGenerations, onGenerationChange }: Generatio
 
   return (
     <div className="mb-4">
-      <p className="font-medium text-lg mb-2" data-testid="label-filter">
+      <p className="font-medium text-lg mb-2" data-testid="label-filter-generation">
         {t("filters.generation.label")}
       </p>
 

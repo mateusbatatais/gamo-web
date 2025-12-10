@@ -29,7 +29,7 @@ const StorageFilter = ({ selectedStorageRanges, onStorageChange }: StorageFilter
 
   return (
     <div className="mb-4">
-      <p className="font-medium text-lg" data-testid="label-filter">
+      <p className="font-medium text-lg" data-testid="label-filter-storage">
         {t("filters.storage.label")}
       </p>
       {storageRanges.map((range) => (
