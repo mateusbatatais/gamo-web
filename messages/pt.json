@@ -921,6 +921,10 @@
   "GameImport": {
     "title": "Importar Jogos",
     "description": "Importe sua coleção de jogos através de uma planilha CSV, Excel ou JSON",
+    "guidance": {
+      "title": "Antes de começar",
+      "message": "Para que seus jogos sejam associados automaticamente aos consoles corretos, certifique-se de que você já cadastrou seus consoles na coleção. Caso contrário, os jogos serão importados como itens avulsos (sem console definido)."
+    },
     "steps": {
       "upload": "Upload",
       "columnMapping": "Mapeamento",

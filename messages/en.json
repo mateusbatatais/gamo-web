@@ -916,6 +916,10 @@
   "GameImport": {
     "title": "Import Games",
     "description": "Import your game collection through a CSV, Excel, or JSON file",
+    "guidance": {
+      "title": "Before you start",
+      "message": "To ensure your games are automatically associated with the correct consoles, make sure you have already registered your consoles in your collection. Otherwise, games will be imported as standalone items (without a defined console)."
+    },
     "steps": {
       "upload": "Upload",
       "columnMapping": "Mapping",
