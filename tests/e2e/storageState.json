@@ -11,84 +11,14 @@
       "sameSite": "Lax"
     },
     {
-      "name": "_lr_hb_-rix9j9%2Fgamo",
-      "value": "{%22heartbeat%22:1765404804338}",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1765491204,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_ga",
-      "value": "GA1.1.395312359.1765404805",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1799964804.760682,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_ga_N1E9TNJKQ5",
-      "value": "GS2.1.s1765404804$o1$g0$t1765404804$j60$l0$h0",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1799964804.765992,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_lr_tabs_-rix9j9%2Fgamo",
-      "value": "{%22recordingID%22:%226-019b0a53-84e5-774d-8309-6180c1a7eecc%22%2C%22sessionID%22:0%2C%22lastActivity%22:1765404804992%2C%22hasActivity%22:false%2C%22clearsIdentifiedUser%22:false%2C%22confirmed%22:true}",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1765491204,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
       "name": "gamo_token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDA0NjcyL3Byb2ZpbGVzL2I2anFhbGlxbHdhem15cG1rbnFtLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTQwNDgwNSwiZXhwIjoxNzY2MDA5NjA1fQ.2a2ORgHqjHmeBLnwMBx47jzYkMxPzvxpK9kXIogNaJI",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDA4MjE5L3Byb2ZpbGVzL282anF6emVsZmx3MHBwamZuZmppLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTQwODg1NiwiZXhwIjoxNzY2MDEzNjU2fQ.n0bw2hogIS1bTLT3zJ6GnQ5tj6QI88-k9iF_1qV3S9E",
       "domain": "localhost",
       "path": "/",
-      "expires": 1767996805.267864,
+      "expires": 1768000856.573633,
       "httpOnly": false,
       "secure": true,
       "sameSite": "Lax"
-    },
-    {
-      "name": "m",
-      "value": "e48c290a-1fe8-4bd7-9fa8-dc874a93bad039c9ba",
-      "domain": "m.stripe.com",
-      "path": "/",
-      "expires": 1799964806.474227,
-      "httpOnly": true,
-      "secure": true,
-      "sameSite": "None"
-    },
-    {
-      "name": "__stripe_mid",
-      "value": "e40bb3e6-088d-4943-b048-b76309ebc4f9786aaf",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1796940806,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Strict"
-    },
-    {
-      "name": "__stripe_sid",
-      "value": "ed74ffdb-f398-4e10-86c7-f7c8011dfbc11560d6",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1765406606,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Strict"
     }
   ],
   "origins": [
@@ -101,11 +31,7 @@
         },
         {
           "name": "gamo_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDA0NjcyL3Byb2ZpbGVzL2I2anFhbGlxbHdhem15cG1rbnFtLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTQwNDgwNSwiZXhwIjoxNzY2MDA5NjA1fQ.2a2ORgHqjHmeBLnwMBx47jzYkMxPzvxpK9kXIogNaJI"
-        },
-        {
-          "name": "_lr_id_",
-          "value": "{\"userID\":\"e3664090-3c53-4e86-8b77-1df7ab5a10bb\"}"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDA4MjE5L3Byb2ZpbGVzL282anF6emVsZmx3MHBwamZuZmppLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTQwODg1NiwiZXhwIjoxNzY2MDEzNjU2fQ.n0bw2hogIS1bTLT3zJ6GnQ5tj6QI88-k9iF_1qV3S9E"
         }
       ]
     }
