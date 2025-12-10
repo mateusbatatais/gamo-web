@@ -129,14 +129,16 @@ export const PublicProfileConsoleCompact = ({
                 size="sm"
                 aria-expanded={isExpanded && expandedType === "accessories"}
                 onClick={onToggleAccessories}
-                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none flex items-center justify-center gap-1"
+                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none flex items-center justify-center gap-1 px-1! py-1!"
               >
-                <GamepadIcon size={14} />
-                {isExpanded && expandedType === "accessories" ? (
-                  <ChevronUp size={14} />
-                ) : (
-                  <ChevronDown size={14} />
-                )}
+                <span className="flex flex-row items-center justify-center gap-1 w-full">
+                  <GamepadIcon size={14} />
+                  {isExpanded && expandedType === "accessories" ? (
+                    <ChevronUp size={14} />
+                  ) : (
+                    <ChevronDown size={14} />
+                  )}
+                </span>
               </Button>
             )}
             {canExpandGames && onToggleGames && (
@@ -145,14 +147,16 @@ export const PublicProfileConsoleCompact = ({
                 size="sm"
                 aria-expanded={isExpanded && expandedType === "games"}
                 onClick={onToggleGames}
-                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none flex items-center justify-center gap-1"
+                className="flex-1 opacity-70 hover:opacity-100 rounded-t-none flex items-center justify-center gap-1 px-1! py-1!"
               >
-                <Disc3 size={14} />
-                {isExpanded && expandedType === "games" ? (
-                  <ChevronUp size={14} />
-                ) : (
-                  <ChevronDown size={14} />
-                )}
+                <span className="flex flex-row items-center justify-center gap-1 w-full">
+                  <Disc3 size={14} />
+                  {isExpanded && expandedType === "games" ? (
+                    <ChevronUp size={14} />
+                  ) : (
+                    <ChevronDown size={14} />
+                  )}
+                </span>
               </Button>
             )}
           </div>

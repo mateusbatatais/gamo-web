@@ -262,24 +262,24 @@ export const PublicProfileConsoleCard = ({
                 onClick={onToggleAccessories}
                 className="flex gap-2 flex-1"
               >
-                <div className="flex flex-row gap-1 justify-space-between w-full">
-                  <div className="flex gap-1.5">
+                <span className="flex flex-row gap-1 justify-between items-center w-full">
+                  <span className="flex gap-1.5 items-center">
                     {accessorySummary?.sortedTypes.slice(0, 2).map(([typeSlug, count]) => (
-                      <div key={typeSlug} className="flex items-center gap-0.5">
+                      <span key={typeSlug} className="flex items-center gap-0.5">
                         <span className="text-xs">{count}x</span>
                         {ACCESSORY_ICONS[typeSlug] || ACCESSORY_ICONS.others}
-                      </div>
+                      </span>
                     ))}
                     {accessorySummary && accessorySummary.sortedTypes.length > 2 && (
                       <span className="text-xs">...</span>
                     )}
-                  </div>
+                  </span>
                   {isExpanded && expandedType === "accessories" ? (
                     <ChevronUp size={16} />
                   ) : (
                     <ChevronDown size={16} />
                   )}
-                </div>
+                </span>
               </Button>
             )}
             {canExpandGames && onToggleGames && (
@@ -290,19 +290,19 @@ export const PublicProfileConsoleCard = ({
                 onClick={onToggleGames}
                 className="flex gap-2 flex-1"
               >
-                <div className="flex flex-row gap-1 items-center justify-between w-full">
-                  <div className="flex items-center gap-1">
+                <span className="flex flex-row gap-1 items-center justify-between w-full">
+                  <span className="flex items-center gap-1">
                     <Disc3 size={14} />
                     <span className="text-xs">
                       {consoleItem.totalGames || consoleItem.games?.length || 0}
                     </span>
-                  </div>
+                  </span>
                   {isExpanded && expandedType === "games" ? (
                     <ChevronUp size={16} />
                   ) : (
                     <ChevronDown size={16} />
                   )}
-                </div>
+                </span>
               </Button>
             )}
           </div>
