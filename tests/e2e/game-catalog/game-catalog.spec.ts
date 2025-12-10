@@ -65,6 +65,98 @@ test.describe("Game Catalog", () => {
     await expect(page.getByText(/nenhum jogo encontrado|no games found/i)).toBeVisible();
   });
 
+  test("Search Functionality", async ({ page }) => {
+    // SearchBar renders desktop and mobile versions. Target the visible one.
+    // Wait, filter hasText "" matches all. play safe with visibility
+    const visibleInput = page.getByTestId("search-input").locator("visible=true");
+
+    await expect(visibleInput).toBeVisible();
+    await visibleInput.fill("Zelda");
+
+    // Click search button to ensure event fires
+    const searchBtn = page.getByTestId("search-button").locator("visible=true");
+    await searchBtn.click();
+
+    // Verify URL
+    await expect(page).toHaveURL(/search=Zelda/);
+
+    // Verify results still show Zelda
+    await expect(page.getByText("The Legend of Zelda: Breath of the Wild")).toBeVisible();
+  });
+
+  test("Pagination", async ({ page }) => {
+    // Override mock to show 2 pages
+    await page.route(/\/api\/games(\?.*)?$/, async (route) => {
+      const url = new URL(route.request().url());
+      const pageParam = url.searchParams.get("page") || "1";
+      const meta = { total: 40, page: Number(pageParam), perPage: 20, totalPages: 2 };
+
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ items: [], meta }), // items empty is fine for checking pagination controls
+      });
+    });
+    await page.reload();
+
+    // Check Pagination Controls
+    // Use precise selector based on "Próxima página" label found in logs
+    const nextButton = page.getByLabel("Próxima página");
+    // Verify it exists
+    await expect(nextButton).toBeVisible();
+
+    // Click next page
+    await nextButton.click();
+
+    // Verify URL change
+    await expect(page).toHaveURL(/page=2/);
+  });
+
+  test("View Mode Toggle", async ({ page }) => {
+    // Default is Grid
+    const gridLayout = page.locator(".grid.grid-cols-2");
+    await expect(gridLayout).toBeVisible();
+
+    // Switch to List
+    // Toggles are likely buttons with icons
+    // CatalogHeader passes `viewModeOptions`
+    // We can look for buttons that likely toggle view.
+    // Usually they are near the sort.
+    // List Button Logic
+    // Try to find the button by icon class or aria-label.
+    // Assuming generic selector or loop if aria unknown, but "List view" is standard.
+    // If ViewToggle uses Lucide icons, we can find by svg class if needed.
+    // But earlier logs didn't fail on selector.
+    // Let's assume the selector found *something*.
+    // Re-verify Selector strength:
+    const listButton = page
+      .locator("button")
+      .filter({ has: page.locator("svg.lucide-list") })
+      .first();
+    await expect(listButton).toBeVisible();
+
+    await listButton.click();
+
+    // Verify layout changed to List (col-1 or similar)
+    // Grid (cols-2) should be gone
+    await expect(gridLayout).not.toBeVisible();
+    // List container should be visible
+    await expect(page.locator(".flex.flex-col.space-y-6")).toBeVisible();
+
+    // NOTE: ViewMode does NOT sync to URL in useCatalogState.ts, so we only check UI.
+  });
+
+  test("Navigation to Game Details", async ({ page }) => {
+    const gameCard = page.getByText("God of War Ragnarök").first();
+    await expect(gameCard).toBeVisible();
+
+    // Click the card (or link inside it)
+    await gameCard.click();
+
+    // Verify Navigation to /game/gow-ragnarok
+    await expect(page).toHaveURL(/\/game\/gow-ragnarok/);
+  });
+
   test("Error State", async ({ page }) => {
     await page.route(/\/api\/games(\?.*)?$/, async (route) => {
       await route.fulfill({ status: 500 });

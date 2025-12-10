@@ -22,7 +22,8 @@ jobs:
           --health-cmd="pg_isready -U postgres" --health-interval=10s --health-timeout=5s --health-retries=5
     env:
       # Variáveis da API
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      # Use local postgres service container for tests instead of production DB
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/gamo_dev
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       SMTP_HOST: ${{ secrets.SMTP_HOST }}
