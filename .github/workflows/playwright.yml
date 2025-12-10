@@ -67,23 +67,23 @@ jobs:
       - name: Run API container
         run: |
           docker run -d --name api \
-            -e DATABASE_URL="${DATABASE_URL}" \
-            -e JWT_SECRET="${JWT_SECRET}" \
-            -e FIREBASE_SERVICE_ACCOUNT="${FIREBASE_SERVICE_ACCOUNT}" \
-            -e SMTP_HOST="${SMTP_HOST}" \
-            -e SMTP_PORT="${SMTP_PORT}" \
-            -e SMTP_USER="${SMTP_USER}" \
-            -e SMTP_PASS="${SMTP_PASS}" \
-            -e SMTP_FROM="${SMTP_FROM}" \
-            -e SENDINBLUE_API_KEY="${SENDINBLUE_API_KEY}" \
-            -e CLOUDINARY_CLOUD_NAME="${CLOUDINARY_CLOUD_NAME}" \
-            -e CLOUDINARY_API_KEY="${CLOUDINARY_API_KEY}" \
-            -e CLOUDINARY_API_SECRET="${CLOUDINARY_API_SECRET}" \
-            -e ADMIN_EMAIL="${ADMIN_EMAIL}" \
-            -e ADMIN_PASSWORD="${ADMIN_PASSWORD}" \
-            -e FRONTEND_URL="${FRONTEND_URL}" \
-            -e STRIPE_SECRET_KEY="${STRIPE_SECRET_KEY}" \
-            -e RAWG_API_KEY="${RAWG_API_KEY}" \
+            -e DATABASE_URL \
+            -e JWT_SECRET \
+            -e FIREBASE_SERVICE_ACCOUNT \
+            -e SMTP_HOST \
+            -e SMTP_PORT \
+            -e SMTP_USER \
+            -e SMTP_PASS \
+            -e SMTP_FROM \
+            -e SENDINBLUE_API_KEY \
+            -e CLOUDINARY_CLOUD_NAME \
+            -e CLOUDINARY_API_KEY \
+            -e CLOUDINARY_API_SECRET \
+            -e ADMIN_EMAIL \
+            -e ADMIN_PASSWORD \
+            -e FRONTEND_URL \
+            -e STRIPE_SECRET_KEY \
+            -e RAWG_API_KEY \
             -e PORT=8080 \
             --network host \
             -p 8080:8080 gamo-api

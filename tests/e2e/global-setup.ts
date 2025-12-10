@@ -5,6 +5,24 @@ async function globalSetup() {
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
+  // Captura erros do console e falhas de rede para debug
+  page.on("console", (msg) => {
+    if (msg.type() === "error") console.log(`[BROWSER ERROR] ${msg.text()}`);
+  });
+  page.on("pageerror", (err) => {
+    console.log(`[PAGE ERROR] ${err.message}`);
+  });
+  page.on("response", async (response) => {
+    if (response.status() >= 400 && response.url().includes("/api/")) {
+      console.log(`[API ERROR] ${response.status()} ${response.url()}`);
+      try {
+        console.log(`[BODY] ${await response.text()}`);
+      } catch (e) {
+        console.log("[BODY] Could not read response body");
+      }
+    }
+  });
+
   await page.goto("http://localhost:3000/en/login");
 
   // Adicione waitForSelector
