@@ -38,10 +38,12 @@ export const PublicProfileGameCard = ({
   game,
   isOwner,
   type,
+  compact = false,
 }: {
   game: UserGame;
   isOwner?: boolean;
   type?: "collection" | "trade";
+  compact?: boolean;
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -90,11 +92,94 @@ export const PublicProfileGameCard = ({
 
   return (
     <>
+      {compact && (
+        <div className="md:hidden flex gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
+          <Link href={modalUrl} scroll={false} className="shrink-0">
+            <div className="relative w-16 h-20 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden">
+              {game.photoMain || game.gameImageUrl ? (
+                <>
+                  {isImageLoading && (
+                    <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 animate-pulse flex items-center justify-center z-10">
+                      <div className="w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-primary-500 rounded-full animate-spin" />
+                    </div>
+                  )}
+                  <Image
+                    src={game.photoMain || game.gameImageUrl || ""}
+                    alt={game.gameTitle || ""}
+                    fill
+                    sizes="64px"
+                    className={clsx(
+                      "object-cover",
+                      isImageLoading ? "opacity-0" : "opacity-100",
+                      game.status === "PREVIOUSLY_OWNED" ? "opacity-70 grayscale" : "",
+                    )}
+                    onLoad={() => setIsImageLoading(false)}
+                    priority={true}
+                  />
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                  <span className="text-2xl">👾</span>
+                </div>
+              )}
+            </div>
+          </Link>
+
+          <div className="flex-1 min-w-0 flex flex-col justify-between">
+            <div>
+              <Link href={`/game/${game.gameSlug}`} target="_blank">
+                <h3 className="font-semibold text-sm dark:text-white line-clamp-1 hover:text-primary-500">
+                  {game.gameTitle}
+                </h3>
+              </Link>
+              {game.platformId && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  {platformsMap[game.platformId]}
+                </p>
+              )}
+            </div>
+
+            {game.progress && game.progress > 0 && game.progress < 10 ? (
+              <div className="mt-1">
+                <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-0.5">
+                  <span>{t("progress")}</span>
+                  <span>{game.progress * 10}%</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                  <div
+                    className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                    style={{ width: `${game.progress * 10}%` }}
+                  ></div>
+                </div>
+              </div>
+            ) : game.progress === 10 ? (
+              <div className="flex items-center gap-1 text-green-600 dark:text-green-400 mt-1">
+                <CheckCircle2 size={12} />
+                <span className="text-xs font-medium">Concluído</span>
+              </div>
+            ) : null}
+          </div>
+
+          {isOwner && (
+            <div className="shrink-0 flex items-start">
+              <Button
+                onClick={() => setShowEditModal(true)}
+                aria-label={t("editItem")}
+                icon={<Pencil size={14} />}
+                variant="transparent"
+                size="sm"
+                className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       <Card
-        className={`
-        overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group
-        border border-gray-200 dark:border-gray-700
-      `}
+        className={clsx(
+          "overflow-hidden hover:shadow-lg transition-shadow !p-0 relative group border border-gray-200 dark:border-gray-700",
+          compact && "hidden md:block",
+        )}
       >
         {!isOwner && game.isFavorite && (
           <div className="absolute top-2 right-2 z-10">
