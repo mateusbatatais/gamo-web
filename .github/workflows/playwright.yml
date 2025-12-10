@@ -132,11 +132,23 @@ jobs:
              echo "⚠️ User seeding returned $http_code. Tests might fail."
           fi
 
-          # Verify User via SQL (Bypass email verification if needed)
+          # Verify User via SQL
+          echo "🔧 Debug: Inspecting DB Tables..."
+          docker run --network host --rm --env PGPASSWORD=postgres postgres:15-alpine \
+            psql -h localhost -U postgres -d gamo_dev -c "\dt" || echo "Failed to list tables"
+
           echo "🔧 Verifying user email in DB..."
+          # Try updating "User" table
+          echo "Attempting update on 'User' table..."
           docker run --network host --rm --env PGPASSWORD=postgres postgres:15-alpine \
             psql -h localhost -U postgres -d gamo_dev \
-            -c "UPDATE \"User\" SET \"emailVerified\" = NOW(), \"hasPassword\" = true WHERE email = '$ADMIN_EMAIL';" || echo "SQL Update failed (User might not exist or table name mismatch)"
+            -c "UPDATE \"User\" SET \"emailVerified\" = NOW(), \"hasPassword\" = true WHERE email = '$ADMIN_EMAIL' RETURNING email;" || echo "Update on 'User' table failed/table not found"
+
+          # Try updating "users" table (in case of mapping)
+          echo "Attempting update on 'users' table..."
+          docker run --network host --rm --env PGPASSWORD=postgres postgres:15-alpine \
+            psql -h localhost -U postgres -d gamo_dev \
+            -c "UPDATE \"users\" SET \"emailVerified\" = NOW(), \"hasPassword\" = true WHERE email = '$ADMIN_EMAIL' RETURNING email;" || echo "Update on 'users' table failed/table not found"
 
       - name: Show full API logs if failed
         if: failure()
