@@ -37,7 +37,56 @@ test.describe("Detalhes do Console", () => {
     // Delay mock response to ensure skeleton renders
     await page.route("**/api/consoles/*", async (route) => {
       await page.waitForTimeout(800); // Longer delay for parallel execution
-      await route.continue();
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          id: 1,
+          consoleId: 1,
+          consoleName: "PlayStation 5",
+          name: "Slim",
+          slug: "ps5-slim",
+          brand: {
+            id: 1,
+            slug: "sony",
+            imageUrl: "/images/brands/sony.svg",
+          },
+          generation: 9,
+          type: "Home Console",
+          releaseDate: "2020-11-12",
+          launchDate: "2020-11-12",
+          storageOptions: [{ value: 825, unit: "GB", note: "SSD" }],
+          mediaFormats: [{ id: 1, name: "Ultra HD Blu-ray" }],
+          allDigital: false,
+          cpu: "AMD Zen 2, 8-core, 3.5GHz",
+          gpu: "AMD RDNA 2, 10.3 TFLOPS",
+          ram: "16GB GDDR6",
+          resolution: "4K UHD, 120Hz",
+          audio: "Tempest 3D AudioTech",
+          connectivity: "Wi-Fi 6, Bluetooth 5.1, USB-C",
+          retroCompatible: true,
+          retroCompatibilityNotes: "Compatible with PS4 games",
+          notes: [
+            { id: 1, text: "First PlayStation console to support 8K output" },
+            { id: 2, text: "Features haptic feedback in the DualSense controller" },
+          ],
+          imageUrl: "https://via.placeholder.com/400x300",
+          consoleDescription: "Next-generation gaming console",
+          isFavorite: false,
+          skins: [
+            {
+              id: 1,
+              slug: "ps5-standard-black",
+              name: "Standard Black",
+              editionName: "Standard",
+              limitedEdition: false,
+              material: "Plastic",
+              finish: "Matte",
+              imageUrl: "https://via.placeholder.com/300x200",
+            },
+          ],
+        }),
+      });
     });
 
     const navigation = page.goto(`/${DEFAULT_LOCALE}/console/ps5-slim`);
@@ -120,7 +169,8 @@ test.describe("Detalhes do Console", () => {
       await collectionButton.click();
 
       // Verifica se foi redirecionado para login
-      await page.waitForURL(`**/${DEFAULT_LOCALE}/login**`);
+      // Verifica se foi redirecionado para login
+      await page.waitForURL(new RegExp(`/${DEFAULT_LOCALE}/login`));
       await expect(page.getByText(/sign in to continue/i)).toBeVisible();
     });
   });

@@ -49,8 +49,8 @@ test.describe("Acesso não autenticado", () => {
   test("Redireciona ou bloqueia acesso à página de detalhes sem autenticação", async ({ page }) => {
     await page.goto(`/${DEFAULT_LOCALE}/account/details`);
 
-    // Verificar se foi redirecionado para login
-    await page.waitForURL(`**/${DEFAULT_LOCALE}/login`);
+    // Verifica se foi redirecionado para login
+    await page.waitForURL(new RegExp(`/${DEFAULT_LOCALE}/login`));
     await expect(page.getByText(/Sign in to continue/i)).toBeVisible();
   });
 });
