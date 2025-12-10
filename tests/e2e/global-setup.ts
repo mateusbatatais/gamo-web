@@ -16,8 +16,15 @@ async function globalSetup() {
   // Adicione verificação antes do click
   await page.click('button[type="submit"]');
 
-  // Timeout maior para o redirecionamento
-  await page.waitForURL("**/en/account", { timeout: 60000 });
+  try {
+    // Timeout maior para o redirecionamento
+    await page.waitForURL("**/en/account", { timeout: 30000 });
+  } catch (error) {
+    console.error("Login redirect timeout! Dumping page content...");
+    const content = await page.content();
+    console.log("Page Content:", content); // Print HTML to logs
+    throw error;
+  }
 
   await page.context().storageState({ path: "tests/e2e/storageState.json" });
   await browser.close();
