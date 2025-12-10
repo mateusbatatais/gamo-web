@@ -110,7 +110,33 @@ jobs:
           echo "API did not start in time";
           echo "\nFinal container status:"
           docker ps -a | grep api || true
+          docker ps -a | grep api || true
           exit 1
+
+      # Seed Database with Test User
+      - name: Seed Test User
+        run: |
+          echo "🌱 Seeding Admin User..."
+
+          # Signup via API
+          response=$(curl -s -w "\n%{http_code}" -X POST http://localhost:8080/api/auth/signup \
+            -H "Content-Type: application/json" \
+            -d "{\"name\": \"Admin E2E\", \"email\": \"$ADMIN_EMAIL\", \"password\": \"$ADMIN_PASSWORD\", \"locale\": \"en\"}")
+            
+          http_code=$(echo "$response" | tail -n1)
+          echo "Signup response: $response"
+
+          if [ "$http_code" -eq 201 ] || [ "$http_code" -eq 200 ] || [ "$http_code" -eq 409 ]; then
+             echo "✅ User seeded or already exists."
+          else
+             echo "⚠️ User seeding returned $http_code. Tests might fail."
+          fi
+
+          # Verify User via SQL (Bypass email verification if needed)
+          echo "🔧 Verifying user email in DB..."
+          docker run --network host --rm --env PGPASSWORD=postgres postgres:15-alpine \
+            psql -h localhost -U postgres -d gamo_dev \
+            -c "UPDATE \"User\" SET \"emailVerified\" = NOW(), \"hasPassword\" = true WHERE email = '$ADMIN_EMAIL';" || echo "SQL Update failed (User might not exist or table name mismatch)"
 
       - name: Show full API logs if failed
         if: failure()
@@ -139,9 +165,27 @@ jobs:
             echo "Waiting for frontend..."; sleep 2;
           done
 
-      # Instala browsers do Playwright
+      - name: Get Playwright Version
+        id: playwright-version
+        run: |
+          PLAYWRIGHT_VERSION=$(pnpm list @playwright/test --depth=0 | grep @playwright/test | awk '{print $2}')
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      - name: Cache Playwright Binaries
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+
+      # Instala browsers do Playwright (apenas se não estiver em cache ou parcialmente)
       - name: Install Playwright Browsers
         run: pnpm exec playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Install Playwright Deps (Fallback)
+        run: pnpm exec playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
 
       # Roda os testes E2E
       - name: Run Playwright tests
