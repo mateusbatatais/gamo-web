@@ -1,9 +1,23 @@
 import { test, expect } from "@playwright/test";
 
 const DEFAULT_LOCALE = "en";
-const ACCESSORY_SLUG = "ps5-dualsense-controller"; // Use a real accessory slug from your database
+let ACCESSORY_SLUG: string;
 
 test.describe("Accessory Details", () => {
+  test.beforeAll(async ({ request }) => {
+    // Fetch a real accessory from the API to use in tests
+    const response = await request.get(
+      `http://localhost:8080/api/accessories?locale=${DEFAULT_LOCALE}&page=1&perPage=1`,
+    );
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      ACCESSORY_SLUG = data.items[0].slug;
+    } else {
+      throw new Error("No accessories found in API for testing");
+    }
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.goto(`/${DEFAULT_LOCALE}/accessory/${ACCESSORY_SLUG}`);
   });

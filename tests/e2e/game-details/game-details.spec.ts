@@ -1,9 +1,23 @@
 import { test, expect } from "@playwright/test";
 
 const DEFAULT_LOCALE = "en";
-const GAME_SLUG = "the-legend-of-zelda"; // Use a real game slug from your database
+let GAME_SLUG: string;
 
 test.describe("Game Details", () => {
+  test.beforeAll(async ({ request }) => {
+    // Fetch a real game from the API to use in tests
+    const response = await request.get(
+      `http://localhost:8080/api/games?locale=${DEFAULT_LOCALE}&page=1&perPage=1`,
+    );
+    const data = await response.json();
+
+    if (data.items && data.items.length > 0) {
+      GAME_SLUG = data.items[0].slug;
+    } else {
+      throw new Error("No games found in API for testing");
+    }
+  });
+
   test.beforeEach(async ({ page }) => {
     await page.goto(`/${DEFAULT_LOCALE}/game/${GAME_SLUG}`);
   });
