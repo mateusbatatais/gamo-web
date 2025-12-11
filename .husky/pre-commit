@@ -1,1 +1,29 @@
-npx lint-staged
+#!/usr/bin/env bash
+# .husky/pre-commit
+
+# Run lint-staged (existing)
+pnpm exec lint-staged
+
+# Check if there are new images in /public/images
+NEW_IMAGES=$(git diff --cached --name-only --diff-filter=A | grep '^public/images/.*\.(jpg|jpeg|png|gif|webp|avif)$' || true)
+
+if [ -n "$NEW_IMAGES" ]; then
+  echo ""
+  echo "🖼️  Novas imagens detectadas! Fazendo upload para ImageKit..."
+  echo ""
+  
+  # Run upload script
+  pnpm tsx scripts/upload-to-imagekit.ts
+  
+  if [ $? -eq 0 ]; then
+    echo ""
+    echo "✅ Upload concluído com sucesso!"
+    echo ""
+  else
+    echo ""
+    echo "❌ Erro no upload. Commit cancelado."
+    echo "Execute manualmente: pnpm tsx scripts/upload-to-imagekit.ts"
+    echo ""
+    exit 1
+  fi
+fi
