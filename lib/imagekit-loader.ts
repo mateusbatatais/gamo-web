@@ -49,7 +49,13 @@ export default function imagekitLoader({ src, width, quality }: ImageLoaderProps
   // Handle local/public images
   // After running upload script, these will be available on ImageKit
   // Remove leading slash if present (ImageKit expects path without leading /)
-  const path = src.startsWith("/") ? src.slice(1) : src;
+  let path = src.startsWith("/") ? src.slice(1) : src;
+
+  // Remove 'images/' prefix since files were uploaded to root in ImageKit
+  // /images/consoles/switch.webp -> consoles/switch.webp
+  if (path.startsWith("images/")) {
+    path = path.replace("images/", "");
+  }
 
   return `${endpoint}/${path}?${transformations}`;
 }
