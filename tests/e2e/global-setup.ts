@@ -13,16 +13,24 @@ async function globalSetup() {
   await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
   await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
 
-  // Adicione verificação antes do click
+  // Click submit button
   await page.click('button[type="submit"]');
 
   try {
-    // Timeout maior para o redirecionamento
-    await page.waitForURL("**/en/account", { timeout: 30000 });
+    // Wait for redirect - flexible pattern that matches any non-login page
+    // Using waitForURL instead of deprecated waitForNavigation
+    await page.waitForURL((url) => !url.pathname.includes("/login"), {
+      timeout: 30000,
+    });
+
+    const currentUrl = page.url();
+    console.log("Login successful! Redirected to:", currentUrl);
   } catch (error) {
     console.error("Login redirect timeout! Dumping page content...");
     const content = await page.content();
-    console.log("Page Content:", content); // Print HTML to logs
+    const currentUrl = page.url();
+    console.log("Current URL:", currentUrl);
+    console.log("Page Content:", content.substring(0, 1000));
     throw error;
   }
 
