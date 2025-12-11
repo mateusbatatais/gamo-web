@@ -47,16 +47,21 @@ export default function GameInfo({ game }: GameInfoProps) {
           <h1 className="text-3xl font-bold mb-4">{game.name}</h1>
 
           {game.esrbRating && (
-            <Badge status="info" className="mb-4">
+            <Badge status="info" className="mb-4" data-testid="esrb-rating">
               {game.esrbRating}
             </Badge>
           )}
 
           {platformObjects.length > 0 && (
-            <div className="mt-3">
+            <div className="mt-3" data-testid="platform-list">
               <div className="flex flex-wrap gap-2">
                 {platformObjects.map((platform) => (
-                  <Badge key={platform.id} variant="outline" className="text-xs">
+                  <Badge
+                    key={platform.id}
+                    variant="outline"
+                    className="text-xs"
+                    data-testid={`platform-${platform.id}`}
+                  >
                     {platform.name}
                   </Badge>
                 ))}
@@ -73,15 +78,19 @@ export default function GameInfo({ game }: GameInfoProps) {
               label={t("releaseDate")}
               value={game.releaseDate ? new Date(game.releaseDate).toLocaleDateString() : "-"}
             />
-            <InfoItem label={t("metacritic")} value={game.metacritic || "-"} />
-            <InfoItem label={t("rating")} value={game.score || "-"} />
+            <InfoItem
+              label={t("metacritic")}
+              value={game.metacritic || "-"}
+              data-testid="metacritic-score"
+            />
+            <InfoItem label={t("rating")} value={game.score || "-"} data-testid="game-score" />
             <InfoItem label={t("year")} value={game.year || "-"} />
           </div>
 
           {(game.series?.games?.length ?? 0) > 0 ||
           game.children?.length > 0 ||
           game.parents?.length > 0 ? (
-            <div className="mt-6">
+            <div className="mt-6" data-testid="related-games-section">
               <h3 className="text-xl font-semibold mb-3">{t("relatedGames")}</h3>
               <div className="flex flex-wrap gap-2">
                 {(game.series?.games?.length ?? 0) > 0 && (
