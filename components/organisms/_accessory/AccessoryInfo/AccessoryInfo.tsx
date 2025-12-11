@@ -55,7 +55,11 @@ export default function AccessoryInfo({ accessory }: AccessoryInfoProps) {
 
             <div className="flex flex-wrap gap-3">
               {/* Tipo */}
-              <Badge variant="outline" className="flex items-center gap-1">
+              <Badge
+                variant="outline"
+                className="flex items-center gap-1"
+                data-testid="accessory-type"
+              >
                 <Package size={14} />
                 {accessory.type}
               </Badge>
@@ -72,14 +76,14 @@ export default function AccessoryInfo({ accessory }: AccessoryInfoProps) {
 
           {/* Descrição */}
           {accessory.description && (
-            <div className="mb-6">
+            <div className="mb-6" data-testid="accessory-description">
               <h3 className="text-lg font-semibold mb-2">{t("description")}</h3>
               <p className="text-gray-900 dark:text-gray-100">{accessory.description}</p>
             </div>
           )}
 
           {/* Data de lançamento */}
-          <div className="mb-6">
+          <div className="mb-6" data-testid="release-date">
             <div className="flex items-center gap-2 mb-2">
               <Calendar size={18} className="text-gray-600 dark:text-gray-300" />
               <h3 className="text-lg font-semibold">{t("releaseDate")}</h3>
@@ -89,7 +93,7 @@ export default function AccessoryInfo({ accessory }: AccessoryInfoProps) {
 
           {/* Consoles compatíveis */}
           {accessory.consoles.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6" data-testid="compatible-consoles">
               <div className="flex items-center gap-2 mb-2">
                 <Gamepad size={18} className="text-gray-600 dark:text-gray-300" />
                 <h3 className="text-lg font-semibold">{t("compatibleConsoles")}</h3>

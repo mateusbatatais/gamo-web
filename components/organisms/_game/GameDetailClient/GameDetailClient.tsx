@@ -108,7 +108,7 @@ export default function GameDetailClient() {
 
       {screenshots.length > 0 && (
         <>
-          <section className="mb-12">
+          <section className="mb-12" data-testid="screenshots-gallery">
             <h2 className="text-2xl font-bold mb-6 pb-2 border-b border-neutral-300 dark:border-gray-700">
               {t("screenshots")} ({screenshots.length})
             </h2>
