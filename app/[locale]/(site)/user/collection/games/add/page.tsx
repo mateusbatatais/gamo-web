@@ -201,13 +201,18 @@ export default function AddGamePage() {
       </h1>
 
       {/* Bulk Import Button */}
-      <Link href="/user/collection/games/import" className="block mb-8">
+      <Link
+        href="/user/collection/games/import"
+        className="block mb-8"
+        data-testid="bulk-import-link"
+      >
         <Button
           variant="primary"
           size="lg"
           label={t("bulkImportButton")}
           icon={<Upload size={20} />}
           className="w-full justify-center"
+          data-testid="bulk-import-button"
         />
       </Link>
 
@@ -224,8 +229,9 @@ export default function AddGamePage() {
               onSearch={setSearchQuery}
               loading={gamesLoading}
               placeholder={t("searchPlaceholder")}
+              data-testid="game-search-autocomplete"
               renderItem={(item) => (
-                <div className="flex items-center gap-3 p-2">
+                <div className="flex items-center gap-3 p-2" data-testid={`game-result-${item.id}`}>
                   <div className="shrink-0 w-12 h-12 relative">
                     <ImageWithFallback
                       src={item.imageUrl}
@@ -289,21 +295,22 @@ export default function AddGamePage() {
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {games?.items.slice(0, 12).map((game) => (
-                      <GameCard
-                        key={game.id}
-                        game={game}
-                        isSelected={selectedGame?.id === game.id}
-                        onClick={() =>
-                          handleGameSelect({
-                            id: game.id,
-                            label: game.name,
-                            imageUrl: game.imageUrl,
-                            subtitle: game.releaseDate
-                              ? new Date(game.releaseDate).getFullYear().toString()
-                              : undefined,
-                          })
-                        }
-                      />
+                      <div key={game.id} data-testid={`popular-game-${game.id}`}>
+                        <GameCard
+                          game={game}
+                          isSelected={selectedGame?.id === game.id}
+                          onClick={() =>
+                            handleGameSelect({
+                              id: game.id,
+                              label: game.name,
+                              imageUrl: game.imageUrl,
+                              subtitle: game.releaseDate
+                                ? new Date(game.releaseDate).getFullYear().toString()
+                                : undefined,
+                            })
+                          }
+                        />
+                      </div>
                     ))}
                   </div>
                 )}
