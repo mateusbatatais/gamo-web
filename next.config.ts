@@ -3,6 +3,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   images: {
+    loader: "custom",
+    loaderFile: "./lib/imagekit-loader.ts",
     remotePatterns: [
       {
         protocol: "https",
