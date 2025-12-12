@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 interface PlayingNowSectionProps {
   slug: string;
   isOwner?: boolean;
+  imageAction?: "modal" | "game" | "none";
 }
 
 const queryClient = new QueryClient();
@@ -23,7 +24,7 @@ export const PlayingNowSection = (props: PlayingNowSectionProps) => {
   );
 };
 
-const PlayingNowSectionContent = ({ slug, isOwner }: PlayingNowSectionProps) => {
+const PlayingNowSectionContent = ({ slug, isOwner, imageAction }: PlayingNowSectionProps) => {
   const t = useTranslations("PublicProfile");
   const { data, isLoading, error } = usePlayingNowGames(slug);
 
@@ -71,6 +72,7 @@ const PlayingNowSectionContent = ({ slug, isOwner }: PlayingNowSectionProps) => 
             isOwner={isOwner}
             type="collection"
             compact
+            imageAction={imageAction}
           />
         ))}
       </div>
