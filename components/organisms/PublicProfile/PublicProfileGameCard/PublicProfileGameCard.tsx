@@ -39,11 +39,13 @@ export const PublicProfileGameCard = ({
   isOwner,
   type,
   compact = false,
+  imageAction = "modal",
 }: {
   game: UserGame;
   isOwner?: boolean;
   type?: "collection" | "trade";
   compact?: boolean;
+  imageAction?: "modal" | "game" | "none";
 }) => {
   const t = useTranslations("PublicProfile");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -90,11 +92,23 @@ export const PublicProfileGameCard = ({
         : game.compatibleUserConsoleIds,
   };
 
+  const getTargetLink = () => {
+    if (imageAction === "game") return `/game/${game.gameSlug}`;
+    if (imageAction === "none") return "#";
+    return modalUrl;
+  };
+
+  const linkProps = imageAction === "game" ? { target: "_blank" } : { scroll: false };
+
   return (
     <>
       {compact && (
         <div className="md:hidden flex gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow">
-          <Link href={modalUrl} scroll={false} className="shrink-0">
+          <Link
+            href={getTargetLink()}
+            {...linkProps}
+            className={clsx("shrink-0", imageAction === "none" && "pointer-events-none")}
+          >
             <div className="relative w-16 h-20 bg-gray-100 dark:bg-gray-700 rounded overflow-hidden">
               {game.photoMain || game.gameImageUrl ? (
                 <>
@@ -271,7 +285,11 @@ export const PublicProfileGameCard = ({
             }
           `}
         >
-          <Link href={modalUrl} scroll={false}>
+          <Link
+            href={getTargetLink()}
+            {...linkProps}
+            className={clsx(imageAction === "none" && "pointer-events-none")}
+          >
             {game.photoMain ? (
               <>
                 {isImageLoading && (

@@ -16,7 +16,7 @@ export default function HomeTemplate({ userSlug }: HomeTemplateProps) {
       <HeroSection />
       {userSlug && (
         <div className=" mx-auto">
-          <PlayingNowSection slug={userSlug} isOwner={true} />
+          <PlayingNowSection slug={userSlug} isOwner={true} imageAction="game" />
         </div>
       )}
       <TopUsersSection type="COLLECTION" />
