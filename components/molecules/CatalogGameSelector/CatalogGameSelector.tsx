@@ -150,7 +150,7 @@ export const CatalogGameSelector = ({
               <button
                 type="button"
                 onClick={() => onItemRemove(item.internalId)}
-                className="absolute top-2 right-2 p-1 bg-white/80 dark:bg-black/50 rounded-full text-gray-500 hover:text-red-500 transition-colors z-10 opacity-0 group-hover:opacity-100"
+                className="absolute top-2 right-2 p-1 bg-white/80 dark:bg-black/50 rounded-full text-gray-500 hover:text-red-500 transition-colors z-10 md:opacity-0 md:group-hover:opacity-100"
                 title="Remover item"
               >
                 <X size={16} />
