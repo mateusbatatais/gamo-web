@@ -86,7 +86,7 @@ export function ImagePreview({
       </div>
 
       <div
-        className="absolute w-24 h-24 inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
+        className="absolute w-24 h-24 inset-0 bg-black/50 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-opacity rounded-md"
         data-testid="action-overlay"
       >
         <Button
