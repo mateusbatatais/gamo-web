@@ -1,5 +1,7 @@
 "use client";
 
+import { SharePopover } from "@/components/molecules/SharePopover/SharePopover";
+
 import { useTranslations } from "next-intl";
 import useAccessoryDetails from "@/hooks/useAccessoryDetails";
 import { useParams } from "next/navigation";
@@ -91,7 +93,10 @@ export default function AccessoryDetailClient() {
   return (
     <div className="container mx-auto max-w-6xl">
       <div className="relative">
-        <div className="absolute top-4 right-4 z-10" data-testid="favorite-action-button">
+        <div
+          className="absolute top-4 right-4 z-10 flex items-center gap-2"
+          data-testid="favorite-action-button"
+        >
           <CardActionButtons
             loading={isLoading}
             favoriteLoading={favoriteLoading}
@@ -102,6 +107,10 @@ export default function AccessoryDetailClient() {
                 onClick: handleToggleFavorite,
               },
             ]}
+          />
+          <SharePopover
+            url={typeof window !== "undefined" ? window.location.href : ""}
+            title={data.name}
           />
         </div>
 
