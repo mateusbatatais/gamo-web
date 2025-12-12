@@ -35,7 +35,7 @@ export function GameSearchModal({ searchTerm, onSelectGame, onClose }: GameSearc
       setIsLoading(true);
       try {
         const results = await apiFetch<{ items: Game[] }>(
-          `/games?search=${encodeURIComponent(query)}&perPage=8`,
+          `/games?search=${encodeURIComponent(query)}&perPage=100`,
         );
         setSearchResults(results.items || []);
       } catch (error) {

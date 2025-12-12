@@ -52,7 +52,7 @@ export const GameSelector = ({
         const platformFilter =
           platformIds && platformIds.length > 0 ? `&platforms=${platformIds.join(",")}` : "";
         const results = await apiFetch<{ items: Game[] }>(
-          `/games?search=${encodeURIComponent(query)}&perPage=10${platformFilter}`,
+          `/games?search=${encodeURIComponent(query)}&perPage=100${platformFilter}`,
         );
 
         setSearchResults(results.items);
