@@ -81,6 +81,7 @@
   "filters": {
     "label": "Filtros",
     "clear": "limpar",
+    "clearSearch": "Limpar busca",
     "media": "Tipo de Mídia",
     "physical": "Física",
     "digital": "Digital",

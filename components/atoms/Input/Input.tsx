@@ -13,6 +13,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: ReactNode;
   inputSize?: InputSize;
   showToggle?: boolean;
+  rightElement?: ReactNode;
 }
 
 const sizeClasses: Record<InputSize, string> = {
@@ -30,6 +31,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       icon,
       inputSize = "md",
       showToggle = false,
+      rightElement,
       className,
       type = "text",
       ...props
@@ -63,7 +65,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         // Espaçamento extra quando houver ícone ou toggle
         "pl-10": icon,
-        "pr-10": showToggle && type === "password",
+        "pr-10": (showToggle && type === "password") || rightElement,
       },
       className,
     );
@@ -99,6 +101,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             >
               {isVisible ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
+          )}
+
+          {rightElement && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500">
+              {rightElement}
+            </div>
           )}
         </div>
 

@@ -81,6 +81,7 @@
   "filters": {
     "label": "Filters",
     "clear": "Clear",
+    "clearSearch": "Clear search",
     "media": "Media Type",
     "physical": "Physical",
     "digital": "Digital",
