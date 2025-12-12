@@ -1,41 +1,66 @@
 // tests/e2e/global-setup.ts
-import { chromium } from "@playwright/test";
+import { chromium, FullConfig } from "@playwright/test";
 
-async function globalSetup() {
+async function globalSetup(config: FullConfig) {
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  await page.goto("http://localhost:3000/en/login");
+  // Get API URL from environment
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-  // Adicione waitForSelector
-  await page.waitForSelector('input[name="email"]', { state: "visible", timeout: 15000 });
-
-  await page.fill('input[name="email"]', process.env.ADMIN_EMAIL!);
-  await page.fill('input[name="password"]', process.env.ADMIN_PASSWORD!);
-
-  // Click submit button
-  await page.click('button[type="submit"]');
+  console.log("🔐 Authenticating via API...");
 
   try {
-    // Wait for redirect - flexible pattern that matches any non-login page
-    // Using waitForURL instead of deprecated waitForNavigation
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 30000,
+    // Login via API to get the auth token
+    const response = await page.request.post(`${apiUrl}/api/auth/login`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        email: process.env.ADMIN_EMAIL,
+        password: process.env.ADMIN_PASSWORD,
+      },
     });
 
-    const currentUrl = page.url();
-    console.log("Login successful! Redirected to:", currentUrl);
-  } catch (error) {
-    console.error("Login redirect timeout! Dumping page content...");
-    const content = await page.content();
-    const currentUrl = page.url();
-    console.log("Current URL:", currentUrl);
-    console.log("Page Content:", content.substring(0, 1000));
-    throw error;
-  }
+    if (!response.ok()) {
+      const errorText = await response.text();
+      console.error("❌ Login failed:", errorText);
+      throw new Error(`Login failed with status ${response.status()}: ${errorText}`);
+    }
 
-  await page.context().storageState({ path: "tests/e2e/storageState.json" });
-  await browser.close();
+    const responseData = await response.json();
+    const token = responseData.token;
+
+    if (!token) {
+      throw new Error("No token received from login API");
+    }
+
+    console.log("✓ Login successful! Token received.");
+
+    // Navigate to the app to set localStorage
+    await page.goto("http://localhost:3000/en");
+
+    // Wait for page to be ready
+    await page.waitForLoadState("domcontentloaded");
+
+    // Set the auth token in localStorage
+    await page.evaluate((authToken) => {
+      localStorage.setItem("gamo_token", authToken);
+    }, token);
+
+    console.log("✓ Auth token set in localStorage");
+
+    // Save the authenticated state
+    await context.storageState({ path: "tests/e2e/storageState.json" });
+
+    console.log("✓ Storage state saved to tests/e2e/storageState.json");
+  } catch (error) {
+    console.error("❌ Global setup failed:", error);
+    throw error;
+  } finally {
+    await browser.close();
+  }
 }
 
 export default globalSetup;

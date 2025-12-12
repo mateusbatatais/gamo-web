@@ -17,7 +17,6 @@ dotenv.config({ path: ".env.local" });
 export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
-
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -94,5 +93,8 @@ export default defineConfig({
     command: "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: true,
+    timeout: 120000, // 2 minutes for Next.js to compile and start
+    stdout: "pipe", // Show server output for debugging
+    stderr: "pipe",
   },
 });

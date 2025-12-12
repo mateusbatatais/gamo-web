@@ -12,52 +12,42 @@
     },
     {
       "name": "_lr_hb_-rix9j9%2Fgamo",
-      "value": "{%22heartbeat%22:1765472378432}",
+      "value": "{%22heartbeat%22:1765537577068}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1765558778,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_ga",
-      "value": "GA1.1.1444205935.1765472379",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1800032378.815183,
-      "httpOnly": false,
-      "secure": false,
-      "sameSite": "Lax"
-    },
-    {
-      "name": "_ga_N1E9TNJKQ5",
-      "value": "GS2.1.s1765472378$o1$g0$t1765472378$j60$l0$h0",
-      "domain": "localhost",
-      "path": "/",
-      "expires": 1800032378.820092,
+      "expires": 1765623977,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_lr_tabs_-rix9j9%2Fgamo",
-      "value": "{%22recordingID%22:%226-019b0e5a-9e36-7b66-a5bd-be307814be63%22%2C%22sessionID%22:0%2C%22lastActivity%22:1765472379083%2C%22hasActivity%22:false%2C%22clearsIdentifiedUser%22:false%2C%22confirmed%22:true}",
+      "value": "{%22recordingID%22:%226-019b123d-785d-72a7-8770-79e8d1986c86%22%2C%22sessionID%22:0%2C%22lastActivity%22:1765537577071%2C%22hasActivity%22:false%2C%22clearsIdentifiedUser%22:false}",
       "domain": "localhost",
       "path": "/",
-      "expires": 1765558779,
+      "expires": 1765623977,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
-      "name": "gamo_token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDcxMjY0L3Byb2ZpbGVzL2d0eG16NjRjdGtwcW00cm5obHpoLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTQ3MjM3OSwiZXhwIjoxNzY2MDc3MTc5fQ.N5025Rd_b3kM1YbsKF8zXJ0wrv4cJLT6VNlDVCqAy-0",
+      "name": "_ga",
+      "value": "GA1.1.901476287.1765537577",
       "domain": "localhost",
       "path": "/",
-      "expires": 1768064379.705644,
+      "expires": 1800097577.49182,
       "httpOnly": false,
-      "secure": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_N1E9TNJKQ5",
+      "value": "GS2.1.s1765537577$o1$g0$t1765537577$j60$l0$h0",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1800097577.499395,
+      "httpOnly": false,
+      "secure": false,
       "sameSite": "Lax"
     }
   ],
@@ -71,11 +61,11 @@
         },
         {
           "name": "gamo_token",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDcxMjY0L3Byb2ZpbGVzL2d0eG16NjRjdGtwcW00cm5obHpoLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTQ3MjM3OSwiZXhwIjoxNzY2MDc3MTc5fQ.N5025Rd_b3kM1YbsKF8zXJ0wrv4cJLT6VNlDVCqAy-0"
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsIm5hbWUiOiJOb21lIFRlc3RlIiwic2x1ZyI6InNsdWctdGVzdGUiLCJlbWFpbCI6ImFkbWluQGdhbW8uZ2FtZXMiLCJwcm9maWxlSW1hZ2UiOiJodHRwczovL3Jlcy5jbG91ZGluYXJ5LmNvbS9kamJkdG1yM2QvaW1hZ2UvdXBsb2FkL3YxNzY1NDA5NzcxL3Byb2ZpbGVzL3Btc3J4amd5bmF4cHlreXV4ZmVnLmpwZyIsInJvbGUiOiJTVVBFUl9BRE1JTiIsImhhc1Bhc3N3b3JkIjp0cnVlLCJsb2NhbGUiOiJwdCIsImlhdCI6MTc2NTUzNzU3MywiZXhwIjoxNzY2MTQyMzczfQ.mflryxnKDDV_pz5Hll2cb6YnrHoFaJ7ucpTRxDUEHOE"
         },
         {
           "name": "_lr_id_",
-          "value": "{\"userID\":\"4602273b-12b1-4dd8-9576-516391157eb7\"}"
+          "value": "{\"userID\":\"594617c6-f685-4c23-83d7-6f84449c13f9\"}"
         }
       ]
     }
