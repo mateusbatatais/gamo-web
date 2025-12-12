@@ -8,6 +8,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Badge } from "@/components/atoms/Badge/Badge";
 import { Tooltip } from "@/components/atoms/Tooltip/Tooltip";
 import { WhatsAppButton } from "@/components/atoms/WhatsAppButton/WhatsAppButton";
+import { SharePopover } from "@/components/molecules/SharePopover/SharePopover";
 interface PublicProfileHeaderProps {
   profile: PublicUserProfile;
 }
@@ -42,6 +43,10 @@ export const PublicProfileHeader = ({ profile }: PublicProfileHeaderProps) => {
               <WhatsAppButton phone={profile.phone || ""} />
             </div>
           )}
+          <SharePopover
+            url={typeof window !== "undefined" ? window.location.href : ""}
+            title={`Profile of ${profile.name}`}
+          />
         </div>
 
         <div className="flex flex-wrap gap-2 mt-4">

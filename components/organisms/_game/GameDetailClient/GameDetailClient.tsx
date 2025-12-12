@@ -1,5 +1,7 @@
 "use client";
 
+import { SharePopover } from "@/components/molecules/SharePopover/SharePopover";
+
 import { useTranslations } from "next-intl";
 import { notFound, useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -93,13 +95,17 @@ export default function GameDetailClient() {
   return (
     <div className="container mx-auto max-w-6xl">
       <div className="relative">
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
           <AddGameToCollection
             gameId={data.id}
             gameSlug={data.slug}
             platforms={data.platforms}
             isFavorite={isFavorite}
             onFavoriteToggle={handleFavoriteToggle}
+          />
+          <SharePopover
+            url={typeof window !== "undefined" ? window.location.href : ""}
+            title={data.name}
           />
         </div>
 

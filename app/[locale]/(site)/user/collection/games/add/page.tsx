@@ -109,7 +109,7 @@ export default function AddGamePage() {
 
   const { data: games, isLoading: gamesLoading } = useGames({
     page: 1,
-    perPage: 20,
+    perPage: 100,
     searchQuery,
   });
 

@@ -2,6 +2,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/atoms/Button/Button";
 import { Search, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
@@ -23,6 +24,7 @@ export function SearchBar({
   searchPath,
   placeholder = "Buscar...",
 }: SearchBarProps) {
+  const t = useTranslations("filters");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("search") || "");
@@ -64,6 +66,28 @@ export function SearchBar({
     }
   }, [isExpanded, variant]);
 
+  const clearSearch = () => {
+    setQuery("");
+
+    // Remover o parâmetro 'search' da URL
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("search");
+    router.push(`${searchPath}?${params.toString()}`);
+
+    inputRef.current?.focus();
+  };
+
+  const clearButton = query ? (
+    <button
+      type="button"
+      onClick={clearSearch}
+      className="mt-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+      aria-label={t("clearSearch")}
+    >
+      <X size={16} />
+    </button>
+  ) : null;
+
   return (
     <div
       className={clsx(
@@ -81,9 +105,10 @@ export function SearchBar({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={placeholder}
-            className="flex-grow"
+            className="grow"
             inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}
+            rightElement={clearButton}
           />
           <Button
             data-testid="search-button"
@@ -104,9 +129,11 @@ export function SearchBar({
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder={placeholder}
-              className="flex-grow"
+              className="grow"
               inputSize={compact ? "sm" : "md"}
               icon={<Search size={18} />}
+              ref={inputRef}
+              rightElement={clearButton}
             />
             <Button
               data-testid="search-button"
@@ -133,9 +160,11 @@ export function SearchBar({
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={placeholder}
-            className="flex-grow"
+            className="grow"
             inputSize={compact ? "sm" : "md"}
             icon={<Search size={18} />}
+            ref={inputRef}
+            rightElement={clearButton}
           />
           <Button
             data-testid="search-button"
