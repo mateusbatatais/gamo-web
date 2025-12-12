@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
 
 const DEFAULT_LOCALE = "en";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 let ACCESSORY_SLUG: string;
 
 test.describe("Accessory Details", () => {
   test.beforeAll(async ({ request }) => {
     // Fetch a real accessory from the API to use in tests
     const response = await request.get(
-      `http://localhost:8080/api/accessories?locale=${DEFAULT_LOCALE}&page=1&perPage=1`,
+      `${API_URL}/api/accessories?locale=${DEFAULT_LOCALE}&page=1&perPage=1`,
     );
     const data = await response.json();
 
