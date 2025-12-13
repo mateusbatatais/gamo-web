@@ -17,8 +17,22 @@ jobs:
     steps:
       - name: Wait for API to be ready
         run: |
-          echo "⏳ Waiting for API instance..."
-          sleep 30
+          echo "⏳ Waiting for API instance to warm up..."
+          sleep 60
+
+      - name: Health Check
+        run: |
+          echo "🏥 Checking API health..."
+          health_response=$(curl -s -w "\n%{http_code}" "$API_BASE_URL/health" || echo "failed")
+          health_code=$(echo "$health_response" | tail -n1)
+
+          if [ "$health_code" != "200" ]; then
+            echo "❌ API health check failed with code: $health_code"
+            echo "Response: $health_response"
+            exit 1
+          fi
+
+          echo "✅ API is healthy"
 
       - name: Sync Recent Games
         run: |
@@ -33,21 +47,32 @@ jobs:
           }
           EOF
 
-          # Executar sync
-          response=$(curl -s -w "\n%{http_code}" -X POST \
+          # Executar sync com timeout de 5 minutos
+          echo "🔄 Sending sync request..."
+          response=$(curl -s -w "\n%{http_code}" \
+            --max-time 300 \
+            --connect-timeout 30 \
+            -X POST \
             "$API_BASE_URL/api/games/sync/recent" \
             -H "Content-Type: application/json" \
             -H "x-sync-token: $SYNC_SECRET_KEY" \
             -d @/tmp/sync_payload.json)
 
           http_code=$(echo "$response" | tail -n1)
-          response_body=$(echo "$response" | head -n1)
+          response_body=$(echo "$response" | sed '$d')
+
+          echo "📊 Response HTTP Code: $http_code"
 
           if [ "$http_code" -eq 200 ]; then
             echo "✅ Sync completed successfully"
-            echo "Result: $response_body"
+            echo "📝 Result: $response_body"
           else
             echo "❌ Sync failed with HTTP $http_code"
-            echo "Error: $response_body"
+            echo "📝 Full Response Body:"
+            echo "$response_body"
+            echo ""
+            echo "🔍 Debug Info:"
+            echo "  - API URL: $API_BASE_URL/api/games/sync/recent"
+            echo "  - Payload: $(cat /tmp/sync_payload.json)"
             exit 1
           fi
